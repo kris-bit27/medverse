@@ -1,0 +1,61 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { RefreshCw, ArrowRight, CheckCircle2 } from 'lucide-react';
+import ProgressRing from '@/components/ui/ProgressRing';
+
+export default function ReviewQueueWidget({ 
+  dueToday = 0,
+  completedToday = 0,
+  dailyGoal = 15
+}) {
+  const progress = dailyGoal > 0 ? Math.min(100, Math.round((completedToday / dailyGoal) * 100)) : 0;
+  const isComplete = completedToday >= dailyGoal;
+
+  return (
+    <Card className={`relative overflow-hidden ${isComplete ? 'bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20' : ''}`}>
+      <CardContent className="p-6">
+        <div className="flex items-center gap-6">
+          <ProgressRing progress={progress} size={100} strokeWidth={8}>
+            {isComplete ? (
+              <CheckCircle2 className="w-8 h-8 text-emerald-600" />
+            ) : (
+              <div className="text-center">
+                <span className="text-2xl font-bold text-slate-900 dark:text-white">
+                  {completedToday}
+                </span>
+                <span className="text-sm text-slate-500 dark:text-slate-400">
+                  /{dailyGoal}
+                </span>
+              </div>
+            )}
+          </ProgressRing>
+
+          <div className="flex-1">
+            <h3 className="font-semibold text-slate-900 dark:text-white mb-1">
+              {isComplete ? 'Denní cíl splněn! 🎉' : 'Dnešní opakování'}
+            </h3>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+              {isComplete 
+                ? `Dokončili jste ${completedToday} otázek` 
+                : `${dueToday} otázek čeká na opakování`
+              }
+            </p>
+            
+            {dueToday > 0 && (
+              <Button asChild className="bg-teal-600 hover:bg-teal-700">
+                <Link to={createPageUrl('ReviewToday')}>
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  {isComplete ? 'Pokračovat' : 'Začít opakování'}
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Link>
+              </Button>
+            )}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
