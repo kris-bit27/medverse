@@ -13,6 +13,8 @@ import Articles from './pages/Articles';
 import ArticleDetail from './pages/ArticleDetail';
 import Tools from './pages/Tools';
 import ToolDetail from './pages/ToolDetail';
+import Search from './pages/Search';
+import Profile from './pages/Profile';
 import __Layout from './Layout.jsx';
 
 
@@ -32,6 +34,8 @@ export const PAGES = {
     "ArticleDetail": ArticleDetail,
     "Tools": Tools,
     "ToolDetail": ToolDetail,
+    "Search": Search,
+    "Profile": Profile,
 }
 
 export const pagesConfig = {
