@@ -15,6 +15,10 @@ import Tools from './pages/Tools';
 import ToolDetail from './pages/ToolDetail';
 import Search from './pages/Search';
 import Profile from './pages/Profile';
+import Admin from './pages/Admin';
+import AdminQuestions from './pages/AdminQuestions';
+import AdminQuestionEdit from './pages/AdminQuestionEdit';
+import AdminTaxonomy from './pages/AdminTaxonomy';
 import __Layout from './Layout.jsx';
 
 
@@ -36,6 +40,10 @@ export const PAGES = {
     "ToolDetail": ToolDetail,
     "Search": Search,
     "Profile": Profile,
+    "Admin": Admin,
+    "AdminQuestions": AdminQuestions,
+    "AdminQuestionEdit": AdminQuestionEdit,
+    "AdminTaxonomy": AdminTaxonomy,
 }
 
 export const pagesConfig = {
