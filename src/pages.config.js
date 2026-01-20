@@ -19,6 +19,12 @@ import Admin from './pages/Admin';
 import AdminQuestions from './pages/AdminQuestions';
 import AdminQuestionEdit from './pages/AdminQuestionEdit';
 import AdminTaxonomy from './pages/AdminTaxonomy';
+import AdminUsers from './pages/AdminUsers';
+import AdminArticles from './pages/AdminArticles';
+import AdminTools from './pages/AdminTools';
+import AdminAudit from './pages/AdminAudit';
+import AdminArticleEdit from './pages/AdminArticleEdit';
+import AdminToolEdit from './pages/AdminToolEdit';
 import __Layout from './Layout.jsx';
 
 
@@ -44,6 +50,12 @@ export const PAGES = {
     "AdminQuestions": AdminQuestions,
     "AdminQuestionEdit": AdminQuestionEdit,
     "AdminTaxonomy": AdminTaxonomy,
+    "AdminUsers": AdminUsers,
+    "AdminArticles": AdminArticles,
+    "AdminTools": AdminTools,
+    "AdminAudit": AdminAudit,
+    "AdminArticleEdit": AdminArticleEdit,
+    "AdminToolEdit": AdminToolEdit,
 }
 
 export const pagesConfig = {
