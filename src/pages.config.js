@@ -9,6 +9,10 @@ import ReviewToday from './pages/ReviewToday';
 import ReviewQueue from './pages/ReviewQueue';
 import TestGenerator from './pages/TestGenerator';
 import TestSession from './pages/TestSession';
+import Articles from './pages/Articles';
+import ArticleDetail from './pages/ArticleDetail';
+import Tools from './pages/Tools';
+import ToolDetail from './pages/ToolDetail';
 import __Layout from './Layout.jsx';
 
 
@@ -24,6 +28,10 @@ export const PAGES = {
     "ReviewQueue": ReviewQueue,
     "TestGenerator": TestGenerator,
     "TestSession": TestSession,
+    "Articles": Articles,
+    "ArticleDetail": ArticleDetail,
+    "Tools": Tools,
+    "ToolDetail": ToolDetail,
 }
 
 export const pagesConfig = {
