@@ -5,6 +5,10 @@ import Dashboard from './pages/Dashboard';
 import Atestace from './pages/Atestace';
 import OkruhDetail from './pages/OkruhDetail';
 import QuestionDetail from './pages/QuestionDetail';
+import ReviewToday from './pages/ReviewToday';
+import ReviewQueue from './pages/ReviewQueue';
+import TestGenerator from './pages/TestGenerator';
+import TestSession from './pages/TestSession';
 import __Layout from './Layout.jsx';
 
 
@@ -16,6 +20,10 @@ export const PAGES = {
     "Atestace": Atestace,
     "OkruhDetail": OkruhDetail,
     "QuestionDetail": QuestionDetail,
+    "ReviewToday": ReviewToday,
+    "ReviewQueue": ReviewQueue,
+    "TestGenerator": TestGenerator,
+    "TestSession": TestSession,
 }
 
 export const pagesConfig = {
