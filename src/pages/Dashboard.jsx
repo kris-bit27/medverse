@@ -29,10 +29,23 @@ export default function Dashboard() {
     queryFn: () => base44.auth.me()
   });
 
-  const { data: okruhy = [] } = useQuery({
+  const { data: disciplines = [] } = useQuery({
+    queryKey: ['clinicalDisciplines'],
+    queryFn: () => base44.entities.ClinicalDiscipline.list()
+  });
+
+  const { data: allOkruhy = [] } = useQuery({
     queryKey: ['okruhy'],
     queryFn: () => base44.entities.Okruh.list('order')
   });
+
+  // Filter okruhy based on user's selected disciplines
+  const okruhy = useMemo(() => {
+    if (!user?.clinical_disciplines?.length) return allOkruhy;
+    return allOkruhy.filter(o => 
+      user.clinical_disciplines.includes(o.clinical_discipline_id)
+    );
+  }, [allOkruhy, user]);
 
   const { data: questions = [] } = useQuery({
     queryKey: ['questions'],
@@ -127,6 +140,23 @@ export default function Dashboard() {
             'Zde je přehled vašeho pokroku'
           )}
         </p>
+        
+        {/* Selected disciplines */}
+        {user?.clinical_disciplines?.length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {disciplines
+              .filter(d => user.clinical_disciplines.includes(d.id))
+              .map(discipline => (
+                <span 
+                  key={discipline.id}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400 text-sm font-medium"
+                >
+                  {discipline.name}
+                </span>
+              ))
+            }
+          </div>
+        )}
       </div>
 
       {/* Stats cards */}
