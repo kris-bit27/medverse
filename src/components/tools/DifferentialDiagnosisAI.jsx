@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 
 export default function DifferentialDiagnosisAI() {
   const [symptoms, setSymptoms] = useState('');
-  const [patientInfo, setPatientInfo] = useState({ age: '', sex: '', history: '' });
+  const [patientInfo, setPatientInfo] = useState({ age: '', sex: '', history: '', performed_tests: '' });
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [caseTitle, setCaseTitle] = useState('');
@@ -34,6 +34,7 @@ INFORMACE O PACIENTOVI:
 - Věk: ${patientInfo.age || 'neuvedeno'}
 - Pohlaví: ${patientInfo.sex || 'neuvedeno'}
 - Anamnéza: ${patientInfo.history || 'neuvedeno'}
+- Provedená vyšetření: ${patientInfo.performed_tests || 'žádná'}
 
 Poskytni:
 1. Seznam nejpravděpodobnějších diagnóz seřazených podle pravděpodobnosti
@@ -90,7 +91,7 @@ Odpověď piš česky, strukturovaně a prakticky využitelně pro klinickou pra
         case_type: 'ai_differential',
         initial_query: symptoms,
         ai_response: JSON.stringify(result),
-        notes: `**Informace o pacientovi:**\n- Věk: ${patientInfo.age || 'neuvedeno'}\n- Pohlaví: ${patientInfo.sex || 'neuvedeno'}\n- Anamnéza: ${patientInfo.history || 'neuvedeno'}`,
+        notes: `**Informace o pacientovi:**\n- Věk: ${patientInfo.age || 'neuvedeno'}\n- Pohlaví: ${patientInfo.sex || 'neuvedeno'}\n- Anamnéza: ${patientInfo.history || 'neuvedeno'}\n- Provedená vyšetření: ${patientInfo.performed_tests || 'žádná'}`,
         tags: ['diferenciální diagnóza', 'AI asistent']
       });
 
@@ -145,6 +146,13 @@ Odpověď piš česky, strukturovaně a prakticky využitelně pro klinickou pra
               onChange={(e) => setPatientInfo({ ...patientInfo, history: e.target.value })}
             />
           </div>
+
+          <Textarea
+            placeholder="Provedená vyšetření a jejich výsledky (RTG, lab. testy, EKG, atd.)"
+            value={patientInfo.performed_tests}
+            onChange={(e) => setPatientInfo({ ...patientInfo, performed_tests: e.target.value })}
+            rows={3}
+          />
 
           <div>
             <label className="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">

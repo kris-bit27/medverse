@@ -16,7 +16,8 @@ export default function TreatmentPlannerAI() {
     sex: '', 
     comorbidities: '',
     allergies: '',
-    current_medications: ''
+    current_medications: '',
+    performed_tests: ''
   });
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -42,6 +43,7 @@ INFORMACE O PACIENTOVI:
 - Komorbidity: ${patientInfo.comorbidities || 'žádné'}
 - Alergie: ${patientInfo.allergies || 'žádné'}
 - Současná medikace: ${patientInfo.current_medications || 'žádná'}
+- Provedená vyšetření: ${patientInfo.performed_tests || 'žádná'}
 
 Vytvoř komplexní léčebný plán dle současných klinických doporučení, který zahrnuje:
 1. Farmakologickou léčbu (konkrétní léky, dávkování, délka léčby)
@@ -107,7 +109,8 @@ Odpověď piš česky, strukturovaně a s ohledem na individuální parametry pa
 - Pohlaví: ${patientInfo.sex || 'neuvedeno'}
 - Komorbidity: ${patientInfo.comorbidities || 'žádné'}
 - Alergie: ${patientInfo.allergies || 'žádné'}
-- Současná medikace: ${patientInfo.current_medications || 'žádná'}`,
+- Současná medikace: ${patientInfo.current_medications || 'žádná'}
+- Provedená vyšetření: ${patientInfo.performed_tests || 'žádná'}`,
         tags: ['léčebný plán', 'AI asistent']
       });
 
@@ -188,6 +191,13 @@ Odpověď piš česky, strukturovaně a s ohledem na individuální parametry pa
             placeholder="Současná medikace"
             value={patientInfo.current_medications}
             onChange={(e) => setPatientInfo({ ...patientInfo, current_medications: e.target.value })}
+            rows={2}
+          />
+
+          <Textarea
+            placeholder="Provedená vyšetření a jejich výsledky"
+            value={patientInfo.performed_tests}
+            onChange={(e) => setPatientInfo({ ...patientInfo, performed_tests: e.target.value })}
             rows={2}
           />
 
