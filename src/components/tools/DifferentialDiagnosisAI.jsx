@@ -106,6 +106,23 @@ Odpověď piš česky, strukturovaně a prakticky využitelně pro klinickou pra
 
   return (
     <div className="space-y-6">
+      {/* Disclaimer */}
+      <Card className="border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20">
+        <CardContent className="pt-6">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
+            <div className="text-sm text-amber-900 dark:text-amber-100">
+              <p className="font-semibold mb-1">Upozornění – Decision Support Tool</p>
+              <p>
+                Tento nástroj slouží pouze jako podpora klinického rozhodování a nenahrazuje lékařské vyšetření 
+                ani individuální posouzení lékaře. Diferenciální diagnóza je informativní a vyžaduje potvrzení 
+                pomocí klinického vyšetření a diagnostických testů.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <CardTitle>Informace o pacientovi</CardTitle>
