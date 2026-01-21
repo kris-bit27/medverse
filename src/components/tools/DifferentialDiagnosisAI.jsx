@@ -1,0 +1,281 @@
+import React, { useState } from 'react';
+import { base44 } from '@/api/base44Client';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Loader2, Save, AlertCircle, CheckCircle2 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import { toast } from 'sonner';
+
+export default function DifferentialDiagnosisAI() {
+  const [symptoms, setSymptoms] = useState('');
+  const [patientInfo, setPatientInfo] = useState({ age: '', sex: '', history: '' });
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [caseTitle, setCaseTitle] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  const handleAnalyze = async () => {
+    if (!symptoms.trim()) {
+      toast.error('Zadejte prosím symptomy');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt: `Jsi zkušený klinický lékař. Na základě následujících informací vytvoř diferenciální diagnózu:
+
+SYMPTOMY: ${symptoms}
+
+INFORMACE O PACIENTOVI:
+- Věk: ${patientInfo.age || 'neuvedeno'}
+- Pohlaví: ${patientInfo.sex || 'neuvedeno'}
+- Anamnéza: ${patientInfo.history || 'neuvedeno'}
+
+Poskytni:
+1. Seznam nejpravděpodobnějších diagnóz seřazených podle pravděpodobnosti
+2. Pro každou diagnózu uveď klíčové rozlišující příznaky
+3. Doporučené vyšetřovací postupy pro potvrzení/vyloučení jednotlivých diagnóz
+4. Důležitá upozornění (red flags)
+
+Odpověď piš česky, strukturovaně a prakticky využitelně pro klinickou praxi.`,
+        add_context_from_internet: false,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            differential_diagnoses: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  diagnosis: { type: "string" },
+                  probability: { type: "string" },
+                  key_features: { type: "array", items: { type: "string" } },
+                  distinguishing_factors: { type: "string" }
+                }
+              }
+            },
+            recommended_workup: { type: "string" },
+            red_flags: { type: "array", items: { type: "string" } },
+            summary: { type: "string" }
+          }
+        }
+      });
+
+      setResult(response);
+    } catch (error) {
+      toast.error('Chyba při analýze');
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveCase = async () => {
+    if (!result || !caseTitle.trim()) {
+      toast.error('Vyplňte název případu');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const user = await base44.auth.me();
+      
+      await base44.entities.CaseLog.create({
+        user_id: user.id,
+        title: caseTitle,
+        case_type: 'ai_differential',
+        initial_query: symptoms,
+        ai_response: JSON.stringify(result),
+        notes: `**Informace o pacientovi:**\n- Věk: ${patientInfo.age || 'neuvedeno'}\n- Pohlaví: ${patientInfo.sex || 'neuvedeno'}\n- Anamnéza: ${patientInfo.history || 'neuvedeno'}`,
+        tags: ['diferenciální diagnóza', 'AI asistent']
+      });
+
+      toast.success('Případ uložen');
+      setCaseTitle('');
+    } catch (error) {
+      toast.error('Chyba při ukládání');
+      console.error(error);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Informace o pacientovi</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Input
+              placeholder="Věk"
+              value={patientInfo.age}
+              onChange={(e) => setPatientInfo({ ...patientInfo, age: e.target.value })}
+            />
+            <Input
+              placeholder="Pohlaví"
+              value={patientInfo.sex}
+              onChange={(e) => setPatientInfo({ ...patientInfo, sex: e.target.value })}
+            />
+            <Input
+              placeholder="Významná anamnéza"
+              value={patientInfo.history}
+              onChange={(e) => setPatientInfo({ ...patientInfo, history: e.target.value })}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">
+              Symptomy a klinický nález
+            </label>
+            <Textarea
+              placeholder="Popište symptomy pacienta, jejich trvání, intenzitu a další relevantní klinické nálezy..."
+              value={symptoms}
+              onChange={(e) => setSymptoms(e.target.value)}
+              rows={6}
+              className="resize-none"
+            />
+          </div>
+
+          <Button
+            onClick={handleAnalyze}
+            disabled={loading || !symptoms.trim()}
+            className="w-full"
+            size="lg"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                Analyzuji...
+              </>
+            ) : (
+              'Vytvořit diferenciální diagnózu'
+            )}
+          </Button>
+        </CardContent>
+      </Card>
+
+      {result && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Diferenciální diagnóza</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Summary */}
+            {result.summary && (
+              <div className="p-4 bg-teal-50 dark:bg-teal-900/20 rounded-lg">
+                <p className="text-sm text-teal-900 dark:text-teal-100">{result.summary}</p>
+              </div>
+            )}
+
+            {/* Differential diagnoses */}
+            {result.differential_diagnoses && result.differential_diagnoses.length > 0 && (
+              <div>
+                <h3 className="font-semibold text-lg mb-4 text-slate-900 dark:text-white">
+                  Možné diagnózy
+                </h3>
+                <div className="space-y-4">
+                  {result.differential_diagnoses.map((dx, idx) => (
+                    <Card key={idx}>
+                      <CardContent className="pt-6">
+                        <div className="flex items-start justify-between mb-3">
+                          <h4 className="font-semibold text-slate-900 dark:text-white">
+                            {idx + 1}. {dx.diagnosis}
+                          </h4>
+                          <Badge variant="outline">{dx.probability}</Badge>
+                        </div>
+                        {dx.key_features && dx.key_features.length > 0 && (
+                          <div className="mb-3">
+                            <p className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
+                              Klíčové příznaky:
+                            </p>
+                            <ul className="space-y-1">
+                              {dx.key_features.map((feature, i) => (
+                                <li key={i} className="text-sm text-slate-700 dark:text-slate-300 flex items-start gap-2">
+                                  <CheckCircle2 className="w-4 h-4 text-teal-600 mt-0.5 flex-shrink-0" />
+                                  {feature}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        {dx.distinguishing_factors && (
+                          <p className="text-sm text-slate-600 dark:text-slate-400">
+                            <strong>Rozlišující faktory:</strong> {dx.distinguishing_factors}
+                          </p>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Recommended workup */}
+            {result.recommended_workup && (
+              <div>
+                <h3 className="font-semibold text-lg mb-3 text-slate-900 dark:text-white">
+                  Doporučené vyšetření
+                </h3>
+                <div className="prose prose-sm dark:prose-invert max-w-none">
+                  <ReactMarkdown>{result.recommended_workup}</ReactMarkdown>
+                </div>
+              </div>
+            )}
+
+            {/* Red flags */}
+            {result.red_flags && result.red_flags.length > 0 && (
+              <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-semibold text-red-900 dark:text-red-100 mb-2">
+                      Varovné příznaky (Red Flags)
+                    </h3>
+                    <ul className="space-y-1">
+                      {result.red_flags.map((flag, i) => (
+                        <li key={i} className="text-sm text-red-800 dark:text-red-200">
+                          {flag}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Save case */}
+            <div className="pt-6 border-t border-slate-200 dark:border-slate-800">
+              <div className="flex gap-3">
+                <Input
+                  placeholder="Název případu pro uložení..."
+                  value={caseTitle}
+                  onChange={(e) => setCaseTitle(e.target.value)}
+                />
+                <Button
+                  onClick={handleSaveCase}
+                  disabled={saving || !caseTitle.trim()}
+                  variant="outline"
+                >
+                  {saving ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4 mr-2" />
+                      Uložit případ
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}

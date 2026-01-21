@@ -21,12 +21,12 @@ import Profile from './pages/Profile';
 import QuestionDetail from './pages/QuestionDetail';
 import ReviewQueue from './pages/ReviewQueue';
 import ReviewToday from './pages/ReviewToday';
+import ScholarSearch from './pages/ScholarSearch';
 import Search from './pages/Search';
 import TestGenerator from './pages/TestGenerator';
 import TestSession from './pages/TestSession';
 import ToolDetail from './pages/ToolDetail';
 import Tools from './pages/Tools';
-import ScholarSearch from './pages/ScholarSearch';
 import __Layout from './Layout.jsx';
 
 
@@ -54,12 +54,12 @@ export const PAGES = {
     "QuestionDetail": QuestionDetail,
     "ReviewQueue": ReviewQueue,
     "ReviewToday": ReviewToday,
+    "ScholarSearch": ScholarSearch,
     "Search": Search,
     "TestGenerator": TestGenerator,
     "TestSession": TestSession,
     "ToolDetail": ToolDetail,
     "Tools": Tools,
-    "ScholarSearch": ScholarSearch,
 }
 
 export const pagesConfig = {
