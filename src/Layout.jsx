@@ -31,7 +31,8 @@ import {
   Sun,
   ChevronRight,
   Shield,
-  ClipboardList
+  ClipboardList,
+  MessageSquare
 } from 'lucide-react';
 import FloatingCopilot from '@/components/ai/FloatingCopilot';
 
@@ -42,6 +43,7 @@ const navItems = [
   { name: 'Atestace', page: 'Atestace', icon: GraduationCap },
   { name: 'Logbook', page: 'Logbook', icon: ClipboardList },
   { name: 'Články', page: 'Articles', icon: BookOpen },
+  { name: 'Forum', page: 'Forum', icon: MessageSquare },
   { name: 'Vyhledávání', page: 'ScholarSearch', icon: Search },
   { name: 'Nástroje', page: 'Tools', icon: Stethoscope },
   { name: 'Opakování', page: 'ReviewToday', icon: RefreshCw },
@@ -163,7 +165,8 @@ export default function Layout({ children, currentPageName }) {
           <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
             {navItems.map((item) => {
               const isActive = currentPageName === item.page || 
-                (item.page === 'Atestace' && ['Okruhy', 'OkruhDetail', 'QuestionDetail', 'TestGenerator'].includes(currentPageName));
+                (item.page === 'Atestace' && ['Okruhy', 'OkruhDetail', 'QuestionDetail', 'TestGenerator'].includes(currentPageName)) ||
+                (item.page === 'Forum' && ['Forum', 'ForumThread'].includes(currentPageName));
               const Icon = item.icon;
               
               return (

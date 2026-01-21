@@ -27,6 +27,8 @@ import TestGenerator from './pages/TestGenerator';
 import TestSession from './pages/TestSession';
 import ToolDetail from './pages/ToolDetail';
 import Tools from './pages/Tools';
+import Forum from './pages/Forum';
+import ForumThread from './pages/ForumThread';
 import __Layout from './Layout.jsx';
 
 
@@ -60,6 +62,8 @@ export const PAGES = {
     "TestSession": TestSession,
     "ToolDetail": ToolDetail,
     "Tools": Tools,
+    "Forum": Forum,
+    "ForumThread": ForumThread,
 }
 
 export const pagesConfig = {
