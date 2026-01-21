@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Loader2, Save, Pill, AlertTriangle } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
+import SaveCaseDialog from './SaveCaseDialog';
 
 export default function TreatmentPlannerAI() {
   const [diagnosis, setDiagnosis] = useState('');
@@ -21,8 +22,7 @@ export default function TreatmentPlannerAI() {
   });
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [caseTitle, setCaseTitle] = useState('');
-  const [saving, setSaving] = useState(false);
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
 
   const handleGeneratePlan = async () => {
     if (!diagnosis.trim()) {
@@ -88,44 +88,21 @@ Odpověď piš česky, strukturovaně a s ohledem na individuální parametry pa
     }
   };
 
-  const handleSaveCase = async () => {
-    if (!result || !caseTitle.trim()) {
-      toast.error('Vyplňte název případu');
-      return;
-    }
 
-    setSaving(true);
-    try {
-      const user = await base44.auth.me();
-      
-      await base44.entities.CaseLog.create({
-        user_id: user.id,
-        title: caseTitle,
-        case_type: 'ai_treatment',
-        initial_query: diagnosis,
-        ai_response: JSON.stringify(result),
-        notes: `**Informace o pacientovi:**
-- Věk: ${patientInfo.age || 'neuvedeno'}
-- Pohlaví: ${patientInfo.sex || 'neuvedeno'}
-- Komorbidity: ${patientInfo.comorbidities || 'žádné'}
-- Alergie: ${patientInfo.allergies || 'žádné'}
-- Současná medikace: ${patientInfo.current_medications || 'žádná'}
-- Provedená vyšetření: ${patientInfo.performed_tests || 'žádná'}`,
-        tags: ['léčebný plán', 'AI asistent']
-      });
-
-      toast.success('Případ uložen');
-      setCaseTitle('');
-    } catch (error) {
-      toast.error('Chyba při ukládání');
-      console.error(error);
-    } finally {
-      setSaving(false);
-    }
-  };
 
   return (
-    <div className="space-y-6">
+    <>
+      <SaveCaseDialog
+        open={saveDialogOpen}
+        onOpenChange={setSaveDialogOpen}
+        caseType="ai_treatment"
+        initialQuery={diagnosis}
+        aiResponse={JSON.stringify(result)}
+        defaultNotes={`**Informace o pacientovi:**\n- Věk: ${patientInfo.age || 'neuvedeno'}\n- Pohlaví: ${patientInfo.sex || 'neuvedeno'}\n- Komorbidity: ${patientInfo.comorbidities || 'žádné'}\n- Alergie: ${patientInfo.allergies || 'žádné'}\n- Současná medikace: ${patientInfo.current_medications || 'žádná'}\n- Provedená vyšetření: ${patientInfo.performed_tests || 'žádná'}`}
+        defaultTags={['léčebný plán', 'AI asistent']}
+      />
+
+      <div className="space-y-6">
       {/* Disclaimer */}
       <Card className="border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20">
         <CardContent className="pt-6">
@@ -320,31 +297,19 @@ Odpověď piš česky, strukturovaně a s ohledem na individuální parametry pa
 
             {/* Save case */}
             <div className="pt-6 border-t border-slate-200 dark:border-slate-800">
-              <div className="flex gap-3">
-                <Input
-                  placeholder="Název případu pro uložení..."
-                  value={caseTitle}
-                  onChange={(e) => setCaseTitle(e.target.value)}
-                />
-                <Button
-                  onClick={handleSaveCase}
-                  disabled={saving || !caseTitle.trim()}
-                  variant="outline"
-                >
-                  {saving ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <>
-                      <Save className="w-4 h-4 mr-2" />
-                      Uložit případ
-                    </>
-                  )}
-                </Button>
-              </div>
+              <Button
+                onClick={() => setSaveDialogOpen(true)}
+                variant="outline"
+                className="w-full"
+              >
+                <Save className="w-4 h-4 mr-2" />
+                Uložit případ
+              </Button>
             </div>
           </CardContent>
         </Card>
       )}
     </div>
+    </>
   );
 }
