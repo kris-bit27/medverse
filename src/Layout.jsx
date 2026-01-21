@@ -30,7 +30,8 @@ import {
   Moon,
   Sun,
   ChevronRight,
-  Shield
+  Shield,
+  ClipboardList
 } from 'lucide-react';
 
 const publicPages = ['Landing', 'Pricing', 'Demo'];
@@ -38,6 +39,7 @@ const publicPages = ['Landing', 'Pricing', 'Demo'];
 const navItems = [
   { name: 'Dashboard', page: 'Dashboard', icon: LayoutDashboard },
   { name: 'Atestace', page: 'Atestace', icon: GraduationCap },
+  { name: 'Logbook', page: 'Logbook', icon: ClipboardList },
   { name: 'Články', page: 'Articles', icon: BookOpen },
   { name: 'Nástroje', page: 'Tools', icon: Stethoscope },
   { name: 'Opakování', page: 'ReviewToday', icon: RefreshCw },
