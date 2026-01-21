@@ -32,6 +32,8 @@ import Tools from './pages/Tools';
 import StudyPackages from './pages/StudyPackages';
 import StudyPackageCreate from './pages/StudyPackageCreate';
 import StudyPackageDetail from './pages/StudyPackageDetail';
+import StudyPlanner from './pages/StudyPlanner';
+import StudyPlanCreate from './pages/StudyPlanCreate';
 import __Layout from './Layout.jsx';
 
 
@@ -70,6 +72,8 @@ export const PAGES = {
     "StudyPackages": StudyPackages,
     "StudyPackageCreate": StudyPackageCreate,
     "StudyPackageDetail": StudyPackageDetail,
+    "StudyPlanner": StudyPlanner,
+    "StudyPlanCreate": StudyPlanCreate,
 }
 
 export const pagesConfig = {
