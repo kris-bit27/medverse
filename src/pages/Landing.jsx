@@ -20,8 +20,8 @@ import {
 const features = [
   {
     icon: GraduationCap,
-    title: 'Příprava na atestaci',
-    description: 'Strukturované otázky podle okruhů s ověřenými odpověďmi od specialistů'
+    title: 'Atestace & Státnice',
+    description: 'Strukturované otázky podle okruhů s ověřenými odpověďmi napříč všemi chirurgickými obory'
   },
   {
     icon: Brain,
@@ -117,8 +117,8 @@ export default function Landing() {
             </h1>
             
             <p className="text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Platforma pro lékaře a rezidenty plastické chirurgie. 
-              Strukturované otázky, klinické algoritmy a spaced repetition pro dlouhodobé znalosti.
+              Platforma pro studenty medicíny, rezidenty a atestované lékaře. 
+              Strukturované otázky, klinické algoritmy a spaced repetition pro dlouhodobé znalosti napříč všemi obory.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -172,7 +172,7 @@ export default function Landing() {
               Vše pro vaši přípravu
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              Komplexní nástroje navržené specialisty pro efektivní učení
+              Komplexní nástroje pro studenty před státnicemi, rezidenty i atestované lékaře
             </p>
           </div>
 
@@ -216,7 +216,7 @@ export default function Landing() {
                 Připraveni začít?
               </h2>
               <p className="text-lg text-teal-100 mb-8 max-w-xl mx-auto">
-                Připojte se k tisícům lékařů, kteří se připravují na atestaci s MedNexus
+                Připojte se ke studentům a lékařům, kteří se připravují na zkoušky a atestace s MedNexus
               </p>
               <Button 
                 size="lg"

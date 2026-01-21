@@ -14,6 +14,7 @@ import Atestace from './pages/Atestace';
 import Dashboard from './pages/Dashboard';
 import Demo from './pages/Demo';
 import Landing from './pages/Landing';
+import Logbook from './pages/Logbook';
 import OkruhDetail from './pages/OkruhDetail';
 import Pricing from './pages/Pricing';
 import Profile from './pages/Profile';
@@ -25,7 +26,6 @@ import TestGenerator from './pages/TestGenerator';
 import TestSession from './pages/TestSession';
 import ToolDetail from './pages/ToolDetail';
 import Tools from './pages/Tools';
-import Logbook from './pages/Logbook';
 import __Layout from './Layout.jsx';
 
 
@@ -46,6 +46,7 @@ export const PAGES = {
     "Dashboard": Dashboard,
     "Demo": Demo,
     "Landing": Landing,
+    "Logbook": Logbook,
     "OkruhDetail": OkruhDetail,
     "Pricing": Pricing,
     "Profile": Profile,
@@ -57,7 +58,6 @@ export const PAGES = {
     "TestSession": TestSession,
     "ToolDetail": ToolDetail,
     "Tools": Tools,
-    "Logbook": Logbook,
 }
 
 export const pagesConfig = {
