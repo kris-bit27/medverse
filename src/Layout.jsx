@@ -33,6 +33,7 @@ import {
   Shield,
   ClipboardList
 } from 'lucide-react';
+import FloatingCopilot from '@/components/ai/FloatingCopilot';
 
 const publicPages = ['Landing', 'Pricing', 'Demo'];
 
@@ -296,6 +297,9 @@ export default function Layout({ children, currentPageName }) {
           {children}
         </main>
       </div>
+
+      {/* Floating AI Copilot */}
+      <FloatingCopilot />
     </div>
   );
 }
