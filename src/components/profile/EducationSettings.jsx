@@ -28,7 +28,7 @@ export default function EducationSettings({ user }) {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [educationLevel, setEducationLevel] = useState(user?.education_level || '');
-  const [selectedDisciplines, setSelectedDisciplines] = useState(user?.clinical_discipline_preferences || []);
+  const [selectedDisciplines, setSelectedDisciplines] = useState(user?.clinical_disciplines || []);
 
   const { data: disciplines = [] } = useQuery({
     queryKey: ['clinicalDisciplines'],
@@ -38,7 +38,7 @@ export default function EducationSettings({ user }) {
   useEffect(() => {
     if (user) {
       setEducationLevel(user.education_level || '');
-      setSelectedDisciplines(user.clinical_discipline_preferences || []);
+      setSelectedDisciplines(user.clinical_disciplines || []);
     }
   }, [user]);
 
@@ -54,7 +54,7 @@ export default function EducationSettings({ user }) {
     setSaving(true);
     await base44.auth.updateMe({
       education_level: educationLevel,
-      clinical_discipline_preferences: selectedDisciplines
+      clinical_disciplines: selectedDisciplines
     });
     queryClient.invalidateQueries(['currentUser']);
     setSaving(false);

@@ -143,41 +143,66 @@ export default function Dashboard() {
         
         {/* Selected disciplines or selection prompt */}
         {user?.clinical_disciplines?.length > 0 ? (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {disciplines
-              .filter(d => user.clinical_disciplines.includes(d.id))
-              .map(discipline => (
-                <span 
-                  key={discipline.id}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400 text-sm font-medium"
+          <Card className="mt-4 bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 border-teal-200 dark:border-teal-800">
+            <CardContent className="pt-6">
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <p className="text-sm font-medium text-teal-900 dark:text-teal-100 mb-1">
+                    Vaše vybrané obory
+                  </p>
+                  <p className="text-xs text-teal-700 dark:text-teal-300">
+                    Obsah je personalizován podle {user.clinical_disciplines.length} {user.clinical_disciplines.length === 1 ? 'oboru' : user.clinical_disciplines.length < 5 ? 'oborů' : 'oborů'}
+                  </p>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  asChild
+                  className="text-xs hover:bg-teal-100 dark:hover:bg-teal-800"
                 >
-                  {discipline.name}
-                </span>
-              ))
-            }
-            <Button 
-              variant="ghost" 
-              size="sm"
-              asChild
-              className="text-xs"
-            >
-              <Link to={createPageUrl('Profile')}>
-                Upravit obory
-              </Link>
-            </Button>
-          </div>
+                  <Link to={createPageUrl('Profile')}>
+                    Upravit
+                  </Link>
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {disciplines
+                  .filter(d => user.clinical_disciplines.includes(d.id))
+                  .map(discipline => (
+                    <span 
+                      key={discipline.id}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-teal-200 dark:border-teal-700 text-teal-700 dark:text-teal-300 text-sm font-medium shadow-sm"
+                    >
+                      <Stethoscope className="w-3.5 h-3.5" />
+                      {discipline.name}
+                    </span>
+                  ))
+                }
+              </div>
+            </CardContent>
+          </Card>
         ) : (
           <Card className="mt-4 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
             <CardContent className="pt-6">
-              <p className="text-sm text-amber-800 dark:text-amber-200 mb-3">
-                Vyberte si klinické obory, které vás zajímají, pro personalizovaný obsah.
-              </p>
-              <Button asChild size="sm">
-                <Link to={createPageUrl('Profile')}>
-                  Vybrat obory
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Link>
-              </Button>
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center flex-shrink-0">
+                  <Stethoscope className="w-5 h-5 text-amber-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-amber-900 dark:text-amber-100 mb-1">
+                    Vyberte si klinické obory
+                  </p>
+                  <p className="text-xs text-amber-700 dark:text-amber-300 mb-3">
+                    Pro personalizovaný obsah doporučujeme vybrat si obory, které vás zajímají nebo se na ně připravujete.
+                  </p>
+                  <Button asChild size="sm" className="bg-amber-600 hover:bg-amber-700">
+                    <Link to={createPageUrl('Profile')}>
+                      Vybrat obory
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Link>
+                  </Button>
+                </div>
+              </div>
             </CardContent>
           </Card>
         )}
