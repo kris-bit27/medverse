@@ -15,7 +15,8 @@ import {
   Eye,
   EyeOff,
   Save,
-  Loader2
+  Loader2,
+  FileDown
 } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import DifficultyIndicator from '@/components/ui/DifficultyIndicator';
@@ -23,8 +24,10 @@ import StatusBadge from '@/components/ui/StatusBadge';
 import VisibilityBadge from '@/components/common/VisibilityBadge';
 import AnswerSection from '@/components/questions/AnswerSection';
 import QuestionActions from '@/components/questions/QuestionActions';
+import QuestionAIAssistant from '@/components/ai/QuestionAIAssistant';
 import { calculateNextReview, RATINGS } from '@/components/utils/srs';
 import { canAccessContent } from '@/components/utils/permissions';
+import jsPDF from 'jspdf';
 
 export default function QuestionDetail() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -154,6 +157,65 @@ export default function QuestionDetail() {
     setNoteSaving(false);
   };
 
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 20;
+    const maxWidth = pageWidth - 2 * margin;
+    let yPos = 20;
+
+    // Title
+    doc.setFontSize(16);
+    doc.setFont(undefined, 'bold');
+    const titleLines = doc.splitTextToSize(question.title, maxWidth);
+    doc.text(titleLines, margin, yPos);
+    yPos += titleLines.length * 8 + 10;
+
+    // Question text
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'bold');
+    doc.text('Otazka:', margin, yPos);
+    yPos += 8;
+    doc.setFont(undefined, 'normal');
+    const questionLines = doc.splitTextToSize(question.question_text, maxWidth);
+    doc.text(questionLines, margin, yPos);
+    yPos += questionLines.length * 6 + 10;
+
+    // Answer
+    if (question.answer_rich) {
+      doc.setFont(undefined, 'bold');
+      doc.text('Odpoved:', margin, yPos);
+      yPos += 8;
+      doc.setFont(undefined, 'normal');
+      const answerLines = doc.splitTextToSize(question.answer_rich, maxWidth);
+      answerLines.forEach(line => {
+        if (yPos > 270) {
+          doc.addPage();
+          yPos = 20;
+        }
+        doc.text(line, margin, yPos);
+        yPos += 6;
+      });
+    }
+
+    // User notes
+    if (userNote) {
+      yPos += 10;
+      if (yPos > 250) {
+        doc.addPage();
+        yPos = 20;
+      }
+      doc.setFont(undefined, 'bold');
+      doc.text('Moje poznamky:', margin, yPos);
+      yPos += 8;
+      doc.setFont(undefined, 'normal');
+      const noteLines = doc.splitTextToSize(userNote, maxWidth);
+      doc.text(noteLines, margin, yPos);
+    }
+
+    doc.save(`${question.title.substring(0, 30)}.pdf`);
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -207,14 +269,31 @@ export default function QuestionDetail() {
               <VisibilityBadge visibility={question.visibility} />
             </div>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => bookmarkMutation.mutate()}
-            className={bookmark ? 'text-amber-500' : 'text-slate-400'}
-          >
-            {bookmark ? <BookmarkCheck className="w-5 h-5" /> : <Bookmark className="w-5 h-5" />}
-          </Button>
+          <div className="flex items-center gap-2">
+            {user && question && (
+              <QuestionAIAssistant 
+                question={question} 
+                user={user}
+                onNoteSaved={() => queryClient.invalidateQueries(['questionProgress', user?.id, questionId])}
+              />
+            )}
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={exportToPDF}
+              title="Export do PDF"
+            >
+              <FileDown className="w-5 h-5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => bookmarkMutation.mutate()}
+              className={bookmark ? 'text-amber-500' : 'text-slate-400'}
+            >
+              {bookmark ? <BookmarkCheck className="w-5 h-5" /> : <Bookmark className="w-5 h-5" />}
+            </Button>
+          </div>
         </div>
       </div>
 

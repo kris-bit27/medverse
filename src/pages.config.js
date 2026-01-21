@@ -1,61 +1,61 @@
-import Landing from './pages/Landing';
-import Pricing from './pages/Pricing';
-import Demo from './pages/Demo';
-import Dashboard from './pages/Dashboard';
+import Admin from './pages/Admin';
+import AdminArticleEdit from './pages/AdminArticleEdit';
+import AdminArticles from './pages/AdminArticles';
+import AdminAudit from './pages/AdminAudit';
+import AdminQuestionEdit from './pages/AdminQuestionEdit';
+import AdminQuestions from './pages/AdminQuestions';
+import AdminTaxonomy from './pages/AdminTaxonomy';
+import AdminToolEdit from './pages/AdminToolEdit';
+import AdminTools from './pages/AdminTools';
+import AdminUsers from './pages/AdminUsers';
+import ArticleDetail from './pages/ArticleDetail';
+import Articles from './pages/Articles';
 import Atestace from './pages/Atestace';
+import Dashboard from './pages/Dashboard';
+import Demo from './pages/Demo';
+import Landing from './pages/Landing';
 import OkruhDetail from './pages/OkruhDetail';
+import Pricing from './pages/Pricing';
+import Profile from './pages/Profile';
 import QuestionDetail from './pages/QuestionDetail';
-import ReviewToday from './pages/ReviewToday';
 import ReviewQueue from './pages/ReviewQueue';
+import ReviewToday from './pages/ReviewToday';
+import Search from './pages/Search';
 import TestGenerator from './pages/TestGenerator';
 import TestSession from './pages/TestSession';
-import Articles from './pages/Articles';
-import ArticleDetail from './pages/ArticleDetail';
-import Tools from './pages/Tools';
 import ToolDetail from './pages/ToolDetail';
-import Search from './pages/Search';
-import Profile from './pages/Profile';
-import Admin from './pages/Admin';
-import AdminQuestions from './pages/AdminQuestions';
-import AdminQuestionEdit from './pages/AdminQuestionEdit';
-import AdminTaxonomy from './pages/AdminTaxonomy';
-import AdminUsers from './pages/AdminUsers';
-import AdminArticles from './pages/AdminArticles';
-import AdminTools from './pages/AdminTools';
-import AdminAudit from './pages/AdminAudit';
-import AdminArticleEdit from './pages/AdminArticleEdit';
-import AdminToolEdit from './pages/AdminToolEdit';
+import Tools from './pages/Tools';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Landing": Landing,
-    "Pricing": Pricing,
-    "Demo": Demo,
-    "Dashboard": Dashboard,
+    "Admin": Admin,
+    "AdminArticleEdit": AdminArticleEdit,
+    "AdminArticles": AdminArticles,
+    "AdminAudit": AdminAudit,
+    "AdminQuestionEdit": AdminQuestionEdit,
+    "AdminQuestions": AdminQuestions,
+    "AdminTaxonomy": AdminTaxonomy,
+    "AdminToolEdit": AdminToolEdit,
+    "AdminTools": AdminTools,
+    "AdminUsers": AdminUsers,
+    "ArticleDetail": ArticleDetail,
+    "Articles": Articles,
     "Atestace": Atestace,
+    "Dashboard": Dashboard,
+    "Demo": Demo,
+    "Landing": Landing,
     "OkruhDetail": OkruhDetail,
+    "Pricing": Pricing,
+    "Profile": Profile,
     "QuestionDetail": QuestionDetail,
-    "ReviewToday": ReviewToday,
     "ReviewQueue": ReviewQueue,
+    "ReviewToday": ReviewToday,
+    "Search": Search,
     "TestGenerator": TestGenerator,
     "TestSession": TestSession,
-    "Articles": Articles,
-    "ArticleDetail": ArticleDetail,
-    "Tools": Tools,
     "ToolDetail": ToolDetail,
-    "Search": Search,
-    "Profile": Profile,
-    "Admin": Admin,
-    "AdminQuestions": AdminQuestions,
-    "AdminQuestionEdit": AdminQuestionEdit,
-    "AdminTaxonomy": AdminTaxonomy,
-    "AdminUsers": AdminUsers,
-    "AdminArticles": AdminArticles,
-    "AdminTools": AdminTools,
-    "AdminAudit": AdminAudit,
-    "AdminArticleEdit": AdminArticleEdit,
-    "AdminToolEdit": AdminToolEdit,
+    "Tools": Tools,
 }
 
 export const pagesConfig = {

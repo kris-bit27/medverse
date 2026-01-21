@@ -18,13 +18,16 @@ import {
   Target,
   Save,
   Loader2,
-  CheckCircle2
+  CheckCircle2,
+  Bot
 } from 'lucide-react';
 import { format, differenceInDays } from 'date-fns';
 import { cs } from 'date-fns/locale';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ProgressRing from '@/components/ui/ProgressRing';
 import { calculateProgressStats } from '@/components/utils/srs';
+import EducationSettings from '@/components/profile/EducationSettings';
+import AICopilotChat from '@/components/ai/AICopilotChat';
 
 export default function Profile() {
   const queryClient = useQueryClient();
@@ -115,6 +118,11 @@ export default function Profile() {
         <TabsList className="mb-6">
           <TabsTrigger value="stats">Statistiky</TabsTrigger>
           <TabsTrigger value="settings">Nastavení</TabsTrigger>
+          <TabsTrigger value="education">Vzdělání</TabsTrigger>
+          <TabsTrigger value="copilot" className="flex items-center gap-1">
+            <Bot className="w-4 h-4" />
+            AI Copilot
+          </TabsTrigger>
         </TabsList>
 
         {/* Stats tab */}
@@ -259,6 +267,30 @@ export default function Profile() {
                 )}
                 {saved ? 'Uloženo!' : 'Uložit nastavení'}
               </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Education tab */}
+        <TabsContent value="education">
+          <EducationSettings user={user} />
+        </TabsContent>
+
+        {/* AI Copilot tab */}
+        <TabsContent value="copilot">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Bot className="w-5 h-5 text-teal-600" />
+                AI Copilot
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-slate-500 mb-4">
+                Váš osobní AI asistent pro studium. Zeptejte se na cokoliv o vašich studijních materiálech, 
+                požádejte o shrnutí článků, přeformulování otázek nebo vytvoření poznámek.
+              </p>
+              <AICopilotChat agentName="copilot" />
             </CardContent>
           </Card>
         </TabsContent>
