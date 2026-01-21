@@ -32,7 +32,8 @@ import {
   ChevronRight,
   Shield,
   ClipboardList,
-  MessageSquare
+  MessageSquare,
+  Package
 } from 'lucide-react';
 import FloatingCopilot from '@/components/ai/FloatingCopilot';
 
@@ -42,6 +43,7 @@ const navItems = [
   { name: 'Dashboard', page: 'Dashboard', icon: LayoutDashboard },
   { name: 'Atestace', page: 'Atestace', icon: GraduationCap },
   { name: 'Logbook', page: 'Logbook', icon: ClipboardList },
+  { name: 'Studijní balíčky', page: 'StudyPackages', icon: Package },
   { name: 'Články', page: 'Articles', icon: BookOpen },
   { name: 'Forum', page: 'Forum', icon: MessageSquare },
   { name: 'Vyhledávání', page: 'ScholarSearch', icon: Search },
@@ -166,7 +168,8 @@ export default function Layout({ children, currentPageName }) {
             {navItems.map((item) => {
               const isActive = currentPageName === item.page || 
                 (item.page === 'Atestace' && ['Okruhy', 'OkruhDetail', 'QuestionDetail', 'TestGenerator'].includes(currentPageName)) ||
-                (item.page === 'Forum' && ['Forum', 'ForumThread'].includes(currentPageName));
+                (item.page === 'Forum' && ['Forum', 'ForumThread'].includes(currentPageName)) ||
+                (item.page === 'StudyPackages' && ['StudyPackages', 'StudyPackageCreate', 'StudyPackageDetail'].includes(currentPageName));
               const Icon = item.icon;
               
               return (
