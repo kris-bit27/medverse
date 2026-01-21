@@ -41,6 +41,7 @@ const navItems = [
   { name: 'Atestace', page: 'Atestace', icon: GraduationCap },
   { name: 'Logbook', page: 'Logbook', icon: ClipboardList },
   { name: 'Články', page: 'Articles', icon: BookOpen },
+  { name: 'Vyhledávání', page: 'ScholarSearch', icon: Search },
   { name: 'Nástroje', page: 'Tools', icon: Stethoscope },
   { name: 'Opakování', page: 'ReviewToday', icon: RefreshCw },
 ];
