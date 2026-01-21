@@ -43,7 +43,11 @@ export default function StudyPackages() {
     queryKey: ['sharedStudyPackages', user?.id],
     queryFn: async () => {
       const all = await base44.entities.StudyPackage.list();
-      return all.filter(p => p.shared_with?.includes(user.id) && p.created_by !== user.email);
+      return all.filter(p => 
+        (p.shared_with?.includes(user.id) || 
+         p.collaborators?.some(c => c.user_id === user.id)) && 
+        p.created_by !== user.email
+      );
     },
     enabled: !!user
   });

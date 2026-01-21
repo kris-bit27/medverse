@@ -27,6 +27,7 @@ import {
   X
 } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import CollaborationDialog from '@/components/collaboration/CollaborationDialog';
 
 export default function StudyPackageDetail() {
   const navigate = useNavigate();
@@ -36,6 +37,7 @@ export default function StudyPackageDetail() {
 
   const [shareEmail, setShareEmail] = useState('');
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [collaborationOpen, setCollaborationOpen] = useState(false);
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
@@ -215,39 +217,15 @@ export default function StudyPackageDetail() {
                     Zkopírovat
                   </Button>
                 )}
+                <Button
+                  variant="outline"
+                  onClick={() => setCollaborationOpen(true)}
+                >
+                  <Users className="w-4 h-4 mr-2" />
+                  Spolupráce
+                </Button>
                 {isOwner && (
                   <>
-                    <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
-                      <DialogTrigger asChild>
-                        <Button variant="outline">
-                          <Share2 className="w-4 h-4 mr-2" />
-                          Sdílet
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Sdílet balíček</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                          <div className="space-y-2">
-                            <Label>Email uživatele</Label>
-                            <Input
-                              type="email"
-                              value={shareEmail}
-                              onChange={(e) => setShareEmail(e.target.value)}
-                              placeholder="uzivatel@email.cz"
-                            />
-                          </div>
-                          <Button
-                            onClick={() => shareMutation.mutate(shareEmail)}
-                            disabled={shareMutation.isPending || !shareEmail}
-                            className="w-full"
-                          >
-                            {shareMutation.isPending ? 'Sdílím...' : 'Sdílet'}
-                          </Button>
-                        </div>
-                      </DialogContent>
-                    </Dialog>
                     <Button variant="outline">
                       <Edit className="w-4 h-4 mr-2" />
                       Upravit
@@ -374,6 +352,14 @@ export default function StudyPackageDetail() {
           </Card>
         )}
       </div>
+
+      <CollaborationDialog
+        open={collaborationOpen}
+        onOpenChange={setCollaborationOpen}
+        entity={pkg}
+        entityType="StudyPackage"
+        entityId={packageId}
+      />
     </div>
   );
 }

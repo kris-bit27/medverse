@@ -33,11 +33,25 @@ export default function StudyPlanner() {
     queryFn: () => base44.auth.me()
   });
 
-  const { data: plans = [], isLoading: loadingPlans } = useQuery({
-    queryKey: ['studyPlans', user?.id],
+  const { data: myPlans = [], isLoading: loadingMyPlans } = useQuery({
+    queryKey: ['myStudyPlans', user?.id],
     queryFn: () => base44.entities.StudyPlan.filter({ user_id: user.id }),
     enabled: !!user
   });
+
+  const { data: sharedPlans = [], isLoading: loadingSharedPlans } = useQuery({
+    queryKey: ['sharedStudyPlans', user?.id],
+    queryFn: async () => {
+      const all = await base44.entities.StudyPlan.list();
+      return all.filter(p => 
+        p.collaborators?.some(c => c.user_id === user.id) && 
+        p.user_id !== user.id
+      );
+    },
+    enabled: !!user
+  });
+
+  const plans = [...myPlans, ...sharedPlans];
 
   const activePlan = plans.find(p => p.is_active);
 
@@ -86,7 +100,7 @@ export default function StudyPlanner() {
     }
   });
 
-  if (loadingPlans || loadingTasks) {
+  if (loadingMyPlans || loadingSharedPlans || loadingTasks) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <LoadingSpinner size="lg" />
