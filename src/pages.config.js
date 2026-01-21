@@ -13,6 +13,8 @@ import Articles from './pages/Articles';
 import Atestace from './pages/Atestace';
 import Dashboard from './pages/Dashboard';
 import Demo from './pages/Demo';
+import Forum from './pages/Forum';
+import ForumThread from './pages/ForumThread';
 import Landing from './pages/Landing';
 import Logbook from './pages/Logbook';
 import OkruhDetail from './pages/OkruhDetail';
@@ -27,8 +29,9 @@ import TestGenerator from './pages/TestGenerator';
 import TestSession from './pages/TestSession';
 import ToolDetail from './pages/ToolDetail';
 import Tools from './pages/Tools';
-import Forum from './pages/Forum';
-import ForumThread from './pages/ForumThread';
+import StudyPackages from './pages/StudyPackages';
+import StudyPackageCreate from './pages/StudyPackageCreate';
+import StudyPackageDetail from './pages/StudyPackageDetail';
 import __Layout from './Layout.jsx';
 
 
@@ -48,6 +51,8 @@ export const PAGES = {
     "Atestace": Atestace,
     "Dashboard": Dashboard,
     "Demo": Demo,
+    "Forum": Forum,
+    "ForumThread": ForumThread,
     "Landing": Landing,
     "Logbook": Logbook,
     "OkruhDetail": OkruhDetail,
@@ -62,8 +67,9 @@ export const PAGES = {
     "TestSession": TestSession,
     "ToolDetail": ToolDetail,
     "Tools": Tools,
-    "Forum": Forum,
-    "ForumThread": ForumThread,
+    "StudyPackages": StudyPackages,
+    "StudyPackageCreate": StudyPackageCreate,
+    "StudyPackageDetail": StudyPackageDetail,
 }
 
 export const pagesConfig = {
