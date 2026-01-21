@@ -141,8 +141,8 @@ export default function Dashboard() {
           )}
         </p>
         
-        {/* Selected disciplines */}
-        {user?.clinical_disciplines?.length > 0 && (
+        {/* Selected disciplines or selection prompt */}
+        {user?.clinical_disciplines?.length > 0 ? (
           <div className="mt-4 flex flex-wrap gap-2">
             {disciplines
               .filter(d => user.clinical_disciplines.includes(d.id))
@@ -155,7 +155,31 @@ export default function Dashboard() {
                 </span>
               ))
             }
+            <Button 
+              variant="ghost" 
+              size="sm"
+              asChild
+              className="text-xs"
+            >
+              <Link to={createPageUrl('Profile')}>
+                Upravit obory
+              </Link>
+            </Button>
           </div>
+        ) : (
+          <Card className="mt-4 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
+            <CardContent className="pt-6">
+              <p className="text-sm text-amber-800 dark:text-amber-200 mb-3">
+                Vyberte si klinické obory, které vás zajímají, pro personalizovaný obsah.
+              </p>
+              <Button asChild size="sm">
+                <Link to={createPageUrl('Profile')}>
+                  Vybrat obory
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
         )}
       </div>
 
