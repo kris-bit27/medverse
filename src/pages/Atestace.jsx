@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
@@ -6,12 +6,14 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   ChevronRight, 
   GraduationCap, 
   FileText,
   Target,
-  Play
+  Play,
+  Filter
 } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { motion } from 'framer-motion';
@@ -23,15 +25,28 @@ const okruhIcons = {
 };
 
 export default function Atestace() {
+  const [selectedDiscipline, setSelectedDiscipline] = useState('all');
+
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => base44.auth.me()
   });
 
-  const { data: okruhy = [], isLoading } = useQuery({
+  const { data: disciplines = [] } = useQuery({
+    queryKey: ['clinicalDisciplines'],
+    queryFn: () => base44.entities.ClinicalDiscipline.list()
+  });
+
+  const { data: allOkruhy = [], isLoading } = useQuery({
     queryKey: ['okruhy'],
     queryFn: () => base44.entities.Okruh.list('order')
   });
+
+  // Filter okruhy by selected discipline
+  const okruhy = useMemo(() => {
+    if (selectedDiscipline === 'all') return allOkruhy;
+    return allOkruhy.filter(o => o.clinical_discipline_id === selectedDiscipline);
+  }, [allOkruhy, selectedDiscipline]);
 
   const { data: topics = [] } = useQuery({
     queryKey: ['topics'],
@@ -81,21 +96,43 @@ export default function Atestace() {
   return (
     <div className="p-6 lg:p-8 max-w-6xl mx-auto">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white mb-2">
-            Příprava na atestaci
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400">
-            Vyberte okruh a začněte se učit
-          </p>
+      <div className="flex flex-col gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white mb-2">
+              Příprava na atestaci
+            </h1>
+            <p className="text-slate-600 dark:text-slate-400">
+              Vyberte okruh a začněte se učit
+            </p>
+          </div>
+          <Button asChild className="bg-teal-600 hover:bg-teal-700">
+            <Link to={createPageUrl('TestGenerator')}>
+              <Play className="w-4 h-4 mr-2" />
+              Nový test
+            </Link>
+          </Button>
         </div>
-        <Button asChild className="bg-teal-600 hover:bg-teal-700">
-          <Link to={createPageUrl('TestGenerator')}>
-            <Play className="w-4 h-4 mr-2" />
-            Nový test
-          </Link>
-        </Button>
+
+        {/* Discipline filter */}
+        {disciplines.length > 0 && (
+          <div className="flex items-center gap-3">
+            <Filter className="w-4 h-4 text-slate-500" />
+            <Select value={selectedDiscipline} onValueChange={setSelectedDiscipline}>
+              <SelectTrigger className="w-64">
+                <SelectValue placeholder="Všechny obory" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Všechny obory</SelectItem>
+                {disciplines.map(d => (
+                  <SelectItem key={d.id} value={d.id}>
+                    {d.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
       </div>
 
       {/* Stats summary */}
