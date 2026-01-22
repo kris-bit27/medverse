@@ -38,6 +38,7 @@ import {
   Brain
 } from 'lucide-react';
 import FloatingCopilot from '@/components/ai/FloatingCopilot';
+import { canAccessAdmin, getRoleDisplayName, getRoleBadgeColor } from '@/components/utils/permissions';
 
 const publicPages = ['Landing', 'Pricing', 'Demo'];
 
@@ -110,7 +111,7 @@ export default function Layout({ children, currentPageName }) {
     return <>{children}</>;
   }
 
-  const canAccessAdmin = user?.role === 'admin' || user?.role === 'editor';
+  const hasAdminAccess = canAccessAdmin(user);
 
   return (
     <div className={cn("min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors")}>
@@ -165,12 +166,19 @@ export default function Layout({ children, currentPageName }) {
                     EDU
                   </span>
                 </div>
-                {user?.plan === 'premium' && (
-                  <div className="flex items-center gap-1 text-amber-600">
-                    <Crown className="w-3 h-3" />
-                    <span className="text-xs font-medium">Premium</span>
-                  </div>
-                )}
+                <div className="flex items-center gap-2 mt-1">
+                  {user?.plan === 'premium' && (
+                    <div className="flex items-center gap-1 text-amber-600">
+                      <Crown className="w-3 h-3" />
+                      <span className="text-xs font-medium">Premium</span>
+                    </div>
+                  )}
+                  {user?.role && (
+                    <span className={`text-xs font-medium px-2 py-0.5 rounded ${getRoleBadgeColor(user.role)}`}>
+                      {getRoleDisplayName(user.role)}
+                    </span>
+                  )}
+                </div>
               </div>
             </Link>
             <Button
@@ -213,7 +221,7 @@ export default function Layout({ children, currentPageName }) {
               );
             })}
 
-            {canAccessAdmin && (
+            {hasAdminAccess && (
               <>
                 <div className="pt-4 pb-2">
                   <p className="px-4 text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
@@ -246,9 +254,16 @@ export default function Layout({ children, currentPageName }) {
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
-                  {user?.full_name || 'Uživatel'}
-                </p>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
+                    {user?.full_name || 'Uživatel'}
+                  </p>
+                  {user?.role && (
+                    <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${getRoleBadgeColor(user.role)}`}>
+                      {getRoleDisplayName(user.role)}
+                    </span>
+                  )}
+                </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
                   {user?.email}
                 </p>
