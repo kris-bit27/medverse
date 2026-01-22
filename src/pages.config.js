@@ -1,3 +1,4 @@
+import AICopilot from './pages/AICopilot';
 import Admin from './pages/Admin';
 import AdminArticleEdit from './pages/AdminArticleEdit';
 import AdminArticles from './pages/AdminArticles';
@@ -35,11 +36,11 @@ import TestGenerator from './pages/TestGenerator';
 import TestSession from './pages/TestSession';
 import ToolDetail from './pages/ToolDetail';
 import Tools from './pages/Tools';
-import AICopilot from './pages/AICopilot';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "AICopilot": AICopilot,
     "Admin": Admin,
     "AdminArticleEdit": AdminArticleEdit,
     "AdminArticles": AdminArticles,
@@ -77,7 +78,6 @@ export const PAGES = {
     "TestSession": TestSession,
     "ToolDetail": ToolDetail,
     "Tools": Tools,
-    "AICopilot": AICopilot,
 }
 
 export const pagesConfig = {

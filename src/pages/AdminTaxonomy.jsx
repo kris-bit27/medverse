@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Dialog,
   DialogContent,
@@ -29,18 +30,30 @@ import {
   Trash2,
   FolderTree,
   FileText,
-  Loader2
+  Loader2,
+  Stethoscope,
+  Upload
 } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import QuestionImporter from '@/components/admin/QuestionImporter';
 
 export default function AdminTaxonomy() {
+  const [disciplineDialogOpen, setDisciplineDialogOpen] = useState(false);
   const [okruhDialogOpen, setOkruhDialogOpen] = useState(false);
   const [topicDialogOpen, setTopicDialogOpen] = useState(false);
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const [editingDiscipline, setEditingDiscipline] = useState(null);
   const [editingOkruh, setEditingOkruh] = useState(null);
   const [editingTopic, setEditingTopic] = useState(null);
-  const [okruhForm, setOkruhForm] = useState({ title: '', order: 0, description: '' });
+  const [disciplineForm, setDisciplineForm] = useState({ name: '', description: '', icon: '' });
+  const [okruhForm, setOkruhForm] = useState({ title: '', order: 0, description: '', clinical_discipline_id: '' });
   const [topicForm, setTopicForm] = useState({ title: '', okruh_id: '', order: 0 });
   const queryClient = useQueryClient();
+
+  const { data: disciplines = [] } = useQuery({
+    queryKey: ['clinicalDisciplines'],
+    queryFn: () => base44.entities.ClinicalDiscipline.list()
+  });
 
   const { data: okruhy = [], isLoading } = useQuery({
     queryKey: ['okruhy'],
@@ -58,6 +71,26 @@ export default function AdminTaxonomy() {
   });
 
   // Mutations
+  const saveDisciplineMutation = useMutation({
+    mutationFn: async (data) => {
+      if (editingDiscipline) {
+        return base44.entities.ClinicalDiscipline.update(editingDiscipline.id, data);
+      }
+      return base44.entities.ClinicalDiscipline.create(data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['clinicalDisciplines']);
+      setDisciplineDialogOpen(false);
+      setEditingDiscipline(null);
+      setDisciplineForm({ name: '', description: '', icon: '' });
+    }
+  });
+
+  const deleteDisciplineMutation = useMutation({
+    mutationFn: (id) => base44.entities.ClinicalDiscipline.delete(id),
+    onSuccess: () => queryClient.invalidateQueries(['clinicalDisciplines'])
+  });
+
   const saveOkruhMutation = useMutation({
     mutationFn: async (data) => {
       if (editingOkruh) {
@@ -69,7 +102,7 @@ export default function AdminTaxonomy() {
       queryClient.invalidateQueries(['okruhy']);
       setOkruhDialogOpen(false);
       setEditingOkruh(null);
-      setOkruhForm({ title: '', order: 0, description: '' });
+      setOkruhForm({ title: '', order: 0, description: '', clinical_discipline_id: '' });
     }
   });
 
@@ -98,9 +131,15 @@ export default function AdminTaxonomy() {
     onSuccess: () => queryClient.invalidateQueries(['topics'])
   });
 
+  const openEditDiscipline = (discipline) => {
+    setEditingDiscipline(discipline);
+    setDisciplineForm({ name: discipline.name, description: discipline.description || '', icon: discipline.icon || '' });
+    setDisciplineDialogOpen(true);
+  };
+
   const openEditOkruh = (okruh) => {
     setEditingOkruh(okruh);
-    setOkruhForm({ title: okruh.title, order: okruh.order || 0, description: okruh.description || '' });
+    setOkruhForm({ title: okruh.title, order: okruh.order || 0, description: okruh.description || '', clinical_discipline_id: okruh.clinical_discipline_id || '' });
     setOkruhDialogOpen(true);
   };
 
@@ -130,9 +169,117 @@ export default function AdminTaxonomy() {
         </Button>
       </div>
 
-      <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-8">
-        Taxonomie
-      </h1>
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+          Taxonomie
+        </h1>
+        <Button onClick={() => setImportDialogOpen(true)} variant="outline">
+          <Upload className="w-4 h-4 mr-2" />
+          Importovat otázky
+        </Button>
+      </div>
+
+      {/* Clinical Disciplines */}
+      <Card className="mb-6">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="flex items-center gap-2">
+            <Stethoscope className="w-5 h-5" />
+            Klinické obory ({disciplines.length})
+          </CardTitle>
+          <Dialog open={disciplineDialogOpen} onOpenChange={setDisciplineDialogOpen}>
+            <DialogTrigger asChild>
+              <Button size="sm" onClick={() => {
+                setEditingDiscipline(null);
+                setDisciplineForm({ name: '', description: '', icon: '' });
+              }}>
+                <Plus className="w-4 h-4 mr-1" />
+                Přidat
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>{editingDiscipline ? 'Upravit obor' : 'Nový obor'}</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 pt-4">
+                <div className="space-y-2">
+                  <Label>Název</Label>
+                  <Input
+                    value={disciplineForm.name}
+                    onChange={(e) => setDisciplineForm(f => ({ ...f, name: e.target.value }))}
+                    placeholder="např. Plastická chirurgie"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Popis</Label>
+                  <Textarea
+                    value={disciplineForm.description}
+                    onChange={(e) => setDisciplineForm(f => ({ ...f, description: e.target.value }))}
+                    placeholder="Stručný popis oboru"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Ikona (emoji)</Label>
+                  <Input
+                    value={disciplineForm.icon}
+                    onChange={(e) => setDisciplineForm(f => ({ ...f, icon: e.target.value }))}
+                    placeholder="🔬"
+                    maxLength={2}
+                  />
+                </div>
+                <Button 
+                  onClick={() => saveDisciplineMutation.mutate(disciplineForm)}
+                  disabled={saveDisciplineMutation.isPending}
+                  className="w-full"
+                >
+                  {saveDisciplineMutation.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                  Uložit
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </CardHeader>
+        <CardContent>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {disciplines.map((discipline) => {
+              const disciplineOkruhy = okruhy.filter(o => o.clinical_discipline_id === discipline.id);
+              return (
+                <div 
+                  key={discipline.id}
+                  className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg"
+                >
+                  <div className="flex items-center gap-2">
+                    {discipline.icon && <span className="text-xl">{discipline.icon}</span>}
+                    <div>
+                      <p className="font-medium text-slate-900 dark:text-white text-sm">{discipline.name}</p>
+                      <p className="text-xs text-slate-500">{disciplineOkruhy.length} okruhů</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEditDiscipline(discipline)}>
+                      <Pencil className="w-3 h-3" />
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-7 w-7 text-red-500 hover:text-red-600"
+                      onClick={() => {
+                        if (confirm('Opravdu smazat tento obor?')) {
+                          deleteDisciplineMutation.mutate(discipline.id);
+                        }
+                      }}
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
+            {disciplines.length === 0 && (
+              <p className="col-span-full text-center py-8 text-slate-500">Žádné obory</p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Okruhy */}
@@ -165,6 +312,22 @@ export default function AdminTaxonomy() {
                     />
                   </div>
                   <div className="space-y-2">
+                    <Label>Klinický obor</Label>
+                    <Select 
+                      value={okruhForm.clinical_discipline_id} 
+                      onValueChange={(v) => setOkruhForm(f => ({ ...f, clinical_discipline_id: v }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Vyberte obor" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {disciplines.map(d => (
+                          <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
                     <Label>Pořadí</Label>
                     <Input
                       type="number"
@@ -174,7 +337,7 @@ export default function AdminTaxonomy() {
                   </div>
                   <div className="space-y-2">
                     <Label>Popis</Label>
-                    <Input
+                    <Textarea
                       value={okruhForm.description}
                       onChange={(e) => setOkruhForm(f => ({ ...f, description: e.target.value }))}
                     />
@@ -346,6 +509,24 @@ export default function AdminTaxonomy() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Import Dialog */}
+      <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Importovat otázky</DialogTitle>
+          </DialogHeader>
+          <QuestionImporter 
+            okruhy={okruhy} 
+            topics={topics}
+            disciplines={disciplines}
+            onComplete={() => {
+              setImportDialogOpen(false);
+              queryClient.invalidateQueries(['questions']);
+            }}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
