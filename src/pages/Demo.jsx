@@ -119,7 +119,7 @@ export default function Demo() {
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-teal-500/20">
                 <Stethoscope className="w-6 h-6 text-white" />
               </div>
-              <span className="font-bold text-xl text-slate-900 dark:text-white">MedNexus</span>
+              <span className="font-bold text-xl text-slate-900 dark:text-white">MedVerse</span>
             </Link>
 
             <div className="flex items-center gap-3">
@@ -143,7 +143,7 @@ export default function Demo() {
             Demo obsah
           </div>
           <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
-            Vyzkoušejte MedNexus
+            Vyzkoušejte MedVerse
           </h1>
           <p className="text-slate-600 dark:text-slate-400">
             Ukázka obsahu a funkcí platformy
