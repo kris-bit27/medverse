@@ -18,8 +18,7 @@ import {
   Target,
   Save,
   Loader2,
-  CheckCircle2,
-  Bot
+  CheckCircle2
 } from 'lucide-react';
 import { format, differenceInDays } from 'date-fns';
 import { cs } from 'date-fns/locale';
@@ -27,7 +26,6 @@ import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ProgressRing from '@/components/ui/ProgressRing';
 import { calculateProgressStats } from '@/components/utils/srs';
 import EducationSettings from '@/components/profile/EducationSettings';
-import AICopilotChat from '@/components/ai/AICopilotChat';
 
 export default function Profile() {
   const queryClient = useQueryClient();
@@ -119,10 +117,6 @@ export default function Profile() {
           <TabsTrigger value="stats">Statistiky</TabsTrigger>
           <TabsTrigger value="settings">Nastavení</TabsTrigger>
           <TabsTrigger value="education">Vzdělání</TabsTrigger>
-          <TabsTrigger value="copilot" className="flex items-center gap-1">
-            <Bot className="w-4 h-4" />
-            AI Copilot
-          </TabsTrigger>
         </TabsList>
 
         {/* Stats tab */}
@@ -218,81 +212,140 @@ export default function Profile() {
 
         {/* Settings tab */}
         <TabsContent value="settings">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Settings className="w-5 h-5" />
-                Nastavení učení
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Daily goal */}
-              <div className="space-y-4">
-                <div className="flex justify-between">
-                  <Label>Denní cíl opakování</Label>
-                  <span className="font-semibold text-teal-600">{settings.daily_goal} otázek</span>
+          <div className="space-y-6">
+            {/* Learning Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Target className="w-5 h-5" />
+                  Studijní cíle
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Daily goal */}
+                <div className="space-y-4">
+                  <div className="flex justify-between">
+                    <Label>Denní cíl opakování</Label>
+                    <span className="font-semibold text-teal-600">{settings.daily_goal} otázek</span>
+                  </div>
+                  <Slider
+                    value={[settings.daily_goal]}
+                    onValueChange={([value]) => setSettings(s => ({ ...s, daily_goal: value }))}
+                    min={5}
+                    max={50}
+                    step={5}
+                  />
+                  <p className="text-xs text-slate-500">
+                    Doporučujeme 15-20 otázek denně pro optimální zlepšování
+                  </p>
                 </div>
-                <Slider
-                  value={[settings.daily_goal]}
-                  onValueChange={([value]) => setSettings(s => ({ ...s, daily_goal: value }))}
-                  min={5}
-                  max={50}
-                  step={5}
-                />
-              </div>
 
-              {/* Exam date */}
-              <div className="space-y-2">
-                <Label htmlFor="exam-date">Datum atestace</Label>
-                <Input
-                  id="exam-date"
-                  type="date"
-                  value={settings.exam_date || ''}
-                  onChange={(e) => setSettings(s => ({ ...s, exam_date: e.target.value }))}
-                />
-              </div>
+                {/* Exam date */}
+                <div className="space-y-2">
+                  <Label htmlFor="exam-date">Datum atestace</Label>
+                  <Input
+                    id="exam-date"
+                    type="date"
+                    value={settings.exam_date || ''}
+                    onChange={(e) => setSettings(s => ({ ...s, exam_date: e.target.value }))}
+                  />
+                  {daysUntilExam !== null && daysUntilExam > 0 && (
+                    <p className="text-xs text-slate-500">
+                      Zbývá <span className="font-semibold text-teal-600">{daysUntilExam} dní</span>
+                    </p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
 
-              {/* Save button */}
-              <Button
-                onClick={handleSaveSettings}
-                disabled={saving}
-                className="w-full bg-teal-600 hover:bg-teal-700"
-              >
-                {saving ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                ) : saved ? (
-                  <CheckCircle2 className="w-4 h-4 mr-2" />
-                ) : (
-                  <Save className="w-4 h-4 mr-2" />
-                )}
-                {saved ? 'Uloženo!' : 'Uložit nastavení'}
-              </Button>
-            </CardContent>
-          </Card>
+            {/* Notification Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Settings className="w-5 h-5" />
+                  Notifikace
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="email-notifications">E-mailové notifikace</Label>
+                    <p className="text-xs text-slate-500">Připomínky denního opakování</p>
+                  </div>
+                  <Switch
+                    id="email-notifications"
+                    checked={settings.email_notifications ?? true}
+                    onCheckedChange={(checked) => setSettings(s => ({ ...s, email_notifications: checked }))}
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="study-reminders">Studijní připomínky</Label>
+                    <p className="text-xs text-slate-500">Denní upozornění na nevyřízené otázky</p>
+                  </div>
+                  <Switch
+                    id="study-reminders"
+                    checked={settings.study_reminders ?? true}
+                    onCheckedChange={(checked) => setSettings(s => ({ ...s, study_reminders: checked }))}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Appearance */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Settings className="w-5 h-5" />
+                  Vzhled
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Barevné téma</Label>
+                  <div className="grid grid-cols-3 gap-3">
+                    {['light', 'dark', 'auto'].map((theme) => (
+                      <button
+                        key={theme}
+                        onClick={() => setSettings(s => ({ ...s, theme }))}
+                        className={`p-3 rounded-lg border-2 transition-all ${
+                          settings.theme === theme || (!settings.theme && theme === 'light')
+                            ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20'
+                            : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                        }`}
+                      >
+                        <div className="text-sm font-medium capitalize text-slate-900 dark:text-white">
+                          {theme === 'light' ? '☀️ Světlý' : theme === 'dark' ? '🌙 Tmavý' : '🔄 Auto'}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Save button */}
+            <Button
+              onClick={handleSaveSettings}
+              disabled={saving}
+              className="w-full bg-teal-600 hover:bg-teal-700"
+              size="lg"
+            >
+              {saving ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : saved ? (
+                <CheckCircle2 className="w-4 h-4 mr-2" />
+              ) : (
+                <Save className="w-4 h-4 mr-2" />
+              )}
+              {saved ? 'Uloženo!' : 'Uložit nastavení'}
+            </Button>
+          </div>
         </TabsContent>
 
         {/* Education tab */}
         <TabsContent value="education">
           <EducationSettings user={user} />
-        </TabsContent>
-
-        {/* AI Copilot tab */}
-        <TabsContent value="copilot">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Bot className="w-5 h-5 text-teal-600" />
-                AI Copilot
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-slate-500 mb-4">
-                Váš osobní AI asistent pro studium. Zeptejte se na cokoliv o vašich studijních materiálech, 
-                požádejte o shrnutí článků, přeformulování otázek nebo vytvoření poznámek.
-              </p>
-              <AICopilotChat agentName="copilot" />
-            </CardContent>
-          </Card>
         </TabsContent>
       </Tabs>
     </div>

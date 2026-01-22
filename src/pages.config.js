@@ -35,6 +35,7 @@ import TestGenerator from './pages/TestGenerator';
 import TestSession from './pages/TestSession';
 import ToolDetail from './pages/ToolDetail';
 import Tools from './pages/Tools';
+import AICopilot from './pages/AICopilot';
 import __Layout from './Layout.jsx';
 
 
@@ -76,6 +77,7 @@ export const PAGES = {
     "TestSession": TestSession,
     "ToolDetail": ToolDetail,
     "Tools": Tools,
+    "AICopilot": AICopilot,
 }
 
 export const pagesConfig = {

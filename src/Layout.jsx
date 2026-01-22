@@ -34,7 +34,8 @@ import {
   ClipboardList,
   MessageSquare,
   Package,
-  Calendar as CalendarIcon
+  Calendar as CalendarIcon,
+  Brain
 } from 'lucide-react';
 import FloatingCopilot from '@/components/ai/FloatingCopilot';
 
@@ -47,6 +48,7 @@ const navItems = [
   { name: 'Studijní balíčky', page: 'StudyPackages', icon: Package },
   { name: 'Články', page: 'Articles', icon: BookOpen },
   { name: 'Nástroje', page: 'Tools', icon: Stethoscope },
+  { name: 'AI Copilot', page: 'AICopilot', icon: Brain },
   { name: 'Plánovač', page: 'StudyPlanner', icon: CalendarIcon },
   { name: 'Logbook', page: 'Logbook', icon: ClipboardList },
   { name: 'Forum', page: 'Forum', icon: MessageSquare },
@@ -182,7 +184,8 @@ export default function Layout({ children, currentPageName }) {
                 (item.page === 'Atestace' && ['Okruhy', 'OkruhDetail', 'QuestionDetail', 'TestGenerator'].includes(currentPageName)) ||
                 (item.page === 'Forum' && ['Forum', 'ForumThread'].includes(currentPageName)) ||
                 (item.page === 'StudyPackages' && ['StudyPackages', 'StudyPackageCreate', 'StudyPackageDetail'].includes(currentPageName)) ||
-                (item.page === 'StudyPlanner' && ['StudyPlanner', 'StudyPlanCreate', 'StudyPlanDetail'].includes(currentPageName));
+                (item.page === 'StudyPlanner' && ['StudyPlanner', 'StudyPlanCreate', 'StudyPlanDetail'].includes(currentPageName)) ||
+                (item.page === 'AICopilot' && currentPageName === 'AICopilot');
               const Icon = item.icon;
               
               return (
