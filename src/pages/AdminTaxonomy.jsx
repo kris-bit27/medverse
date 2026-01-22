@@ -33,7 +33,11 @@ import {
   Loader2,
   Stethoscope,
   Upload,
-  BookOpen
+  BookOpen,
+  CheckCircle,
+  Eye,
+  EyeOff,
+  Search
 } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import QuestionImporter from '@/components/admin/QuestionImporter';
@@ -51,6 +55,7 @@ export default function AdminTaxonomy() {
   const [disciplineForm, setDisciplineForm] = useState({ name: '', description: '', icon: '' });
   const [okruhForm, setOkruhForm] = useState({ title: '', order: 0, description: '', clinical_discipline_id: '' });
   const [topicForm, setTopicForm] = useState({ title: '', okruh_id: '', order: 0 });
+  const [searchQuery, setSearchQuery] = useState('');
   const queryClient = useQueryClient();
 
   const { data: disciplines = [] } = useQuery({
@@ -134,6 +139,11 @@ export default function AdminTaxonomy() {
     onSuccess: () => queryClient.invalidateQueries(['topics'])
   });
 
+  const updateTopicStatusMutation = useMutation({
+    mutationFn: async ({ id, data }) => base44.entities.Topic.update(id, data),
+    onSuccess: () => queryClient.invalidateQueries(['topics'])
+  });
+
   const openEditDiscipline = (discipline) => {
     setEditingDiscipline(discipline);
     setDisciplineForm({ name: discipline.name, description: discipline.description || '', icon: discipline.icon || '' });
@@ -151,6 +161,29 @@ export default function AdminTaxonomy() {
     setTopicForm({ title: topic.title, okruh_id: topic.okruh_id, order: topic.order || 0 });
     setTopicDialogOpen(true);
   };
+
+  const handleToggleReviewed = async (topic) => {
+    const user = await base44.auth.me();
+    await updateTopicStatusMutation.mutateAsync({
+      id: topic.id,
+      data: {
+        is_reviewed: !topic.is_reviewed,
+        reviewed_by: !topic.is_reviewed ? user.id : null,
+        reviewed_at: !topic.is_reviewed ? new Date().toISOString() : null
+      }
+    });
+  };
+
+  const handleTogglePublished = async (topic) => {
+    await updateTopicStatusMutation.mutateAsync({
+      id: topic.id,
+      data: { is_published: !topic.is_published }
+    });
+  };
+
+  const filteredTopics = topics.filter(t => 
+    !searchQuery || t.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   if (isLoading) {
     return (
@@ -402,7 +435,7 @@ export default function AdminTaxonomy() {
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <FileText className="w-5 h-5" />
-              Témata ({topics.length})
+              Témata ({filteredTopics.length}/{topics.length})
             </CardTitle>
             <Dialog open={topicDialogOpen} onOpenChange={setTopicDialogOpen}>
               <DialogTrigger asChild>
@@ -462,10 +495,20 @@ export default function AdminTaxonomy() {
               </DialogContent>
             </Dialog>
           </CardHeader>
-          <CardContent className="space-y-2 max-h-[500px] overflow-y-auto">
-            {okruhy.map((okruh) => {
-              const okruhTopics = topics.filter(t => t.okruh_id === okruh.id);
-              if (okruhTopics.length === 0) return null;
+          <CardContent className="space-y-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Input
+                placeholder="Hledat témata..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <div className="space-y-2 max-h-[500px] overflow-y-auto">
+              {okruhy.map((okruh) => {
+                const okruhTopics = filteredTopics.filter(t => t.okruh_id === okruh.id);
+                if (okruhTopics.length === 0) return null;
               
               return (
                 <div key={okruh.id} className="mb-4">
@@ -478,11 +521,45 @@ export default function AdminTaxonomy() {
                           key={topic.id}
                           className="flex items-center justify-between p-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg"
                         >
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 flex-1">
                             <span className="text-sm text-slate-900 dark:text-white">{topic.title}</span>
                             <Badge variant="secondary" className="text-xs">{questionCount}</Badge>
+                            {topic.is_reviewed && (
+                              <Badge className="text-xs bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                <CheckCircle className="w-3 h-3 mr-1" />
+                                Zkontrolováno
+                              </Badge>
+                            )}
+                            {topic.is_published && (
+                              <Badge className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                                <Eye className="w-3 h-3 mr-1" />
+                                Publikováno
+                              </Badge>
+                            )}
                           </div>
                           <div className="flex items-center gap-1">
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-7 w-7"
+                              onClick={() => handleToggleReviewed(topic)}
+                              title={topic.is_reviewed ? "Zrušit kontrolu" : "Označit jako zkontrolováno"}
+                            >
+                              <CheckCircle className={`w-3 h-3 ${topic.is_reviewed ? 'text-green-600' : 'text-slate-400'}`} />
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-7 w-7"
+                              onClick={() => handleTogglePublished(topic)}
+                              title={topic.is_published ? "Skrýt" : "Publikovat"}
+                            >
+                              {topic.is_published ? (
+                                <Eye className="w-3 h-3 text-blue-600" />
+                              ) : (
+                                <EyeOff className="w-3 h-3 text-slate-400" />
+                              )}
+                            </Button>
                             <Button 
                               variant="ghost" 
                               size="icon" 
@@ -518,9 +595,13 @@ export default function AdminTaxonomy() {
                 </div>
               );
             })}
-            {topics.length === 0 && (
-              <p className="text-center py-8 text-slate-500">Žádná témata</p>
-            )}
+              {filteredTopics.length === 0 && topics.length > 0 && (
+                <p className="text-center py-8 text-slate-500">Žádná témata neodpovídají hledání</p>
+              )}
+              {topics.length === 0 && (
+                <p className="text-center py-8 text-slate-500">Žádná témata</p>
+              )}
+            </div>
           </CardContent>
         </Card>
       </div>
