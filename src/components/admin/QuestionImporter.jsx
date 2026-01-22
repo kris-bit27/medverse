@@ -405,7 +405,7 @@ Otázky musí být relevantní pro české lékařské atestace a odpovídat bě
 
           <Button
             onClick={handleImport}
-            disabled={isImporting || !selectedOkruh || !selectedTopic}
+            disabled={isImporting || !selectedOkruh || !selectedTopic || !selectedDiscipline}
             className="w-full"
           >
             {isImporting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
