@@ -98,12 +98,12 @@ export default function Landing() {
             </div>
 
             <div className="flex items-center gap-3">
-              <Button variant="ghost" onClick={() => base44.auth.redirectToLogin()}>
+              <Button variant="ghost" onClick={() => base44.auth.redirectToLogin(createPageUrl('Dashboard'))}>
                 Přihlásit
               </Button>
               <Button 
                 className="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 shadow-lg shadow-teal-500/25"
-                onClick={() => base44.auth.redirectToLogin()}
+                onClick={() => base44.auth.redirectToLogin(createPageUrl('Dashboard'))}
               >
                 Začít zdarma
               </Button>
@@ -142,7 +142,7 @@ export default function Landing() {
               <Button 
                 size="lg"
                 className="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 shadow-xl shadow-teal-500/25 h-14 px-8 text-lg"
-                onClick={() => base44.auth.redirectToLogin()}
+                onClick={() => base44.auth.redirectToLogin(createPageUrl('Dashboard'))}
               >
                 Začít zdarma
                 <ArrowRight className="w-5 h-5 ml-2" />
@@ -260,7 +260,7 @@ export default function Landing() {
               <Button 
                 size="lg"
                 className="bg-white text-teal-700 hover:bg-teal-50 shadow-xl h-14 px-8 text-lg"
-                onClick={() => base44.auth.redirectToLogin()}
+                onClick={() => base44.auth.redirectToLogin(createPageUrl('Dashboard'))}
               >
                 Začít zdarma
                 <ArrowRight className="w-5 h-5 ml-2" />

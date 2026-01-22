@@ -73,12 +73,12 @@ export default function Pricing() {
             </div>
 
             <div className="flex items-center gap-3">
-              <Button variant="ghost" onClick={() => base44.auth.redirectToLogin()}>
+              <Button variant="ghost" onClick={() => base44.auth.redirectToLogin(createPageUrl('Dashboard'))}>
                 Přihlásit
               </Button>
               <Button 
                 className="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700"
-                onClick={() => base44.auth.redirectToLogin()}
+                onClick={() => base44.auth.redirectToLogin(createPageUrl('Dashboard'))}
               >
                 Začít
               </Button>
@@ -169,7 +169,7 @@ export default function Pricing() {
                         : ''
                     }`}
                     variant={plan.highlighted ? 'default' : 'outline'}
-                    onClick={() => base44.auth.redirectToLogin()}
+                    onClick={() => base44.auth.redirectToLogin(createPageUrl('Dashboard'))}
                   >
                     {plan.cta}
                     <ArrowRight className="w-4 h-4 ml-2" />
