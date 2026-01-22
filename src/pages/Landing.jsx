@@ -51,8 +51,8 @@ const products = [
     id: 'atlas',
     icon: BookOpen,
     name: 'MedVerse ATLAS',
-    tagline: 'Anatomie & Angiosomy',
-    description: 'Interaktivní anatomická databáze s detailní vizualizací struktur a cévního zásobení',
+    tagline: 'Anatomie',
+    description: 'Interaktivní anatomická databáze s detailní vizualizací struktur',
     status: 'coming-soon',
     color: 'from-emerald-500 to-teal-600'
   },
@@ -123,18 +123,18 @@ export default function Landing() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 text-teal-700 dark:text-teal-400 text-sm font-medium mb-8 border border-teal-200 dark:border-teal-800">
               <Sparkles className="w-4 h-4" />
-              Ekosystém nástrojů pro moderní chirurgii
+              Ekosystém nástrojů pro moderní medicínu
             </div>
             
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-slate-900 dark:text-white leading-tight mb-6">
-              Vaše chirurgická
+              Vaše medicínská
               <span className="block bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-600 bg-clip-text text-transparent">
                 digitální platforma
               </span>
             </h1>
             
             <p className="text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-3xl mx-auto leading-relaxed">
-              Od studia a atestací přes plánování výkonů až po 3D tisk chirurgických nástrojů. 
+              Od studia a atestací přes plánování výkonů až po 3D tisk medicínských pomůcek. 
               Kompletní ekosystém pro studenty medicíny, rezidenty i atestované lékaře napříč všemi obory.
             </p>
 
