@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2, Sparkles, Save, BookOpen, List, Microscope } from 'lucide-react';
+import { Loader2, Sparkles, Save, BookOpen, List, Microscope, ArrowDown, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function TopicContentEditor({ topic, onSave }) {
@@ -47,11 +47,38 @@ export default function TopicContentEditor({ topic, onSave }) {
         prompt = `Vytvoř rozšířený podrobný obsah pro téma "${topic.title}" zahrnující nejnovější poznatky, výzkum, komplikace, edge cases. Pro pokročilé studium. Text v češtině, markdown.`;
       } else if (type === 'objectives') {
         prompt = `Vytvoř seznam konkrétních výukových cílů pro téma "${topic.title}" dle požadavků atestační komise pro plastickou chirurgii. 5-8 cílů v češtině.`;
+      } else if (type === 'bullets_from_full') {
+        if (!content.full_text_content) {
+          toast.error('Nejprve vytvořte plný text');
+          setIsGenerating(false);
+          return;
+        }
+        prompt = `Vytvoř stručné shrnutí v odrážkách z následujícího studijního textu. Zaměř se na klíčové body pro rychlé opakování před atestací. Text v češtině, formát markdown.
+
+STUDIJNÍ TEXT:
+${content.full_text_content}`;
+      } else if (type === 'deepdive_from_full') {
+        if (!content.full_text_content) {
+          toast.error('Nejprve vytvořte plný text');
+          setIsGenerating(false);
+          return;
+        }
+        prompt = `Na základě následujícího studijního textu vytvoř rozšířený podrobný obsah (Deep Dive) zahrnující:
+- Nejnovější výzkum a poznatky
+- Pokročilé koncepty a detaily
+- Komplikace a edge cases
+- Klinické perličky a praktické tipy
+- Diferenciální diagnostiku
+
+Text v češtině, formát markdown.
+
+STUDIJNÍ TEXT:
+${content.full_text_content}`;
       }
 
       const response = await base44.integrations.Core.InvokeLLM({
         prompt,
-        add_context_from_internet: true,
+        add_context_from_internet: type === 'deepdive_from_full',
         response_json_schema: type === 'objectives' ? {
           type: "object",
           properties: {
@@ -66,6 +93,12 @@ export default function TopicContentEditor({ topic, onSave }) {
       if (type === 'objectives') {
         setContent(prev => ({ ...prev, learning_objectives: response.objectives }));
         toast.success('Výukové cíle vygenerovány');
+      } else if (type === 'bullets_from_full') {
+        setContent(prev => ({ ...prev, bullet_points_summary: response }));
+        toast.success('Shrnutí vygenerováno z plného textu');
+      } else if (type === 'deepdive_from_full') {
+        setContent(prev => ({ ...prev, deep_dive_content: response }));
+        toast.success('Deep dive obsah vygenerován z plného textu');
       } else {
         const fieldMap = {
           full: 'full_text_content',
@@ -78,6 +111,85 @@ export default function TopicContentEditor({ topic, onSave }) {
     } catch (error) {
       console.error('AI generation error:', error);
       toast.error('Chyba při generování');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleAIReview = async () => {
+    setIsGenerating(true);
+    try {
+      const hasContent = content.full_text_content || content.bullet_points_summary || content.deep_dive_content;
+      if (!hasContent) {
+        toast.error('Nejprve vytvořte nějaký obsah pro hodnocení');
+        setIsGenerating(false);
+        return;
+      }
+
+      const prompt = `Proveď odborné hodnocení následujícího studijního materiálu pro téma "${topic.title}" určeného pro přípravu na lékařskou atestaci.
+
+${content.full_text_content ? `PLNÝ TEXT:\n${content.full_text_content}\n\n` : ''}
+${content.bullet_points_summary ? `SHRNUTÍ V ODRÁŽKÁCH:\n${content.bullet_points_summary}\n\n` : ''}
+${content.deep_dive_content ? `DEEP DIVE:\n${content.deep_dive_content}\n\n` : ''}
+
+Zhodnoť:
+1. Úplnost a správnost informací
+2. Strukturu a přehlednost
+3. Vhodnost pro atestační přípravu
+4. Chybějící klíčové informace
+5. Návrhy na vylepšení
+
+Vrať konkrétní doporučení pro každou sekci.`;
+
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt,
+        add_context_from_internet: true,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            overall_rating: { type: "number" },
+            strengths: {
+              type: "array",
+              items: { type: "string" }
+            },
+            weaknesses: {
+              type: "array",
+              items: { type: "string" }
+            },
+            missing_topics: {
+              type: "array",
+              items: { type: "string" }
+            },
+            improvement_suggestions: {
+              type: "array",
+              items: { type: "string" }
+            }
+          }
+        }
+      });
+
+      // Show review in a dialog or alert
+      const reviewText = `
+📊 HODNOCENÍ: ${response.overall_rating}/10
+
+✅ SILNÉ STRÁNKY:
+${response.strengths.map(s => `• ${s}`).join('\n')}
+
+⚠️ SLABINY:
+${response.weaknesses.map(w => `• ${w}`).join('\n')}
+
+📚 CHYBĚJÍCÍ TÉMATA:
+${response.missing_topics.map(t => `• ${t}`).join('\n')}
+
+💡 NÁVRHY NA VYLEPŠENÍ:
+${response.improvement_suggestions.map(i => `• ${i}`).join('\n')}
+      `.trim();
+
+      alert(reviewText);
+      toast.success('Hodnocení dokončeno');
+    } catch (error) {
+      console.error('AI review error:', error);
+      toast.error('Chyba při hodnocení');
     } finally {
       setIsGenerating(false);
     }
@@ -107,6 +219,22 @@ export default function TopicContentEditor({ topic, onSave }) {
           Vytvořte studijní obsah pro téma <strong>{topic.title}</strong>. AI může generovat obsah na základě medicínské literatury.
         </AlertDescription>
       </Alert>
+
+      <div className="flex gap-2">
+        <Button
+          variant="outline"
+          onClick={handleAIReview}
+          disabled={isGenerating}
+          className="flex-1"
+        >
+          {isGenerating ? (
+            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+          ) : (
+            <CheckCircle className="w-4 h-4 mr-2" />
+          )}
+          Hodnotit materiál AI
+        </Button>
+      </div>
 
       {/* Learning objectives */}
       <div className="space-y-3">
@@ -187,15 +315,27 @@ export default function TopicContentEditor({ topic, onSave }) {
         <TabsContent value="bullets" className="space-y-3">
           <div className="flex justify-between items-center">
             <Label>Shrnutí v odrážkách (markdown)</Label>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => handleAIGenerate('bullets')}
-              disabled={isGenerating}
-            >
-              {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Sparkles className="w-3 h-3 mr-1" />}
-              Generovat AI
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => handleAIGenerate('bullets_from_full')}
+                disabled={isGenerating || !content.full_text_content}
+                title="Sumarizovat z plného textu"
+              >
+                {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <ArrowDown className="w-3 h-3 mr-1" />}
+                Ze základu
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => handleAIGenerate('bullets')}
+                disabled={isGenerating}
+              >
+                {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Sparkles className="w-3 h-3 mr-1" />}
+                Nový AI
+              </Button>
+            </div>
           </div>
           <Textarea
             value={content.bullet_points_summary}
@@ -208,15 +348,27 @@ export default function TopicContentEditor({ topic, onSave }) {
         <TabsContent value="deepdive" className="space-y-3">
           <div className="flex justify-between items-center">
             <Label>Podrobný obsah Deep Dive (markdown)</Label>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => handleAIGenerate('deepdive')}
-              disabled={isGenerating}
-            >
-              {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Sparkles className="w-3 h-3 mr-1" />}
-              Generovat AI
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => handleAIGenerate('deepdive_from_full')}
+                disabled={isGenerating || !content.full_text_content}
+                title="Rozšířit z plného textu"
+              >
+                {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <ArrowDown className="w-3 h-3 mr-1" />}
+                Rozšířit základ
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => handleAIGenerate('deepdive')}
+                disabled={isGenerating}
+              >
+                {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Sparkles className="w-3 h-3 mr-1" />}
+                Nový AI
+              </Button>
+            </div>
           </div>
           <Textarea
             value={content.deep_dive_content}
