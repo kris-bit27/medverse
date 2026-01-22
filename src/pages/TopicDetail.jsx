@@ -21,7 +21,7 @@ import ReactMarkdown from 'react-markdown';
 import DifficultyIndicator from '@/components/ui/DifficultyIndicator';
 import StatusBadge from '@/components/ui/StatusBadge';
 import HighlightableText from '@/components/study/HighlightableText';
-import TopicNotes from '@/components/study/TopicNotes';
+import TopicNotes from '@/components/study/TopicNotes.jsx';
 
 export default function TopicDetail() {
   const urlParams = new URLSearchParams(window.location.search);
