@@ -85,18 +85,22 @@ export default function Articles() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-8">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+      <motion.div 
+        className="flex flex-col sm:flex-row gap-4 mb-8"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <div className="relative flex-1 group">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-teal-600 transition-colors" />
           <Input
             placeholder="Hledat články..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
+            className="pl-10 focus:ring-2 focus:ring-teal-500 transition-all"
           />
         </div>
         <Select value={selectedTopic} onValueChange={setSelectedTopic}>
-          <SelectTrigger className="w-full sm:w-[200px]">
+          <SelectTrigger className="w-full sm:w-[220px] hover:border-teal-300 dark:hover:border-teal-700 transition-colors">
             <Filter className="w-4 h-4 mr-2" />
             <SelectValue placeholder="Téma" />
           </SelectTrigger>
@@ -107,7 +111,7 @@ export default function Articles() {
             ))}
           </SelectContent>
         </Select>
-      </div>
+      </motion.div>
 
       {/* Articles grid */}
       {filteredArticles.length > 0 ? (
@@ -123,42 +127,42 @@ export default function Articles() {
                 transition={{ delay: i * 0.05 }}
               >
                 <Link to={createPageUrl('ArticleDetail') + `?id=${article.id}`}>
-                  <Card className="h-full hover:shadow-lg transition-all hover:border-teal-200 dark:hover:border-teal-800 group">
+                  <Card className="h-full hover:shadow-xl hover:-translate-y-2 transition-all duration-300 hover:border-teal-300 dark:hover:border-teal-700 group cursor-pointer">
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between gap-2 mb-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10 flex items-center justify-center flex-shrink-0">
-                          <BookOpen className="w-6 h-6 text-blue-600" />
+                        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300">
+                          <BookOpen className="w-7 h-7 text-blue-600 group-hover:text-blue-700 transition-colors" />
                         </div>
                         {article.visibility && article.visibility !== 'public' && (
                           <VisibilityBadge visibility={article.visibility} />
                         )}
                       </div>
 
-                      <h3 className="font-semibold text-lg text-slate-900 dark:text-white mb-2 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors line-clamp-2">
+                      <h3 className="font-semibold text-lg text-slate-900 dark:text-white mb-3 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors line-clamp-2 leading-snug">
                         {article.title}
                       </h3>
 
                       {article.summary && (
-                        <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-3">
+                        <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-3 leading-relaxed">
                           {article.summary}
                         </p>
                       )}
 
-                      <div className="flex items-center justify-between mt-auto pt-4 border-t dark:border-slate-700">
-                        <div className="flex items-center gap-2">
+                      <div className="flex items-center justify-between mt-auto pt-4 border-t dark:border-slate-700 group-hover:border-teal-200 dark:group-hover:border-teal-800 transition-colors">
+                        <div className="flex items-center gap-2 flex-wrap">
                           {topic && (
-                            <Badge variant="outline" className="text-xs">
+                            <Badge variant="outline" className="text-xs group-hover:border-teal-300 dark:group-hover:border-teal-700 transition-colors">
                               {topic.title}
                             </Badge>
                           )}
                           {article.read_time_minutes && (
                             <span className="text-xs text-slate-500 flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
+                              <Clock className="w-3.5 h-3.5" />
                               {article.read_time_minutes} min
                             </span>
                           )}
                         </div>
-                        <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-teal-600 transition-colors" />
+                        <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-teal-600 group-hover:translate-x-1 transition-all flex-shrink-0" />
                       </div>
                     </CardContent>
                   </Card>

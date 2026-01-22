@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -90,59 +89,70 @@ export default function Tools() {
       </div>
 
       <Tabs defaultValue="ai" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="ai" className="flex items-center gap-2">
+        <TabsList className="grid w-full grid-cols-3 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
+          <TabsTrigger value="ai" className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:shadow-md transition-all">
             <Brain className="w-4 h-4" />
-            AI Asistenti
+            <span className="hidden sm:inline">AI Asistenti</span>
+            <span className="sm:hidden">AI</span>
           </TabsTrigger>
-          <TabsTrigger value="algorithms" className="flex items-center gap-2">
+          <TabsTrigger value="algorithms" className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:shadow-md transition-all">
             <GitBranch className="w-4 h-4" />
-            Algoritmy
+            <span className="hidden sm:inline">Algoritmy</span>
+            <span className="sm:hidden">Algo</span>
           </TabsTrigger>
-          <TabsTrigger value="cases" className="flex items-center gap-2">
+          <TabsTrigger value="cases" className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:shadow-md transition-all">
             <Stethoscope className="w-4 h-4" />
-            Moje případy
+            <span className="hidden sm:inline">Moje případy</span>
+            <span className="sm:hidden">Případy</span>
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="ai" className="space-y-8">
-          <div className="grid md:grid-cols-2 gap-6">
-            <Card className="hover:shadow-lg transition-shadow border-2 border-teal-200 dark:border-teal-800">
-              <CardContent className="p-6">
-                <div className="flex items-start gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center">
-                    <Brain className="w-6 h-6 text-white" />
+          <motion.div 
+            className="grid md:grid-cols-2 gap-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <motion.div whileHover={{ scale: 1.02 }} transition={{ type: "spring", stiffness: 300 }}>
+              <Card className="hover:shadow-xl transition-all duration-300 border-2 border-teal-200 dark:border-teal-800 hover:border-teal-300 dark:hover:border-teal-700 cursor-pointer h-full">
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-teal-500/30 group-hover:scale-110 transition-transform">
+                      <Brain className="w-7 h-7 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-lg text-slate-900 dark:text-white mb-2">
+                        Diferenciální diagnóza
+                      </h3>
+                      <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                        AI asistent pro vytvoření seznamu možných diagnóz na základě symptomů
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-lg text-slate-900 dark:text-white mb-1">
-                      Diferenciální diagnóza
-                    </h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">
-                      AI asistent pro vytvoření seznamu možných diagnóz na základě symptomů
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </motion.div>
 
-            <Card className="hover:shadow-lg transition-shadow border-2 border-purple-200 dark:border-purple-800">
-              <CardContent className="p-6">
-                <div className="flex items-start gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
-                    <Pill className="w-6 h-6 text-white" />
+            <motion.div whileHover={{ scale: 1.02 }} transition={{ type: "spring", stiffness: 300 }}>
+              <Card className="hover:shadow-xl transition-all duration-300 border-2 border-purple-200 dark:border-purple-800 hover:border-purple-300 dark:hover:border-purple-700 cursor-pointer h-full">
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-lg shadow-purple-500/30 group-hover:scale-110 transition-transform">
+                      <Pill className="w-7 h-7 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-lg text-slate-900 dark:text-white mb-2">
+                        Léčebný plán
+                      </h3>
+                      <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                        AI návrh komplexního léčebného plánu dle aktuálních doporučení
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-lg text-slate-900 dark:text-white mb-1">
-                      Léčebný plán
-                    </h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">
-                      AI návrh komplexního léčebného plánu dle aktuálních doporučení
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </motion.div>
 
           <Tabs defaultValue="differential" className="space-y-6">
             <TabsList>

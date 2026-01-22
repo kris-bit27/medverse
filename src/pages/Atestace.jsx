@@ -99,40 +99,31 @@ export default function Atestace() {
       </div>
 
       {/* Stats summary */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center">
-              <GraduationCap className="w-5 h-5 text-teal-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-slate-900 dark:text-white">{okruhy.length}</p>
-              <p className="text-xs text-slate-500">Okruhů</p>
-            </div>
-          </div>
-        </Card>
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-              <FileText className="w-5 h-5 text-blue-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-slate-900 dark:text-white">{topics.length}</p>
-              <p className="text-xs text-slate-500">Témat</p>
-            </div>
-          </div>
-        </Card>
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-              <Target className="w-5 h-5 text-amber-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-slate-900 dark:text-white">{questions.length}</p>
-              <p className="text-xs text-slate-500">Otázek</p>
-            </div>
-          </div>
-        </Card>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        {[
+          { icon: GraduationCap, value: okruhy.length, label: 'Okruhů', color: 'teal', delay: 0 },
+          { icon: FileText, value: topics.length, label: 'Témat', color: 'blue', delay: 0.1 },
+          { icon: Target, value: questions.length, label: 'Otázek', color: 'amber', delay: 0.2 }
+        ].map((stat, i) => (
+          <motion.div
+            key={stat.label}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: stat.delay }}
+          >
+            <Card className="p-4 sm:p-5 hover:shadow-lg transition-all duration-300 cursor-pointer group">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-${stat.color}-100 dark:bg-${stat.color}-900/30 flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                  <stat.icon className={`w-6 h-6 sm:w-7 sm:h-7 text-${stat.color}-600`} />
+                </div>
+                <div>
+                  <p className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">{stat.value}</p>
+                  <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">{stat.label}</p>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+        ))}
       </div>
 
       {/* Okruhy list */}
@@ -145,39 +136,47 @@ export default function Atestace() {
             transition={{ delay: index * 0.1 }}
           >
             <Link to={createPageUrl('OkruhDetail') + `?id=${okruh.id}`}>
-              <Card className="hover:shadow-lg transition-all duration-300 hover:border-teal-200 dark:hover:border-teal-800 group">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-6">
+              <Card className="hover:shadow-xl hover:-translate-y-1 transition-all duration-300 hover:border-teal-300 dark:hover:border-teal-700 group cursor-pointer overflow-hidden">
+                <CardContent className="p-5 sm:p-6">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
                     {/* Icon */}
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500/10 to-cyan-500/10 flex items-center justify-center text-3xl flex-shrink-0">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-teal-500/10 to-cyan-500/10 flex items-center justify-center text-3xl sm:text-4xl flex-shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
                       {okruh.icon || okruhIcons[okruh.id] || '📚'}
                     </div>
 
                     {/* Content */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <h3 className="text-xl font-semibold text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                    <div className="flex-1 min-w-0 w-full">
+                      <div className="flex items-start justify-between gap-3 mb-3">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors mb-1">
                             {okruh.title}
                           </h3>
-                          <p className="text-sm text-slate-500 dark:text-slate-400">
-                            {okruh.topicsCount} témat · {okruh.questionsCount} otázek
-                          </p>
+                          <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+                            <span className="flex items-center gap-1">
+                              <FileText className="w-3.5 h-3.5" />
+                              {okruh.topicsCount} témat
+                            </span>
+                            <span className="text-slate-300 dark:text-slate-600">•</span>
+                            <span className="flex items-center gap-1">
+                              <Target className="w-3.5 h-3.5" />
+                              {okruh.questionsCount} otázek
+                            </span>
+                          </div>
                         </div>
-                        <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-teal-600 group-hover:translate-x-1 transition-all" />
+                        <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-teal-600 group-hover:translate-x-2 transition-all flex-shrink-0 mt-1" />
                       </div>
 
                       {/* Progress */}
-                      <div className="mt-4">
-                        <div className="flex justify-between text-sm mb-2">
-                          <span className="text-slate-600 dark:text-slate-400">
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-xs sm:text-sm">
+                          <span className="text-slate-600 dark:text-slate-400 font-medium">
                             Pokrok
                           </span>
-                          <span className="font-medium text-slate-900 dark:text-white">
-                            {okruh.mastered}/{okruh.questionsCount} ({okruh.percentage}%)
+                          <span className="font-semibold text-slate-900 dark:text-white">
+                            {okruh.mastered}/{okruh.questionsCount} <span className="text-teal-600 dark:text-teal-400">({okruh.percentage}%)</span>
                           </span>
                         </div>
-                        <Progress value={okruh.percentage} className="h-2" />
+                        <Progress value={okruh.percentage} className="h-2.5 group-hover:h-3 transition-all" />
                       </div>
                     </div>
                   </div>

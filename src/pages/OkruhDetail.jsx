@@ -12,7 +12,8 @@ import {
   ChevronRight,
   Play,
   FileText,
-  Target
+  Target,
+  CheckCircle2
 } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import DifficultyIndicator from '@/components/ui/DifficultyIndicator';
@@ -165,33 +166,40 @@ export default function OkruhDetail() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}
+            whileHover={{ scale: 1.02, x: 5 }}
           >
-            <Card className="hover:shadow-md transition-shadow">
-              <CardContent className="p-4">
+            <Card className="hover:shadow-xl hover:border-teal-300 dark:hover:border-teal-700 transition-all duration-300 cursor-pointer group">
+              <CardContent className="p-4 sm:p-5">
                 <div className="flex items-center gap-4">
                   {/* Progress indicator */}
-                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center flex-shrink-0">
-                    <span className="text-lg font-bold text-teal-600">{topic.percentage}%</span>
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/30 dark:to-cyan-900/30 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform border-2 border-teal-200 dark:border-teal-800">
+                    <span className="text-lg font-bold text-teal-600 dark:text-teal-400">{topic.percentage}%</span>
                   </div>
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-medium text-slate-900 dark:text-white mb-1">
+                    <h3 className="font-semibold text-slate-900 dark:text-white mb-2 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
                       {topic.title}
                     </h3>
-                    <div className="flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
-                      <span>{topic.questionsCount} otázek</span>
-                      <span>·</span>
-                      <span>{topic.mastered} zvládnuto</span>
+                    <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-2">
+                      <span className="flex items-center gap-1">
+                        <Target className="w-3.5 h-3.5" />
+                        {topic.questionsCount} otázek
+                      </span>
+                      <span className="text-slate-300 dark:text-slate-600">•</span>
+                      <span className="flex items-center gap-1">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-teal-600" />
+                        {topic.mastered} zvládnuto
+                      </span>
                     </div>
-                    <Progress value={topic.percentage} className="h-1.5 mt-2" />
+                    <Progress value={topic.percentage} className="h-2 group-hover:h-2.5 transition-all" />
                   </div>
 
                   {/* Tags */}
                   {topic.tags && topic.tags.length > 0 && (
-                    <div className="hidden sm:flex gap-1 flex-shrink-0">
+                    <div className="hidden sm:flex gap-1.5 flex-shrink-0">
                       {topic.tags.slice(0, 2).map((tag, i) => (
-                        <Badge key={i} variant="outline" className="text-xs">
+                        <Badge key={i} variant="outline" className="text-xs group-hover:border-teal-300 dark:group-hover:border-teal-700 transition-colors">
                           {tag}
                         </Badge>
                       ))}

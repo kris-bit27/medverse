@@ -203,39 +203,50 @@ export default function Landing() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
+                  whileHover={{ scale: product.status === 'available' ? 1.05 : 1.02, y: -5 }}
                 >
-                  <Card className={`p-6 h-full border-0 shadow-lg shadow-slate-200/50 dark:shadow-none dark:bg-slate-800/50 hover:shadow-xl transition-all group ${
-                    product.status === 'available' ? 'cursor-pointer hover:scale-105' : ''
+                  <Card className={`p-6 h-full border-0 shadow-lg shadow-slate-200/50 dark:shadow-none dark:bg-slate-800/50 hover:shadow-2xl transition-all duration-300 group relative overflow-hidden ${
+                    product.status === 'available' ? 'cursor-pointer' : ''
                   }`}>
-                    <div className="flex items-start justify-between mb-4">
-                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${product.color} flex items-center justify-center shadow-lg`}>
-                        <Icon className="w-6 h-6 text-white" />
+                    {/* Animated gradient overlay */}
+                    <div className={`absolute inset-0 bg-gradient-to-br ${product.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
+                    
+                    <div className="relative z-10">
+                      <div className="flex items-start justify-between mb-5">
+                        <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${product.color} flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300`}>
+                          <Icon className="w-7 h-7 text-white" />
+                        </div>
+                        {product.status === 'available' ? (
+                          <motion.span 
+                            className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 flex items-center gap-1"
+                            animate={{ scale: [1, 1.1, 1] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                          >
+                            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                            Dostupné
+                          </motion.span>
+                        ) : (
+                          <span className="px-3 py-1 text-xs font-medium rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                            Připravujeme
+                          </span>
+                        )}
                       </div>
-                      {product.status === 'available' ? (
-                        <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">
-                          Dostupné
-                        </span>
-                      ) : (
-                        <span className="px-2 py-1 text-xs font-medium rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-                          Připravujeme
-                        </span>
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                        {product.name}
+                      </h3>
+                      <p className="text-sm font-semibold text-teal-600 dark:text-teal-400 mb-3">
+                        {product.tagline}
+                      </p>
+                      <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">
+                        {product.description}
+                      </p>
+                      {product.status === 'available' && (
+                        <div className="flex items-center gap-2 text-teal-600 dark:text-teal-400 text-sm font-semibold group-hover:gap-3 transition-all">
+                          Spustit EDU
+                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </div>
                       )}
                     </div>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-1">
-                      {product.name}
-                    </h3>
-                    <p className="text-sm font-medium text-teal-600 dark:text-teal-400 mb-3">
-                      {product.tagline}
-                    </p>
-                    <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                      {product.description}
-                    </p>
-                    {product.status === 'available' && (
-                      <div className="mt-4 flex items-center gap-2 text-teal-600 dark:text-teal-400 text-sm font-medium group-hover:gap-3 transition-all">
-                        Spustit EDU
-                        <ArrowRight className="w-4 h-4" />
-                      </div>
-                    )}
                   </Card>
                 </motion.div>
               );
