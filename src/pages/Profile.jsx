@@ -32,6 +32,10 @@ export default function Profile() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  // Get tab from URL params
+  const urlParams = new URLSearchParams(window.location.search);
+  const defaultTab = urlParams.get('tab') || 'stats';
+
   const { data: user, isLoading } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => base44.auth.me()
@@ -65,6 +69,26 @@ export default function Profile() {
   const handleSaveSettings = async () => {
     setSaving(true);
     await base44.auth.updateMe({ settings });
+    
+    // Apply theme immediately
+    if (settings.theme) {
+      if (settings.theme === 'dark') {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('medverse-theme', 'dark');
+      } else if (settings.theme === 'light') {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('medverse-theme', 'light');
+      } else if (settings.theme === 'auto') {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (prefersDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+        localStorage.setItem('medverse-theme', 'auto');
+      }
+    }
+    
     queryClient.invalidateQueries(['currentUser']);
     setSaving(false);
     setSaved(true);
@@ -112,7 +136,7 @@ export default function Profile() {
         </div>
       </div>
 
-      <Tabs defaultValue="stats">
+      <Tabs defaultValue={defaultTab}>
         <TabsList className="mb-6">
           <TabsTrigger value="stats">Statistiky</TabsTrigger>
           <TabsTrigger value="settings">Nastavení</TabsTrigger>

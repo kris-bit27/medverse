@@ -161,7 +161,7 @@ export default function Dashboard() {
                   asChild
                   className="text-xs hover:bg-teal-100 dark:hover:bg-teal-800"
                 >
-                  <Link to={createPageUrl('Profile')}>
+                  <Link to={createPageUrl('Profile') + '?tab=education'}>
                     Upravit
                   </Link>
                 </Button>
@@ -197,7 +197,7 @@ export default function Dashboard() {
                     Pro personalizovaný obsah doporučujeme vybrat si obory, které vás zajímají nebo se na ně připravujete.
                   </p>
                   <Button asChild size="sm" className="bg-amber-600 hover:bg-amber-700">
-                    <Link to={createPageUrl('Profile')}>
+                    <Link to={createPageUrl('Profile') + '?tab=education'}>
                       Vybrat obory
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Link>

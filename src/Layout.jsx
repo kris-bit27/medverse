@@ -74,6 +74,12 @@ export default function Layout({ children, currentPageName }) {
     if (saved === 'dark') {
       setDarkMode(true);
       document.documentElement.classList.add('dark');
+    } else if (saved === 'auto') {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setDarkMode(prefersDark);
+      if (prefersDark) {
+        document.documentElement.classList.add('dark');
+      }
     }
   }, []);
 
