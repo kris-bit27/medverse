@@ -9,7 +9,7 @@ import { Upload, Loader2, CheckCircle, AlertCircle, FileJson, FileSpreadsheet } 
 import { toast } from 'sonner';
 
 export default function QuestionImporter({ okruhy, topics, disciplines, onComplete }) {
-  const [importMode, setImportMode] = useState('json'); // 'json' or 'csv'
+  const [importMode, setImportMode] = useState('json');
   const [inputData, setInputData] = useState('');
   const [selectedOkruh, setSelectedOkruh] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('');
@@ -41,7 +41,6 @@ export default function QuestionImporter({ okruhy, topics, disciplines, onComple
     const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
     
     return lines.slice(1).map(line => {
-      // Handle quotes in CSV
       const values = [];
       let current = '';
       let inQuotes = false;
@@ -93,7 +92,6 @@ export default function QuestionImporter({ okruhy, topics, disciplines, onComple
         questions = parseCSV(inputData);
       }
 
-      // Add okruh_id and topic_id to all questions
       const questionsWithIds = questions.map(q => ({
         ...q,
         okruh_id: selectedOkruh,
@@ -102,7 +100,6 @@ export default function QuestionImporter({ okruhy, topics, disciplines, onComple
         visibility: q.visibility || 'public'
       }));
 
-      // Bulk create
       await base44.entities.Question.bulkCreate(questionsWithIds);
 
       setResult({
@@ -143,7 +140,6 @@ export default function QuestionImporter({ okruhy, topics, disciplines, onComple
 
   return (
     <div className="space-y-6">
-      {/* Format selection */}
       <div className="flex gap-2">
         <Button
           variant={importMode === 'json' ? 'default' : 'outline'}
@@ -163,7 +159,6 @@ export default function QuestionImporter({ okruhy, topics, disciplines, onComple
         </Button>
       </div>
 
-      {/* Target selection */}
       <div className="grid grid-cols-3 gap-4">
         <div className="space-y-2">
           <Label>Klinický obor</Label>
@@ -215,7 +210,6 @@ export default function QuestionImporter({ okruhy, topics, disciplines, onComple
         </div>
       </div>
 
-      {/* File upload */}
       <div className="space-y-2">
         <Label>Nahrát soubor</Label>
         <div className="flex items-center gap-2">
@@ -235,7 +229,6 @@ export default function QuestionImporter({ okruhy, topics, disciplines, onComple
         </div>
       </div>
 
-      {/* Manual input */}
       <div className="space-y-2">
         <Label>Nebo vložte data</Label>
         <Textarea
@@ -246,7 +239,6 @@ export default function QuestionImporter({ okruhy, topics, disciplines, onComple
         />
       </div>
 
-      {/* Example */}
       <Alert>
         <AlertDescription className="text-xs">
           <strong>Příklad {importMode === 'json' ? 'JSON' : 'CSV'}:</strong>
@@ -256,7 +248,6 @@ export default function QuestionImporter({ okruhy, topics, disciplines, onComple
         </AlertDescription>
       </Alert>
 
-      {/* Result */}
       {result && (
         <Alert variant={result.success ? 'default' : 'destructive'}>
           {result.success ? (
@@ -272,7 +263,6 @@ export default function QuestionImporter({ okruhy, topics, disciplines, onComple
         </Alert>
       )}
 
-      {/* Import button */}
       <Button
         onClick={handleImport}
         disabled={isImporting || !selectedOkruh || !selectedTopic}
