@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Upload, Loader2, CheckCircle, AlertCircle, FileJson, FileSpreadsheet } from 'lucide-react';
+import { Upload, Loader2, CheckCircle, AlertCircle, FileJson, FileSpreadsheet, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function QuestionImporter({ okruhy, topics, disciplines, onComplete }) {
@@ -16,6 +16,8 @@ export default function QuestionImporter({ okruhy, topics, disciplines, onComple
   const [selectedDiscipline, setSelectedDiscipline] = useState('');
   const [isImporting, setIsImporting] = useState(false);
   const [result, setResult] = useState(null);
+  const [aiQuestionCount, setAiQuestionCount] = useState(5);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const filteredOkruhy = selectedDiscipline 
     ? okruhy.filter(o => o.clinical_discipline_id === selectedDiscipline)
@@ -64,6 +66,87 @@ export default function QuestionImporter({ okruhy, topics, disciplines, onComple
       });
       return obj;
     });
+  };
+
+  const handleAIGenerate = async () => {
+    if (!selectedOkruh || !selectedTopic) {
+      toast.error('Vyberte okruh a téma');
+      return;
+    }
+
+    setIsGenerating(true);
+    setResult(null);
+
+    try {
+      const topic = topics.find(t => t.id === selectedTopic);
+      const okruh = okruhy.find(o => o.id === selectedOkruh);
+      const discipline = disciplines.find(d => d.id === selectedDiscipline);
+
+      const prompt = `Vygeneruj ${aiQuestionCount} medicínských otázek pro atestaci.
+
+Klinický obor: ${discipline?.name || 'Neznámý'}
+Okruh: ${okruh?.title || 'Neznámý'}
+Téma: ${topic?.title || 'Neznámé'}
+
+Pro každou otázku vytvořit:
+- title: Stručný název otázky (max 100 znaků)
+- question_text: Plné znění otázky
+- answer_rich: Podrobnou odpověď ve formátu markdown, strukturovanou do sekcí: **Definice**, **Diagnostika**, **Léčba**, **Komplikace**, **Pearls** (důležité body)
+- difficulty: Obtížnost 1-5 (3 = střední)
+
+Otázky musí být relevantní pro české lékařské atestace a odpovídat běžným požadavkům atestační komise.`;
+
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            questions: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  title: { type: "string" },
+                  question_text: { type: "string" },
+                  answer_rich: { type: "string" },
+                  difficulty: { type: "number" }
+                }
+              }
+            }
+          }
+        }
+      });
+
+      const generatedQuestions = response.questions.map(q => ({
+        ...q,
+        okruh_id: selectedOkruh,
+        topic_id: selectedTopic,
+        visibility: 'public'
+      }));
+
+      await base44.entities.Question.bulkCreate(generatedQuestions);
+
+      setResult({
+        success: true,
+        count: generatedQuestions.length
+      });
+      
+      toast.success(`AI vygenerovalo ${generatedQuestions.length} otázek`);
+      
+      setTimeout(() => {
+        onComplete?.();
+      }, 1500);
+
+    } catch (error) {
+      console.error('AI generation error:', error);
+      setResult({
+        success: false,
+        error: error.message
+      });
+      toast.error('Chyba při AI generování');
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const handleImport = async () => {
@@ -157,6 +240,14 @@ export default function QuestionImporter({ okruhy, topics, disciplines, onComple
           <FileSpreadsheet className="w-4 h-4 mr-2" />
           CSV
         </Button>
+        <Button
+          variant={importMode === 'ai' ? 'default' : 'outline'}
+          onClick={() => setImportMode('ai')}
+          className="flex-1"
+        >
+          <Sparkles className="w-4 h-4 mr-2" />
+          AI Generátor
+        </Button>
       </div>
 
       <div className="grid grid-cols-3 gap-4">
@@ -210,8 +301,56 @@ export default function QuestionImporter({ okruhy, topics, disciplines, onComple
         </div>
       </div>
 
-      <div className="space-y-2">
-        <Label>Nahrát soubor</Label>
+      {importMode === 'ai' ? (
+        <>
+          <div className="space-y-2">
+            <Label>Počet otázek k vygenerování</Label>
+            <Input
+              type="number"
+              min="1"
+              max="20"
+              value={aiQuestionCount}
+              onChange={(e) => setAiQuestionCount(parseInt(e.target.value) || 5)}
+              placeholder="5"
+            />
+          </div>
+
+          <Alert className="bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800">
+            <Sparkles className="h-4 w-4 text-teal-600 dark:text-teal-400" />
+            <AlertDescription className="text-sm text-teal-700 dark:text-teal-300">
+              AI vygeneruje medicínské otázky s podrobnými odpověďmi na základě vybraného tématu, okruhu a klinického oboru.
+            </AlertDescription>
+          </Alert>
+
+          {result && (
+            <Alert variant={result.success ? 'default' : 'destructive'}>
+              {result.success ? (
+                <CheckCircle className="h-4 w-4" />
+              ) : (
+                <AlertCircle className="h-4 w-4" />
+              )}
+              <AlertDescription>
+                {result.success
+                  ? `Úspěšně vygenerováno ${result.count} otázek`
+                  : `Chyba: ${result.error}`}
+              </AlertDescription>
+            </Alert>
+          )}
+
+          <Button
+            onClick={handleAIGenerate}
+            disabled={isGenerating || !selectedOkruh || !selectedTopic || !selectedDiscipline}
+            className="w-full"
+          >
+            {isGenerating && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+            <Sparkles className="w-4 h-4 mr-2" />
+            Vygenerovat otázky pomocí AI
+          </Button>
+        </>
+      ) : (
+        <>
+          <div className="space-y-2">
+            <Label>Nahrát soubor</Label>
         <div className="flex items-center gap-2">
           <input
             type="file"
@@ -263,14 +402,16 @@ export default function QuestionImporter({ okruhy, topics, disciplines, onComple
         </Alert>
       )}
 
-      <Button
-        onClick={handleImport}
-        disabled={isImporting || !selectedOkruh || !selectedTopic}
-        className="w-full"
-      >
-        {isImporting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-        Importovat otázky
-      </Button>
+          <Button
+            onClick={handleImport}
+            disabled={isImporting || !selectedOkruh || !selectedTopic}
+            className="w-full"
+          >
+            {isImporting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+            Importovat otázky
+          </Button>
+        </>
+      )}
     </div>
   );
 }
