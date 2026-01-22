@@ -123,9 +123,9 @@ export default function StudyPlanner() {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" asChild>
-            <Link to={createPageUrl('Profile')} state={{ tab: 'copilot' }}>
+            <Link to={createPageUrl('StudyPlanAI')}>
               <Sparkles className="w-4 h-4 mr-2" />
-              AI Copilot
+              AI Personalizace
             </Link>
           </Button>
           <Button asChild className="bg-teal-600 hover:bg-teal-700">

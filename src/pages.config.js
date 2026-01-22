@@ -37,6 +37,7 @@ import TestSession from './pages/TestSession';
 import ToolDetail from './pages/ToolDetail';
 import Tools from './pages/Tools';
 import TopicDetail from './pages/TopicDetail';
+import StudyPlanAI from './pages/StudyPlanAI';
 import __Layout from './Layout.jsx';
 
 
@@ -80,6 +81,7 @@ export const PAGES = {
     "ToolDetail": ToolDetail,
     "Tools": Tools,
     "TopicDetail": TopicDetail,
+    "StudyPlanAI": StudyPlanAI,
 }
 
 export const pagesConfig = {
