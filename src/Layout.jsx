@@ -42,15 +42,15 @@ const publicPages = ['Landing', 'Pricing', 'Demo'];
 
 const navItems = [
   { name: 'Dashboard', page: 'Dashboard', icon: LayoutDashboard },
-  { name: 'Plánovač', page: 'StudyPlanner', icon: CalendarIcon },
-  { name: 'Atestace', page: 'Atestace', icon: GraduationCap },
-  { name: 'Logbook', page: 'Logbook', icon: ClipboardList },
+  { name: 'Studium', page: 'Atestace', icon: GraduationCap },
+  { name: 'Opakování', page: 'ReviewToday', icon: RefreshCw },
   { name: 'Studijní balíčky', page: 'StudyPackages', icon: Package },
   { name: 'Články', page: 'Articles', icon: BookOpen },
+  { name: 'Nástroje', page: 'Tools', icon: Stethoscope },
+  { name: 'Plánovač', page: 'StudyPlanner', icon: CalendarIcon },
+  { name: 'Logbook', page: 'Logbook', icon: ClipboardList },
   { name: 'Forum', page: 'Forum', icon: MessageSquare },
   { name: 'Vyhledávání', page: 'ScholarSearch', icon: Search },
-  { name: 'Nástroje', page: 'Tools', icon: Stethoscope },
-  { name: 'Opakování', page: 'ReviewToday', icon: RefreshCw },
 ];
 
 export default function Layout({ children, currentPageName }) {
