@@ -25,7 +25,7 @@ const products = [
     icon: GraduationCap,
     name: 'MedVerse EDU',
     tagline: 'Atestace & Studium',
-    description: 'Strukturované otázky, spaced repetition a klinické algoritmy pro přípravu na atestace napříč všemi chirurgickými obory',
+    description: 'Komplexní platforma pro přípravu na atestace a státnice s využitím pokročilých metod učení napříč všemi medicínským obory',
     status: 'available',
     color: 'from-teal-500 to-cyan-600'
   },
@@ -34,7 +34,7 @@ const products = [
     icon: Stethoscope,
     name: 'MedVerse CLINIC',
     tagline: 'Plánování výkonů',
-    description: 'Nástroje pro plánování rekonstrukcí, databáze laloků a 3D vizualizace pro klinickou praxi',
+    description: 'Pokročilé nástroje pro předoperační plánování a vizualizaci chirurgických výkonů v klinické praxi',
     status: 'coming-soon',
     color: 'from-blue-500 to-indigo-600'
   },
@@ -43,7 +43,7 @@ const products = [
     icon: Brain,
     name: 'MedVerse AI',
     tagline: 'AI Copilot',
-    description: 'Pokročilý AI asistent pro diferenciální diagnostiku, plánování léčby a decision support',
+    description: 'Inteligentní asistent pro podporu klinického rozhodování a diagnostiky v reálném čase',
     status: 'coming-soon',
     color: 'from-purple-500 to-pink-600'
   },
@@ -52,7 +52,7 @@ const products = [
     icon: BookOpen,
     name: 'MedVerse ATLAS',
     tagline: 'Anatomie & Angiosomy',
-    description: 'Interaktivní anatomický atlas s angiosomovými mapami a vizualizací cévního zásobení',
+    description: 'Interaktivní anatomická databáze s detailní vizualizací struktur a cévního zásobení',
     status: 'coming-soon',
     color: 'from-emerald-500 to-teal-600'
   },
@@ -61,7 +61,7 @@ const products = [
     icon: BarChart3,
     name: 'MedVerse LAB',
     tagline: '3D Guides & Tisk',
-    description: 'Navrhování a tisk 3D chirurgických nástrojů, cutting guides a LiDAR skenování',
+    description: 'Platforma pro navrhování a výrobu personalizovaných chirurgických pomůcek pomocí 3D technologií',
     status: 'coming-soon',
     color: 'from-orange-500 to-red-600'
   }
@@ -135,7 +135,7 @@ export default function Landing() {
             
             <p className="text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-3xl mx-auto leading-relaxed">
               Od studia a atestací přes plánování výkonů až po 3D tisk chirurgických nástrojů. 
-              Kompletní ekosystém pro studenty, rezidenty i atestované chirurgy.
+              Kompletní ekosystém pro studenty medicíny, rezidenty i atestované lékaře napříč všemi obory.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -189,7 +189,7 @@ export default function Landing() {
               Produktové portfolio MedVerse
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              Pět specializovaných modulů pokrývajících celé spektrum chirurgické praxe
+              Pět specializovaných modulů pokrývajících celé spektrum medicínské praxe
             </p>
           </div>
 
