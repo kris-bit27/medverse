@@ -32,16 +32,19 @@ import {
   FileText,
   Loader2,
   Stethoscope,
-  Upload
+  Upload,
+  BookOpen
 } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import QuestionImporter from '@/components/admin/QuestionImporter';
+import TopicContentEditor from '@/components/admin/TopicContentEditor';
 
 export default function AdminTaxonomy() {
   const [disciplineDialogOpen, setDisciplineDialogOpen] = useState(false);
   const [okruhDialogOpen, setOkruhDialogOpen] = useState(false);
   const [topicDialogOpen, setTopicDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const [contentEditorOpen, setContentEditorOpen] = useState(false);
   const [editingDiscipline, setEditingDiscipline] = useState(null);
   const [editingOkruh, setEditingOkruh] = useState(null);
   const [editingTopic, setEditingTopic] = useState(null);
@@ -480,6 +483,18 @@ export default function AdminTaxonomy() {
                             <Badge variant="secondary" className="text-xs">{questionCount}</Badge>
                           </div>
                           <div className="flex items-center gap-1">
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-7 w-7"
+                              onClick={() => {
+                                setEditingTopic(topic);
+                                setContentEditorOpen(true);
+                              }}
+                              title="Upravit obsah"
+                            >
+                              <BookOpen className="w-3 h-3" />
+                            </Button>
                             <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEditTopic(topic)}>
                               <Pencil className="w-3 h-3" />
                             </Button>
@@ -525,6 +540,25 @@ export default function AdminTaxonomy() {
               queryClient.invalidateQueries(['questions']);
             }}
           />
+        </DialogContent>
+      </Dialog>
+
+      {/* Content Editor Dialog */}
+      <Dialog open={contentEditorOpen} onOpenChange={setContentEditorOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Upravit studijní obsah</DialogTitle>
+          </DialogHeader>
+          {editingTopic && (
+            <TopicContentEditor 
+              topic={editingTopic}
+              onSave={() => {
+                setContentEditorOpen(false);
+                setEditingTopic(null);
+                queryClient.invalidateQueries(['topics']);
+              }}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </div>

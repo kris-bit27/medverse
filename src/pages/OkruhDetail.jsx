@@ -168,8 +168,9 @@ export default function OkruhDetail() {
             transition={{ delay: index * 0.05 }}
             whileHover={{ scale: 1.02, x: 5 }}
           >
-            <Card className="hover:shadow-xl hover:border-teal-300 dark:hover:border-teal-700 transition-all duration-300 cursor-pointer group">
-              <CardContent className="p-4 sm:p-5">
+            <Link to={createPageUrl('TopicDetail') + `?id=${topic.id}`}>
+              <Card className="hover:shadow-xl hover:border-teal-300 dark:hover:border-teal-700 transition-all duration-300 cursor-pointer group">
+                <CardContent className="p-4 sm:p-5">
                 <div className="flex items-center gap-4">
                   {/* Progress indicator */}
                   <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/30 dark:to-cyan-900/30 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform border-2 border-teal-200 dark:border-teal-800">
@@ -208,6 +209,7 @@ export default function OkruhDetail() {
                 </div>
               </CardContent>
             </Card>
+            </Link>
           </motion.div>
         ))}
 
