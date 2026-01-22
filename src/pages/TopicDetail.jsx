@@ -20,16 +20,23 @@ import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ReactMarkdown from 'react-markdown';
 import DifficultyIndicator from '@/components/ui/DifficultyIndicator';
 import StatusBadge from '@/components/ui/StatusBadge';
+import HighlightableText from '@/components/study/HighlightableText';
+import TopicNotes from '@/components/study/TopicNotes';
 
 export default function TopicDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   const topicId = urlParams.get('id');
   const [activeView, setActiveView] = useState('full');
+  const [notesKey, setNotesKey] = useState(0);
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => base44.auth.me()
   });
+
+  const handleNoteCreated = () => {
+    setNotesKey(prev => prev + 1);
+  };
 
   const { data: topic, isLoading } = useQuery({
     queryKey: ['topic', topicId],
@@ -195,9 +202,15 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
 
           <TabsContent value="full">
             <Card>
-              <CardContent className="p-6 prose prose-slate dark:prose-invert max-w-none">
+              <CardContent className="p-6">
                 {topic.full_text_content ? (
-                  <ReactMarkdown>{topic.full_text_content}</ReactMarkdown>
+                  <HighlightableText
+                    content={topic.full_text_content}
+                    topicId={topicId}
+                    context="full_text"
+                    user={user}
+                    onNoteCreated={handleNoteCreated}
+                  />
                 ) : (
                   <p className="text-slate-500 text-center py-8">
                     Plný text zatím není dostupný
@@ -223,9 +236,15 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
 
           <TabsContent value="deepdive">
             <Card>
-              <CardContent className="p-6 prose prose-slate dark:prose-invert max-w-none">
+              <CardContent className="p-6">
                 {topic.deep_dive_content ? (
-                  <ReactMarkdown>{topic.deep_dive_content}</ReactMarkdown>
+                  <HighlightableText
+                    content={topic.deep_dive_content}
+                    topicId={topicId}
+                    context="deep_dive"
+                    user={user}
+                    onNoteCreated={handleNoteCreated}
+                  />
                 ) : (
                   <p className="text-slate-500 text-center py-8">
                     Podrobný obsah zatím není dostupný
@@ -243,6 +262,13 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
             <p className="text-sm text-slate-400">Přidejte obsah v admin panelu</p>
           </CardContent>
         </Card>
+      )}
+
+      {/* User Notes */}
+      {hasContent && (
+        <div className="mb-8">
+          <TopicNotes key={notesKey} topicId={topicId} user={user} />
+        </div>
       )}
 
       {/* Generate practice questions */}
