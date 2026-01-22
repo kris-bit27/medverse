@@ -29,7 +29,9 @@ import {
   MoreHorizontal,
   Pencil,
   Trash2,
-  Eye
+  Eye,
+  CheckSquare,
+  Square
 } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import DifficultyIndicator from '@/components/ui/DifficultyIndicator';
@@ -40,6 +42,7 @@ export default function AdminQuestions() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterOkruh, setFilterOkruh] = useState('all');
   const [filterVisibility, setFilterVisibility] = useState('all');
+  const [selectedIds, setSelectedIds] = useState([]);
   const queryClient = useQueryClient();
 
   const { data: user } = useQuery({
@@ -69,6 +72,16 @@ export default function AdminQuestions() {
     }
   });
 
+  const bulkDeleteMutation = useMutation({
+    mutationFn: async (ids) => {
+      await Promise.all(ids.map(id => base44.entities.Question.delete(id)));
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['questions']);
+      setSelectedIds([]);
+    }
+  });
+
   // Filter questions
   const filteredQuestions = useMemo(() => {
     let filtered = questions;
@@ -91,6 +104,26 @@ export default function AdminQuestions() {
 
     return filtered;
   }, [questions, searchQuery, filterOkruh, filterVisibility]);
+
+  const toggleSelect = (id) => {
+    setSelectedIds(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === filteredQuestions.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(filteredQuestions.map(q => q.id));
+    }
+  };
+
+  const handleBulkDelete = () => {
+    if (confirm(`Opravdu smazat ${selectedIds.length} otázek?`)) {
+      bulkDeleteMutation.mutate(selectedIds);
+    }
+  };
 
   if (!canEditContent(user)) {
     return (
@@ -117,14 +150,29 @@ export default function AdminQuestions() {
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">
             Otázky
           </h1>
-          <p className="text-slate-500">{questions.length} celkem</p>
+          <p className="text-slate-500">
+            {questions.length} celkem
+            {selectedIds.length > 0 && ` · ${selectedIds.length} označeno`}
+          </p>
         </div>
-        <Button asChild className="bg-teal-600 hover:bg-teal-700">
-          <Link to={createPageUrl('AdminQuestionEdit')}>
-            <Plus className="w-4 h-4 mr-2" />
-            Nová otázka
-          </Link>
-        </Button>
+        <div className="flex gap-2">
+          {selectedIds.length > 0 && (
+            <Button 
+              variant="destructive"
+              onClick={handleBulkDelete}
+              disabled={bulkDeleteMutation.isPending}
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Smazat označené ({selectedIds.length})
+            </Button>
+          )}
+          <Button asChild className="bg-teal-600 hover:bg-teal-700">
+            <Link to={createPageUrl('AdminQuestionEdit')}>
+              <Plus className="w-4 h-4 mr-2" />
+              Nová otázka
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -174,6 +222,20 @@ export default function AdminQuestions() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={toggleSelectAll}
+                    className="h-8 w-8"
+                  >
+                    {selectedIds.length === filteredQuestions.length && filteredQuestions.length > 0 ? (
+                      <CheckSquare className="w-4 h-4" />
+                    ) : (
+                      <Square className="w-4 h-4" />
+                    )}
+                  </Button>
+                </TableHead>
                 <TableHead>Název</TableHead>
                 <TableHead>Okruh</TableHead>
                 <TableHead>Obtížnost</TableHead>
@@ -188,6 +250,20 @@ export default function AdminQuestions() {
 
                 return (
                   <TableRow key={question.id}>
+                    <TableCell>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => toggleSelect(question.id)}
+                        className="h-8 w-8"
+                      >
+                        {selectedIds.includes(question.id) ? (
+                          <CheckSquare className="w-4 h-4 text-teal-600" />
+                        ) : (
+                          <Square className="w-4 h-4" />
+                        )}
+                      </Button>
+                    </TableCell>
                     <TableCell>
                       <div>
                         <p className="font-medium text-slate-900 dark:text-white line-clamp-1">
@@ -246,7 +322,7 @@ export default function AdminQuestions() {
               })}
               {filteredQuestions.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-8 text-slate-500">
+                  <TableCell colSpan={6} className="text-center py-8 text-slate-500">
                     Žádné otázky
                   </TableCell>
                 </TableRow>
