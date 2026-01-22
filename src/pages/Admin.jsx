@@ -17,7 +17,7 @@ import {
   Plus
 } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
-import { isAdmin, canEditContent } from '@/components/utils/permissions';
+import { canAccessAdmin, canManageUsers, canViewAudit } from '@/components/utils/permissions';
 
 export default function Admin() {
   const { data: user, isLoading } = useQuery({
@@ -48,7 +48,7 @@ export default function Admin() {
   const { data: users = [] } = useQuery({
     queryKey: ['users'],
     queryFn: () => base44.entities.User.list(),
-    enabled: isAdmin(user)
+    enabled: canManageUsers(user)
   });
 
   if (isLoading) {
@@ -59,7 +59,7 @@ export default function Admin() {
     );
   }
 
-  if (!canEditContent(user)) {
+  if (!canAccessAdmin(user)) {
     return (
       <div className="p-6 text-center">
         <Shield className="w-12 h-12 mx-auto text-slate-300 mb-4" />
@@ -72,6 +72,9 @@ export default function Admin() {
       </div>
     );
   }
+
+  const hasUserManagement = canManageUsers(user);
+  const hasAuditAccess = canViewAudit(user);
 
   const contentCards = [
     {
@@ -165,60 +168,64 @@ export default function Admin() {
       </div>
 
       {/* Admin only section */}
-      {isAdmin(user) && (
+      {(hasUserManagement || hasAuditAccess) && (
         <div>
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
             Správa systému
           </h2>
           <div className="grid md:grid-cols-2 gap-4">
-            <Link to={createPageUrl('AdminUsers')}>
-              <Card className="hover:shadow-lg transition-all hover:border-teal-200 dark:hover:border-teal-800 group">
-                <CardContent className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center flex-shrink-0">
-                      <Users className="w-6 h-6 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-1">
-                        <h3 className="font-semibold text-slate-900 dark:text-white group-hover:text-teal-600 transition-colors">
-                          Uživatelé
-                        </h3>
-                        <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-teal-600 transition-colors" />
+            {hasUserManagement && (
+              <Link to={createPageUrl('AdminUsers')}>
+                <Card className="hover:shadow-lg transition-all hover:border-teal-200 dark:hover:border-teal-800 group">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center flex-shrink-0">
+                        <Users className="w-6 h-6 text-white" />
                       </div>
-                      <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">
-                        Správa uživatelů a rolí
-                      </p>
-                      <p className="text-2xl font-bold text-slate-900 dark:text-white">
-                        {users.length}
-                      </p>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-1">
+                          <h3 className="font-semibold text-slate-900 dark:text-white group-hover:text-teal-600 transition-colors">
+                            Uživatelé
+                          </h3>
+                          <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-teal-600 transition-colors" />
+                        </div>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">
+                          Správa uživatelů a rolí
+                        </p>
+                        <p className="text-2xl font-bold text-slate-900 dark:text-white">
+                          {users.length}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
+                  </CardContent>
+                </Card>
+              </Link>
+            )}
 
-            <Link to={createPageUrl('AdminAudit')}>
-              <Card className="hover:shadow-lg transition-all hover:border-teal-200 dark:hover:border-teal-800 group">
-                <CardContent className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-500 to-slate-700 flex items-center justify-center flex-shrink-0">
-                      <FileText className="w-6 h-6 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-1">
-                        <h3 className="font-semibold text-slate-900 dark:text-white group-hover:text-teal-600 transition-colors">
-                          Audit log
-                        </h3>
-                        <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-teal-600 transition-colors" />
+            {hasAuditAccess && (
+              <Link to={createPageUrl('AdminAudit')}>
+                <Card className="hover:shadow-lg transition-all hover:border-teal-200 dark:hover:border-teal-800 group">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-500 to-slate-700 flex items-center justify-center flex-shrink-0">
+                        <FileText className="w-6 h-6 text-white" />
                       </div>
-                      <p className="text-sm text-slate-500 dark:text-slate-400">
-                        Historie změn obsahu
-                      </p>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-1">
+                          <h3 className="font-semibold text-slate-900 dark:text-white group-hover:text-teal-600 transition-colors">
+                            Audit log
+                          </h3>
+                          <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-teal-600 transition-colors" />
+                        </div>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                          Historie změn obsahu
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
+                  </CardContent>
+                </Card>
+              </Link>
+            )}
           </div>
         </div>
       )}

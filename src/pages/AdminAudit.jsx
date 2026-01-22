@@ -23,7 +23,7 @@ import { format } from 'date-fns';
 import { cs } from 'date-fns/locale';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import EmptyState from '@/components/common/EmptyState';
-import { isAdmin } from '@/components/utils/permissions';
+import { canViewAudit } from '@/components/utils/permissions';
 
 const actionColors = {
   create: 'bg-emerald-100 text-emerald-800',
@@ -40,20 +40,20 @@ export default function AdminAudit() {
   const { data: logs = [], isLoading } = useQuery({
     queryKey: ['auditLogs'],
     queryFn: () => base44.entities.AuditLog.list('-created_date', 100),
-    enabled: isAdmin(currentUser)
+    enabled: canViewAudit(currentUser)
   });
 
   const { data: users = [] } = useQuery({
     queryKey: ['users'],
     queryFn: () => base44.entities.User.list(),
-    enabled: isAdmin(currentUser)
+    enabled: canViewAudit(currentUser)
   });
 
-  if (!isAdmin(currentUser)) {
+  if (!canViewAudit(currentUser)) {
     return (
       <div className="p-6 text-center">
         <Shield className="w-12 h-12 mx-auto text-slate-300 mb-4" />
-        <p className="text-slate-500">Přístup odepřen</p>
+        <p className="text-slate-500">Nemáte oprávnění k audit logu</p>
       </div>
     );
   }

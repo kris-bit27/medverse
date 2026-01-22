@@ -30,7 +30,7 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
-import { isAdmin } from '@/components/utils/permissions';
+import { canManageUsers, getRoleDisplayName, getRoleBadgeColor } from '@/components/utils/permissions';
 
 export default function AdminUsers() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -44,7 +44,7 @@ export default function AdminUsers() {
   const { data: users = [], isLoading } = useQuery({
     queryKey: ['users'],
     queryFn: () => base44.entities.User.list('-created_date'),
-    enabled: isAdmin(currentUser)
+    enabled: canManageUsers(currentUser)
   });
 
   const updateUserMutation = useMutation({
@@ -57,11 +57,11 @@ export default function AdminUsers() {
     u.full_name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (!isAdmin(currentUser)) {
+  if (!canManageUsers(currentUser)) {
     return (
       <div className="p-6 text-center">
         <Shield className="w-12 h-12 mx-auto text-slate-300 mb-4" />
-        <p className="text-slate-500">Přístup odepřen</p>
+        <p className="text-slate-500">Nemáte oprávnění ke správě uživatelů</p>
       </div>
     );
   }
@@ -112,6 +112,7 @@ export default function AdminUsers() {
               <TableRow>
                 <TableHead>Uživatel</TableHead>
                 <TableHead>Role</TableHead>
+                <TableHead>Vzdělání</TableHead>
                 <TableHead>Plán</TableHead>
                 <TableHead>Registrace</TableHead>
               </TableRow>
@@ -129,22 +130,39 @@ export default function AdminUsers() {
                   </TableCell>
                   <TableCell>
                     <Select
-                      value={user.role || 'user'}
+                      value={user.role || 'student'}
                       onValueChange={(value) => updateUserMutation.mutate({ 
                         id: user.id, 
                         data: { role: value }
                       })}
                       disabled={user.id === currentUser?.id}
                     >
-                      <SelectTrigger className="w-[120px]">
+                      <SelectTrigger className="w-[140px]">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="user">User</SelectItem>
-                        <SelectItem value="editor">Editor</SelectItem>
-                        <SelectItem value="admin">Admin</SelectItem>
+                        <SelectItem value="student">
+                          <span className={getRoleBadgeColor('student')}>
+                            {getRoleDisplayName('student')}
+                          </span>
+                        </SelectItem>
+                        <SelectItem value="editor">
+                          <span className={getRoleBadgeColor('editor')}>
+                            {getRoleDisplayName('editor')}
+                          </span>
+                        </SelectItem>
+                        <SelectItem value="admin">
+                          <span className={getRoleBadgeColor('admin')}>
+                            {getRoleDisplayName('admin')}
+                          </span>
+                        </SelectItem>
                       </SelectContent>
                     </Select>
+                  </TableCell>
+                  <TableCell>
+                    <span className="text-sm text-slate-600 dark:text-slate-400">
+                      {user.education_level || '-'}
+                    </span>
                   </TableCell>
                   <TableCell>
                     <Select
@@ -175,7 +193,7 @@ export default function AdminUsers() {
               ))}
               {filteredUsers.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center py-8 text-slate-500">
+                  <TableCell colSpan={5} className="text-center py-8 text-slate-500">
                     Žádní uživatelé
                   </TableCell>
                 </TableRow>
