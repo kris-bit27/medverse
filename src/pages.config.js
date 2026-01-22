@@ -25,16 +25,16 @@ import ReviewQueue from './pages/ReviewQueue';
 import ReviewToday from './pages/ReviewToday';
 import ScholarSearch from './pages/ScholarSearch';
 import Search from './pages/Search';
+import StudyPackageCreate from './pages/StudyPackageCreate';
+import StudyPackageDetail from './pages/StudyPackageDetail';
+import StudyPackages from './pages/StudyPackages';
+import StudyPlanCreate from './pages/StudyPlanCreate';
+import StudyPlanDetail from './pages/StudyPlanDetail';
+import StudyPlanner from './pages/StudyPlanner';
 import TestGenerator from './pages/TestGenerator';
 import TestSession from './pages/TestSession';
 import ToolDetail from './pages/ToolDetail';
 import Tools from './pages/Tools';
-import StudyPackages from './pages/StudyPackages';
-import StudyPackageCreate from './pages/StudyPackageCreate';
-import StudyPackageDetail from './pages/StudyPackageDetail';
-import StudyPlanner from './pages/StudyPlanner';
-import StudyPlanCreate from './pages/StudyPlanCreate';
-import StudyPlanDetail from './pages/StudyPlanDetail';
 import __Layout from './Layout.jsx';
 
 
@@ -66,16 +66,16 @@ export const PAGES = {
     "ReviewToday": ReviewToday,
     "ScholarSearch": ScholarSearch,
     "Search": Search,
+    "StudyPackageCreate": StudyPackageCreate,
+    "StudyPackageDetail": StudyPackageDetail,
+    "StudyPackages": StudyPackages,
+    "StudyPlanCreate": StudyPlanCreate,
+    "StudyPlanDetail": StudyPlanDetail,
+    "StudyPlanner": StudyPlanner,
     "TestGenerator": TestGenerator,
     "TestSession": TestSession,
     "ToolDetail": ToolDetail,
     "Tools": Tools,
-    "StudyPackages": StudyPackages,
-    "StudyPackageCreate": StudyPackageCreate,
-    "StudyPackageDetail": StudyPackageDetail,
-    "StudyPlanner": StudyPlanner,
-    "StudyPlanCreate": StudyPlanCreate,
-    "StudyPlanDetail": StudyPlanDetail,
 }
 
 export const pagesConfig = {

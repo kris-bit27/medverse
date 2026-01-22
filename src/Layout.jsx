@@ -68,7 +68,7 @@ export default function Layout({ children, currentPageName }) {
   });
 
   useEffect(() => {
-    const saved = localStorage.getItem('mednexus-theme');
+    const saved = localStorage.getItem('medverse-theme');
     if (saved === 'dark') {
       setDarkMode(true);
       document.documentElement.classList.add('dark');
@@ -79,10 +79,10 @@ export default function Layout({ children, currentPageName }) {
     setDarkMode(!darkMode);
     if (!darkMode) {
       document.documentElement.classList.add('dark');
-      localStorage.setItem('mednexus-theme', 'dark');
+      localStorage.setItem('medverse-theme', 'dark');
     } else {
       document.documentElement.classList.remove('dark');
-      localStorage.setItem('mednexus-theme', 'light');
+      localStorage.setItem('medverse-theme', 'light');
     }
   };
 
@@ -120,7 +120,7 @@ export default function Layout({ children, currentPageName }) {
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center">
             <Stethoscope className="w-5 h-5 text-white" />
           </div>
-          <span className="font-bold text-slate-900 dark:text-white">MedNexus</span>
+          <span className="font-bold text-slate-900 dark:text-white">MedVerse</span>
         </Link>
       </header>
 
@@ -146,7 +146,7 @@ export default function Layout({ children, currentPageName }) {
                 <Stethoscope className="w-6 h-6 text-white" />
               </div>
               <div>
-                <span className="font-bold text-lg text-slate-900 dark:text-white">MedNexus</span>
+                <span className="font-bold text-lg text-slate-900 dark:text-white">MedVerse</span>
                 {user?.plan === 'premium' && (
                   <div className="flex items-center gap-1 text-amber-600">
                     <Crown className="w-3 h-3" />
