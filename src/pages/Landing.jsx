@@ -15,39 +15,55 @@ import {
   CheckCircle2,
   ArrowRight,
   Sparkles,
-  Crown
+  Crown,
+  ExternalLink
 } from 'lucide-react';
 
-const features = [
+const products = [
   {
+    id: 'edu',
     icon: GraduationCap,
-    title: 'Atestace & Státnice',
-    description: 'Strukturované otázky podle okruhů s ověřenými odpověďmi napříč všemi chirurgickými obory'
+    name: 'MedVerse EDU',
+    tagline: 'Atestace & Studium',
+    description: 'Strukturované otázky, spaced repetition a klinické algoritmy pro přípravu na atestace napříč všemi chirurgickými obory',
+    status: 'available',
+    color: 'from-teal-500 to-cyan-600'
   },
   {
-    icon: Brain,
-    title: 'Spaced Repetition',
-    description: 'Inteligentní opakování pro dlouhodobé zapamatování'
-  },
-  {
-    icon: BookOpen,
-    title: 'Klinické články',
-    description: 'Aktuální přehledy a doporučené postupy'
-  },
-  {
+    id: 'clinic',
     icon: Stethoscope,
-    title: 'Rozhodovací algoritmy',
-    description: 'Interaktivní nástroje pro klinickou praxi'
+    name: 'MedVerse CLINIC',
+    tagline: 'Plánování výkonů',
+    description: 'Nástroje pro plánování rekonstrukcí, databáze laloků a 3D vizualizace pro klinickou praxi',
+    status: 'coming-soon',
+    color: 'from-blue-500 to-indigo-600'
   },
   {
+    id: 'ai',
+    icon: Brain,
+    name: 'MedVerse AI',
+    tagline: 'AI Copilot',
+    description: 'Pokročilý AI asistent pro diferenciální diagnostiku, plánování léčby a decision support',
+    status: 'coming-soon',
+    color: 'from-purple-500 to-pink-600'
+  },
+  {
+    id: 'atlas',
+    icon: BookOpen,
+    name: 'MedVerse ATLAS',
+    tagline: 'Anatomie & Angiosomy',
+    description: 'Interaktivní anatomický atlas s angiosomovými mapami a vizualizací cévního zásobení',
+    status: 'coming-soon',
+    color: 'from-emerald-500 to-teal-600'
+  },
+  {
+    id: 'lab',
     icon: BarChart3,
-    title: 'Sledování pokroku',
-    description: 'Detailní statistiky a přehled vašeho učení'
-  },
-  {
-    icon: RefreshCw,
-    title: 'Denní opakování',
-    description: 'Personalizovaný plán pro efektivní přípravu'
+    name: 'MedVerse LAB',
+    tagline: '3D Guides & Tisk',
+    description: 'Navrhování a tisk 3D chirurgických nástrojů, cutting guides a LiDAR skenování',
+    status: 'coming-soon',
+    color: 'from-orange-500 to-red-600'
   }
 ];
 
@@ -105,21 +121,21 @@ export default function Landing() {
             transition={{ duration: 0.6 }}
             className="text-center max-w-4xl mx-auto"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400 text-sm font-medium mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 text-teal-700 dark:text-teal-400 text-sm font-medium mb-8 border border-teal-200 dark:border-teal-800">
               <Sparkles className="w-4 h-4" />
-              Nová generace medicínského vzdělávání
+              Ekosystém nástrojů pro moderní chirurgii
             </div>
             
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-slate-900 dark:text-white leading-tight mb-6">
-              Připravte se na
-              <span className="block bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
-                atestaci efektivně
+              Vaše chirurgická
+              <span className="block bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-600 bg-clip-text text-transparent">
+                digitální platforma
               </span>
             </h1>
             
-            <p className="text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Platforma pro studenty medicíny, rezidenty a atestované lékaře. 
-              Strukturované otázky, klinické algoritmy a spaced repetition pro dlouhodobé znalosti napříč všemi obory.
+            <p className="text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-3xl mx-auto leading-relaxed">
+              Od studia a atestací přes plánování výkonů až po 3D tisk chirurgických nástrojů. 
+              Kompletní ekosystém pro studenty, rezidenty i atestované chirurgy.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -165,39 +181,61 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Features */}
+      {/* Products */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-slate-900/50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              Vše pro vaši přípravu
+              Produktové portfolio MedVerse
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              Komplexní nástroje pro studenty před státnicemi, rezidenty i atestované lékaře
+              Pět specializovaných modulů pokrývajících celé spektrum chirurgické praxe
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((feature, i) => {
-              const Icon = feature.icon;
+            {products.map((product, i) => {
+              const Icon = product.icon;
               return (
                 <motion.div
-                  key={i}
+                  key={product.id}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
                 >
-                  <Card className="p-6 h-full border-0 shadow-lg shadow-slate-200/50 dark:shadow-none dark:bg-slate-800/50 hover:shadow-xl transition-shadow">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center mb-4">
-                      <Icon className="w-6 h-6 text-white" />
+                  <Card className={`p-6 h-full border-0 shadow-lg shadow-slate-200/50 dark:shadow-none dark:bg-slate-800/50 hover:shadow-xl transition-all group ${
+                    product.status === 'available' ? 'cursor-pointer hover:scale-105' : ''
+                  }`}>
+                    <div className="flex items-start justify-between mb-4">
+                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${product.color} flex items-center justify-center shadow-lg`}>
+                        <Icon className="w-6 h-6 text-white" />
+                      </div>
+                      {product.status === 'available' ? (
+                        <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">
+                          Dostupné
+                        </span>
+                      ) : (
+                        <span className="px-2 py-1 text-xs font-medium rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                          Připravujeme
+                        </span>
+                      )}
                     </div>
-                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
-                      {feature.title}
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-1">
+                      {product.name}
                     </h3>
-                    <p className="text-slate-600 dark:text-slate-400">
-                      {feature.description}
+                    <p className="text-sm font-medium text-teal-600 dark:text-teal-400 mb-3">
+                      {product.tagline}
                     </p>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                      {product.description}
+                    </p>
+                    {product.status === 'available' && (
+                      <div className="mt-4 flex items-center gap-2 text-teal-600 dark:text-teal-400 text-sm font-medium group-hover:gap-3 transition-all">
+                        Spustit EDU
+                        <ArrowRight className="w-4 h-4" />
+                      </div>
+                    )}
                   </Card>
                 </motion.div>
               );
@@ -217,7 +255,7 @@ export default function Landing() {
                 Připraveni začít?
               </h2>
               <p className="text-lg text-teal-100 mb-8 max-w-xl mx-auto">
-                Připojte se ke studentům a lékařům, kteří se připravují na zkoušky a atestace s MedVerse
+                Začněte s MedVerse EDU a připojte se ke studentům a lékařům, kteří již využívají naše nástroje
               </p>
               <Button 
                 size="lg"

@@ -120,7 +120,12 @@ export default function Layout({ children, currentPageName }) {
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center">
             <Stethoscope className="w-5 h-5 text-white" />
           </div>
-          <span className="font-bold text-slate-900 dark:text-white">MedVerse</span>
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-slate-900 dark:text-white">MedVerse</span>
+            <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400">
+              EDU
+            </span>
+          </div>
         </Link>
       </header>
 
@@ -146,7 +151,12 @@ export default function Layout({ children, currentPageName }) {
                 <Stethoscope className="w-6 h-6 text-white" />
               </div>
               <div>
-                <span className="font-bold text-lg text-slate-900 dark:text-white">MedVerse</span>
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-lg text-slate-900 dark:text-white">MedVerse</span>
+                  <span className="text-xs font-semibold px-2 py-0.5 rounded bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400">
+                    EDU
+                  </span>
+                </div>
                 {user?.plan === 'premium' && (
                   <div className="flex items-center gap-1 text-amber-600">
                     <Crown className="w-3 h-3" />
