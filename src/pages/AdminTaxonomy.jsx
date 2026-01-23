@@ -638,15 +638,16 @@ export default function AdminTaxonomy() {
               ) : topics.length === 0 ? (
                 <p className="text-center py-8 text-slate-500">Žádná témata</p>
               ) : (
-                okruhy.map((okruh) => {
-                  const okruhTopics = filteredTopics.filter(t => t.okruh_id === okruh.id);
-                  if (okruhTopics.length === 0) return null;
-                
-                return (
-                  <div key={okruh.id} className="mb-4">
-                    <p className="text-xs font-semibold text-slate-500 uppercase mb-2">{okruh.title}</p>
-                    <div className="space-y-1">
-                      {okruhTopics.map((topic) => {
+                <>
+                  {okruhy.map((okruh) => {
+                    const okruhTopics = filteredTopics.filter(t => t.okruh_id === okruh.id);
+                    if (okruhTopics.length === 0) return null;
+                  
+                  return (
+                    <div key={okruh.id} className="mb-4">
+                      <p className="text-xs font-semibold text-slate-500 uppercase mb-2">{okruh.title}</p>
+                      <div className="space-y-1">
+                        {okruhTopics.map((topic) => {
                       const questionCount = questions.filter(q => q.topic_id === topic.id).length;
                       return (
                         <div 
@@ -723,10 +724,101 @@ export default function AdminTaxonomy() {
                         </div>
                       );
                     })}
+                      </div>
                     </div>
-                  </div>
-                );
-              })
+                  );
+                })}
+                {(() => {
+                  const orphanedTopics = filteredTopics.filter(t => !t.okruh_id || !okruhy.find(o => o.id === t.okruh_id));
+                  if (orphanedTopics.length > 0) {
+                    return (
+                      <div className="mb-4">
+                        <p className="text-xs font-semibold text-red-500 uppercase mb-2">Témata bez okruhu ({orphanedTopics.length})</p>
+                        <div className="space-y-1">
+                          {orphanedTopics.map((topic) => {
+                            const questionCount = questions.filter(q => q.topic_id === topic.id).length;
+                            return (
+                              <div 
+                                key={topic.id}
+                                className="flex items-center justify-between p-2 bg-red-50 dark:bg-red-900/20 rounded-lg"
+                              >
+                                <div className="flex items-center gap-2 flex-1">
+                                  <span className="text-sm text-slate-900 dark:text-white">{topic.title}</span>
+                                  <Badge variant="secondary" className="text-xs">{questionCount}</Badge>
+                                  {topic.is_reviewed && (
+                                    <Badge className="text-xs bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                      <CheckCircle className="w-3 h-3 mr-1" />
+                                      Zkontrolováno
+                                    </Badge>
+                                  )}
+                                  {topic.is_published && (
+                                    <Badge className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                                      <Eye className="w-3 h-3 mr-1" />
+                                      Publikováno
+                                    </Badge>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Button 
+                                    variant="ghost" 
+                                    size="icon" 
+                                    className="h-7 w-7"
+                                    onClick={() => handleToggleReviewed(topic)}
+                                    title={topic.is_reviewed ? "Zrušit kontrolu" : "Označit jako zkontrolováno"}
+                                  >
+                                    <CheckCircle className={`w-3 h-3 ${topic.is_reviewed ? 'text-green-600' : 'text-slate-400'}`} />
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="icon" 
+                                    className="h-7 w-7"
+                                    onClick={() => handleTogglePublished(topic)}
+                                    title={topic.is_published ? "Skrýt" : "Publikovat"}
+                                  >
+                                    {topic.is_published ? (
+                                      <Eye className="w-3 h-3 text-blue-600" />
+                                    ) : (
+                                      <EyeOff className="w-3 h-3 text-slate-400" />
+                                    )}
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="icon" 
+                                    className="h-7 w-7"
+                                    onClick={() => {
+                                      setEditingTopic(topic);
+                                      setContentEditorOpen(true);
+                                    }}
+                                    title="Upravit obsah"
+                                  >
+                                    <BookOpen className="w-3 h-3" />
+                                  </Button>
+                                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEditTopic(topic)}>
+                                    <Pencil className="w-3 h-3" />
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="icon"
+                                    className="h-7 w-7 text-red-500 hover:text-red-600"
+                                    onClick={() => {
+                                      if (confirm('Opravdu smazat toto téma?')) {
+                                        deleteTopicMutation.mutate(topic.id);
+                                      }
+                                    }}
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                  </Button>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
+                </>
               )}
             </div>
           </CardContent>
