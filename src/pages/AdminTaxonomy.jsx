@@ -633,15 +633,20 @@ export default function AdminTaxonomy() {
               />
             </div>
             <div className="space-y-2 max-h-[500px] overflow-y-auto">
-              {okruhy.map((okruh) => {
-                const okruhTopics = filteredTopics.filter(t => t.okruh_id === okruh.id);
-                if (okruhTopics.length === 0) return null;
-              
-              return (
-                <div key={okruh.id} className="mb-4">
-                  <p className="text-xs font-semibold text-slate-500 uppercase mb-2">{okruh.title}</p>
-                  <div className="space-y-1">
-                    {okruhTopics.map((topic) => {
+              {filteredTopics.length === 0 && topics.length > 0 ? (
+                <p className="text-center py-8 text-slate-500">Žádná témata neodpovídají hledání</p>
+              ) : topics.length === 0 ? (
+                <p className="text-center py-8 text-slate-500">Žádná témata</p>
+              ) : (
+                okruhy.map((okruh) => {
+                  const okruhTopics = filteredTopics.filter(t => t.okruh_id === okruh.id);
+                  if (okruhTopics.length === 0) return null;
+                
+                return (
+                  <div key={okruh.id} className="mb-4">
+                    <p className="text-xs font-semibold text-slate-500 uppercase mb-2">{okruh.title}</p>
+                    <div className="space-y-1">
+                      {okruhTopics.map((topic) => {
                       const questionCount = questions.filter(q => q.topic_id === topic.id).length;
                       return (
                         <div 
@@ -718,15 +723,10 @@ export default function AdminTaxonomy() {
                         </div>
                       );
                     })}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-              {filteredTopics.length === 0 && topics.length > 0 && (
-                <p className="text-center py-8 text-slate-500">Žádná témata neodpovídají hledání</p>
-              )}
-              {topics.length === 0 && (
-                <p className="text-center py-8 text-slate-500">Žádná témata</p>
+                );
+              })
               )}
             </div>
           </CardContent>
