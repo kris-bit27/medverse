@@ -53,13 +53,17 @@ import {
   Ear,
   Waves,
   Dna,
-  Sparkles
+  Sparkles,
+  CheckSquare,
+  Square,
+  X
 } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import QuestionImporter from '@/components/admin/QuestionImporter';
 import TopicContentEditor from '@/components/admin/TopicContentEditor';
 import DisciplineIcon from '@/components/admin/DisciplineIcon';
 import AITaxonomyGenerator from '@/components/admin/AITaxonomyGenerator';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export default function AdminTaxonomy() {
   const [disciplineDialogOpen, setDisciplineDialogOpen] = useState(false);
@@ -75,6 +79,7 @@ export default function AdminTaxonomy() {
   const [okruhForm, setOkruhForm] = useState({ title: '', order: 0, description: '', clinical_discipline_id: '' });
   const [topicForm, setTopicForm] = useState({ title: '', okruh_id: '', order: 0 });
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTopics, setSelectedTopics] = useState([]);
   const queryClient = useQueryClient();
 
   const { data: disciplines = [] } = useQuery({
@@ -198,6 +203,66 @@ export default function AdminTaxonomy() {
       id: topic.id,
       data: { is_published: !topic.is_published }
     });
+  };
+
+  const handleBulkDelete = async () => {
+    if (!confirm(`Opravdu smazat ${selectedTopics.length} vybraných témat?`)) return;
+    
+    for (const topicId of selectedTopics) {
+      await deleteTopicMutation.mutateAsync(topicId);
+    }
+    setSelectedTopics([]);
+  };
+
+  const handleBulkPublish = async () => {
+    for (const topicId of selectedTopics) {
+      await updateTopicStatusMutation.mutateAsync({
+        id: topicId,
+        data: { is_published: true }
+      });
+    }
+    setSelectedTopics([]);
+  };
+
+  const handleBulkUnpublish = async () => {
+    for (const topicId of selectedTopics) {
+      await updateTopicStatusMutation.mutateAsync({
+        id: topicId,
+        data: { is_published: false }
+      });
+    }
+    setSelectedTopics([]);
+  };
+
+  const handleBulkReview = async () => {
+    const user = await base44.auth.me();
+    for (const topicId of selectedTopics) {
+      await updateTopicStatusMutation.mutateAsync({
+        id: topicId,
+        data: {
+          is_reviewed: true,
+          reviewed_by: user.id,
+          reviewed_at: new Date().toISOString()
+        }
+      });
+    }
+    setSelectedTopics([]);
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedTopics.length === filteredTopics.length) {
+      setSelectedTopics([]);
+    } else {
+      setSelectedTopics(filteredTopics.map(t => t.id));
+    }
+  };
+
+  const toggleSelectTopic = (topicId) => {
+    setSelectedTopics(prev => 
+      prev.includes(topicId) 
+        ? prev.filter(id => id !== topicId)
+        : [...prev, topicId]
+    );
   };
 
   const filteredTopics = topics.filter(t => 
@@ -632,6 +697,78 @@ export default function AdminTaxonomy() {
                 className="pl-10"
               />
             </div>
+
+            {selectedTopics.length > 0 && (
+              <div className="flex items-center gap-2 p-3 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-200 dark:border-teal-800">
+                <span className="text-sm font-medium text-teal-900 dark:text-teal-100">
+                  Vybráno: {selectedTopics.length}
+                </span>
+                <div className="flex gap-1 ml-auto">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="h-7 text-xs"
+                    onClick={handleBulkReview}
+                  >
+                    <CheckCircle className="w-3 h-3 mr-1" />
+                    Zkontrolovat
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="h-7 text-xs"
+                    onClick={handleBulkPublish}
+                  >
+                    <Eye className="w-3 h-3 mr-1" />
+                    Publikovat
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="h-7 text-xs"
+                    onClick={handleBulkUnpublish}
+                  >
+                    <EyeOff className="w-3 h-3 mr-1" />
+                    Skrýt
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="h-7 text-xs text-red-600 hover:text-red-700"
+                    onClick={handleBulkDelete}
+                  >
+                    <Trash2 className="w-3 h-3 mr-1" />
+                    Smazat
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="ghost" 
+                    className="h-7 w-7 p-0"
+                    onClick={() => setSelectedTopics([])}
+                  >
+                    <X className="w-3 h-3" />
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {filteredTopics.length > 0 && (
+              <div className="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-700">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 text-xs"
+                  onClick={toggleSelectAll}
+                >
+                  {selectedTopics.length === filteredTopics.length ? (
+                    <CheckSquare className="w-4 h-4 mr-1" />
+                  ) : (
+                    <Square className="w-4 h-4 mr-1" />
+                  )}
+                  {selectedTopics.length === filteredTopics.length ? 'Zrušit výběr' : 'Vybrat vše'}
+                </Button>
+              </div>
+            )}
             <div className="space-y-2 max-h-[500px] overflow-y-auto">
               {filteredTopics.length === 0 && topics.length > 0 ? (
                 <p className="text-center py-8 text-slate-500">Žádná témata neodpovídají hledání</p>
@@ -648,13 +785,17 @@ export default function AdminTaxonomy() {
                       <p className="text-xs font-semibold text-slate-500 uppercase mb-2">{okruh.title}</p>
                       <div className="space-y-1">
                         {okruhTopics.map((topic) => {
-                      const questionCount = questions.filter(q => q.topic_id === topic.id).length;
-                      return (
-                        <div 
-                          key={topic.id}
-                          className="flex items-center justify-between p-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg"
-                        >
-                          <div className="flex items-center gap-2 flex-1">
+                            const questionCount = questions.filter(q => q.topic_id === topic.id).length;
+                            return (
+                              <div 
+                                key={topic.id}
+                                className="flex items-center justify-between p-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg"
+                              >
+                                <div className="flex items-center gap-2 flex-1">
+                                  <Checkbox
+                                    checked={selectedTopics.includes(topic.id)}
+                                    onCheckedChange={() => toggleSelectTopic(topic.id)}
+                                  />
                             <span className="text-sm text-slate-900 dark:text-white">{topic.title}</span>
                             <Badge variant="secondary" className="text-xs">{questionCount}</Badge>
                             {topic.is_reviewed && (
@@ -743,6 +884,10 @@ export default function AdminTaxonomy() {
                                 className="flex items-center justify-between p-2 bg-red-50 dark:bg-red-900/20 rounded-lg"
                               >
                                 <div className="flex items-center gap-2 flex-1">
+                                  <Checkbox
+                                    checked={selectedTopics.includes(topic.id)}
+                                    onCheckedChange={() => toggleSelectTopic(topic.id)}
+                                  />
                                   <span className="text-sm text-slate-900 dark:text-white">{topic.title}</span>
                                   <Badge variant="secondary" className="text-xs">{questionCount}</Badge>
                                   {topic.is_reviewed && (
