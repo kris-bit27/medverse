@@ -83,16 +83,71 @@ Vrať JSON ve formátu:
   ]
 }`;
 
-      // Generate structure using OpenAI GPT-4o
-      const response = await base44.functions.invoke('generateTaxonomy', {
-        disciplineName: discipline.name,
-        sourceUrl: sourceUrl || null
+      // Generate structure using InvokeLLM (fallback if OpenAI fails)
+      const jsonSchema = {
+        type: "object",
+        properties: {
+          okruhy: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                title: { type: "string" },
+                description: { type: "string" },
+                order: { type: "number" },
+                topics: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      title: { type: "string" },
+                      order: { type: "number" },
+                      learning_objectives: {
+                        type: "array",
+                        items: { type: "string" }
+                      },
+                      questions: {
+                        type: "array",
+                        items: {
+                          type: "object",
+                          properties: {
+                            title: { type: "string" },
+                            question_text: { type: "string" },
+                            answer_rich: { type: "string" },
+                            answer_structured: {
+                              type: "object",
+                              properties: {
+                                definice: { type: "string" },
+                                diagnostika: { type: "string" },
+                                lecba: { type: "string" },
+                                komplikace: { type: "string" },
+                                pearls: { type: "string" }
+                              }
+                            },
+                            difficulty: { type: "number" },
+                            visibility: { type: "string" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      };
+
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt: prompt,
+        add_context_from_internet: !!sourceUrl,
+        response_json_schema: jsonSchema
       });
 
       console.log('AI Response:', response);
       
-      // Extract data from response
-      const generatedData = response.data?.data || response.data;
+      // Extract data from response (InvokeLLM returns data directly)
+      const generatedData = response;
       
       if (!generatedData || !generatedData.okruhy) {
         throw new Error('AI neposkytla validní data. Zkuste to znovu.');
