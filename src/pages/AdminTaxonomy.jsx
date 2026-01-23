@@ -589,8 +589,8 @@ export default function AdminTaxonomy() {
                 </div>
               </DialogContent>
             </Dialog>
-            </CardHeader>
-            <CardContent className="space-y-3">
+          </CardHeader>
+          <CardContent className="space-y-3">
             <div className="space-y-2">
               <Label className="text-xs">Filtrovat podle oboru</Label>
               <Select value={filterDiscipline} onValueChange={setFilterDiscipline}>
@@ -645,6 +645,7 @@ export default function AdminTaxonomy() {
             {okruhy.length === 0 && (
               <p className="text-center py-8 text-slate-500">Žádné okruhy</p>
             )}
+            </div>
           </CardContent>
         </Card>
 
