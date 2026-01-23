@@ -52,12 +52,14 @@ import {
   Eye as EyeIcon,
   Ear,
   Waves,
-  Dna
+  Dna,
+  Sparkles
 } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import QuestionImporter from '@/components/admin/QuestionImporter';
 import TopicContentEditor from '@/components/admin/TopicContentEditor';
 import DisciplineIcon from '@/components/admin/DisciplineIcon';
+import AITaxonomyGenerator from '@/components/admin/AITaxonomyGenerator';
 
 export default function AdminTaxonomy() {
   const [disciplineDialogOpen, setDisciplineDialogOpen] = useState(false);
@@ -65,6 +67,7 @@ export default function AdminTaxonomy() {
   const [topicDialogOpen, setTopicDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
   const [contentEditorOpen, setContentEditorOpen] = useState(false);
+  const [aiGeneratorOpen, setAiGeneratorOpen] = useState(false);
   const [editingDiscipline, setEditingDiscipline] = useState(null);
   const [editingOkruh, setEditingOkruh] = useState(null);
   const [editingTopic, setEditingTopic] = useState(null);
@@ -225,10 +228,16 @@ export default function AdminTaxonomy() {
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
           Taxonomie
         </h1>
-        <Button onClick={() => setImportDialogOpen(true)} variant="outline">
-          <Upload className="w-4 h-4 mr-2" />
-          Importovat otázky
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={() => setAiGeneratorOpen(true)} className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+            <Sparkles className="w-4 h-4 mr-2" />
+            AI generátor
+          </Button>
+          <Button onClick={() => setImportDialogOpen(true)} variant="outline">
+            <Upload className="w-4 h-4 mr-2" />
+            Importovat otázky
+          </Button>
+        </div>
       </div>
 
       {/* Clinical Disciplines */}
@@ -758,6 +767,24 @@ export default function AdminTaxonomy() {
               }}
             />
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* AI Taxonomy Generator Dialog */}
+      <Dialog open={aiGeneratorOpen} onOpenChange={setAiGeneratorOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>AI generátor taxonomie</DialogTitle>
+          </DialogHeader>
+          <AITaxonomyGenerator 
+            disciplines={disciplines}
+            onComplete={() => {
+              setAiGeneratorOpen(false);
+              queryClient.invalidateQueries(['okruhy']);
+              queryClient.invalidateQueries(['topics']);
+              queryClient.invalidateQueries(['questions']);
+            }}
+          />
         </DialogContent>
       </Dialog>
     </div>
