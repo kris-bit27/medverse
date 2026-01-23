@@ -37,11 +37,27 @@ import {
   CheckCircle,
   Eye,
   EyeOff,
-  Search
+  Search,
+  Heart,
+  Brain,
+  Bone,
+  Syringe,
+  Activity,
+  Scale,
+  Baby,
+  Pill,
+  Microscope,
+  Radiation,
+  Droplet,
+  Eye as EyeIcon,
+  Ear,
+  Waves,
+  Dna
 } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import QuestionImporter from '@/components/admin/QuestionImporter';
 import TopicContentEditor from '@/components/admin/TopicContentEditor';
+import DisciplineIcon from '@/components/admin/DisciplineIcon';
 
 export default function AdminTaxonomy() {
   const [disciplineDialogOpen, setDisciplineDialogOpen] = useState(false);
@@ -254,13 +270,113 @@ export default function AdminTaxonomy() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Ikona (emoji)</Label>
-                  <Input
-                    value={disciplineForm.icon}
-                    onChange={(e) => setDisciplineForm(f => ({ ...f, icon: e.target.value }))}
-                    placeholder="🔬"
-                    maxLength={2}
-                  />
+                  <Label>Ikona</Label>
+                  <Select 
+                    value={disciplineForm.icon} 
+                    onValueChange={(v) => setDisciplineForm(f => ({ ...f, icon: v }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Vyberte ikonu" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-[300px]">
+                      <SelectItem value="heart">
+                        <div className="flex items-center gap-2">
+                          <Heart className="w-4 h-4" />
+                          <span>Srdce (Kardiologie)</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="brain">
+                        <div className="flex items-center gap-2">
+                          <Brain className="w-4 h-4" />
+                          <span>Mozek (Neurologie)</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="bone">
+                        <div className="flex items-center gap-2">
+                          <Bone className="w-4 h-4" />
+                          <span>Kost (Ortopedie)</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="syringe">
+                        <div className="flex items-center gap-2">
+                          <Syringe className="w-4 h-4" />
+                          <span>Injekce (Anestezie)</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="activity">
+                        <div className="flex items-center gap-2">
+                          <Activity className="w-4 h-4" />
+                          <span>Aktivita (Chirurgie)</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="scale">
+                        <div className="flex items-center gap-2">
+                          <Scale className="w-4 h-4" />
+                          <span>Váha (Endokrinologie)</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="baby">
+                        <div className="flex items-center gap-2">
+                          <Baby className="w-4 h-4" />
+                          <span>Dítě (Pediatrie)</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="pill">
+                        <div className="flex items-center gap-2">
+                          <Pill className="w-4 h-4" />
+                          <span>Pilulka (Farmakologie)</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="microscope">
+                        <div className="flex items-center gap-2">
+                          <Microscope className="w-4 h-4" />
+                          <span>Mikroskop (Patologie)</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="radiation">
+                        <div className="flex items-center gap-2">
+                          <Radiation className="w-4 h-4" />
+                          <span>Záření (Radiologie)</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="droplet">
+                        <div className="flex items-center gap-2">
+                          <Droplet className="w-4 h-4" />
+                          <span>Kapka (Dermatologie)</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="eye">
+                        <div className="flex items-center gap-2">
+                          <EyeIcon className="w-4 h-4" />
+                          <span>Oko (Oftalmologie)</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="ear">
+                        <div className="flex items-center gap-2">
+                          <Ear className="w-4 h-4" />
+                          <span>Ucho (ORL)</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="waves">
+                        <div className="flex items-center gap-2">
+                          <Waves className="w-4 h-4" />
+                          <span>Vlny (Psychiatrie)</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="dna">
+                        <div className="flex items-center gap-2">
+                          <Dna className="w-4 h-4" />
+                          <span>DNA (Genetika)</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="stethoscope">
+                        <div className="flex items-center gap-2">
+                          <Stethoscope className="w-4 h-4" />
+                          <span>Stetoskop (Všeobecné)</span>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <Button 
                   onClick={() => saveDisciplineMutation.mutate(disciplineForm)}
@@ -283,8 +399,10 @@ export default function AdminTaxonomy() {
                   key={discipline.id}
                   className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg"
                 >
-                  <div className="flex items-center gap-2">
-                    {discipline.icon && <span className="text-xl">{discipline.icon}</span>}
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center flex-shrink-0">
+                      <DisciplineIcon icon={discipline.icon} className="w-5 h-5 text-white" />
+                    </div>
                     <div>
                       <p className="font-medium text-slate-900 dark:text-white text-sm">{discipline.name}</p>
                       <p className="text-xs text-slate-500">{disciplineOkruhy.length} okruhů</p>

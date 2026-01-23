@@ -29,6 +29,7 @@ import Search from './pages/Search';
 import StudyPackageCreate from './pages/StudyPackageCreate';
 import StudyPackageDetail from './pages/StudyPackageDetail';
 import StudyPackages from './pages/StudyPackages';
+import StudyPlanAI from './pages/StudyPlanAI';
 import StudyPlanCreate from './pages/StudyPlanCreate';
 import StudyPlanDetail from './pages/StudyPlanDetail';
 import StudyPlanner from './pages/StudyPlanner';
@@ -37,7 +38,6 @@ import TestSession from './pages/TestSession';
 import ToolDetail from './pages/ToolDetail';
 import Tools from './pages/Tools';
 import TopicDetail from './pages/TopicDetail';
-import StudyPlanAI from './pages/StudyPlanAI';
 import __Layout from './Layout.jsx';
 
 
@@ -73,6 +73,7 @@ export const PAGES = {
     "StudyPackageCreate": StudyPackageCreate,
     "StudyPackageDetail": StudyPackageDetail,
     "StudyPackages": StudyPackages,
+    "StudyPlanAI": StudyPlanAI,
     "StudyPlanCreate": StudyPlanCreate,
     "StudyPlanDetail": StudyPlanDetail,
     "StudyPlanner": StudyPlanner,
@@ -81,7 +82,6 @@ export const PAGES = {
     "ToolDetail": ToolDetail,
     "Tools": Tools,
     "TopicDetail": TopicDetail,
-    "StudyPlanAI": StudyPlanAI,
 }
 
 export const pagesConfig = {
