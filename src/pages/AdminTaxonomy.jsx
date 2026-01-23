@@ -76,10 +76,13 @@ export default function AdminTaxonomy() {
   const [editingOkruh, setEditingOkruh] = useState(null);
   const [editingTopic, setEditingTopic] = useState(null);
   const [disciplineForm, setDisciplineForm] = useState({ name: '', description: '', icon: '' });
-  const [okruhForm, setOkruhForm] = useState({ title: '', order: 0, description: '', clinical_discipline_id: '' });
-  const [topicForm, setTopicForm] = useState({ title: '', okruh_id: '', order: 0 });
+  const [okruhForm, setOkruhForm] = useState({ title: '', description: '', clinical_discipline_id: '' });
+  const [topicForm, setTopicForm] = useState({ title: '', okruh_id: '' });
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTopics, setSelectedTopics] = useState([]);
+  const [filterDiscipline, setFilterDiscipline] = useState('all');
+  const [filterOkruh, setFilterOkruh] = useState('all');
+  const [filterStatus, setFilterStatus] = useState('all');
   const queryClient = useQueryClient();
 
   const { data: disciplines = [] } = useQuery({
@@ -115,6 +118,7 @@ export default function AdminTaxonomy() {
       setDisciplineDialogOpen(false);
       setEditingDiscipline(null);
       setDisciplineForm({ name: '', description: '', icon: '' });
+      queryClient.invalidateQueries(['okruhy']);
     }
   });
 
@@ -134,7 +138,7 @@ export default function AdminTaxonomy() {
       queryClient.invalidateQueries(['okruhy']);
       setOkruhDialogOpen(false);
       setEditingOkruh(null);
-      setOkruhForm({ title: '', order: 0, description: '', clinical_discipline_id: '' });
+      setOkruhForm({ title: '', description: '', clinical_discipline_id: '' });
     }
   });
 
@@ -154,7 +158,7 @@ export default function AdminTaxonomy() {
       queryClient.invalidateQueries(['topics']);
       setTopicDialogOpen(false);
       setEditingTopic(null);
-      setTopicForm({ title: '', okruh_id: '', order: 0 });
+      setTopicForm({ title: '', okruh_id: '' });
     }
   });
 
@@ -176,13 +180,13 @@ export default function AdminTaxonomy() {
 
   const openEditOkruh = (okruh) => {
     setEditingOkruh(okruh);
-    setOkruhForm({ title: okruh.title, order: okruh.order || 0, description: okruh.description || '', clinical_discipline_id: okruh.clinical_discipline_id || '' });
+    setOkruhForm({ title: okruh.title, description: okruh.description || '', clinical_discipline_id: okruh.clinical_discipline_id || '' });
     setOkruhDialogOpen(true);
   };
 
   const openEditTopic = (topic) => {
     setEditingTopic(topic);
-    setTopicForm({ title: topic.title, okruh_id: topic.okruh_id, order: topic.order || 0 });
+    setTopicForm({ title: topic.title, okruh_id: topic.okruh_id });
     setTopicDialogOpen(true);
   };
 
@@ -265,9 +269,20 @@ export default function AdminTaxonomy() {
     );
   };
 
-  const filteredTopics = topics.filter(t => 
-    !searchQuery || t.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredOkruhy = okruhy.filter(o => {
+    if (filterDiscipline !== 'all' && o.clinical_discipline_id !== filterDiscipline) return false;
+    return true;
+  });
+
+  const filteredTopics = topics.filter(t => {
+    if (searchQuery && !t.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    if (filterOkruh !== 'all' && t.okruh_id !== filterOkruh) return false;
+    if (filterStatus === 'published' && !t.is_published) return false;
+    if (filterStatus === 'unpublished' && t.is_published) return false;
+    if (filterStatus === 'reviewed' && !t.is_reviewed) return false;
+    if (filterStatus === 'unreviewed' && t.is_reviewed) return false;
+    return true;
+  });
 
   if (isLoading) {
     return (
@@ -521,7 +536,7 @@ export default function AdminTaxonomy() {
               <DialogTrigger asChild>
                 <Button size="sm" onClick={() => {
                   setEditingOkruh(null);
-                  setOkruhForm({ title: '', order: okruhy.length + 1, description: '' });
+                  setOkruhForm({ title: '', description: '', clinical_discipline_id: '' });
                 }}>
                   <Plus className="w-4 h-4 mr-1" />
                   Přidat
@@ -556,18 +571,11 @@ export default function AdminTaxonomy() {
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label>Pořadí</Label>
-                    <Input
-                      type="number"
-                      value={okruhForm.order}
-                      onChange={(e) => setOkruhForm(f => ({ ...f, order: parseInt(e.target.value) || 0 }))}
-                    />
-                  </div>
-                  <div className="space-y-2">
                     <Label>Popis</Label>
                     <Textarea
                       value={okruhForm.description}
                       onChange={(e) => setOkruhForm(f => ({ ...f, description: e.target.value }))}
+                      placeholder="Stručný popis okruhu"
                     />
                   </div>
                   <Button 
@@ -581,9 +589,24 @@ export default function AdminTaxonomy() {
                 </div>
               </DialogContent>
             </Dialog>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {okruhy.map((okruh) => {
+            </CardHeader>
+            <CardContent className="space-y-3">
+            <div className="space-y-2">
+              <Label className="text-xs">Filtrovat podle oboru</Label>
+              <Select value={filterDiscipline} onValueChange={setFilterDiscipline}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Všechny obory" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Všechny obory</SelectItem>
+                  {disciplines.map(d => (
+                    <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              {filteredOkruhy.map((okruh) => {
               const topicCount = topics.filter(t => t.okruh_id === okruh.id).length;
               const questionCount = questions.filter(q => q.okruh_id === okruh.id).length;
               
@@ -616,6 +639,9 @@ export default function AdminTaxonomy() {
                 </div>
               );
             })}
+            {filteredOkruhy.length === 0 && okruhy.length > 0 && (
+              <p className="text-center py-8 text-slate-500">Žádné okruhy pro vybraný obor</p>
+            )}
             {okruhy.length === 0 && (
               <p className="text-center py-8 text-slate-500">Žádné okruhy</p>
             )}
@@ -633,7 +659,7 @@ export default function AdminTaxonomy() {
               <DialogTrigger asChild>
                 <Button size="sm" onClick={() => {
                   setEditingTopic(null);
-                  setTopicForm({ title: '', okruh_id: okruhy[0]?.id || '', order: 0 });
+                  setTopicForm({ title: '', okruh_id: okruhy[0]?.id || '' });
                 }}>
                   <Plus className="w-4 h-4 mr-1" />
                   Přidat
@@ -667,17 +693,9 @@ export default function AdminTaxonomy() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="space-y-2">
-                    <Label>Pořadí</Label>
-                    <Input
-                      type="number"
-                      value={topicForm.order}
-                      onChange={(e) => setTopicForm(f => ({ ...f, order: parseInt(e.target.value) || 0 }))}
-                    />
-                  </div>
                   <Button 
                     onClick={() => saveTopicMutation.mutate(topicForm)}
-                    disabled={saveTopicMutation.isPending}
+                    disabled={saveTopicMutation.isPending || !topicForm.title || !topicForm.okruh_id}
                     className="w-full"
                   >
                     {saveTopicMutation.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
@@ -696,6 +714,39 @@ export default function AdminTaxonomy() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
               />
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1">
+                <Label className="text-xs">Okruh</Label>
+                <Select value={filterOkruh} onValueChange={setFilterOkruh}>
+                  <SelectTrigger className="h-9">
+                    <SelectValue placeholder="Všechny okruhy" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Všechny okruhy</SelectItem>
+                    {okruhy.map(o => (
+                      <SelectItem key={o.id} value={o.id}>{o.title}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1">
+                <Label className="text-xs">Stav</Label>
+                <Select value={filterStatus} onValueChange={setFilterStatus}>
+                  <SelectTrigger className="h-9">
+                    <SelectValue placeholder="Všechny stavy" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Všechny stavy</SelectItem>
+                    <SelectItem value="published">Publikováno</SelectItem>
+                    <SelectItem value="unpublished">Nepublikováno</SelectItem>
+                    <SelectItem value="reviewed">Zkontrolováno</SelectItem>
+                    <SelectItem value="unreviewed">Nezkontrolováno</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             {selectedTopics.length > 0 && (
@@ -771,12 +822,16 @@ export default function AdminTaxonomy() {
             )}
             <div className="space-y-2 max-h-[500px] overflow-y-auto">
               {filteredTopics.length === 0 && topics.length > 0 ? (
-                <p className="text-center py-8 text-slate-500">Žádná témata neodpovídají hledání</p>
+                <p className="text-center py-8 text-slate-500">
+                  {searchQuery || filterOkruh !== 'all' || filterStatus !== 'all' 
+                    ? 'Žádná témata neodpovídají filtrům' 
+                    : 'Žádná témata'}
+                </p>
               ) : topics.length === 0 ? (
                 <p className="text-center py-8 text-slate-500">Žádná témata</p>
               ) : (
                 <>
-                  {okruhy.map((okruh) => {
+                  {filteredOkruhy.map((okruh) => {
                     const okruhTopics = filteredTopics.filter(t => t.okruh_id === okruh.id);
                     if (okruhTopics.length === 0) return null;
                   
