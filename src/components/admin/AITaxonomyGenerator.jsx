@@ -86,7 +86,7 @@ Vrať JSON ve formátu:
       // Generate structure using AI
       const response = await base44.integrations.Core.InvokeLLM({
         prompt,
-        add_context_from_internet: true,
+        add_context_from_internet: !!sourceUrl,
         response_json_schema: {
           type: "object",
           properties: {
@@ -142,7 +142,14 @@ Vrať JSON ve formátu:
         }
       });
 
-      const generatedData = response.data;
+      console.log('AI Response:', response);
+      
+      // Extract data from response
+      const generatedData = response.data || response;
+      
+      if (!generatedData || !generatedData.okruhy) {
+        throw new Error('AI neposkytla validní data. Zkuste to znovu.');
+      }
       
       // Create all entities
       let createdOkruhy = 0;
