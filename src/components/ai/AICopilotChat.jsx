@@ -59,8 +59,18 @@ export default function AICopilotChat({ agentName = 'copilot', initialContext = 
     const messageContent = input.trim();
     setInput('');
     
-    if (!currentConversation) {
-      await createNewConversation();
+    let conversation = currentConversation;
+    
+    if (!conversation) {
+      conversation = await base44.agents.createConversation({
+        agent_name: agentName,
+        metadata: {
+          name: `Konverzace ${new Date().toLocaleDateString('cs-CZ')}`,
+          context: initialContext
+        }
+      });
+      setCurrentConversation(conversation);
+      await loadConversations();
     }
 
     const userMessage = { role: 'user', content: messageContent };
@@ -68,13 +78,13 @@ export default function AICopilotChat({ agentName = 'copilot', initialContext = 
     setIsStreaming(true);
 
     const unsubscribe = base44.agents.subscribeToConversation(
-      currentConversation?.id || conversations[0]?.id,
+      conversation.id,
       (data) => {
         setMessages(data.messages || []);
       }
     );
 
-    await base44.agents.addMessage(currentConversation, userMessage);
+    await base44.agents.addMessage(conversation, userMessage);
     
     setTimeout(() => {
       unsubscribe();
