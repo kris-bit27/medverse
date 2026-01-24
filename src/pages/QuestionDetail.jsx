@@ -3,39 +3,38 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
 import { 
   ChevronLeft, 
   Bookmark, 
   BookmarkCheck,
-  Eye,
-  EyeOff,
-  Save,
-  Loader2,
-  FileDown
+  FileDown,
+  CheckCircle2,
+  Sparkles,
+  Brain,
+  StickyNote
 } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import DifficultyIndicator from '@/components/ui/DifficultyIndicator';
 import StatusBadge from '@/components/ui/StatusBadge';
 import VisibilityBadge from '@/components/common/VisibilityBadge';
-import AnswerSection from '@/components/questions/AnswerSection';
 import QuestionActions from '@/components/questions/QuestionActions';
-import QuestionAIAssistant from '@/components/ai/QuestionAIAssistant';
+import OfficialAnswerTab from '@/components/questions/OfficialAnswerTab';
+import AIExamTab from '@/components/questions/AIExamTab';
+import QuizFlashcardsTab from '@/components/questions/QuizFlashcardsTab';
+import NotesTab from '@/components/questions/NotesTab';
 import { calculateNextReview, RATINGS } from '@/components/utils/srs';
 import { canAccessContent } from '@/components/utils/permissions';
+import { canUseFeature } from '@/components/utils/featureAccess';
 import jsPDF from 'jspdf';
 
 export default function QuestionDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   const questionId = urlParams.get('id');
 
-  const [showAnswer, setShowAnswer] = useState(false);
-  const [userNote, setUserNote] = useState('');
-  const [noteSaving, setNoteSaving] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: user } = useQuery({
@@ -77,11 +76,7 @@ export default function QuestionDetail() {
         user_id: user.id, 
         question_id: questionId 
       });
-      if (results.length > 0) {
-        setUserNote(results[0].user_note || '');
-        return results[0];
-      }
-      return null;
+      return results[0] || null;
     },
     enabled: !!user?.id && !!questionId
   });
@@ -141,23 +136,13 @@ export default function QuestionDetail() {
     }
   });
 
-  const handleSaveNote = async () => {
-    setNoteSaving(true);
-    if (progress) {
-      await base44.entities.UserProgress.update(progress.id, { user_note: userNote });
-    } else {
-      await base44.entities.UserProgress.create({
-        user_id: user.id,
-        question_id: questionId,
-        user_note: userNote,
-        status: 'new'
-      });
-    }
-    queryClient.invalidateQueries(['questionProgress', user?.id, questionId]);
-    setNoteSaving(false);
-  };
-
   const exportToPDF = () => {
+    const pdfCheck = canUseFeature(user, 'pdf_export');
+    if (!pdfCheck.allowed) {
+      alert(pdfCheck.reason);
+      return;
+    }
+    
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
     const margin = 20;
@@ -196,21 +181,6 @@ export default function QuestionDetail() {
         doc.text(line, margin, yPos);
         yPos += 6;
       });
-    }
-
-    // User notes
-    if (userNote) {
-      yPos += 10;
-      if (yPos > 250) {
-        doc.addPage();
-        yPos = 20;
-      }
-      doc.setFont(undefined, 'bold');
-      doc.text('Moje poznamky:', margin, yPos);
-      yPos += 8;
-      doc.setFont(undefined, 'normal');
-      const noteLines = doc.splitTextToSize(userNote, maxWidth);
-      doc.text(noteLines, margin, yPos);
     }
 
     doc.save(`${question.title.substring(0, 30)}.pdf`);
@@ -270,13 +240,6 @@ export default function QuestionDetail() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {user && question && (
-              <QuestionAIAssistant 
-                question={question} 
-                user={user}
-                onNoteSaved={() => queryClient.invalidateQueries(['questionProgress', user?.id, questionId])}
-              />
-            )}
             <Button
               variant="outline"
               size="icon"
@@ -309,65 +272,57 @@ export default function QuestionDetail() {
         </CardContent>
       </Card>
 
-      {/* Show/hide answer button */}
+      {/* Tab layout */}
       {hasAccess ? (
         <>
-          <Button
-            onClick={() => setShowAnswer(!showAnswer)}
-            variant="outline"
-            className="w-full mb-6"
-          >
-            {showAnswer ? <EyeOff className="w-4 h-4 mr-2" /> : <Eye className="w-4 h-4 mr-2" />}
-            {showAnswer ? 'Skrýt odpověď' : 'Zobrazit odpověď'}
-          </Button>
+          <Tabs defaultValue="official" className="mb-6">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="official" className="gap-2">
+                <CheckCircle2 className="w-4 h-4" />
+                Oficiální odpověď
+              </TabsTrigger>
+              <TabsTrigger value="ai" className="gap-2">
+                <Sparkles className="w-4 h-4" />
+                AI – Zkouškově
+              </TabsTrigger>
+              <TabsTrigger value="quiz" className="gap-2">
+                <Brain className="w-4 h-4" />
+                Quiz / Flashcards
+              </TabsTrigger>
+              <TabsTrigger value="notes" className="gap-2">
+                <StickyNote className="w-4 h-4" />
+                Poznámky
+              </TabsTrigger>
+            </TabsList>
 
-          {/* Answer */}
-          {showAnswer && (
-            <>
-              <AnswerSection
-                answerRich={question.answer_rich}
-                answerStructured={question.answer_structured}
-                refs={question.refs}
-                images={question.images}
+            <TabsContent value="official" className="mt-6">
+              <OfficialAnswerTab question={question} />
+            </TabsContent>
+
+            <TabsContent value="ai" className="mt-6">
+              <AIExamTab
+                question={question}
+                user={user}
+                topic={topic}
+                onNoteSaved={() => queryClient.invalidateQueries(['userNotes', user?.id, questionId])}
               />
+            </TabsContent>
 
-              {/* Actions */}
-              <div className="mt-6">
-                <QuestionActions
-                  onAction={(action) => progressMutation.mutate(action)}
-                  isLoading={progressMutation.isPending}
-                  currentStatus={progress?.status}
-                />
-              </div>
-            </>
-          )}
+            <TabsContent value="quiz" className="mt-6">
+              <QuizFlashcardsTab question={question} user={user} topic={topic} />
+            </TabsContent>
 
-          {/* Notes tab */}
-          <Card className="mt-6">
-            <CardHeader>
-              <CardTitle className="text-lg">Moje poznámky</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Textarea
-                placeholder="Přidejte si vlastní poznámky k této otázce..."
-                value={userNote}
-                onChange={(e) => setUserNote(e.target.value)}
-                className="min-h-[100px] mb-3"
-              />
-              <Button
-                onClick={handleSaveNote}
-                disabled={noteSaving}
-                size="sm"
-              >
-                {noteSaving ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  <Save className="w-4 h-4 mr-2" />
-                )}
-                Uložit poznámku
-              </Button>
-            </CardContent>
-          </Card>
+            <TabsContent value="notes" className="mt-6">
+              <NotesTab question={question} user={user} />
+            </TabsContent>
+          </Tabs>
+
+          {/* Actions */}
+          <QuestionActions
+            onAction={(action) => progressMutation.mutate(action)}
+            isLoading={progressMutation.isPending}
+            currentStatus={progress?.status}
+          />
         </>
       ) : (
         <Card className="p-8 text-center bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800">
