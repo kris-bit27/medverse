@@ -32,6 +32,7 @@ export default function TopicContentEditorV2({ topic, onSave }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [newObjective, setNewObjective] = useState('');
   const [reviewResult, setReviewResult] = useState(null);
+  const [lastGenerated, setLastGenerated] = useState(null);
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -87,6 +88,7 @@ export default function TopicContentEditorV2({ topic, onSave }) {
         }));
       }
 
+      setLastGenerated(result);
       toast.success('Obsah vygenerován');
     } catch (error) {
       console.error('AI generation error:', error);
@@ -122,6 +124,7 @@ export default function TopicContentEditorV2({ topic, onSave }) {
       const result = response.data || response;
       const review = result.structuredData || result;
       setReviewResult(review);
+      setLastGenerated(result);
 
       // Ulož skóre do topic
       await base44.entities.Topic.update(topic.id, {
@@ -380,6 +383,18 @@ export default function TopicContentEditorV2({ topic, onSave }) {
             </div>
           )}
         </div>
+      )}
+
+      {/* Hippo Review Panel - zobrazí se při LOW confidence nebo missing topics */}
+      {lastGenerated && (
+        <TopicContentReviewPanel 
+          topic={topic}
+          aiResponse={lastGenerated}
+          onContentImproved={(improved) => {
+            setLastGenerated(improved);
+            toast.success('Obsah vylepšen – zkopírujte ho do editoru');
+          }}
+        />
       )}
 
       <Button
