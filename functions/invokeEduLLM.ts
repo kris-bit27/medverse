@@ -66,6 +66,7 @@ const MODE_PROMPTS = {
   question_quiz: `Vytvoř 5 MCQ otázek (A/B/C/D) pro procvičení pochopení tématu. Mix obtížnosti: 2 easy, 2 medium, 1 hard.`,
   question_simplify: `Vysvětli téma srozumitelně pro studenta medicíny. Zachovej faktickou správnost a zaměř se na porozumění.`,
   topic_generate_fulltext: `Generuješ kompletní studijní text zaměřený na porozumění. Rozsah: 2-4 stránky textu. Styl: vysvětlující, strukturovaný, srozumitelný.`,
+  topic_generate_template: `Generuješ obsah pro všechny sekce EDU template tématu. Zaměř se na porozumění, souvislosti a mentální modely. NIKDY negeneruj léčebné postupy pro pacienty. Výstup: JSON s 8 sekcemi markdown (overview_md, principles_md, relations_md, clinical_thinking_md, common_pitfalls_md, mental_model_md, scenarios_md, key_takeaways_md).`,
   topic_summarize: `Vytvoř shrnutí v odrážkách z poskytnutého plného textu. Zachyť všechny klíčové body, definice, souvislosti.`,
   topic_deep_dive: `Vytvoř rozšířený obsah zahrnující hlubší souvislosti, nejnovější výzkum, pokročilé koncepty a edge cases.`,
   topic_fill_missing: `Doplň pouze pole, která jsou prázdná. Nepiš nic navíc.`,

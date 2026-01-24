@@ -132,7 +132,8 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
     );
   }
 
-  const hasContent = topic.full_text_content || topic.bullet_points_summary || topic.deep_dive_content;
+  const hasContent = topic.overview_md || topic.principles_md || topic.full_text_content || topic.bullet_points_summary || topic.deep_dive_content;
+  const hasNewTemplate = topic.overview_md || topic.principles_md || topic.relations_md;
 
   return (
     <div className="p-6 lg:p-8 max-w-5xl mx-auto">
@@ -182,8 +183,163 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
         )}
       </div>
 
-      {/* Content tabs */}
-      {hasContent ? (
+      {/* Content - New Template or Legacy */}
+      {hasNewTemplate ? (
+        <div className="space-y-6 mb-8">
+          {/* 1. Přehled */}
+          {topic.overview_md && (
+            <Card>
+              <CardContent className="p-6">
+                <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+                  Přehled
+                </h2>
+                <div className="prose prose-slate dark:prose-invert max-w-none">
+                  <ReactMarkdown>{topic.overview_md}</ReactMarkdown>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* 2. Základní principy */}
+          {topic.principles_md && (
+            <Card>
+              <CardContent className="p-6">
+                <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+                  Základní principy
+                </h2>
+                <div className="prose prose-slate dark:prose-invert max-w-none">
+                  <ReactMarkdown>{topic.principles_md}</ReactMarkdown>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* 3. Souvislosti a vztahy */}
+          {topic.relations_md && (
+            <Card>
+              <CardContent className="p-6">
+                <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+                  Souvislosti a vztahy
+                </h2>
+                <div className="prose prose-slate dark:prose-invert max-w-none">
+                  <ReactMarkdown>{topic.relations_md}</ReactMarkdown>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* 4. Klinické myšlení */}
+          {topic.clinical_thinking_md && (
+            <Card>
+              <CardContent className="p-6">
+                <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+                  Klinické myšlení
+                </h2>
+                <div className="prose prose-slate dark:prose-invert max-w-none">
+                  <ReactMarkdown>{topic.clinical_thinking_md}</ReactMarkdown>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* 5. Časté chyby */}
+          {topic.common_pitfalls_md && (
+            <Card>
+              <CardContent className="p-6">
+                <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+                  Časté chyby a slepé uličky
+                </h2>
+                <div className="prose prose-slate dark:prose-invert max-w-none">
+                  <ReactMarkdown>{topic.common_pitfalls_md}</ReactMarkdown>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* 6. Mentální model */}
+          {topic.mental_model_md && (
+            <Card>
+              <CardContent className="p-6">
+                <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+                  Mentální model
+                </h2>
+                <div className="prose prose-slate dark:prose-invert max-w-none">
+                  <ReactMarkdown>{topic.mental_model_md}</ReactMarkdown>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* 7. Mini-scénáře */}
+          {topic.scenarios_md && (
+            <Card>
+              <CardContent className="p-6">
+                <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+                  Mini-scénáře
+                </h2>
+                <div className="prose prose-slate dark:prose-invert max-w-none">
+                  <ReactMarkdown>{topic.scenarios_md}</ReactMarkdown>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* 8. Klíčové body */}
+          {topic.key_takeaways_md && (
+            <Card>
+              <CardContent className="p-6">
+                <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+                  Klíčové body k zapamatování
+                </h2>
+                <div className="prose prose-slate dark:prose-invert max-w-none">
+                  <ReactMarkdown>{topic.key_takeaways_md}</ReactMarkdown>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* 9. Hippo vysvětluje */}
+          {topic.hippo_enabled !== false && (
+            <Card className="border-2 border-teal-200 dark:border-teal-800">
+              <CardContent className="p-6">
+                <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-teal-600" />
+                  Hippo vysvětluje
+                </h2>
+                <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+                  Hippo je váš inteligentní průvodce. Pomůže vám porozumět souvislostem, vysvětlí vztahy mezi koncepty a strukturuje vaše myšlení.
+                </p>
+                <div className="space-y-2">
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start"
+                    onClick={() => alert('Hippo interakce bude implementována v další fázi')}
+                  >
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Zjednodušit téma
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start"
+                    onClick={() => alert('Hippo interakce bude implementována v další fázi')}
+                  >
+                    <Microscope className="w-4 h-4 mr-2" />
+                    Prohloubit porozumění
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start"
+                    onClick={() => alert('Hippo interakce bude implementována v další fázi')}
+                  >
+                    <Target className="w-4 h-4 mr-2" />
+                    Vysvětlit souvislosti
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      ) : hasContent ? (
         <Tabs value={activeView} onValueChange={setActiveView} className="mb-8">
           <TabsList className="grid w-full grid-cols-3 mb-6">
             <TabsTrigger value="full" className="flex items-center gap-2">
