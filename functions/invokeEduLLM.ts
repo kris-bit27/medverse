@@ -61,17 +61,110 @@ DŮLEŽITÉ:
 - Tvůj cíl je porozumění, ne memorování
 `;
 
+const ATTESTATION_GRADE_PROMPT = `
+════════════════════════════════════════════════════════════════
+SPECIÁLNÍ REŽIM: ATESTAČNÍ ÚROVEŇ
+════════════════════════════════════════════════════════════════
+
+Tvým úkolem je generovat PLNOHODNOTNÝ studijní text
+na úrovni znalostí požadovaných k atestaci lékaře v České republice.
+
+Tento text:
+- NENÍ úvodní přehled
+- NENÍ popularizační
+- NENÍ pro laiky ani studenty nižších ročníků
+
+Cílový čtenář:
+- lékař v přípravě k atestaci
+- atestovaný lékař
+- seniorní rezident
+
+────────────────────────────────
+POVINNÉ POŽADAVKY NA TEXT
+────────────────────────────────
+
+1️⃣ Hloubka
+Text musí jít do praktických detailů.
+Nestačí popis pojmů – vysvětluj:
+- co přesně musí lékař udělat
+- kdy je to povinné
+- kdy je to právní problém
+- jaké jsou důsledky chyb
+
+2️⃣ Právní rámec (ČR / EU)
+Uveď:
+- relevantní zákony (např. zákon o zdravotních službách)
+- GDPR (principy, ne paragrafovou citaci)
+- povinnosti poskytovatele vs. lékaře
+
+3️⃣ Chirurgický kontext
+Vysvětluj VŽDY na příkladech chirurgie:
+- operační výkon
+- komplikace
+- informovaný souhlas
+- negativní reverz
+- změna rozsahu výkonu
+
+4️⃣ Sporné a krizové situace
+Povinně zahrň:
+- odmítnutí výkonu pacientem
+- negativní reverz
+- nedostatečný informovaný souhlas
+- dokumentace při komplikaci
+- dokumentace při soudním sporu
+
+5️⃣ Struktura textu
+Používej jasnou strukturu:
+- podkapitoly
+- odrážky tam, kde je to přehlednější
+- zvýraznění klíčových bodů
+
+6️⃣ Atestační relevance
+Piš tak, aby:
+- lékař byl schopen odpovědět u ústní zkoušky
+- dokázal obhájit svůj postup před komisí
+- rozlišil správný a chybný postup
+
+7️⃣ Závěrečné shrnutí
+Na konci přidej:
+- „Co musí lékař znát"
+- „Časté chyby v praxi"
+- „Co je právně neobhajitelné"
+
+────────────────────────────────
+ZAKÁZÁNO
+────────────────────────────────
+
+❌ Povrchní obecné věty
+❌ Učebnicové definice bez praktického dopadu
+❌ Texty kratší než odpovídá atestační úrovni
+❌ Vyhýbání se právní odpovědnosti lékaře
+
+────────────────────────────────
+TÓN A STYL
+────────────────────────────────
+
+- odborný
+- přesný
+- praktický
+- klinicky relevantní
+- bez marketingu
+
+Tvým cílem je vytvořit text, který:
+"když si ho lékař přečte, obstojí u atestace i v praxi."
+`;
+
 const MODE_PROMPTS = {
-  question_exam_answer: `Vysvětluješ téma otázky strukturovaně. Zaměř se na porozumění souvislostem, ne memorování. CITACE: pokud máš k dispozici interní text tématu, MUSÍŠ ho použít jako primární zdroj. Web search: ZAKÁZÁN.`,
+  question_exam_answer: `Vysvětluješ téma otázky strukturovaně na ATESTAČNÍ ÚROVNI. ${ATTESTATION_GRADE_PROMPT}\n\nCITACE: pokud máš k dispozici interní text tématu, MUSÍŠ ho použít jako primární zdroj. Web search: ZAKÁZÁN.`,
   question_high_yield: `Vytvoř přehledné shrnutí klíčových konceptů pro rychlé zopakování. Formát: bullet points, max 10-12 bodů. Zaměř se na pochopení, ne testování.`,
   question_quiz: `Vytvoř 5 MCQ otázek (A/B/C/D) pro procvičení pochopení tématu. Mix obtížnosti: 2 easy, 2 medium, 1 hard.`,
   question_simplify: `Vysvětli téma srozumitelně pro studenta medicíny. Zachovej faktickou správnost a zaměř se na porozumění.`,
-  topic_generate_fulltext: `Generuješ kompletní studijní text zaměřený na porozumění. Rozsah: 2-4 stránky textu. Styl: vysvětlující, strukturovaný, srozumitelný.`,
-  topic_generate_template: `Generuješ obsah pro všechny sekce EDU template tématu. Zaměř se na porozumění, souvislosti a mentální modely. NIKDY negeneruj léčebné postupy pro pacienty. Výstup: JSON s 8 sekcemi markdown (overview_md, principles_md, relations_md, clinical_thinking_md, common_pitfalls_md, mental_model_md, scenarios_md, key_takeaways_md).`,
+  topic_generate_fulltext: `${ATTESTATION_GRADE_PROMPT}\n\nGeneruješ kompletní studijní text na ATESTAČNÍ ÚROVNI. Rozsah: 3-5 stránek plnohodnotného textu. Dodržuj všechny požadavky výše.`,
+  topic_generate_template: `${ATTESTATION_GRADE_PROMPT}\n\nGeneruješ obsah pro všechny sekce EDU template tématu na ATESTAČNÍ ÚROVNI. Zaměř se na praktické znalosti, právní rámec a sporné situace. NIKDY negeneruj léčebné postupy pro pacienty. Výstup: JSON s 8 sekcemi markdown (overview_md, principles_md, relations_md, clinical_thinking_md, common_pitfalls_md, mental_model_md, scenarios_md, key_takeaways_md).`,
   topic_summarize: `Vytvoř shrnutí v odrážkách z poskytnutého plného textu. Zachyť všechny klíčové body, definice, souvislosti.`,
-  topic_deep_dive: `Vytvoř rozšířený obsah zahrnující hlubší souvislosti, nejnovější výzkum, pokročilé koncepty a edge cases.`,
+  topic_deep_dive: `${ATTESTATION_GRADE_PROMPT}\n\nVytvoř rozšířený obsah zahrnující hlubší souvislosti, nejnovější výzkum, pokročilé koncepty a edge cases. Zaměř se na právní aspekty a sporné situace v praxi.`,
   topic_fill_missing: `Doplň pouze pole, která jsou prázdná. Nepiš nic navíc.`,
-  content_review_critic: `Prováděj odborné kritické hodnocení studijního materiálu. Buď konstruktivní ale přísný.`,
+  content_review_critic: `Prováděj odborné kritické hodnocení studijního materiálu. Buď konstruktivní ale přísný. Hodnoť i atestační úroveň textu.`,
   content_review_editor: `Na základě kritického hodnocení vytvoř konkrétní návrh oprav a aktualizovaný text.`,
   taxonomy_generate: `Generuješ strukturu kurikula: okruhy → témata. NEGENERUJ plné odpovědi - jen strukturu a cíle. Vše jako status=draft.`,
   importer_generate: `Generuješ otázky na základě zadaného oboru/okruhu/tématu. 5-10 otázek, každá s plnou odpovědí. Obtížnost: mix. Vše jako draft.`,
