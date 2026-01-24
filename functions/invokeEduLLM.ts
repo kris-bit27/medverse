@@ -17,7 +17,11 @@ const EXAM_MODES = [
   'content_review_critic',
   'content_review_editor',
   'taxonomy_generate',
-  'importer_generate'
+  'importer_generate',
+  'topic_improve_missing',
+  'topic_legal_deepen',
+  'topic_clinical_examples',
+  'topic_exam_refinement'
 ];
 
 // CHAT režimy - konverzační, pro doplňující dotazy
@@ -168,7 +172,11 @@ const MODE_PROMPTS = {
   content_review_editor: `Na základě kritického hodnocení vytvoř konkrétní návrh oprav a aktualizovaný text.`,
   taxonomy_generate: `Generuješ strukturu kurikula: okruhy → témata. NEGENERUJ plné odpovědi - jen strukturu a cíle. Vše jako status=draft.`,
   importer_generate: `Generuješ otázky na základě zadaného oboru/okruhu/tématu. 5-10 otázek, každá s plnou odpovědí. Obtížnost: mix. Vše jako draft.`,
-  copilot_chat: `Rozhovor s Hippem zaměřený na porozumění medicíně. Vysvětluj pojmy, souvislosti, vztahy. Pomáhej strukturovat myšlení. Vždy cituj zdroje.`
+  copilot_chat: `Rozhovor s Hippem zaměřený na porozumění medicíně. Vysvětluj pojmy, souvislosti, vztahy. Pomáhej strukturovat myšlení. Vždy cituj zdroje.`,
+  topic_improve_missing: `${ATTESTATION_GRADE_PROMPT}\n\nDOPLŇ chybějící témata identifikovaná v předchozím hodnocení. NEPŘEPISUJ celý text. Vysvětli PROČ byla tato část nedostatečná a CO doplňuješ. Označuj doplněné části jasně.`,
+  topic_legal_deepen: `${ATTESTATION_GRADE_PROMPT}\n\nZPŘESNI právní rámec tématu. Doplň konkrétní zákony ČR, GDPR principy, povinnosti lékaře vs. poskytovatele. Vysvětli PROČ byl právní rámec nedostatečný.`,
+  topic_clinical_examples: `${ATTESTATION_GRADE_PROMPT}\n\nPŘIDAJ konkrétní klinické příklady, nejlépe z chirurgie. Zahrň komplikace, informovaný souhlas, sporné situace. Vysvětli PROČ tyto příklady chyběly.`,
+  topic_exam_refinement: `${ATTESTATION_GRADE_PROMPT}\n\nUPRAV text na atestační úroveň. Odstraň povrchní věty, doplň praktické detaily, přidej právní důsledky. Vysvětli, CO bylo na nedostatečné úrovni a JAK to zlepšuješ.`
 };
 
 const OUTPUT_SCHEMAS = {
