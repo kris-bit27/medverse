@@ -10,6 +10,7 @@ const EXAM_MODES = [
   'question_quiz',
   'question_simplify',
   'topic_generate_fulltext',
+  'topic_generate_template',
   'topic_summarize',
   'topic_deep_dive',
   'topic_fill_missing',
@@ -78,6 +79,19 @@ const MODE_PROMPTS = {
 };
 
 const OUTPUT_SCHEMAS = {
+  topic_generate_template: {
+    type: "object",
+    properties: {
+      overview_md: { type: "string", description: "Základní přehled tématu" },
+      principles_md: { type: "string", description: "Fundamentální principy" },
+      relations_md: { type: "string", description: "Souvislosti s jinými tématy" },
+      clinical_thinking_md: { type: "string", description: "Jak přemýšlet o problému" },
+      common_pitfalls_md: { type: "string", description: "Časté chyby" },
+      mental_model_md: { type: "string", description: "Mentální model" },
+      scenarios_md: { type: "string", description: "Ilustrativní mini-scénáře" },
+      key_takeaways_md: { type: "string", description: "Klíčové body k zapamatování" }
+    }
+  },
   question_exam_answer: {
     type: "object",
     properties: {
