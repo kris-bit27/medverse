@@ -1,7 +1,26 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 // AI Version Tag - centrální konstanta pro verzování AI systému
-const AI_VERSION_TAG = "edu_v1";
+const AI_VERSION_TAG = "edu_v2_exam_grade";
+
+// EXAM režimy - strukturované, deterministické, jeden request = jedna odpověď
+const EXAM_MODES = [
+  'question_exam_answer',
+  'question_high_yield',
+  'question_quiz',
+  'question_simplify',
+  'topic_generate_fulltext',
+  'topic_summarize',
+  'topic_deep_dive',
+  'topic_fill_missing',
+  'content_review_critic',
+  'content_review_editor',
+  'taxonomy_generate',
+  'importer_generate'
+];
+
+// CHAT režimy - konverzační, pro doplňující dotazy
+const CHAT_MODES = ['copilot_chat'];
 
 // Import není podporován v Deno functions - definice přímo zde
 const MEDVERSE_EDU_CORE_PROMPT = `Jsi AI asistent pro lékařskou edukaci v systému MedVerse EDU.
@@ -11,19 +30,24 @@ HLAVNÍ PRAVIDLA:
 2. Styl: precizní, zkouškový, strukturovaný, stručné nadpisy, žádné "storytelling"
 3. Bezpečnost: pokud uživatel zadá osobní data pacienta nebo žádá klinické rozhodování pro konkrétního pacienta, odpověz edukativně obecně a doporuč konzultaci se školeným lékařem
 4. Důraz na interní kurikulum: pokud je k dispozici interní text z témat, MUSÍŠ ho primárně používat a citovat
-5. Pokud nejsou zdroje: přiznej nejistotu (confidence low) a navrhni doplnění zdrojů / otázky
+
+KRITICKÁ PRAVIDLA (exam-grade):
+- Pokud neexistuje interní zdroj, NIKDY netvrď odpověď s jistotou
+- Pokud je confidence LOW, vždy EXPLICITNĚ uveď proč
+- NIKDY si nevymýšlej guidelines – pokud nejsou v RAG kontextu, přiznej to
+- Při atestačních otázkách VŽDY cituj zdroje (interní prioritně)
+- Nehalucinuj - pokud nevíš, řekni to a označ confidence=LOW
 
 STRUKTURA KAŽDÉ ODPOVĚDI:
 - Hlavní odpověď (strukturovaná, s markdownem)
-- Citations (internal/external odkazy)
+- Citations (internal/external odkazy - interní VŽDY na prvním místě)
 - Confidence level (high/medium/low) + stručný důvod (1-2 věty)
 - Missing topics (krátký seznam, co by měl student doplnit)
 
 DŮLEŽITÉ:
-- Při atestačních otázkách VŽDY cituj zdroje
-- Nehalucinuj - pokud nevíš, řekni to
 - Používaj oficiální terminologii a klasifikace
 - Pro medicínské postupy se řiď guidelines (ESC, ERC, ESMO, NCCN, ČLS atd.)
+- High confidence POUZE pokud máš plné interní zdroje
 `;
 
 const MODE_PROMPTS = {
@@ -34,6 +58,7 @@ const MODE_PROMPTS = {
   topic_generate_fulltext: `Generuješ kompletní studijní text pro atestační přípravu. Rozsah: 2-4 stránky textu. Styl: učebnicový, ale srozumitelný.`,
   topic_summarize: `Vytvoř shrnutí v odrážkách z poskytnutého plného textu. Zachyť všechny klíčové body, definice, postupy.`,
   topic_deep_dive: `Vytvoř rozšířený obsah zahrnující nejnovější výzkum, pokročilé koncepty, komplikace a edge cases.`,
+  topic_fill_missing: `Doplň pouze pole, která jsou prázdná. Nepiš nic navíc.`,
   content_review_critic: `Prováděj odborné kritické hodnocení studijního materiálu. Buď konstruktivní ale přísný.`,
   content_review_editor: `Na základě kritického hodnocení vytvoř konkrétní návrh oprav a aktualizovaný text.`,
   taxonomy_generate: `Generuješ strukturu kurikula: okruhy → témata. NEGENERUJ plné odpovědi - jen strukturu a cíle. Vše jako status=draft.`,
@@ -69,19 +94,54 @@ const OUTPUT_SCHEMAS = {
       missing_topics: { type: "array", items: { type: "string" } }
     }
   },
+  question_high_yield: {
+    type: "object",
+    properties: {
+      high_yield_points: { type: "array", items: { type: "string" }, maxItems: 12 },
+      common_mistakes: { type: "array", items: { type: "string" }, maxItems: 3 },
+      citations: { type: "object" },
+      confidence: { type: "object" }
+    }
+  },
   question_quiz: {
     type: "object",
     properties: {
-      mcq: {
+      questions: {
         type: "array",
+        maxItems: 5,
         items: {
           type: "object",
           properties: {
-            q: { type: "string" },
-            options: { type: "array", items: { type: "string" } },
-            correct_index: { type: "number" },
+            question_text: { type: "string" },
+            options: {
+              type: "object",
+              properties: {
+                A: { type: "string" },
+                B: { type: "string" },
+                C: { type: "string" },
+                D: { type: "string" }
+              }
+            },
+            correct_answer: { type: "string", enum: ["A", "B", "C", "D"] },
             explanation: { type: "string" }
           }
+        }
+      },
+      citations: { type: "object" },
+      confidence: { type: "object" }
+    }
+  },
+  question_simplify: {
+    type: "object",
+    properties: {
+      simplified_explanation: {
+        type: "object",
+        properties: {
+          what_is_it: { type: "string" },
+          why_important: { type: "string" },
+          how_to_recognize: { type: "string" },
+          what_to_do: { type: "string" },
+          watch_out: { type: "string" }
         }
       },
       citations: { type: "object" },
@@ -102,14 +162,224 @@ const OUTPUT_SCHEMAS = {
 };
 
 /**
- * Centrální wrapper pro všechna AI volání v MedVerse EDU
- * 
- * @param {Object} params
- * @param {string} params.mode - AI režim (question_exam_answer, topic_generate_fulltext, atd.)
- * @param {Object} params.entityContext - Kontext z DB (topic, question, okruh, obor)
- * @param {string} params.userPrompt - Prompt od uživatele
- * @param {boolean} params.allowWeb - Povolit web search (default false)
- * @returns {Object} {text, citations, confidence, structuredData, mode, cache}
+ * ═══════════════════════════════════════════════════════════════
+ * 1️⃣ RAG – JEDNOTNÝ A POVINNÝ VSTUP
+ * ═══════════════════════════════════════════════════════════════
+ * Centrální funkce pro sestavení RAG kontextu
+ * Pravidla:
+ * - VŽDY preferovat interní zdroje
+ * - Nikdy nemíchat kontext nahodile
+ * - Logický pořadník: Topic → Question → Související témata → Externí zdroje
+ */
+async function buildRAGContext(base44, mode, entityContext, allowWeb) {
+  const context = {
+    rag_text: '',
+    rag_sources: []
+  };
+
+  const MAX_RAG_TOKENS = 8000; // Limit pro RAG kontext (~32000 znaků)
+  let currentLength = 0;
+
+  const addSection = (text, source) => {
+    if (!text || currentLength >= MAX_RAG_TOKENS * 4) return false;
+    
+    const sectionLength = text.length;
+    if (currentLength + sectionLength <= MAX_RAG_TOKENS * 4) {
+      context.rag_text += text + '\n\n';
+      context.rag_sources.push(source);
+      currentLength += sectionLength;
+      return true;
+    }
+    return false;
+  };
+
+  // 1. Topic (pokud existuje) - PRIORITA 1
+  if (entityContext.topic) {
+    const topic = entityContext.topic;
+    
+    // Topic full text
+    if (topic.full_text_content && topic.status === 'published') {
+      addSection(
+        `=== TOPIC: ${topic.title} (PRIMÁRNÍ ZDROJ) ===\n\n${topic.full_text_content}`,
+        { type: 'topic', entity: 'Topic', id: topic.id, section_hint: 'full_text', title: topic.title }
+      );
+    }
+
+    // Topic bullets
+    if (topic.bullet_points_summary && topic.status === 'published') {
+      addSection(
+        `=== SHRNUTÍ: ${topic.title} ===\n\n${topic.bullet_points_summary}`,
+        { type: 'topic', entity: 'Topic', id: topic.id, section_hint: 'bullets', title: topic.title }
+      );
+    }
+
+    // Learning objectives
+    if (topic.learning_objectives?.length > 0) {
+      addSection(
+        `=== VÝUKOVÉ CÍLE: ${topic.title} ===\n\n${topic.learning_objectives.map(o => `- ${o}`).join('\n')}`,
+        { type: 'topic', entity: 'Topic', id: topic.id, section_hint: 'learning_objectives', title: topic.title }
+      );
+    }
+  }
+
+  // 2. Question - PRIORITA 2
+  if (entityContext.question) {
+    const question = entityContext.question;
+    
+    // Question text
+    if (question.question_text) {
+      addSection(
+        `=== OTÁZKA: ${question.title} ===\n\n${question.question_text}`,
+        { type: 'question', entity: 'Question', id: question.id, section_hint: 'question_text', title: question.title }
+      );
+    }
+
+    // Published answer
+    if (question.answer_rich && question.status === 'published') {
+      addSection(
+        `=== EXISTUJÍCÍ ODPOVĚĎ (published) ===\n\n${question.answer_rich}`,
+        { type: 'question', entity: 'Question', id: question.id, section_hint: 'answer_rich', title: question.title }
+      );
+    }
+  }
+
+  // 3. Související témata ze stejného okruhu - PRIORITA 3 (max 2)
+  if (entityContext.question?.okruh_id && currentLength < MAX_RAG_TOKENS * 4 * 0.7) {
+    try {
+      const relatedTopics = await base44.asServiceRole.entities.Topic.filter(
+        { 
+          okruh_id: entityContext.question.okruh_id,
+          status: 'published'
+        },
+        null,
+        3
+      );
+
+      let added = 0;
+      for (const rt of relatedTopics) {
+        if (added >= 2) break;
+        if (rt.id === entityContext.topic?.id) continue;
+        
+        if (rt.bullet_points_summary) {
+          const success = addSection(
+            `=== SOUVISEJÍCÍ TÉMA: ${rt.title} ===\n\n${rt.bullet_points_summary.substring(0, 500)}...`,
+            { type: 'related_topic', entity: 'Topic', id: rt.id, section_hint: 'bullets', title: rt.title }
+          );
+          if (success) added++;
+        }
+      }
+    } catch (e) {
+      console.error('Failed to fetch related topics:', e);
+    }
+  }
+
+  // 4. Externí zdroje - PRIORITA 4 (pouze pokud allowWeb === true)
+  if (allowWeb && currentLength < MAX_RAG_TOKENS * 4 * 0.9) {
+    context.rag_text += `\n\n=== POZNÁMKA ===\nMůžeš použít web search pro aktuální informace, ALE:
+- Odděl interní část vs externí aktuality
+- Externí zdroje označ jako "Externí zdroje"
+- Prioritně cituj interní zdroje\n\n`;
+  }
+
+  return context;
+}
+
+/**
+ * ═══════════════════════════════════════════════════════════════
+ * 2️⃣ CACHE – CONTENT HASH INVALIDACE
+ * ═══════════════════════════════════════════════════════════════
+ */
+function computeContentHash(entityContext) {
+  const parts = [];
+  
+  if (entityContext.topic) {
+    parts.push(entityContext.topic.full_text_content || '');
+    parts.push(entityContext.topic.bullet_points_summary || '');
+    parts.push(JSON.stringify(entityContext.topic.learning_objectives || []));
+  }
+  
+  if (entityContext.question) {
+    parts.push(entityContext.question.question_text || '');
+    parts.push(entityContext.question.answer_rich || '');
+  }
+  
+  const combined = parts.join('||');
+  
+  // Simple hash (pro production consider crypto)
+  let hash = 0;
+  for (let i = 0; i < combined.length; i++) {
+    const char = combined.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return `ch_${Math.abs(hash).toString(36)}`;
+}
+
+function generateCacheKey(mode, entityId, contentHash, userPromptHash) {
+  const input = `${mode}:${entityId || 'none'}:${contentHash}:${AI_VERSION_TAG}:${userPromptHash}`;
+  
+  let hash = 0;
+  for (let i = 0; i < input.length; i++) {
+    const char = input.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return `ck_${Math.abs(hash).toString(36)}`;
+}
+
+async function checkCache(base44, cacheKey, mode, entityContext) {
+  try {
+    const logs = await base44.asServiceRole.entities.AIInteractionLog.filter(
+      { 
+        cache_key: cacheKey,
+        mode: mode,
+        success: true
+      },
+      '-created_date',
+      1
+    );
+
+    if (!logs || logs.length === 0) return null;
+
+    const cached = logs[0];
+    
+    // Rekonstrukce výsledku z cache
+    return {
+      text: cached.output_text || '',
+      citations: cached.citations_json || { internal: [], external: [] },
+      confidence: {
+        level: cached.confidence || 'medium',
+        reason: cached.confidence_reason || 'Cached response'
+      },
+      structuredData: cached.structured_data_json || null
+    };
+  } catch (e) {
+    console.error('Cache check failed:', e);
+    return null;
+  }
+}
+
+/**
+ * ═══════════════════════════════════════════════════════════════
+ * 3️⃣ EXAM MODE vs CHAT MODE
+ * ═══════════════════════════════════════════════════════════════
+ */
+function validateModeAccess(mode, userRole) {
+  // Student restrictions
+  if (userRole === 'student' || !userRole) {
+    const restrictedModes = ['taxonomy_generate', 'content_review_editor', 'importer_generate'];
+    if (restrictedModes.includes(mode)) {
+      throw new Error(`Režim ${mode} je dostupný pouze pro administrátory a editory.`);
+    }
+  }
+  
+  return true;
+}
+
+/**
+ * ═══════════════════════════════════════════════════════════════
+ * MAIN HANDLER
+ * ═══════════════════════════════════════════════════════════════
  */
 Deno.serve(async (req) => {
   const startTime = Date.now();
@@ -131,8 +401,37 @@ Deno.serve(async (req) => {
       }, { status: 400 });
     }
 
-    // Sestavení cache key
-    const cacheKey = await generateCacheKey(mode, entityContext.entityId, userPrompt);
+    // Validace přístupu podle role
+    validateModeAccess(mode, user.role);
+
+    // Kontrola EXAM vs CHAT režimu
+    const isExamMode = EXAM_MODES.includes(mode);
+    const isChatMode = CHAT_MODES.includes(mode);
+
+    if (!isExamMode && !isChatMode) {
+      return Response.json({ error: 'Unknown mode type' }, { status: 400 });
+    }
+
+    // V EXAM režimu je zakázán web search (kromě deep_dive)
+    const effectiveAllowWeb = isExamMode && mode !== 'topic_deep_dive' ? false : allowWeb;
+
+    // Sestavení RAG kontextu - POVINNÉ pro všechna AI volání
+    const ragContext = await buildRAGContext(base44, mode, entityContext, effectiveAllowWeb);
+
+    // Content hash pro cache invalidaci
+    const contentHash = computeContentHash(entityContext);
+    
+    // User prompt hash
+    const userPromptNormalized = (userPrompt || '').toLowerCase().trim().replace(/\s+/g, ' ');
+    let userPromptHash = 0;
+    for (let i = 0; i < userPromptNormalized.length; i++) {
+      userPromptHash = ((userPromptHash << 5) - userPromptHash) + userPromptNormalized.charCodeAt(i);
+      userPromptHash = userPromptHash & userPromptHash;
+    }
+    userPromptHash = Math.abs(userPromptHash).toString(36);
+
+    // Cache key
+    const cacheKey = generateCacheKey(mode, entityContext.entityId, contentHash, userPromptHash);
 
     // Pokus o cache hit
     const cachedResult = await checkCache(base44, cacheKey, mode, entityContext);
@@ -145,12 +444,15 @@ Deno.serve(async (req) => {
         entity_id: entityContext.entityId || null,
         prompt_version: AI_VERSION_TAG,
         input_summary: userPrompt.substring(0, 200),
-        output_text: cachedResult.text.substring(0, 500),
+        output_text: cachedResult.text.substring(0, 1000),
         citations_json: cachedResult.citations,
         confidence: cachedResult.confidence?.level || 'medium',
         confidence_reason: cachedResult.confidence?.reason || '',
         cache_key: cacheKey,
+        content_hash: contentHash,
         is_cache_hit: true,
+        rag_sources_json: { sources: ragContext.rag_sources },
+        structured_data_json: cachedResult.structuredData,
         success: true,
         duration_ms: Date.now() - startTime
       });
@@ -165,16 +467,15 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Sestavení retrieval contextu (RAG)
-    const retrievalContext = await buildRetrievalContext(base44, mode, entityContext);
-
     // Sestavení finálního promptu
     const systemPrompt = MEDVERSE_EDU_CORE_PROMPT + "\n\n" + MODE_PROMPTS[mode];
     
     let fullPrompt = systemPrompt + "\n\n";
     
-    if (retrievalContext.internal) {
-      fullPrompt += "=== INTERNÍ ZDROJE (POVINNÉ K POUŽITÍ) ===\n" + retrievalContext.internal + "\n\n";
+    if (ragContext.rag_text) {
+      fullPrompt += "=== INTERNÍ ZDROJE (POVINNÉ K POUŽITÍ) ===\n" + ragContext.rag_text + "\n\n";
+    } else {
+      fullPrompt += "=== UPOZORNĚNÍ ===\nNejsou k dispozici žádné interní zdroje. Confidence MUSÍ být LOW.\n\n";
     }
     
     fullPrompt += "=== UŽIVATELSKÝ DOTAZ ===\n" + userPrompt;
@@ -185,14 +486,22 @@ Deno.serve(async (req) => {
     // Volání LLM
     const llmResponse = await base44.integrations.Core.InvokeLLM({
       prompt: fullPrompt,
-      add_context_from_internet: allowWeb,
+      add_context_from_internet: effectiveAllowWeb,
       response_json_schema: outputSchema
     });
 
     // Normalizace výstupu
     const result = normalizeAIResponse(llmResponse, mode, outputSchema);
 
-    // Logování do AI_Interaction_Log
+    // Validace confidence - pokud není RAG kontext, MUSÍ být LOW
+    if (!ragContext.rag_text || ragContext.rag_sources.length === 0) {
+      if (result.confidence.level === 'high') {
+        result.confidence.level = 'low';
+        result.confidence.reason = 'Chybí interní zdroje - nelze zaručit vysokou přesnost.';
+      }
+    }
+
+    // Logování do AIInteractionLog - 100% AUDIT
     await base44.asServiceRole.entities.AIInteractionLog.create({
       user_id: user.id,
       mode: mode,
@@ -200,13 +509,16 @@ Deno.serve(async (req) => {
       entity_id: entityContext.entityId || null,
       prompt_version: AI_VERSION_TAG,
       input_summary: userPrompt.substring(0, 200),
-      output_text: result.text.substring(0, 500),
+      output_text: result.text.substring(0, 1000),
       citations_json: result.citations,
       confidence: result.confidence?.level || 'medium',
       confidence_reason: result.confidence?.reason || '',
       tokens_estimate: estimateTokens(fullPrompt + JSON.stringify(llmResponse)),
       cache_key: cacheKey,
+      content_hash: contentHash,
       is_cache_hit: false,
+      rag_sources_json: { sources: ragContext.rag_sources },
+      structured_data_json: result.structuredData,
       success: true,
       duration_ms: Date.now() - startTime
     });
@@ -261,191 +573,11 @@ Deno.serve(async (req) => {
 });
 
 /**
- * Sestaví retrieval kontext podle režimu a entity
+ * ═══════════════════════════════════════════════════════════════
+ * HELPER FUNCTIONS
+ * ═══════════════════════════════════════════════════════════════
  */
-async function buildRetrievalContext(base44, mode, entityContext) {
-  const context = { internal: '', external: '' };
 
-  // Pro question režimy - vezmi Topic a související témata
-  if (mode.startsWith('question_')) {
-    if (entityContext.question) {
-      const question = entityContext.question;
-      
-      // Primární topic
-      if (question.topic_id || question.linked_topic_id) {
-        const topicId = question.topic_id || question.linked_topic_id;
-        try {
-          const topic = await base44.asServiceRole.entities.Topic.get(topicId);
-          if (topic) {
-            context.internal += `\n### Hlavní téma: ${topic.title}\n\n`;
-            if (topic.full_text_content) {
-              context.internal += `${topic.full_text_content}\n\n`;
-            }
-            if (topic.bullet_points_summary) {
-              context.internal += `**Shrnutí:**\n${topic.bullet_points_summary}\n\n`;
-            }
-            if (topic.learning_objectives?.length > 0) {
-              context.internal += `**Výukové cíle:**\n${topic.learning_objectives.map(o => `- ${o}`).join('\n')}\n\n`;
-            }
-          }
-        } catch (err) {
-          console.error('Failed to fetch topic:', err);
-        }
-      }
-
-      // Související témata ze stejného okruhu (max 2)
-      if (question.okruh_id) {
-        try {
-          const relatedTopics = await base44.asServiceRole.entities.Topic.filter(
-            { okruh_id: question.okruh_id },
-            null,
-            3
-          );
-          if (relatedTopics.length > 0) {
-            context.internal += `\n### Související témata z okruhu:\n\n`;
-            for (const rt of relatedTopics.slice(0, 2)) {
-              if (rt.id !== (question.topic_id || question.linked_topic_id)) {
-                context.internal += `**${rt.title}**\n`;
-                if (rt.bullet_points_summary) {
-                  context.internal += `${rt.bullet_points_summary.substring(0, 300)}...\n\n`;
-                }
-              }
-            }
-          }
-        } catch (err) {
-          console.error('Failed to fetch related topics:', err);
-        }
-      }
-
-      // Existující odpověď (pokud existuje)
-      if (question.answer_rich) {
-        context.internal += `\n### Existující odpověď (pro referenci):\n${question.answer_rich}\n\n`;
-      }
-    }
-  }
-
-  // Pro topic režimy
-  if (mode.startsWith('topic_')) {
-    if (entityContext.topic) {
-      const topic = entityContext.topic;
-      
-      if (mode === 'topic_summarize' && topic.full_text_content) {
-        context.internal += `### Plný text k sumarizaci:\n\n${topic.full_text_content}\n\n`;
-      }
-      
-      if (mode === 'topic_deep_dive') {
-        if (topic.full_text_content) {
-          context.internal += `### Základní text:\n\n${topic.full_text_content}\n\n`;
-        }
-        if (topic.bullet_points_summary) {
-          context.internal += `### Shrnutí:\n\n${topic.bullet_points_summary}\n\n`;
-        }
-      }
-
-      // Související témata z okruhu
-      if (topic.okruh_id) {
-        try {
-          const relatedTopics = await base44.asServiceRole.entities.Topic.filter(
-            { okruh_id: topic.okruh_id },
-            null,
-            3
-          );
-          if (relatedTopics.length > 0) {
-            context.internal += `\n### Kontext z okruhu:\n`;
-            for (const rt of relatedTopics) {
-              if (rt.id !== topic.id && rt.title) {
-                context.internal += `- ${rt.title}\n`;
-              }
-            }
-            context.internal += '\n';
-          }
-        } catch (err) {
-          console.error('Failed to fetch related topics:', err);
-        }
-      }
-    }
-  }
-
-  return context;
-}
-
-/**
- * Generuje cache key pro request
- */
-async function generateCacheKey(mode, entityId, userPrompt) {
-  const normalized = (userPrompt || '').toLowerCase().trim().replace(/\s+/g, ' ');
-  const input = `${mode}:${entityId || 'none'}:${AI_VERSION_TAG}:${normalized}`;
-  
-  // Simple hash (pro production use crypto)
-  let hash = 0;
-  for (let i = 0; i < input.length; i++) {
-    const char = input.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash;
-  }
-  return `cache_${Math.abs(hash).toString(36)}`;
-}
-
-/**
- * Zkontroluje cache pro daný request
- */
-async function checkCache(base44, cacheKey, mode, entityContext) {
-  try {
-    const logs = await base44.asServiceRole.entities.AIInteractionLog.filter(
-      { 
-        cache_key: cacheKey,
-        mode: mode,
-        success: true
-      },
-      '-created_date',
-      1
-    );
-
-    if (!logs || logs.length === 0) return null;
-
-    const cached = logs[0];
-
-    // Zkontroluj, zda entity nebyla změněna
-    if (entityContext.entityId && entityContext.entityType) {
-      try {
-        const EntityClass = entityContext.entityType === 'question' ? 'Question' 
-          : entityContext.entityType === 'topic' ? 'Topic' 
-          : null;
-        
-        if (EntityClass) {
-          const entity = await base44.asServiceRole.entities[EntityClass].get(entityContext.entityId);
-          const entityUpdated = new Date(entity.updated_date);
-          const cacheCreated = new Date(cached.created_date);
-          
-          if (entityUpdated > cacheCreated) {
-            return null; // Entity změněna, cache neplatná
-          }
-        }
-      } catch (e) {
-        console.warn('Failed to check entity freshness:', e);
-        return null;
-      }
-    }
-
-    // Rekonstrukce výsledku z cache
-    return {
-      text: cached.output_text || '',
-      citations: cached.citations_json || { internal: [], external: [] },
-      confidence: {
-        level: cached.confidence || 'medium',
-        reason: cached.confidence_reason || 'Cached response'
-      },
-      structuredData: null // Cache neobsahuje structured data pro zjednodušení
-    };
-  } catch (e) {
-    console.error('Cache check failed:', e);
-    return null;
-  }
-}
-
-/**
- * Normalizuje AI odpověď do jednotného tvaru
- */
 function normalizeAIResponse(llmResponse, mode, outputSchema) {
   const parsed = (outputSchema && typeof llmResponse === 'object') ? llmResponse : null;
   const rawText = typeof llmResponse === 'string' ? llmResponse : null;
@@ -513,9 +645,6 @@ function normalizeAIResponse(llmResponse, mode, outputSchema) {
   };
 }
 
-/**
- * Generuje markdown z MCQ otázek
- */
 function generateQuizMarkdown(questions) {
   if (!Array.isArray(questions)) return '';
   
@@ -538,9 +667,6 @@ function generateQuizMarkdown(questions) {
   }).join('\n---\n\n');
 }
 
-/**
- * Generuje markdown z high-yield bodů
- */
 function generateHighYieldMarkdown(points, mistakes) {
   let md = '## High-Yield Body\n\n';
   
@@ -560,9 +686,6 @@ function generateHighYieldMarkdown(points, mistakes) {
   return md;
 }
 
-/**
- * Generuje markdown ze zjednodušeného vysvětlení
- */
 function generateSimplifiedMarkdown(simplified) {
   if (!simplified || typeof simplified !== 'object') return '';
   
@@ -584,9 +707,6 @@ function generateSimplifiedMarkdown(simplified) {
   ].join('\n');
 }
 
-/**
- * Generuje markdown ze strukturované odpovědi
- */
 function generateStructuredAnswerMarkdown(structure) {
   if (!structure || typeof structure !== 'object') return '';
   
@@ -617,9 +737,6 @@ function generateStructuredAnswerMarkdown(structure) {
   return sections.join('\n\n');
 }
 
-/**
- * Odhadne počet tokenů (hrubý odhad)
- */
 function estimateTokens(text) {
   return Math.ceil(text.length / 4);
 }
