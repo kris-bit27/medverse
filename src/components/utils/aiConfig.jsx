@@ -36,27 +36,28 @@ Odpovídáš na atestační otázku. Výstup MUSÍ být strukturovaný podle sch
 - Časté chyby a perličky
 - 5 kontrolních otázek pro self-check
 
-CITACE: pokud máš k dispozici interní text tématu, MUSÍŠ ho použít jako primární zdroj.
+CITACE interní jsou POVINNÉ. Pokud máš k dispozici interní text tématu, MUSÍŠ ho použít jako primární zdroj.
 Web search: ZAKÁZÁN (allowWeb=false).
-Confidence: high jen pokud máš plné interní zdroje, jinak medium/low.
+Confidence: high jen pokud máš plné interní zdroje, jinak medium/low a vysvětli proč.
 `,
 
   question_high_yield: `
-Vytvoř HIGH-YIELD shrnutí - klíčové body pro rychlé opakování před zkouškou.
-Formát: bullet points, max 10-12 bodů, stručně ale kompletně.
-Zaměř se na: diagnostická kritéria, léčebné algoritmy, kritické hodnoty, diferenciální dg.
+Vrať pouze HIGH-YIELD shrnutí (max 10 odrážek).
+Zaměř se na to, co se typicky ptá u atestace a co si pohlídat v praxi.
+Používej interní zdroje. Nevyhledávej web.
+Přidej "Časté chyby" jako poslední 1-2 odrážky.
 `,
 
   question_quiz: `
-Vytvoř 5 MCQ otázek (A/B/C/D) testujících pochopení tématu.
-Každá otázka: jasná, 1 správná odpověď, vysvětlení správné odpovědi.
-Mix obtížnosti: 2 easy, 2 medium, 1 hard.
+Vytvoř 5 MCQ otázek k tématu. Každá má 4 možnosti (A-D), jednu správnou odpověď.
+U každé přidej krátké vysvětlení, proč je správně.
+Neodkazuj se na web. Opírej se o interní texty a existující odpověď.
 `,
 
   question_simplify: `
-Zjednoduš téma pro studenta medicíny (ne laika).
-Zachovej faktickou správnost, ale vysvětli složité koncepty jednodušeji.
-Použij analogie, kde to pomůže.
+Vysvětli téma srozumitelně pro medika/začátečníka, ale fakticky správně.
+Struktura: Co to je -> Proč je to důležité -> Jak to poznám -> Co se s tím dělá -> Na co si dát pozor.
+Používej interní zdroje. Nevyhledávej web.
 `,
 
   topic_generate_fulltext: `
@@ -85,6 +86,15 @@ Vytvoř rozšířený obsah zahrnující:
 allowWeb=true: můžeš hledat aktuální informace, ale ODDĚL "Interní část" vs "Externí aktuality".
 `,
 
+  topic_fill_missing: `
+Doplň pouze pole, která jsou prázdná.
+Nepiš nic navíc. Pokud je full_text prázdný, vygeneruj full_text_content.
+Pokud bullets prázdné, vygeneruj bullet_points_summary ze full_text.
+Pokud learning_objectives prázdné, vygeneruj 5-8 cílů.
+Používej interní kontext tématu a okruhu, web nepoužívej.
+Vrať JSON s pouze doplněnými poli.
+`,
+
   content_review_critic: `
 Prováděj odborné kritické hodnocení studijního materiálu.
 Výstup: JSON schema s:
@@ -108,16 +118,16 @@ Zachovej původní strukturu, ale vylepši kvalitu.
 `,
 
   taxonomy_generate: `
-Generuješ strukturu kurikula: okruhy → témata.
-Pro každé téma: název, learning objectives, suggested sources.
-NEGENERUJ plné odpovědi - jen strukturu a cíle.
-Vše ukládej jako status=draft.
-Přidej review checklist pro admina.
+Generuj pouze kurikulární strukturu pro zvolený klinický obor v češtině.
+NEGENERUJ plné studijní texty ani plné odpovědi.
+Vrať: okruhy -> témata. U témat vrať learning_objectives, suggested_sources a volitelně seed_questions (jen názvy).
+Vše je určeno jako DRAFT a vyžaduje revizi.
+Dodrž logiku atestační přípravy (high-yield) a pokryj typické otázky k atestaci.
 `,
 
   importer_generate: `
 Generuješ otázky na základě zadaného oboru/okruhu/tématu.
-5-10 otázek, každá s plnou strukturovanou odpověďí.
+5-10 otázek, každá s plnou strukturovanou odpovědí.
 Obtížnost: mix (2 easy, 5 medium, 3 hard).
 Vše jako draft, vyžaduje review.
 `,
@@ -236,20 +246,40 @@ export const OUTPUT_SCHEMAS = {
     }
   },
 
+  question_high_yield: {
+    type: "object",
+    required: ["high_yield_points"],
+    properties: {
+      high_yield_points: { type: "array", items: { type: "string" }, maxItems: 10 },
+      common_mistakes: { type: "array", items: { type: "string" }, maxItems: 2 },
+      citations: { type: "object" },
+      confidence: { type: "object" }
+    }
+  },
+
   question_quiz: {
     type: "object",
+    required: ["questions"],
     properties: {
-      mcq: {
+      questions: {
         type: "array",
+        maxItems: 5,
         items: {
           type: "object",
+          required: ["question_text", "options", "correct_answer", "explanation"],
           properties: {
-            q: { type: "string" },
+            question_text: { type: "string" },
             options: {
-              type: "array",
-              items: { type: "string" }
+              type: "object",
+              required: ["A", "B", "C", "D"],
+              properties: {
+                A: { type: "string" },
+                B: { type: "string" },
+                C: { type: "string" },
+                D: { type: "string" }
+              }
             },
-            correct_index: { type: "number" },
+            correct_answer: { type: "string", enum: ["A", "B", "C", "D"] },
             explanation: { type: "string" }
           }
         }
@@ -257,6 +287,36 @@ export const OUTPUT_SCHEMAS = {
       citations: { type: "object" },
       confidence: { type: "object" }
     }
+  },
+
+  question_simplify: {
+    type: "object",
+    required: ["simplified_explanation"],
+    properties: {
+      simplified_explanation: {
+        type: "object",
+        required: ["what_is_it", "why_important", "how_to_recognize", "what_to_do", "watch_out"],
+        properties: {
+          what_is_it: { type: "string" },
+          why_important: { type: "string" },
+          how_to_recognize: { type: "string" },
+          what_to_do: { type: "string" },
+          watch_out: { type: "string" }
+        }
+      },
+      citations: { type: "object" },
+      confidence: { type: "object" }
+    }
+  },
+
+  topic_fill_missing: {
+    type: "object",
+    properties: {
+      full_text_content: { type: "string" },
+      bullet_points_summary: { type: "string" },
+      learning_objectives: { type: "array", items: { type: "string" } }
+    },
+    additionalProperties: false
   },
 
   content_review_critic: {
@@ -280,43 +340,6 @@ export const OUTPUT_SCHEMAS = {
         items: { type: "string" }
       },
       suggested_improvements: {
-        type: "array",
-        items: { type: "string" }
-      }
-    }
-  },
-
-  taxonomy_generate: {
-    type: "object",
-    properties: {
-      okruhy: {
-        type: "array",
-        items: {
-          type: "object",
-          properties: {
-            title: { type: "string" },
-            description: { type: "string" },
-            topics: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  title: { type: "string" },
-                  learning_objectives: {
-                    type: "array",
-                    items: { type: "string" }
-                  },
-                  suggested_sources: {
-                    type: "array",
-                    items: { type: "string" }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      review_checklist: {
         type: "array",
         items: { type: "string" }
       }
