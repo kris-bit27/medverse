@@ -132,6 +132,49 @@ Pokud se ptají na konkrétní téma z kurikula, nabídni odkaz na příslušné
 
 // JSON schémata pro strukturované výstupy
 export const OUTPUT_SCHEMAS = {
+  taxonomy_generate: {
+    type: "object",
+    required: ["field", "tracks", "review_checklist"],
+    properties: {
+      field: { type: "string" },
+      tracks: {
+        type: "array",
+        items: {
+          type: "object",
+          required: ["okruh_title", "topics"],
+          properties: {
+            okruh_title: { type: "string" },
+            topics: {
+              type: "array",
+              items: {
+                type: "object",
+                required: ["topic_title", "learning_objectives", "suggested_sources"],
+                properties: {
+                  topic_title: { type: "string" },
+                  learning_objectives: { type: "array", items: { type: "string" } },
+                  suggested_sources: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      required: ["title", "type"],
+                      properties: {
+                        title: { type: "string" },
+                        type: { type: "string", enum: ["guideline", "review", "textbook", "society", "local"] },
+                        note: { type: "string" }
+                      }
+                    }
+                  },
+                  seed_questions: { type: "array", items: { type: "string" } }
+                }
+              }
+            }
+          }
+        }
+      },
+      review_checklist: { type: "array", items: { type: "string" } }
+    }
+  },
+
   question_exam_answer: {
     type: "object",
     properties: {
