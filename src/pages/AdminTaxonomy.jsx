@@ -60,7 +60,7 @@ import {
 } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import QuestionImporter from '@/components/admin/QuestionImporter';
-import TopicContentEditor from '@/components/admin/TopicContentEditor';
+import TopicContentEditorV2 from '@/components/admin/TopicContentEditorV2';
 import DisciplineIcon from '@/components/admin/DisciplineIcon';
 import AITaxonomyGenerator from '@/components/admin/AITaxonomyGenerator';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -83,6 +83,7 @@ export default function AdminTaxonomy() {
   const [filterDiscipline, setFilterDiscipline] = useState('all');
   const [filterOkruh, setFilterOkruh] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [filterTopicStatus, setFilterTopicStatus] = useState('all');
   const queryClient = useQueryClient();
 
   const { data: disciplines = [] } = useQuery({
@@ -277,6 +278,7 @@ export default function AdminTaxonomy() {
   const filteredTopics = topics.filter(t => {
     if (searchQuery && !t.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     if (filterOkruh !== 'all' && t.okruh_id !== filterOkruh) return false;
+    if (filterTopicStatus !== 'all' && t.status !== filterTopicStatus) return false;
     if (filterStatus === 'published' && !t.is_published) return false;
     if (filterStatus === 'unpublished' && t.is_published) return false;
     if (filterStatus === 'reviewed' && !t.is_reviewed) return false;
@@ -734,17 +736,16 @@ export default function AdminTaxonomy() {
               </div>
 
               <div className="space-y-1">
-                <Label className="text-xs">Stav</Label>
-                <Select value={filterStatus} onValueChange={setFilterStatus}>
+                <Label className="text-xs">Status</Label>
+                <Select value={filterTopicStatus} onValueChange={setFilterTopicStatus}>
                   <SelectTrigger className="h-9">
-                    <SelectValue placeholder="Všechny stavy" />
+                    <SelectValue placeholder="Všechny statusy" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Všechny stavy</SelectItem>
-                    <SelectItem value="published">Publikováno</SelectItem>
-                    <SelectItem value="unpublished">Nepublikováno</SelectItem>
-                    <SelectItem value="reviewed">Zkontrolováno</SelectItem>
-                    <SelectItem value="unreviewed">Nezkontrolováno</SelectItem>
+                    <SelectItem value="all">Všechny</SelectItem>
+                    <SelectItem value="draft">Draft</SelectItem>
+                    <SelectItem value="in_review">In Review</SelectItem>
+                    <SelectItem value="published">Published</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -849,11 +850,20 @@ export default function AdminTaxonomy() {
                               >
                                 <div className="flex items-center gap-2 flex-1">
                                   <Checkbox
-                                    checked={selectedTopics.includes(topic.id)}
-                                    onCheckedChange={() => toggleSelectTopic(topic.id)}
+                                   checked={selectedTopics.includes(topic.id)}
+                                   onCheckedChange={() => toggleSelectTopic(topic.id)}
                                   />
-                            <span className="text-sm text-slate-900 dark:text-white">{topic.title}</span>
-                            <Badge variant="secondary" className="text-xs">{questionCount}</Badge>
+                                  <span className="text-sm text-slate-900 dark:text-white">{topic.title}</span>
+                                  <Badge variant="secondary" className="text-xs">{questionCount}</Badge>
+                                  {topic.status && (
+                                  <Badge className={
+                                  topic.status === 'published' ? 'bg-green-100 text-green-700' :
+                                  topic.status === 'in_review' ? 'bg-amber-100 text-amber-700' :
+                                  'bg-slate-100 text-slate-700'
+                                  }>
+                                  {topic.status}
+                                  </Badge>
+                                  )}
                             {topic.is_reviewed && (
                               <Badge className="text-xs bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
                                 <CheckCircle className="w-3 h-3 mr-1" />
@@ -1051,7 +1061,7 @@ export default function AdminTaxonomy() {
             <DialogTitle>Upravit studijní obsah</DialogTitle>
           </DialogHeader>
           {editingTopic && (
-            <TopicContentEditor 
+            <TopicContentEditorV2 
               topic={editingTopic}
               onSave={() => {
                 setContentEditorOpen(false);
