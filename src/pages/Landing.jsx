@@ -24,54 +24,53 @@ const products = [
     id: 'edu',
     icon: GraduationCap,
     name: 'MedVerse EDU',
-    tagline: 'Atestace & Studium',
-    description: 'Komplexní platforma pro přípravu na atestace a státnice s využitím pokročilých metod učení napříč všemi medicínským obory',
+    tagline: 'Hlavní modul',
+    description: 'Vzdělávací platforma kombinující strukturovaný obsah, inteligentní asistenci a nástroje pro hlubší pochopení medicíny.',
     status: 'available',
     color: 'from-teal-500 to-cyan-600'
-  },
-  {
-    id: 'clinic',
-    icon: Stethoscope,
-    name: 'MedVerse CLINIC',
-    tagline: 'Plánování výkonů',
-    description: 'Pokročilé nástroje pro předoperační plánování a vizualizaci chirurgických výkonů v klinické praxi',
-    status: 'coming-soon',
-    color: 'from-blue-500 to-indigo-600'
-  },
-  {
-    id: 'ai',
-    icon: Brain,
-    name: 'MedVerse AI',
-    tagline: 'AI Copilot',
-    description: 'Inteligentní asistent pro podporu klinického rozhodování a diagnostiky v reálném čase',
-    status: 'coming-soon',
-    color: 'from-purple-500 to-pink-600'
-  },
-  {
-    id: 'atlas',
-    icon: BookOpen,
-    name: 'MedVerse ATLAS',
-    tagline: 'Anatomie',
-    description: 'Interaktivní anatomická databáze s detailní vizualizací struktur',
-    status: 'coming-soon',
-    color: 'from-emerald-500 to-teal-600'
-  },
-  {
-    id: 'lab',
-    icon: BarChart3,
-    name: 'MedVerse LAB',
-    tagline: '3D Guides & Tisk',
-    description: 'Platforma pro navrhování a výrobu personalizovaných chirurgických pomůcek pomocí 3D technologií',
-    status: 'coming-soon',
-    color: 'from-orange-500 to-red-600'
   }
 ];
 
-const stats = [
-  { value: '500+', label: 'Otázek' },
-  { value: '50+', label: 'Článků' },
-  { value: '15+', label: 'Algoritmů' },
-  { value: '98%', label: 'Spokojenost' }
+const valueProps = [
+  { 
+    title: 'Strukturované znalosti',
+    description: 'Přehledně uspořádaný obsah napříč medicínskými obory.',
+    icon: BookOpen
+  },
+  { 
+    title: 'Inteligentní asistence',
+    description: 'AI pracující s definovaným kontextem a provázanými informacemi.',
+    icon: Brain
+  },
+  { 
+    title: 'Flexibilní hloubka učení',
+    description: 'Rychlá orientace i detailní vysvětlení podle aktuální potřeby.',
+    icon: RefreshCw
+  },
+  { 
+    title: 'Jeden systém, více scénářů',
+    description: 'Studium, opakování, klinická praxe i týmové vzdělávání.',
+    icon: CheckCircle2
+  }
+];
+
+const systemValues = [
+  {
+    title: 'Kontext místo izolovaných informací',
+    description: 'Informace jsou propojené do smysluplných celků.'
+  },
+  {
+    title: 'Inteligence s kontrolou',
+    description: 'AI pracuje s jasně definovaným kontextem, zdroji a strukturou výstupů.'
+  },
+  {
+    title: 'Flexibilní hloubka',
+    description: 'Rychlá orientace i hlubší pochopení podle potřeby.'
+  },
+  {
+    title: 'Jeden systém, více scénářů',
+    description: 'Od studia po klinickou praxi a týmové vzdělávání.'
+  }
 ];
 
 export default function Landing() {
@@ -121,21 +120,16 @@ export default function Landing() {
             transition={{ duration: 0.6 }}
             className="text-center max-w-4xl mx-auto"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 text-teal-700 dark:text-teal-400 text-sm font-medium mb-8 border border-teal-200 dark:border-teal-800">
-              <Sparkles className="w-4 h-4" />
-              Ekosystém nástrojů pro moderní medicínu
-            </div>
-            
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-slate-900 dark:text-white leading-tight mb-6">
-              Vaše medicínská
+              Moderní vzdělávací
               <span className="block bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-600 bg-clip-text text-transparent">
-                digitální platforma
+                platforma pro medicínu
               </span>
             </h1>
             
             <p className="text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-3xl mx-auto leading-relaxed">
-              Od studia a atestací přes plánování výkonů až po 3D tisk medicínských pomůcek. 
-              Kompletní ekosystém pro studenty medicíny, rezidenty i atestované lékaře napříč všemi obory.
+              MedVerse propojuje strukturované znalosti, inteligentní asistenci a praktické nástroje 
+              pro studenty, lékaře i kliniky napříč medicínskými obory.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -154,30 +148,67 @@ export default function Landing() {
                 asChild
               >
                 <Link to={createPageUrl('Demo')}>
-                  Prohlédnout demo
+                  Prohlédnout ukázku
                 </Link>
               </Button>
             </div>
           </motion.div>
 
-          {/* Stats */}
+          {/* Value Props */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8"
+            className="mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
           >
-            {stats.map((stat, i) => (
-              <div key={i} className="text-center">
-                <div className="text-4xl sm:text-5xl font-bold text-slate-900 dark:text-white mb-2">
-                  {stat.value}
+            {valueProps.map((prop, i) => {
+              const Icon = prop.icon;
+              return (
+                <div key={i} className="text-center p-6 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
+                  <div className="w-12 h-12 mx-auto mb-4 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center">
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-2">
+                    {prop.title}
+                  </h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                    {prop.description}
+                  </p>
                 </div>
-                <div className="text-slate-600 dark:text-slate-400 font-medium">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </motion.div>
+        </div>
+      </section>
+
+      {/* System Values */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-slate-950">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
+              Navrženo pro moderní medicínu
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {systemValues.map((value, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="p-6 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800"
+              >
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+                  {value.title}
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                  {value.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -186,14 +217,14 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              Produktové portfolio MedVerse
+              MedVerse EDU
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              Pět specializovaných modulů pokrývajících celé spektrum medicínské praxe
+              Hlavní modul dostupný nyní
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="max-w-2xl mx-auto">
             {products.map((product, i) => {
               const Icon = product.icon;
               return (
@@ -202,50 +233,36 @@ export default function Landing() {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  whileHover={{ scale: product.status === 'available' ? 1.05 : 1.02, y: -5 }}
+                  whileHover={{ scale: 1.02, y: -5 }}
+                  onClick={() => base44.auth.redirectToLogin(createPageUrl('Dashboard'))}
                 >
-                  <Card className={`p-6 h-full border-0 shadow-lg shadow-slate-200/50 dark:shadow-none dark:bg-slate-800/50 hover:shadow-2xl transition-all duration-300 group relative overflow-hidden ${
-                    product.status === 'available' ? 'cursor-pointer' : ''
-                  }`}>
-                    {/* Animated gradient overlay */}
+                  <Card className="p-8 border-2 border-teal-200 dark:border-teal-800 shadow-xl hover:shadow-2xl transition-all duration-300 group relative overflow-hidden cursor-pointer">
                     <div className={`absolute inset-0 bg-gradient-to-br ${product.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
                     
                     <div className="relative z-10">
                       <div className="flex items-start justify-between mb-5">
-                        <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${product.color} flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300`}>
-                          <Icon className="w-7 h-7 text-white" />
+                        <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${product.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-all duration-300`}>
+                          <Icon className="w-8 h-8 text-white" />
                         </div>
-                        {product.status === 'available' ? (
-                          <motion.span 
-                            className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 flex items-center gap-1"
-                            animate={{ scale: [1, 1.1, 1] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                          >
-                            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                            Dostupné
-                          </motion.span>
-                        ) : (
-                          <span className="px-3 py-1 text-xs font-medium rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-                            Připravujeme
-                          </span>
-                        )}
+                        <motion.span 
+                          className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 flex items-center gap-1"
+                          animate={{ scale: [1, 1.1, 1] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                          {product.tagline}
+                        </motion.span>
                       </div>
-                      <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                      <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
                         {product.name}
                       </h3>
-                      <p className="text-sm font-semibold text-teal-600 dark:text-teal-400 mb-3">
-                        {product.tagline}
-                      </p>
-                      <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">
+                      <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
                         {product.description}
                       </p>
-                      {product.status === 'available' && (
-                        <div className="flex items-center gap-2 text-teal-600 dark:text-teal-400 text-sm font-semibold group-hover:gap-3 transition-all">
-                          Spustit EDU
-                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </div>
-                      )}
+                      <div className="flex items-center gap-2 text-teal-600 dark:text-teal-400 text-base font-semibold group-hover:gap-3 transition-all">
+                        Spustit MedVerse EDU
+                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                      </div>
                     </div>
                   </Card>
                 </motion.div>
@@ -261,21 +278,24 @@ export default function Landing() {
           <Card className="p-8 sm:p-12 bg-gradient-to-br from-teal-600 to-cyan-700 border-0 text-center text-white relative overflow-hidden">
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMCAwaDIwdjIwSDB6Ii8+PHBhdGggZD0iTTIwIDIwaDIwdjIwSDIweiIvPjwvZz48L2c+PC9zdmc+')] opacity-30" />
             <div className="relative">
-              <Crown className="w-12 h-12 mx-auto mb-6 text-amber-300" />
+              <Sparkles className="w-12 h-12 mx-auto mb-6 text-white" />
               <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-                Připraveni začít?
+                Začněte pracovat s medicínskými znalostmi chytře
               </h2>
-              <p className="text-lg text-teal-100 mb-8 max-w-xl mx-auto">
-                Začněte s MedVerse EDU a připojte se ke studentům a lékařům, kteří již využívají naše nástroje
+              <p className="text-lg text-teal-100 mb-6 max-w-2xl mx-auto">
+                MedVerse pomáhá orientovat se v informacích, porozumět souvislostem a učit se efektivněji.
               </p>
               <Button 
                 size="lg"
-                className="bg-white text-teal-700 hover:bg-teal-50 shadow-xl h-14 px-8 text-lg"
+                className="bg-white text-teal-700 hover:bg-teal-50 shadow-xl h-14 px-8 text-lg mb-3"
                 onClick={() => base44.auth.redirectToLogin(createPageUrl('Dashboard'))}
               >
                 Začít zdarma
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
+              <p className="text-sm text-teal-100">
+                Bez závazků. Přístup odkudkoliv.
+              </p>
             </div>
           </Card>
         </div>
