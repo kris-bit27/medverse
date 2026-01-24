@@ -139,7 +139,7 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-6">
         <Link to={createPageUrl('Atestace')} className="hover:text-teal-600 transition-colors">
-          Atestace
+          Studium
         </Link>
         <span>/</span>
         {okruh && (
@@ -167,7 +167,7 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
             <CardContent className="p-4">
               <h3 className="font-semibold text-teal-900 dark:text-teal-100 mb-2 flex items-center gap-2">
                 <Target className="w-4 h-4" />
-                Výukové cíle pro atestaci
+                Výukové cíle
               </h3>
               <ul className="space-y-1 text-sm text-teal-800 dark:text-teal-200">
                 {topic.learning_objectives.map((obj, i) => (

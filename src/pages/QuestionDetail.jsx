@@ -209,7 +209,7 @@ export default function QuestionDetail() {
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-6">
         <Link to={createPageUrl('Atestace')} className="hover:text-teal-600 transition-colors">
-          Atestace
+          Studium
         </Link>
         {okruh && (
           <>
@@ -345,7 +345,7 @@ export default function QuestionDetail() {
         <Button variant="ghost" asChild>
           <Link to={okruh ? createPageUrl('OkruhDetail') + `?id=${okruh.id}` : createPageUrl('Atestace')}>
             <ChevronLeft className="w-4 h-4 mr-2" />
-            Zpět na {okruh?.title || 'Atestace'}
+            Zpět na {okruh?.title || 'Studium'}
           </Link>
         </Button>
       </div>
