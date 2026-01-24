@@ -38,8 +38,8 @@ const valueProps = [
     icon: BookOpen
   },
   { 
-    title: 'Inteligentní asistence',
-    description: 'AI pracující s definovaným kontextem a provázanými informacemi.',
+    title: 'Inteligentní průvodce',
+    description: 'Hippo pomáhá porozumět souvislostem a strukturovat myšlení.',
     icon: Brain
   },
   { 
@@ -60,8 +60,8 @@ const systemValues = [
     description: 'Informace jsou propojené do smysluplných celků.'
   },
   {
-    title: 'Inteligence s kontrolou',
-    description: 'AI pracuje s jasně definovaným kontextem, zdroji a strukturou výstupů.'
+    title: 'Inteligentní průvodce, ne autorita',
+    description: 'Hippo pomáhá porozumět, nikdy nenahrazuje klinické rozhodování.'
   },
   {
     title: 'Flexibilní hloubka',

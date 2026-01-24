@@ -14,12 +14,12 @@ export default function AICopilot() {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
-              AI Copilot
+              Hippo
             </h1>
           </div>
         </div>
         <p className="text-slate-600 dark:text-slate-400">
-          Váš osobní AI asistent pro studium medicíny
+          Inteligentní průvodce porozuměním medicíně
         </p>
       </div>
 
@@ -31,8 +31,8 @@ export default function AICopilot() {
             Zeptejte se na cokoliv
           </CardTitle>
           <CardDescription>
-            AI Copilot vám pomůže s výkladem otázek, vytvořením poznámek, shrnutím článků, 
-            přípravou na testy nebo vysvětlením složitých konceptů
+            Hippo pomáhá porozumět souvislostem, vysvětluje koncepty a strukturuje myšlení. 
+            Nikdy nenahrazuje klinické rozhodování.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -48,9 +48,9 @@ export default function AICopilot() {
               💡 Příklady otázek
             </h3>
             <ul className="text-xs text-slate-600 dark:text-slate-400 space-y-1">
-              <li>• "Vysvětli mi patofyziologii infarktu myokardu"</li>
-              <li>• "Vytvoř mi přehled k tématu diabetes mellitus"</li>
-              <li>• "Jaký je rozdíl mezi systolickým a diastolickým selháním?"</li>
+              <li>• "Pomoz mi pochopit patofyziologii infarktu myokardu"</li>
+              <li>• "Vysvětli mi vztah mezi hypertenzí a srdečním selháním"</li>
+              <li>• "Jak souvisí diabetes s komplikacemi ledvin?"</li>
             </ul>
           </CardContent>
         </Card>
@@ -58,12 +58,12 @@ export default function AICopilot() {
         <Card className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
           <CardContent className="p-4">
             <h3 className="font-semibold text-sm text-slate-900 dark:text-white mb-2">
-              🎯 Co umí Copilot
+              🎯 Co Hippo umí
             </h3>
             <ul className="text-xs text-slate-600 dark:text-slate-400 space-y-1">
-              <li>• Vysvětlení složitých medicínských konceptů</li>
-              <li>• Tvorba studijních poznámek a shrnutí</li>
-              <li>• Pomoc s přípravou na atestace a zkoušky</li>
+              <li>• Vysvětlit souvislosti a vztahy mezi koncepty</li>
+              <li>• Pomoci strukturovat myšlení k tématu</li>
+              <li>• Odpovědět na otázky a prohloubit porozumění</li>
             </ul>
           </CardContent>
         </Card>

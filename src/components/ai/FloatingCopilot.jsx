@@ -162,7 +162,7 @@ export default function FloatingCopilot() {
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center">
                   <Bot className="w-5 h-5 text-white" />
                 </div>
-                <SheetTitle className="text-lg">AI Copilot</SheetTitle>
+                <SheetTitle className="text-lg">Hippo</SheetTitle>
               </div>
               <Button 
                 variant="ghost" 
@@ -188,7 +188,7 @@ export default function FloatingCopilot() {
                   Začněte konverzaci
                 </p>
                 <p className="text-sm text-slate-500 dark:text-slate-400 max-w-[280px]">
-                  Zeptejte se AI asistenta na cokoliv o vašich studijních materiálech
+                  Zeptejte se Hippa na pomoc s porozuměním medicíně
                 </p>
               </div>
             ) : (
