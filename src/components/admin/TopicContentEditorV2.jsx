@@ -64,11 +64,7 @@ export default function TopicContentEditorV2({ topic, onSave }) {
         allowWeb: mode === 'topic_deep_dive'
       });
 
-      if (!response.data.success) {
-        throw new Error(response.data.error || 'AI generování selhalo');
-      }
-
-      const result = response.data;
+      const result = response.data || response;
 
       // Aplikuj výsledek podle módu
       if (mode === 'topic_generate_fulltext') {
@@ -122,11 +118,8 @@ export default function TopicContentEditorV2({ topic, onSave }) {
         allowWeb: true
       });
 
-      if (!response.data.success) {
-        throw new Error(response.data.error || 'AI hodnocení selhalo');
-      }
-
-      const review = response.data.structuredData;
+      const result = response.data || response;
+      const review = result.structuredData || result;
       setReviewResult(review);
 
       // Ulož skóre do topic
