@@ -79,10 +79,10 @@ export default function QuizFlashcardsTab({ question, user, topic }) {
         <CardContent className="p-8 text-center">
           <Brain className="w-12 h-12 mx-auto mb-4 text-purple-600" />
           <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
-            Vygenerovat MCQ kvíz
+            Hippo vytvoří kvíz
           </h3>
           <p className="text-slate-600 dark:text-slate-400 mb-4 text-sm">
-            AI vygeneruje 5 MCQ otázek pro testování pochopení tématu.
+            Hippo vygeneruje 5 MCQ otázek pro procvičení pochopení tématu.
           </p>
           <Button
             onClick={generateQuiz}

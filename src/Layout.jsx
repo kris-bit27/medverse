@@ -49,7 +49,7 @@ const navItems = [
   { name: 'Studijní balíčky', page: 'StudyPackages', icon: Package },
   { name: 'Články', page: 'Articles', icon: BookOpen },
   { name: 'Nástroje', page: 'Tools', icon: Stethoscope },
-  { name: 'AI Copilot', page: 'AICopilot', icon: Brain },
+  { name: 'Hippo', page: 'AICopilot', icon: Brain },
   { name: 'Plánovač', page: 'StudyPlanner', icon: CalendarIcon },
   { name: 'Logbook', page: 'Logbook', icon: ClipboardList },
   { name: 'Forum', page: 'Forum', icon: MessageSquare },

@@ -283,11 +283,11 @@ export default function QuestionDetail() {
               </TabsTrigger>
               <TabsTrigger value="ai" className="gap-2">
                 <Sparkles className="w-4 h-4" />
-                AI – Zkouškově
+                Hippo vysvětluje
               </TabsTrigger>
               <TabsTrigger value="quiz" className="gap-2">
                 <Brain className="w-4 h-4" />
-                Quiz / Flashcards
+                Procvičování
               </TabsTrigger>
               <TabsTrigger value="notes" className="gap-2">
                 <StickyNote className="w-4 h-4" />

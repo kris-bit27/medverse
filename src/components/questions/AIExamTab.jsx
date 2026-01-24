@@ -100,7 +100,7 @@ function SourcesBlock({ citations }) {
 }
 
 export default function AIExamTab({ question, user, topic, onNoteSaved }) {
-  const [aiResponse, setAiResponse] = useState(null);
+  const [hippoResponse, setHippoResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -118,11 +118,11 @@ export default function AIExamTab({ question, user, topic, onNoteSaved }) {
           question,
           topic
         },
-        userPrompt: `Vypracuj zkouškovou odpověď k této otázce: ${question.title}`,
+        userPrompt: `Vysvětli strukturovaně toto téma a pomoz mi mu porozumět: ${question.title}`,
         allowWeb: false
       });
 
-      setAiResponse(res);
+      setHippoResponse(res);
 
       // Increment usage
       if (user.role === 'student') {
@@ -136,8 +136,8 @@ export default function AIExamTab({ question, user, topic, onNoteSaved }) {
         });
       }
     } catch (e) {
-      console.error('AI generation error:', e);
-      setAiResponse({
+      console.error('Hippo generation error:', e);
+      setHippoResponse({
         text: `⚠️ Chyba: ${e.message}`,
         confidence: { level: 'low', reason: 'Volání selhalo' },
         citations: { internal: [], external: [] }
@@ -148,7 +148,7 @@ export default function AIExamTab({ question, user, topic, onNoteSaved }) {
   };
 
   const saveAsNote = async () => {
-    if (!aiResponse?.text) return;
+    if (!hippoResponse?.text) return;
 
     setIsSaving(true);
     try {
@@ -156,7 +156,7 @@ export default function AIExamTab({ question, user, topic, onNoteSaved }) {
         user_id: user.id,
         entity_type: 'question',
         entity_id: question.id,
-        content: aiResponse.text,
+        content: hippoResponse.text,
         is_ai_generated: true
       });
 
@@ -193,19 +193,19 @@ export default function AIExamTab({ question, user, topic, onNoteSaved }) {
 
   return (
     <div className="space-y-4">
-      {!aiResponse ? (
+      {!hippoResponse ? (
         <Card>
           <CardContent className="p-8 text-center">
             <Sparkles className="w-12 h-12 mx-auto mb-4 text-teal-600" />
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
-              Generovat zkouškovou odpověď
+              Hippo ti pomůže porozumět
             </h3>
             <p className="text-slate-600 dark:text-slate-400 mb-4 text-sm">
-              AI vygeneruje strukturovanou odpověď na základě interních zdrojů a kurikula.
+              Hippo vysvětlí téma strukturovaně a pomůže ti pochopit souvislosti na základě dostupných zdrojů.
             </p>
             {user.plan === 'free' && remainingCredits !== Infinity && (
               <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
-                Zbývá dnes: {remainingCredits} / {10} AI odpovědí
+                Zbývá dnes: {remainingCredits} / {10} dotazů pro Hippa
               </p>
             )}
             <Button
@@ -218,7 +218,7 @@ export default function AIExamTab({ question, user, topic, onNoteSaved }) {
               ) : (
                 <Sparkles className="w-4 h-4 mr-2" />
               )}
-              Generovat odpověď
+              Zeptej se Hippa
             </Button>
           </CardContent>
         </Card>
@@ -230,9 +230,9 @@ export default function AIExamTab({ question, user, topic, onNoteSaved }) {
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-teal-600" />
                   <Badge className="bg-teal-600 hover:bg-teal-700">
-                    AI zkouškově
+                    Hippo vysvětluje
                   </Badge>
-                  {aiResponse.cache?.hit && (
+                  {hippoResponse.cache?.hit && (
                     <span className="text-xs text-slate-500">🔄 Cached</span>
                   )}
                 </div>
@@ -252,19 +252,19 @@ export default function AIExamTab({ question, user, topic, onNoteSaved }) {
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
-              <ConfidenceBadge confidence={aiResponse.confidence} />
+              <ConfidenceBadge confidence={hippoResponse.confidence} />
               
               <div className="prose prose-slate dark:prose-invert max-w-none">
-                <ReactMarkdown>{aiResponse.text}</ReactMarkdown>
+                <ReactMarkdown>{hippoResponse.text}</ReactMarkdown>
               </div>
 
-              <SourcesBlock citations={aiResponse.citations} />
+              <SourcesBlock citations={hippoResponse.citations} />
             </CardContent>
           </Card>
 
           <Alert>
             <AlertDescription className="text-xs text-slate-600 dark:text-slate-400">
-              💡 Toto je AI-generovaná odpověď. Vždy zkontrolujte oficiální odpověď a zdroje.
+              💡 Hippo je vzdělávací průvodce. Vždy zkontrolujte oficiální odpověď a zdroje.
             </AlertDescription>
           </Alert>
         </>

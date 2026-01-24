@@ -122,18 +122,18 @@ export function getRemainingAICredits(user) {
  */
 export const UPSELL_MESSAGES = {
   ai_limit: {
-    title: 'Získejte neomezené AI odpovědi',
-    description: 'Upgradujte na Premium a využívejte AI asistenta bez limitů pro přípravu na atestace.',
+    title: 'Získejte neomezený přístup k Hippovi',
+    description: 'Upgradujte na Premium a využívejte Hippa bez limitů pro hlubší porozumění medicíně.',
     cta: 'Upgradovat na Premium'
   },
   quiz: {
-    title: 'Procvičujte si s AI kvízy',
-    description: 'Premium uživatelé mohou generovat MCQ kvízy pro testování znalostí.',
+    title: 'Procvičujte si s Hippem',
+    description: 'Premium uživatelé mohou generovat MCQ kvízy pro procvičení pochopení.',
     cta: 'Odemknout Premium'
   },
   flashcards: {
     title: 'Efektivní opakování s flashcards',
-    description: 'Vytvářejte si AI flashcards pro rychlé opakování klíčových konceptů.',
+    description: 'Vytvářejte si flashcards s Hippem pro rychlé opakování klíčových konceptů.',
     cta: 'Získat Premium'
   },
   pdf: {
