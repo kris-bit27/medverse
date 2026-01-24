@@ -22,6 +22,7 @@ import DifficultyIndicator from '@/components/ui/DifficultyIndicator';
 import StatusBadge from '@/components/ui/StatusBadge';
 import HighlightableText from '@/components/study/HighlightableText';
 import TopicNotes from '@/components/study/TopicNotes.jsx';
+import TopicHippoAssistant from '@/components/topics/TopicHippoAssistant';
 
 export default function TopicDetail() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -300,43 +301,7 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
 
           {/* 9. Hippo vysvětluje */}
           {topic.hippo_enabled !== false && (
-            <Card className="border-2 border-teal-200 dark:border-teal-800">
-              <CardContent className="p-6">
-                <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-teal-600" />
-                  Hippo vysvětluje
-                </h2>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
-                  Hippo je váš inteligentní průvodce. Pomůže vám porozumět souvislostem, vysvětlí vztahy mezi koncepty a strukturuje vaše myšlení.
-                </p>
-                <div className="space-y-2">
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start"
-                    onClick={() => alert('Hippo interakce bude implementována v další fázi')}
-                  >
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Zjednodušit téma
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start"
-                    onClick={() => alert('Hippo interakce bude implementována v další fázi')}
-                  >
-                    <Microscope className="w-4 h-4 mr-2" />
-                    Prohloubit porozumění
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start"
-                    onClick={() => alert('Hippo interakce bude implementována v další fázi')}
-                  >
-                    <Target className="w-4 h-4 mr-2" />
-                    Vysvětlit souvislosti
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            <TopicHippoAssistant topic={topic} user={user} />
           )}
         </div>
       ) : hasContent ? (
