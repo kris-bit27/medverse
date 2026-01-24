@@ -117,6 +117,7 @@ export default function QuestionAIAssistant({ question, user, onNoteSaved, topic
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSavingNote, setIsSavingNote] = useState(false);
+  const [aiMode, setAiMode] = useState('EXAM'); // EXAM | CHAT
 
   const scrollRef = useRef(null);
 
@@ -190,12 +191,12 @@ export default function QuestionAIAssistant({ question, user, onNoteSaved, topic
       // Backend wrapper vždy vrací jednotný tvar
       const assistantMessage = {
         role: 'assistant',
-        content: res.text,
+        content: res.text || res.data?.text || '⚠️ Prázdná odpověď',
         meta: { 
-          mode: res.mode || mode, 
-          citations: res.citations, 
-          confidence: res.confidence,
-          cache: res.cache
+          mode: res.mode || res.data?.mode || mode, 
+          citations: res.citations || res.data?.citations || { internal: [], external: [] }, 
+          confidence: res.confidence || res.data?.confidence || { level: 'low', reason: 'Neznámá' },
+          cache: res.cache || res.data?.cache || { hit: false }
         }
       };
 
@@ -207,7 +208,7 @@ export default function QuestionAIAssistant({ question, user, onNoteSaved, topic
         {
           role: 'assistant',
           content: `⚠️ ${errMsg}`,
-          meta: { mode, confidence: { level: 'low', reason: 'Volání selhalo nebo není dostupné.' } }
+          meta: { mode, confidence: { level: 'low', reason: 'Volání selhalo nebo není dostupné.' }, cache: { hit: false } }
         }
       ]);
     } finally {
@@ -222,12 +223,21 @@ export default function QuestionAIAssistant({ question, user, onNoteSaved, topic
     setInput('');
     setMessages(prev => [...prev, { role: 'user', content: prompt }]);
 
-    // Default: exam answer mode (you can later add dropdown)
-    await runLLM({
-      mode: 'question_exam_answer',
-      userPrompt: prompt,
-      allowWeb: false
-    });
+    if (aiMode === 'EXAM') {
+      // V EXAM režimu generujeme strukturovanou odpověď
+      await runLLM({
+        mode: 'question_exam_answer',
+        userPrompt: prompt,
+        allowWeb: false
+      });
+    } else {
+      // V CHAT režimu používáme volný chat (bez změny uložených odpovědí)
+      await runLLM({
+        mode: 'copilot_chat',
+        userPrompt: prompt,
+        allowWeb: false
+      });
+    }
   };
 
   const saveAsNote = async () => {
@@ -341,7 +351,7 @@ export default function QuestionAIAssistant({ question, user, onNoteSaved, topic
     }
   };
 
-  const quickActions = [
+  const examQuickActions = [
     { label: 'Zkoušková odpověď', mode: 'question_exam_answer', prompt: 'Vypracuj zkouškovou odpověď k této otázce.' },
     { label: 'High-yield', mode: 'question_high_yield', prompt: 'Shrň to high-yield (max 10 odrážek) + časté chyby.' },
     { label: 'Quiz (5 MCQ)', mode: 'question_quiz', prompt: 'Vytvoř 5 MCQ otázek s A–D a vysvětlením.' },
@@ -359,30 +369,61 @@ export default function QuestionAIAssistant({ question, user, onNoteSaved, topic
 
       <DialogContent className="max-w-2xl max-h-[90vh] p-0">
         <DialogHeader className="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
-          <DialogTitle className="flex items-center gap-2">
-            <Bot className="w-5 h-5 text-teal-600" />
-            AI Asistent — {(question.title || '').substring(0, 50)}{(question.title || '').length > 50 ? '…' : ''}
-          </DialogTitle>
+          <div className="flex items-center justify-between">
+            <DialogTitle className="flex items-center gap-2">
+              <Bot className="w-5 h-5 text-teal-600" />
+              AI Asistent — {(question.title || '').substring(0, 40)}{(question.title || '').length > 40 ? '…' : ''}
+            </DialogTitle>
+            <div className="flex gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
+              <Button
+                variant={aiMode === 'EXAM' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setAiMode('EXAM')}
+                className={aiMode === 'EXAM' ? 'bg-teal-600 hover:bg-teal-700' : ''}
+              >
+                EXAM
+              </Button>
+              <Button
+                variant={aiMode === 'CHAT' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setAiMode('CHAT')}
+                className={aiMode === 'CHAT' ? 'bg-teal-600 hover:bg-teal-700' : ''}
+              >
+                CHAT
+              </Button>
+            </div>
+          </div>
         </DialogHeader>
 
         <div className="flex flex-col h-[60vh]">
-          {/* Quick actions */}
-          <div className="flex flex-wrap gap-2 p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
-            {quickActions.map((action, idx) => (
-              <Button
-                key={idx}
-                variant="secondary"
-                size="sm"
-                onClick={async () => {
-                  setMessages(prev => [...prev, { role: 'user', content: action.prompt }]);
-                  await runLLM({ mode: action.mode, userPrompt: action.prompt, allowWeb: false });
-                }}
-                disabled={isLoading}
-              >
-                {action.label}
-              </Button>
-            ))}
-          </div>
+          {/* Quick actions - pouze v EXAM režimu */}
+          {aiMode === 'EXAM' && (
+            <div className="flex flex-wrap gap-2 p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+              {examQuickActions.map((action, idx) => (
+                <Button
+                  key={idx}
+                  variant="secondary"
+                  size="sm"
+                  onClick={async () => {
+                    setMessages(prev => [...prev, { role: 'user', content: action.prompt }]);
+                    await runLLM({ mode: action.mode, userPrompt: action.prompt, allowWeb: false });
+                  }}
+                  disabled={isLoading}
+                >
+                  {action.label}
+                </Button>
+              ))}
+            </div>
+          )}
+
+          {/* Info banner pro CHAT režim */}
+          {aiMode === 'CHAT' && (
+            <div className="p-3 bg-blue-50 dark:bg-blue-900/20 border-b border-blue-200 dark:border-blue-800">
+              <p className="text-xs text-blue-700 dark:text-blue-300">
+                💬 CHAT režim: Volný rozhovor pro doplňující dotazy. Nepoužívá se pro generování oficiálních odpovědí.
+              </p>
+            </div>
+          )}
 
           {/* Messages */}
           <ScrollArea className="flex-1 p-4">
@@ -396,8 +437,13 @@ export default function QuestionAIAssistant({ question, user, onNoteSaved, topic
                       isStreaming={false}
                     />
                     {isAssistant ? (
-                      <div className="pl-2">
+                      <div className="pl-2 space-y-2">
                         <ConfidenceBadge confidence={msg.meta?.confidence} />
+                        {msg.meta?.cache?.hit && (
+                          <span className="inline-flex items-center text-xs text-slate-500 dark:text-slate-400">
+                            🔄 Cached response
+                          </span>
+                        )}
                         <SourcesBlock citations={msg.meta?.citations} />
                       </div>
                     ) : null}
