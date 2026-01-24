@@ -187,15 +187,16 @@ export default function QuestionAIAssistant({ question, user, onNoteSaved, topic
         allowWeb
       });
 
-      // Normalize response (adjust here if your wrapper uses different keys)
-      const text = res?.text || res?.answer_md || res?.output_text || res?.content || '';
-      const citations = res?.citations || res?.citations_json || res?.sources || { internal: [], external: [] };
-      const confidence = res?.confidence || res?.confidence_json || null;
-
+      // Backend wrapper vždy vrací jednotný tvar
       const assistantMessage = {
         role: 'assistant',
-        content: text,
-        meta: { mode, citations, confidence }
+        content: res.text,
+        meta: { 
+          mode: res.mode || mode, 
+          citations: res.citations, 
+          confidence: res.confidence,
+          cache: res.cache
+        }
       };
 
       setMessages(prev => [...prev, assistantMessage]);

@@ -109,8 +109,7 @@ const OUTPUT_SCHEMAS = {
  * @param {Object} params.entityContext - Kontext z DB (topic, question, okruh, obor)
  * @param {string} params.userPrompt - Prompt od uživatele
  * @param {boolean} params.allowWeb - Povolit web search (default false)
- * @param {string} params.userId - ID uživatele
- * @returns {Object} {text, citations, confidence, structuredData, logId}
+ * @returns {Object} {text, citations, confidence, structuredData, mode, cache}
  */
 Deno.serve(async (req) => {
   const startTime = Date.now();
@@ -130,6 +129,40 @@ Deno.serve(async (req) => {
         error: 'Invalid mode', 
         validModes: Object.keys(MODE_PROMPTS) 
       }, { status: 400 });
+    }
+
+    // Sestavení cache key
+    const cacheKey = await generateCacheKey(mode, entityContext.entityId, userPrompt);
+
+    // Pokus o cache hit
+    const cachedResult = await checkCache(base44, cacheKey, mode, entityContext);
+    if (cachedResult) {
+      // Log cache hit
+      await base44.asServiceRole.entities.AIInteractionLog.create({
+        user_id: user.id,
+        mode: mode,
+        entity_type: entityContext.entityType || 'none',
+        entity_id: entityContext.entityId || null,
+        prompt_version: AI_VERSION_TAG,
+        input_summary: userPrompt.substring(0, 200),
+        output_text: cachedResult.text.substring(0, 500),
+        citations_json: cachedResult.citations,
+        confidence: cachedResult.confidence?.level || 'medium',
+        confidence_reason: cachedResult.confidence?.reason || '',
+        cache_key: cacheKey,
+        is_cache_hit: true,
+        success: true,
+        duration_ms: Date.now() - startTime
+      });
+
+      return Response.json({
+        text: cachedResult.text,
+        citations: cachedResult.citations,
+        confidence: cachedResult.confidence,
+        structuredData: cachedResult.structuredData,
+        mode: mode,
+        cache: { hit: true, key: cacheKey }
+      });
     }
 
     // Sestavení retrieval contextu (RAG)
@@ -156,51 +189,64 @@ Deno.serve(async (req) => {
       response_json_schema: outputSchema
     });
 
-    // Parsování výstupu
-    const result = parseAIResponse(llmResponse, mode, outputSchema);
+    // Normalizace výstupu
+    const result = normalizeAIResponse(llmResponse, mode, outputSchema);
 
     // Logování do AI_Interaction_Log
-    const logEntry = await base44.asServiceRole.entities.AIInteractionLog.create({
+    await base44.asServiceRole.entities.AIInteractionLog.create({
       user_id: user.id,
       mode: mode,
       entity_type: entityContext.entityType || 'none',
       entity_id: entityContext.entityId || null,
       prompt_version: AI_VERSION_TAG,
       input_summary: userPrompt.substring(0, 200),
-      output_text: typeof result.text === 'string' ? result.text.substring(0, 500) : JSON.stringify(result.structuredData).substring(0, 500),
+      output_text: result.text.substring(0, 500),
       citations_json: result.citations,
       confidence: result.confidence?.level || 'medium',
       confidence_reason: result.confidence?.reason || '',
       tokens_estimate: estimateTokens(fullPrompt + JSON.stringify(llmResponse)),
+      cache_key: cacheKey,
+      is_cache_hit: false,
       success: true,
       duration_ms: Date.now() - startTime
     });
 
     return Response.json({
-      success: true,
       text: result.text,
-      structuredData: result.structuredData,
       citations: result.citations,
       confidence: result.confidence,
-      missingTopics: result.missingTopics,
-      logId: logEntry.id,
-      aiVersion: AI_VERSION_TAG
+      structuredData: result.structuredData,
+      mode: mode,
+      cache: { hit: false, key: cacheKey }
     });
 
   } catch (error) {
     console.error('invokeEduLLM error:', error);
     
+    // Normalized error response
+    const errorResult = {
+      text: `⚠️ Chyba při volání AI: ${error.message}`,
+      citations: { internal: [], external: [] },
+      confidence: { level: 'low', reason: 'Volání selhalo' },
+      structuredData: null,
+      mode: 'unknown',
+      cache: { hit: false }
+    };
+
     // Log error
     try {
       const base44 = createClientFromRequest(req);
       const user = await base44.auth.me();
       if (user) {
+        const payload = await req.json().catch(() => ({}));
         await base44.asServiceRole.entities.AIInteractionLog.create({
           user_id: user.id,
-          mode: 'unknown',
-          entity_type: 'none',
+          mode: payload.mode || 'unknown',
+          entity_type: payload.entityContext?.entityType || 'none',
+          entity_id: payload.entityContext?.entityId || null,
           prompt_version: AI_VERSION_TAG,
-          input_summary: 'Error occurred',
+          input_summary: (payload.userPrompt || 'Error occurred').substring(0, 200),
+          output_text: errorResult.text,
           success: false,
           error_text: error.message,
           duration_ms: Date.now() - startTime
@@ -210,10 +256,7 @@ Deno.serve(async (req) => {
       console.error('Failed to log error:', logError);
     }
 
-    return Response.json({ 
-      success: false,
-      error: error.message 
-    }, { status: 500 });
+    return Response.json(errorResult);
   }
 });
 
@@ -327,44 +370,251 @@ async function buildRetrievalContext(base44, mode, entityContext) {
 }
 
 /**
- * Parsuje AI odpověď podle režimu
+ * Generuje cache key pro request
  */
-function parseAIResponse(llmResponse, mode, outputSchema) {
-  const result = {
-    text: '',
-    structuredData: null,
-    citations: { internal: [], external: [] },
-    confidence: { level: 'medium', reason: 'Standardní odpověď' },
-    missingTopics: []
-  };
+async function generateCacheKey(mode, entityId, userPrompt) {
+  const normalized = (userPrompt || '').toLowerCase().trim().replace(/\s+/g, ' ');
+  const input = `${mode}:${entityId || 'none'}:${AI_VERSION_TAG}:${normalized}`;
+  
+  // Simple hash (pro production use crypto)
+  let hash = 0;
+  for (let i = 0; i < input.length; i++) {
+    const char = input.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return `cache_${Math.abs(hash).toString(36)}`;
+}
 
-  // Pokud je výstup JSON schema
-  if (outputSchema && typeof llmResponse === 'object') {
-    result.structuredData = llmResponse;
+/**
+ * Zkontroluje cache pro daný request
+ */
+async function checkCache(base44, cacheKey, mode, entityContext) {
+  try {
+    const logs = await base44.asServiceRole.entities.AIInteractionLog.filter(
+      { 
+        cache_key: cacheKey,
+        mode: mode,
+        success: true
+      },
+      '-created_date',
+      1
+    );
+
+    if (!logs || logs.length === 0) return null;
+
+    const cached = logs[0];
+
+    // Zkontroluj, zda entity nebyla změněna
+    if (entityContext.entityId && entityContext.entityType) {
+      try {
+        const EntityClass = entityContext.entityType === 'question' ? 'Question' 
+          : entityContext.entityType === 'topic' ? 'Topic' 
+          : null;
+        
+        if (EntityClass) {
+          const entity = await base44.asServiceRole.entities[EntityClass].get(entityContext.entityId);
+          const entityUpdated = new Date(entity.updated_date);
+          const cacheCreated = new Date(cached.created_date);
+          
+          if (entityUpdated > cacheCreated) {
+            return null; // Entity změněna, cache neplatná
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to check entity freshness:', e);
+        return null;
+      }
+    }
+
+    // Rekonstrukce výsledku z cache
+    return {
+      text: cached.output_text || '',
+      citations: cached.citations_json || { internal: [], external: [] },
+      confidence: {
+        level: cached.confidence || 'medium',
+        reason: cached.confidence_reason || 'Cached response'
+      },
+      structuredData: null // Cache neobsahuje structured data pro zjednodušení
+    };
+  } catch (e) {
+    console.error('Cache check failed:', e);
+    return null;
+  }
+}
+
+/**
+ * Normalizuje AI odpověď do jednotného tvaru
+ */
+function normalizeAIResponse(llmResponse, mode, outputSchema) {
+  const parsed = (outputSchema && typeof llmResponse === 'object') ? llmResponse : null;
+  const rawText = typeof llmResponse === 'string' ? llmResponse : null;
+
+  // 1. TEXT - prioritizovaná extrakce
+  let text = '';
+  if (parsed) {
+    text = parsed.answer_md 
+      || parsed.answer_text 
+      || parsed.output_text 
+      || parsed.content 
+      || '';
     
-    // Extrahuj citations a confidence ze struktury
-    if (llmResponse.citations) {
-      result.citations = llmResponse.citations;
-    }
-    if (llmResponse.confidence) {
-      result.confidence = llmResponse.confidence;
-    }
-    if (llmResponse.missing_topics) {
-      result.missingTopics = llmResponse.missing_topics;
+    // Speciální handling pro question_quiz
+    if (mode === 'question_quiz' && !text && parsed.questions) {
+      text = generateQuizMarkdown(parsed.questions);
     }
     
-    // Pro některé režimy vyextrahuj i text
-    if (llmResponse.answer_md) {
-      result.text = llmResponse.answer_md;
-    } else if (llmResponse.mcq) {
-      result.text = 'Quiz vygenerován - viz structuredData';
+    // Speciální handling pro question_high_yield
+    if (mode === 'question_high_yield' && !text && parsed.high_yield_points) {
+      text = generateHighYieldMarkdown(parsed.high_yield_points, parsed.common_mistakes);
     }
-  } else {
-    // Prostý text
-    result.text = typeof llmResponse === 'string' ? llmResponse : JSON.stringify(llmResponse);
+
+    // Speciální handling pro question_simplify
+    if (mode === 'question_simplify' && !text && parsed.simplified_explanation) {
+      text = generateSimplifiedMarkdown(parsed.simplified_explanation);
+    }
+
+    // Fallback: generuj text ze structure
+    if (!text && parsed.structure) {
+      text = generateStructuredAnswerMarkdown(parsed.structure);
+    }
+  }
+  
+  if (!text && rawText) {
+    text = rawText;
+  }
+  
+  if (!text) {
+    text = JSON.stringify(llmResponse || {});
   }
 
-  return result;
+  // 2. CITATIONS - prioritizovaná extrakce
+  const citations = parsed?.citations 
+    || parsed?.citations_json 
+    || llmResponse?.citations 
+    || llmResponse?.citations_json 
+    || { internal: [], external: [] };
+
+  // 3. CONFIDENCE - prioritizovaná extrakce
+  const confidence = parsed?.confidence 
+    || parsed?.confidence_json 
+    || llmResponse?.confidence 
+    || llmResponse?.confidence_json 
+    || { level: 'medium', reason: 'Standardní odpověď' };
+
+  // 4. STRUCTURED DATA
+  const structuredData = parsed || null;
+
+  return {
+    text,
+    citations,
+    confidence,
+    structuredData
+  };
+}
+
+/**
+ * Generuje markdown z MCQ otázek
+ */
+function generateQuizMarkdown(questions) {
+  if (!Array.isArray(questions)) return '';
+  
+  return questions.map((q, idx) => {
+    const opts = q.options || {};
+    const lines = [
+      `**${idx + 1}. ${q.question_text || 'Otázka'}**`,
+      ``,
+      `- A) ${opts.A || ''}`,
+      `- B) ${opts.B || ''}`,
+      `- C) ${opts.C || ''}`,
+      `- D) ${opts.D || ''}`,
+      ``,
+      `✅ **Správně:** ${q.correct_answer || '?'}`,
+      ``,
+      `*Vysvětlení:* ${q.explanation || ''}`,
+      ``
+    ];
+    return lines.join('\n');
+  }).join('\n---\n\n');
+}
+
+/**
+ * Generuje markdown z high-yield bodů
+ */
+function generateHighYieldMarkdown(points, mistakes) {
+  let md = '## High-Yield Body\n\n';
+  
+  if (Array.isArray(points)) {
+    points.forEach(p => {
+      md += `- ${p}\n`;
+    });
+  }
+  
+  if (Array.isArray(mistakes) && mistakes.length > 0) {
+    md += '\n## Časté Chyby\n\n';
+    mistakes.forEach(m => {
+      md += `- ⚠️ ${m}\n`;
+    });
+  }
+  
+  return md;
+}
+
+/**
+ * Generuje markdown ze zjednodušeného vysvětlení
+ */
+function generateSimplifiedMarkdown(simplified) {
+  if (!simplified || typeof simplified !== 'object') return '';
+  
+  return [
+    '## Co to je',
+    simplified.what_is_it || '',
+    '',
+    '## Proč je to důležité',
+    simplified.why_important || '',
+    '',
+    '## Jak to poznám',
+    simplified.how_to_recognize || '',
+    '',
+    '## Co se s tím dělá',
+    simplified.what_to_do || '',
+    '',
+    '## Na co si dát pozor',
+    simplified.watch_out || ''
+  ].join('\n');
+}
+
+/**
+ * Generuje markdown ze strukturované odpovědi
+ */
+function generateStructuredAnswerMarkdown(structure) {
+  if (!structure || typeof structure !== 'object') return '';
+  
+  const sections = [];
+  
+  if (structure.definice) {
+    sections.push(`## Definice\n\n${structure.definice}`);
+  }
+  if (structure.etiologie_klasifikace) {
+    sections.push(`## Etiologie a Klasifikace\n\n${structure.etiologie_klasifikace}`);
+  }
+  if (structure.diagnostika) {
+    sections.push(`## Diagnostika\n\n${structure.diagnostika}`);
+  }
+  if (structure.lecba) {
+    sections.push(`## Léčba\n\n${structure.lecba}`);
+  }
+  if (structure.komplikace) {
+    sections.push(`## Komplikace\n\n${structure.komplikace}`);
+  }
+  if (structure.chyby) {
+    sections.push(`## Časté Chyby\n\n${structure.chyby}`);
+  }
+  if (Array.isArray(structure.kontrolni_otazky) && structure.kontrolni_otazky.length > 0) {
+    sections.push(`## Kontrolní Otázky\n\n${structure.kontrolni_otazky.map((q, i) => `${i + 1}. ${q}`).join('\n')}`);
+  }
+  
+  return sections.join('\n\n');
 }
 
 /**
