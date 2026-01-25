@@ -23,6 +23,7 @@ import StatusBadge from '@/components/ui/StatusBadge';
 import HighlightableText from '@/components/study/HighlightableText';
 import TopicNotes from '@/components/study/TopicNotes.jsx';
 import TopicHippoAssistant from '@/components/topics/TopicHippoAssistant';
+import HTMLContent from '@/components/study/HTMLContent';
 
 export default function TopicDetail() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -194,9 +195,7 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
                 <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
                   Přehled
                 </h2>
-                <div className="prose prose-slate dark:prose-invert max-w-none">
-                  <ReactMarkdown>{topic.overview_md}</ReactMarkdown>
-                </div>
+                <HTMLContent content={topic.overview_md} />
               </CardContent>
             </Card>
           )}
@@ -208,9 +207,7 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
                 <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
                   Základní principy
                 </h2>
-                <div className="prose prose-slate dark:prose-invert max-w-none">
-                  <ReactMarkdown>{topic.principles_md}</ReactMarkdown>
-                </div>
+                <HTMLContent content={topic.principles_md} />
               </CardContent>
             </Card>
           )}
@@ -222,9 +219,7 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
                 <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
                   Souvislosti a vztahy
                 </h2>
-                <div className="prose prose-slate dark:prose-invert max-w-none">
-                  <ReactMarkdown>{topic.relations_md}</ReactMarkdown>
-                </div>
+                <HTMLContent content={topic.relations_md} />
               </CardContent>
             </Card>
           )}
@@ -236,9 +231,7 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
                 <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
                   Klinické myšlení
                 </h2>
-                <div className="prose prose-slate dark:prose-invert max-w-none">
-                  <ReactMarkdown>{topic.clinical_thinking_md}</ReactMarkdown>
-                </div>
+                <HTMLContent content={topic.clinical_thinking_md} />
               </CardContent>
             </Card>
           )}
@@ -250,9 +243,7 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
                 <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
                   Časté chyby a slepé uličky
                 </h2>
-                <div className="prose prose-slate dark:prose-invert max-w-none">
-                  <ReactMarkdown>{topic.common_pitfalls_md}</ReactMarkdown>
-                </div>
+                <HTMLContent content={topic.common_pitfalls_md} />
               </CardContent>
             </Card>
           )}
@@ -264,9 +255,7 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
                 <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
                   Mentální model
                 </h2>
-                <div className="prose prose-slate dark:prose-invert max-w-none">
-                  <ReactMarkdown>{topic.mental_model_md}</ReactMarkdown>
-                </div>
+                <HTMLContent content={topic.mental_model_md} />
               </CardContent>
             </Card>
           )}
@@ -278,9 +267,7 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
                 <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
                   Mini-scénáře
                 </h2>
-                <div className="prose prose-slate dark:prose-invert max-w-none">
-                  <ReactMarkdown>{topic.scenarios_md}</ReactMarkdown>
-                </div>
+                <HTMLContent content={topic.scenarios_md} />
               </CardContent>
             </Card>
           )}
@@ -292,9 +279,7 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
                 <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
                   Klíčové body k zapamatování
                 </h2>
-                <div className="prose prose-slate dark:prose-invert max-w-none">
-                  <ReactMarkdown>{topic.key_takeaways_md}</ReactMarkdown>
-                </div>
+                <HTMLContent content={topic.key_takeaways_md} />
               </CardContent>
             </Card>
           )}
