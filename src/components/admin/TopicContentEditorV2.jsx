@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Loader2, Sparkles, Save, BookOpen, List, Microscope, ArrowDown, CheckCircle, Shield, Eye, AlertTriangle } from 'lucide-react';
+import { Loader2, Sparkles, Save, BookOpen, List, Microscope, ArrowDown, CheckCircle, Shield, Eye, AlertTriangle, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 import { AI_VERSION_TAG } from '../utils/aiConfig';
 
@@ -55,6 +55,13 @@ export default function TopicContentEditorV2({ topic, onSave }) {
   const handleAIGenerate = async (mode) => {
     setIsGenerating(true);
     try {
+      const promptMap = {
+        topic_generate_fulltext: `Vytvoř plný studijní text pro téma: ${topic.title}`,
+        topic_summarize: `Vytvoř shrnutí z plného textu tématu: ${topic.title}`,
+        topic_deep_dive: `Rozviň téma do hloubky: ${topic.title}`,
+        topic_reformat: `Přeformátuj tento text pro optimální studium. NEPŘIDÁVEJ nový obsah, pouze zlepši strukturu a čitelnost.\n\n${content.full_text_content || ''}`
+      };
+
       const response = await base44.functions.invoke('invokeEduLLM', {
         mode: mode,
         entityContext: {
@@ -62,7 +69,7 @@ export default function TopicContentEditorV2({ topic, onSave }) {
           entityType: 'topic',
           entityId: topic.id
         },
-        userPrompt: `Vytvoř obsah pro téma: ${topic.title}`,
+        userPrompt: promptMap[mode] || `Vytvoř obsah pro téma: ${topic.title}`,
         allowWeb: mode === 'topic_deep_dive'
       });
 
@@ -84,6 +91,12 @@ export default function TopicContentEditorV2({ topic, onSave }) {
         setContent(prev => ({ 
           ...prev, 
           deep_dive_content: result.text || '',
+          source_pack: result.citations || prev.source_pack
+        }));
+      } else if (mode === 'topic_reformat') {
+        setContent(prev => ({ 
+          ...prev, 
+          full_text_content: result.text || '',
           source_pack: result.citations || prev.source_pack
         }));
       }
@@ -298,15 +311,27 @@ export default function TopicContentEditorV2({ topic, onSave }) {
         <TabsContent value="full" className="space-y-3">
           <div className="flex justify-between items-center">
             <Label>Plný studijní text (markdown)</Label>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => handleAIGenerate('topic_generate_fulltext')}
-              disabled={isGenerating}
-            >
-              {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Sparkles className="w-3 h-3 mr-1" />}
-              Generovat AI
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => handleAIGenerate('topic_reformat')}
+                disabled={isGenerating || !content.full_text_content}
+                title="Přeformátuj existující text pro lepší studium"
+              >
+                {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <FileText className="w-3 h-3 mr-1" />}
+                Přeformátovat
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => handleAIGenerate('topic_generate_fulltext')}
+                disabled={isGenerating}
+              >
+                {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Sparkles className="w-3 h-3 mr-1" />}
+                Generovat AI
+              </Button>
+            </div>
           </div>
           <Textarea
             value={content.full_text_content}
