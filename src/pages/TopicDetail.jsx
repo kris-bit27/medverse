@@ -328,9 +328,7 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
                     <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 italic">
                       Toto jsou klíčové znalosti, které si máš odnést.
                     </p>
-                    <div className="prose prose-slate dark:prose-invert max-w-none">
-                      <ReactMarkdown>{topic.bullet_points_summary}</ReactMarkdown>
-                    </div>
+                    <HTMLContent content={topic.bullet_points_summary} />
                   </div>
                 ) : (
                   <p className="text-slate-500 text-center py-8">
