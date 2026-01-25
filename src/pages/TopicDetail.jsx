@@ -310,7 +310,9 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
             <Card>
               <CardContent className="p-6">
                 {topic.full_text_content ? (
-                  <HTMLContent content={topic.full_text_content} />
+                  <div className="high-yield-content">
+                    <HTMLContent content={topic.full_text_content} />
+                  </div>
                 ) : (
                   <p className="text-slate-500 text-center py-8">
                     Plný text zatím není dostupný
@@ -345,7 +347,9 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
             <Card>
               <CardContent className="p-6">
                 {topic.deep_dive_content ? (
-                  <HTMLContent content={topic.deep_dive_content} />
+                  <div className="high-yield-content">
+                    <HTMLContent content={topic.deep_dive_content} />
+                  </div>
                 ) : (
                   <p className="text-slate-500 text-center py-8">
                     Podrobný obsah zatím není dostupný
