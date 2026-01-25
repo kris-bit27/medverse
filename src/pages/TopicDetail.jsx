@@ -298,7 +298,7 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
             </TabsTrigger>
             <TabsTrigger value="bullets" className="flex items-center gap-2">
               <List className="w-4 h-4" />
-              Odrážky
+              High-Yield
             </TabsTrigger>
             <TabsTrigger value="deepdive" className="flex items-center gap-2">
               <Microscope className="w-4 h-4" />
@@ -322,12 +322,19 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
 
           <TabsContent value="bullets">
             <Card>
-              <CardContent className="p-6 prose prose-slate dark:prose-invert max-w-none">
+              <CardContent className="p-6">
                 {topic.bullet_points_summary ? (
-                  <ReactMarkdown>{topic.bullet_points_summary}</ReactMarkdown>
+                  <div>
+                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 italic">
+                      Toto jsou klíčové znalosti, které si máš odnést.
+                    </p>
+                    <div className="prose prose-slate dark:prose-invert max-w-none">
+                      <ReactMarkdown>{topic.bullet_points_summary}</ReactMarkdown>
+                    </div>
+                  </div>
                 ) : (
                   <p className="text-slate-500 text-center py-8">
-                    Shrnutí v odrážkách zatím není dostupné
+                    High-Yield obsah zatím není dostupný
                   </p>
                 )}
               </CardContent>
