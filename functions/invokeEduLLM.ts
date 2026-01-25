@@ -21,7 +21,8 @@ const EXAM_MODES = [
   'topic_improve_missing',
   'topic_legal_deepen',
   'topic_clinical_examples',
-  'topic_exam_refinement'
+  'topic_exam_refinement',
+  'topic_reformat'
 ];
 
 // CHAT režimy - konverzační, pro doplňující dotazy
@@ -176,7 +177,125 @@ const MODE_PROMPTS = {
   topic_improve_missing: `${ATTESTATION_GRADE_PROMPT}\n\nDOPLŇ chybějící témata identifikovaná v předchozím hodnocení. NEPŘEPISUJ celý text. Vysvětli PROČ byla tato část nedostatečná a CO doplňuješ. Označuj doplněné části jasně.`,
   topic_legal_deepen: `${ATTESTATION_GRADE_PROMPT}\n\nZPŘESNI právní rámec tématu. Doplň konkrétní zákony ČR, GDPR principy, povinnosti lékaře vs. poskytovatele. Vysvětli PROČ byl právní rámec nedostatečný.`,
   topic_clinical_examples: `${ATTESTATION_GRADE_PROMPT}\n\nPŘIDAJ konkrétní klinické příklady, nejlépe z chirurgie. Zahrň komplikace, informovaný souhlas, sporné situace. Vysvětli PROČ tyto příklady chyběly.`,
-  topic_exam_refinement: `${ATTESTATION_GRADE_PROMPT}\n\nUPRAV text na atestační úroveň. Odstraň povrchní věty, doplň praktické detaily, přidej právní důsledky. Vysvětli, CO bylo na nedostatečné úrovni a JAK to zlepšuješ.`
+  topic_exam_refinement: `${ATTESTATION_GRADE_PROMPT}\n\nUPRAV text na atestační úroveň. Odstraň povrchní věty, doplň praktické detaily, přidej právní důsledky. Vysvětli, CO bylo na nedostatečné úrovni a JAK to zlepšuješ.`,
+  topic_reformat: `Tvým úkolem je POUZE PŘEFORMÁTOVAT EXISTUJÍCÍ STUDIJNÍ TEXT
+tak, aby byl vizuálně a didakticky vhodný pro učení lékaře
+(rezident, atestovaný lékař, klinická praxe).
+
+⚠️ KRITICKÉ PRAVIDLO:
+- NEPŘIDÁVEJ žádný nový odborný obsah
+- NEMAŽ žádné informace
+- NEMĚŇ význam ani odbornou správnost
+- PRACUJ výhradně s poskytnutým textem
+
+Tvým cílem je zlepšit:
+- čitelnost
+- strukturu
+- zapamatovatelnost
+- použitelnost pro opakování
+
+────────────────────────────
+1️⃣ STRUKTURA A ČLENĚNÍ
+────────────────────────────
+
+- Rozděl dlouhé odstavce na kratší (max 3–4 řádky)
+- Každá myšlenka = samostatný odstavec
+- Zachovej logickou hierarchii kapitol a podkapitol
+- Používej jasné nadpisy a podnadpisy
+
+────────────────────────────
+2️⃣ NADPISY
+────────────────────────────
+
+Každá sekce MUSÍ mít:
+- jednoznačný nadpis, který říká, CO se zde učí
+- odborně přesné pojmenování
+
+Příklad:
+❌ „Základní principy"
+✅ „Základní principy zdravotnické dokumentace"
+
+────────────────────────────
+3️⃣ VÝČTY A SEZNAMY
+────────────────────────────
+
+- Dlouhé věty rozděl do:
+  • odrážek
+  • číslovaných seznamů (u postupů)
+
+Používej:
+- • pro výčty vlastností, povinností, zásad
+- 1., 2., 3. pro postupy a kroky
+
+Každá odrážka = jedna jasná informace.
+
+────────────────────────────
+4️⃣ DIDAKTICKÉ BLOKY
+────────────────────────────
+
+Tam, kde to dává smysl, vytvoř oddělené bloky:
+
+🔹 **Zásadní princip**
+→ jedna klíčová věta, kterou si má lékař zapamatovat
+
+⚠️ **Častá chyba v praxi**
+→ typický omyl nebo právní/klinické riziko
+
+🩺 **Praktický dopad**
+→ co to znamená v každodenní chirurgické praxi
+
+Tyto bloky NESMÍ obsahovat nové informace,
+pouze přeformuluj to, co již v textu implicitně je.
+
+────────────────────────────
+5️⃣ ZVÝRAZNĚNÍ PRO UČENÍ
+────────────────────────────
+
+- Používej **tučně** pro klíčové (high-yield) věty
+- Používej _kurzívu_ pro vysvětlení nebo důraz
+- Zvýraznění používej střídmě a konzistentně
+
+────────────────────────────
+6️⃣ ODDĚLENÍ HLAVNÍCH SEKCI
+────────────────────────────
+
+- Mezi hlavními kapitolami ponech vizuální pauzu
+- Zachovej přehlednost při dlouhém textu
+- Text musí jít snadno „projet očima"
+
+────────────────────────────
+7️⃣ ZÁVĚREČNÉ STUDIJNÍ SHRNUTÍ
+────────────────────────────
+
+Na konci textu VŽDY ponech a jasně strukturovat:
+
+### Co musí lékař znát
+- stručné, bodové shrnutí
+
+### Časté chyby v praxi
+- konkrétní a praktické
+
+### Co je právně / odborně neobhajitelné
+- jasně a jednoznačně formulované
+
+────────────────────────────
+8️⃣ ZAKÁZÁNO
+────────────────────────────
+
+❌ přidávání nových faktů  
+❌ akademický esejový styl  
+❌ dlouhé souvislé bloky textu  
+❌ změna odborného významu  
+
+────────────────────────────
+VÝSTUP
+────────────────────────────
+
+Výstupem je:
+- stejný odborný obsah
+- výrazně lepší struktura
+- text vhodný pro učení, opakování a rychlou orientaci
+- studijní materiál odpovídající exam-grade úrovni`
 };
 
 const OUTPUT_SCHEMAS = {
