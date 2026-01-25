@@ -1,14 +1,6 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
-
-const CardHeader = React.forwardRef(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={`flex flex-col space-y-1.5 p-6 ${className || ''}`}
-    {...props} />
-));
-CardHeader.displayName = "CardHeader";
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
@@ -93,12 +85,12 @@ export default function TopicContentReviewPanel({ topic, aiResponse, onContentIm
   return (
     <div className="space-y-4">
       <Card className="border-2 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-900/10">
-        <CardHeader>
+        <div className="flex flex-col space-y-1.5 p-6">
           <div className="flex items-center gap-2">
             <AlertTriangle className="w-5 h-5 text-amber-600" />
             <CardTitle className="text-lg">Hippo identifikoval slabiny tohoto textu</CardTitle>
           </div>
-        </CardHeader>
+        </div>
         <CardContent className="space-y-4">
           {/* Důvod nízké confidence */}
           {aiResponse.confidence?.level === 'low' && (
@@ -235,7 +227,7 @@ export default function TopicContentReviewPanel({ topic, aiResponse, onContentIm
       {/* Improved content display */}
       {improvedContent && (
         <Card className="border-2 border-green-200 dark:border-green-800">
-          <CardHeader>
+          <div className="flex flex-col space-y-1.5 p-6">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-5 h-5 text-green-600" />
               <CardTitle className="text-lg">Hippo vylepšil obsah</CardTitle>
@@ -253,7 +245,7 @@ export default function TopicContentReviewPanel({ topic, aiResponse, onContentIm
                 </Badge>
               )}
             </div>
-          </CardHeader>
+          </div>
           <CardContent className="space-y-3">
             {improvedContent.confidence?.reason && (
               <Alert>
