@@ -67,165 +67,239 @@
   }
 }
 
-/* TipTap rendered content styles */
+/* TipTap rendered content styles - matching admin editor exactly */
 .tiptap-rendered-content {
-  @apply text-base text-slate-700;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: rgb(51, 65, 85);
 }
 
 .dark .tiptap-rendered-content {
-  @apply text-slate-300;
+  color: rgb(203, 213, 225);
 }
 
+/* Paragraphs - large spacing like in editor */
 .tiptap-rendered-content p {
-  @apply mb-4 leading-7;
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+  line-height: 1.75;
+}
+
+.tiptap-rendered-content p:first-child {
+  margin-top: 0;
 }
 
 .tiptap-rendered-content p:last-child {
-  @apply mb-0;
+  margin-bottom: 0;
 }
 
+/* Headings - large spacing */
 .tiptap-rendered-content h1 {
-  @apply text-2xl font-bold text-slate-900 mt-8 mb-4;
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: rgb(15, 23, 42);
+  margin-top: 2em;
+  margin-bottom: 1em;
 }
 
 .dark .tiptap-rendered-content h1 {
-  @apply text-white;
+  color: rgb(248, 250, 252);
 }
 
 .tiptap-rendered-content h2 {
-  @apply text-xl font-bold text-slate-900 mt-6 mb-4;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: rgb(15, 23, 42);
+  margin-top: 2em;
+  margin-bottom: 1em;
 }
 
 .dark .tiptap-rendered-content h2 {
-  @apply text-white;
+  color: rgb(248, 250, 252);
 }
 
 .tiptap-rendered-content h3 {
-  @apply text-lg font-bold text-slate-900 mt-5 mb-3;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: rgb(15, 23, 42);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
 }
 
 .dark .tiptap-rendered-content h3 {
-  @apply text-white;
+  color: rgb(248, 250, 252);
 }
 
+/* Text formatting */
 .tiptap-rendered-content strong {
-  @apply font-bold text-slate-900;
+  font-weight: 700;
+  color: rgb(15, 23, 42);
 }
 
 .dark .tiptap-rendered-content strong {
-  @apply text-white;
+  color: rgb(248, 250, 252);
 }
 
 .tiptap-rendered-content em {
-  @apply italic text-slate-800;
+  font-style: italic;
 }
 
-.dark .tiptap-rendered-content em {
-  @apply text-slate-200;
-}
-
+/* Lists - proper spacing */
 .tiptap-rendered-content ul,
 .tiptap-rendered-content ol {
-  @apply my-4 pl-6 space-y-2;
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+  padding-left: 1.625em;
 }
 
 .tiptap-rendered-content ul {
-  @apply list-disc;
+  list-style-type: disc;
 }
 
 .tiptap-rendered-content ol {
-  @apply list-decimal;
+  list-style-type: decimal;
 }
 
 .tiptap-rendered-content li {
-  @apply text-slate-700 leading-7;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  line-height: 1.75;
 }
 
-.dark .tiptap-rendered-content li {
-  @apply text-slate-300;
+.tiptap-rendered-content li p {
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
 }
 
-.tiptap-rendered-content ul ul {
-  @apply list-circle;
-}
-
+.tiptap-rendered-content ul ul,
+.tiptap-rendered-content ul ol,
+.tiptap-rendered-content ol ul,
 .tiptap-rendered-content ol ol {
-  @apply list-lower-alpha;
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
 }
 
+/* Blockquotes */
 .tiptap-rendered-content blockquote {
-  @apply border-l-4 border-teal-500 bg-teal-50 pl-4 py-2 my-4 italic;
+  border-left: 4px solid rgb(20, 184, 166);
+  padding-left: 1em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  margin-top: 1.6em;
+  margin-bottom: 1.6em;
+  font-style: italic;
+  background-color: rgb(240, 253, 250);
 }
 
 .dark .tiptap-rendered-content blockquote {
-  @apply bg-teal-900/20;
+  background-color: rgba(20, 184, 166, 0.1);
 }
 
+/* Code */
 .tiptap-rendered-content code {
-  @apply bg-slate-100 px-1.5 py-0.5 rounded text-sm font-mono;
+  background-color: rgb(241, 245, 249);
+  color: rgb(51, 65, 85);
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  font-family: 'Courier New', monospace;
 }
 
 .dark .tiptap-rendered-content code {
-  @apply bg-slate-800;
+  background-color: rgb(30, 41, 59);
+  color: rgb(226, 232, 240);
 }
 
 .tiptap-rendered-content pre {
-  @apply bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto my-4;
+  background-color: rgb(15, 23, 42);
+  color: rgb(248, 250, 252);
+  padding: 1em;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin-top: 1.71em;
+  margin-bottom: 1.71em;
 }
 
 .tiptap-rendered-content pre code {
-  @apply bg-transparent p-0;
+  background-color: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: 0.875em;
 }
 
+/* Tables */
 .tiptap-rendered-content table {
-  @apply w-full border-collapse my-6;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 2em;
+  margin-bottom: 2em;
 }
 
 .tiptap-rendered-content thead {
-  @apply bg-slate-100;
+  background-color: rgb(241, 245, 249);
 }
 
 .dark .tiptap-rendered-content thead {
-  @apply bg-slate-800;
+  background-color: rgb(30, 41, 59);
 }
 
 .tiptap-rendered-content th {
-  @apply font-bold text-left p-3 border border-slate-300;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.75rem;
+  border: 1px solid rgb(203, 213, 225);
 }
 
 .dark .tiptap-rendered-content th {
-  @apply border-slate-600;
+  border-color: rgb(71, 85, 105);
 }
 
 .tiptap-rendered-content td {
-  @apply p-3 border border-slate-300;
+  padding: 0.75rem;
+  border: 1px solid rgb(203, 213, 225);
 }
 
 .dark .tiptap-rendered-content td {
-  @apply border-slate-600;
+  border-color: rgb(71, 85, 105);
 }
 
+/* Horizontal rule */
 .tiptap-rendered-content hr {
-  @apply my-8 border-t-2 border-slate-200;
+  border: none;
+  border-top: 2px solid rgb(226, 232, 240);
+  margin-top: 3em;
+  margin-bottom: 3em;
 }
 
 .dark .tiptap-rendered-content hr {
-  @apply border-slate-700;
+  border-top-color: rgb(51, 65, 85);
 }
 
+/* Links */
 .tiptap-rendered-content a {
-  @apply text-teal-600 font-medium no-underline hover:underline;
+  color: rgb(20, 184, 166);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.tiptap-rendered-content a:hover {
+  text-decoration: underline;
 }
 
 .dark .tiptap-rendered-content a {
-  @apply text-teal-400;
+  color: rgb(94, 234, 212);
 }
 
-/* Remove margins from first and last children */
-.tiptap-rendered-content > *:first-child {
-  @apply mt-0;
+/* Highlight */
+.tiptap-rendered-content mark {
+  background-color: rgb(254, 249, 195);
+  padding: 0.125em 0.25em;
+  border-radius: 0.25rem;
 }
 
-.tiptap-rendered-content > *:last-child {
-  @apply mb-0;
+.dark .tiptap-rendered-content mark {
+  background-color: rgba(254, 240, 138, 0.3);
 }
