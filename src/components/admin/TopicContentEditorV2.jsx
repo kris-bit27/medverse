@@ -302,7 +302,7 @@ export default function TopicContentEditorV2({ topic, onSave }) {
           </TabsTrigger>
           <TabsTrigger value="bullets">
             <List className="w-4 h-4 mr-2" />
-            Odrážky
+            High-Yield
           </TabsTrigger>
           <TabsTrigger value="deepdive">
             <Microscope className="w-4 h-4 mr-2" />
@@ -363,7 +363,7 @@ export default function TopicContentEditorV2({ topic, onSave }) {
 
         <TabsContent value="bullets" className="space-y-3">
           <div className="flex justify-between items-center">
-            <Label>Shrnutí v odrážkách (markdown)</Label>
+            <Label>High-Yield shrnutí</Label>
             <Button
               size="sm"
               variant="outline"
@@ -375,17 +375,16 @@ export default function TopicContentEditorV2({ topic, onSave }) {
               Sumarizovat
             </Button>
           </div>
-          <Textarea
-            value={content.bullet_points_summary}
-            onChange={(e) => setContent(prev => ({ ...prev, bullet_points_summary: e.target.value }))}
-            className="font-mono text-sm h-[400px]"
+          <TipTapEditor
+            content={content.bullet_points_summary}
+            onChange={(html) => setContent(prev => ({ ...prev, bullet_points_summary: html }))}
             placeholder="- Hlavní bod 1..."
           />
         </TabsContent>
 
         <TabsContent value="deepdive" className="space-y-3">
           <div className="flex justify-between items-center">
-            <Label>Deep Dive (markdown) - s webem</Label>
+            <Label>Deep Dive - s webem</Label>
             <Button
               size="sm"
               variant="outline"
@@ -396,10 +395,9 @@ export default function TopicContentEditorV2({ topic, onSave }) {
               Generovat AI
             </Button>
           </div>
-          <Textarea
-            value={content.deep_dive_content}
-            onChange={(e) => setContent(prev => ({ ...prev, deep_dive_content: e.target.value }))}
-            className="font-mono text-sm h-[400px]"
+          <TipTapEditor
+            content={content.deep_dive_content}
+            onChange={(html) => setContent(prev => ({ ...prev, deep_dive_content: html }))}
             placeholder="Rozšířený obsah pro pokročilé studium..."
           />
         </TabsContent>
