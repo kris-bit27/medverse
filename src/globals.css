@@ -152,16 +152,17 @@
 .tiptap-rendered-content ol {
   margin-top: 1.25em;
   margin-bottom: 1.25em;
-  padding-left: 2.5em;
-  list-style-position: outside;
+  padding-left: 1.5em !important;
+  list-style-position: outside !important;
+  display: block !important;
 }
 
 .tiptap-rendered-content ul {
-  list-style-type: disc;
+  list-style-type: disc !important;
 }
 
 .tiptap-rendered-content ol {
-  list-style-type: decimal;
+  list-style-type: decimal !important;
 }
 
 .tiptap-rendered-content li {
