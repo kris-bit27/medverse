@@ -582,7 +582,7 @@ export default function AdminTaxonomy() {
                   </div>
                   <Button 
                     onClick={() => saveOkruhMutation.mutate(okruhForm)}
-                    disabled={saveOkruhMutation.isPending}
+                    disabled={saveOkruhMutation.isPending || !okruhForm.title}
                     className="w-full"
                   >
                     {saveOkruhMutation.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
