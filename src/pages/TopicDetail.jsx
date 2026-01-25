@@ -328,7 +328,9 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
                     <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 italic">
                       Toto jsou klíčové znalosti, které si máš odnést.
                     </p>
-                    <HTMLContent content={topic.bullet_points_summary} />
+                    <div className="high-yield-content">
+                      <HTMLContent content={topic.bullet_points_summary} />
+                    </div>
                   </div>
                 ) : (
                   <p className="text-slate-500 text-center py-8">
