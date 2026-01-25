@@ -6,7 +6,7 @@ export default function HTMLContent({ content }) {
   // Always render as HTML since TipTap editor produces HTML
   return (
     <div 
-      className="prose prose-slate dark:prose-invert max-w-none tiptap-rendered-content"
+      className="tiptap-rendered-content"
       dangerouslySetInnerHTML={{ __html: content }}
     />
   );
