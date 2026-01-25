@@ -43,14 +43,14 @@ export default function TipTapEditor({ content, onChange, placeholder = 'Začně
         keepMarks: true,
         keepAttributes: true,
         HTMLAttributes: {
-          class: 'list-disc list-inside'
+          class: 'list-disc pl-6'
         }
       }),
       OrderedList.configure({
         keepMarks: true,
         keepAttributes: true,
         HTMLAttributes: {
-          class: 'list-decimal list-inside'
+          class: 'list-decimal pl-6'
         }
       }),
       ListItem,
