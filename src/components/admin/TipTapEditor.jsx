@@ -34,8 +34,26 @@ export default function TipTapEditor({ content, onChange, placeholder = 'Začně
       StarterKit.configure({
         heading: {
           levels: [2, 3]
+        },
+        bulletList: false,
+        orderedList: false,
+        listItem: false
+      }),
+      BulletList.configure({
+        keepMarks: true,
+        keepAttributes: true,
+        HTMLAttributes: {
+          class: 'list-disc list-inside'
         }
       }),
+      OrderedList.configure({
+        keepMarks: true,
+        keepAttributes: true,
+        HTMLAttributes: {
+          class: 'list-decimal list-inside'
+        }
+      }),
+      ListItem,
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
