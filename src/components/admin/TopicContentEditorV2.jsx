@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import TopicContentReviewPanel from './TopicContentReviewPanel';
+import TipTapEditor from './TipTapEditor';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
@@ -33,6 +34,7 @@ export default function TopicContentEditorV2({ topic, onSave }) {
   const [newObjective, setNewObjective] = useState('');
   const [reviewResult, setReviewResult] = useState(null);
   const [lastGenerated, setLastGenerated] = useState(null);
+  const [useRichEditor, setUseRichEditor] = useState(true);
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -310,7 +312,17 @@ export default function TopicContentEditorV2({ topic, onSave }) {
 
         <TabsContent value="full" className="space-y-3">
           <div className="flex justify-between items-center">
-            <Label>Plný studijní text (markdown)</Label>
+            <div className="flex items-center gap-3">
+              <Label>Plný studijní text</Label>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => setUseRichEditor(!useRichEditor)}
+                className="text-xs"
+              >
+                {useRichEditor ? 'Markdown' : 'Rich editor'}
+              </Button>
+            </div>
             <div className="flex gap-2">
               <Button
                 size="sm"
@@ -333,12 +345,20 @@ export default function TopicContentEditorV2({ topic, onSave }) {
               </Button>
             </div>
           </div>
-          <Textarea
-            value={content.full_text_content}
-            onChange={(e) => setContent(prev => ({ ...prev, full_text_content: e.target.value }))}
-            className="font-mono text-sm h-[400px]"
-            placeholder="Plný text učebnice..."
-          />
+          {useRichEditor ? (
+            <TipTapEditor
+              content={content.full_text_content}
+              onChange={(html) => setContent(prev => ({ ...prev, full_text_content: html }))}
+              placeholder="Začněte psát studijní text..."
+            />
+          ) : (
+            <Textarea
+              value={content.full_text_content}
+              onChange={(e) => setContent(prev => ({ ...prev, full_text_content: e.target.value }))}
+              className="font-mono text-sm h-[400px]"
+              placeholder="Plný text učebnice (markdown/HTML)..."
+            />
+          )}
         </TabsContent>
 
         <TabsContent value="bullets" className="space-y-3">
