@@ -206,7 +206,9 @@ export default function AdminTaxonomy() {
   const handleTogglePublished = async (topic) => {
     await updateTopicStatusMutation.mutateAsync({
       id: topic.id,
-      data: { is_published: !topic.is_published }
+      data: { 
+        status: topic.status === 'published' ? 'draft' : 'published'
+      }
     });
   };
 
@@ -223,7 +225,7 @@ export default function AdminTaxonomy() {
     for (const topicId of selectedTopics) {
       await updateTopicStatusMutation.mutateAsync({
         id: topicId,
-        data: { is_published: true }
+        data: { status: 'published' }
       });
     }
     setSelectedTopics([]);
@@ -233,7 +235,7 @@ export default function AdminTaxonomy() {
     for (const topicId of selectedTopics) {
       await updateTopicStatusMutation.mutateAsync({
         id: topicId,
-        data: { is_published: false }
+        data: { status: 'draft' }
       });
     }
     setSelectedTopics([]);
@@ -279,8 +281,8 @@ export default function AdminTaxonomy() {
     if (searchQuery && !t.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     if (filterOkruh !== 'all' && t.okruh_id !== filterOkruh) return false;
     if (filterTopicStatus !== 'all' && t.status !== filterTopicStatus) return false;
-    if (filterStatus === 'published' && !t.is_published) return false;
-    if (filterStatus === 'unpublished' && t.is_published) return false;
+    if (filterStatus === 'published' && t.status !== 'published') return false;
+    if (filterStatus === 'unpublished' && t.status === 'published') return false;
     if (filterStatus === 'reviewed' && !t.is_reviewed) return false;
     if (filterStatus === 'unreviewed' && t.is_reviewed) return false;
     return true;
@@ -870,7 +872,7 @@ export default function AdminTaxonomy() {
                                 Zkontrolováno
                               </Badge>
                             )}
-                            {topic.is_published && (
+                            {topic.status === 'published' && (
                               <Badge className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
                                 <Eye className="w-3 h-3 mr-1" />
                                 Publikováno
@@ -892,9 +894,9 @@ export default function AdminTaxonomy() {
                               size="icon" 
                               className="h-7 w-7"
                               onClick={() => handleTogglePublished(topic)}
-                              title={topic.is_published ? "Skrýt" : "Publikovat"}
+                              title={topic.status === 'published' ? "Skrýt" : "Publikovat"}
                             >
-                              {topic.is_published ? (
+                              {topic.status === 'published' ? (
                                 <Eye className="w-3 h-3 text-blue-600" />
                               ) : (
                                 <EyeOff className="w-3 h-3 text-slate-400" />
@@ -962,7 +964,7 @@ export default function AdminTaxonomy() {
                                       Zkontrolováno
                                     </Badge>
                                   )}
-                                  {topic.is_published && (
+                                  {topic.status === 'published' && (
                                     <Badge className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
                                       <Eye className="w-3 h-3 mr-1" />
                                       Publikováno
@@ -984,9 +986,9 @@ export default function AdminTaxonomy() {
                                     size="icon" 
                                     className="h-7 w-7"
                                     onClick={() => handleTogglePublished(topic)}
-                                    title={topic.is_published ? "Skrýt" : "Publikovat"}
+                                    title={topic.status === 'published' ? "Skrýt" : "Publikovat"}
                                   >
-                                    {topic.is_published ? (
+                                    {topic.status === 'published' ? (
                                       <Eye className="w-3 h-3 text-blue-600" />
                                     ) : (
                                       <EyeOff className="w-3 h-3 text-slate-400" />

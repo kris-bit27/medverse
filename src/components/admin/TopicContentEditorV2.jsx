@@ -41,7 +41,6 @@ export default function TopicContentEditorV2({ topic, onSave }) {
     try {
       await base44.entities.Topic.update(topic.id, {
         ...content,
-        is_published: content.status === 'published',
         updated_by_ai: true,
         ai_version_tag: AI_VERSION_TAG
       });
