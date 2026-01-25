@@ -310,13 +310,7 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
             <Card>
               <CardContent className="p-6">
                 {topic.full_text_content ? (
-                  <HighlightableText
-                    content={topic.full_text_content}
-                    topicId={topicId}
-                    context="full_text"
-                    user={user}
-                    onNoteCreated={handleNoteCreated}
-                  />
+                  <HTMLContent content={topic.full_text_content} />
                 ) : (
                   <p className="text-slate-500 text-center py-8">
                     Plný text zatím není dostupný
@@ -344,13 +338,7 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
             <Card>
               <CardContent className="p-6">
                 {topic.deep_dive_content ? (
-                  <HighlightableText
-                    content={topic.deep_dive_content}
-                    topicId={topicId}
-                    context="deep_dive"
-                    user={user}
-                    onNoteCreated={handleNoteCreated}
-                  />
+                  <HTMLContent content={topic.deep_dive_content} />
                 ) : (
                   <p className="text-slate-500 text-center py-8">
                     Podrobný obsah zatím není dostupný
