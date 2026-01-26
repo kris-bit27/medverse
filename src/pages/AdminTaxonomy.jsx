@@ -328,7 +328,7 @@ export default function AdminTaxonomy() {
 
       {/* Clinical Disciplines */}
       <Card className="mb-6">
-        <CardHeader className="flex flex-row items-center justify-between">
+        <div className="flex flex-row items-center justify-between p-6">
           <CardTitle className="flex items-center gap-2">
             <Stethoscope className="w-5 h-5" />
             Klinické obory ({disciplines.length})
@@ -343,7 +343,7 @@ export default function AdminTaxonomy() {
                 Přidat
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-w-xl">
               <DialogHeader>
                 <DialogTitle>{editingDiscipline ? 'Upravit obor' : 'Nový obor'}</DialogTitle>
               </DialogHeader>
@@ -484,7 +484,7 @@ export default function AdminTaxonomy() {
               </div>
             </DialogContent>
           </Dialog>
-        </CardHeader>
+        </div>
         <CardContent>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {disciplines.map((discipline) => {
@@ -533,7 +533,7 @@ export default function AdminTaxonomy() {
       <div className="grid lg:grid-cols-2 gap-6 items-start">
         {/* Okruhy */}
         <Card className="h-full">
-          <CardHeader className="flex flex-row items-center justify-between">
+          <div className="flex flex-row items-center justify-between p-6">
             <CardTitle className="flex items-center gap-2">
               <FolderTree className="w-5 h-5" />
               Okruhy ({okruhy.length})
@@ -657,7 +657,7 @@ export default function AdminTaxonomy() {
 
         {/* Topics */}
         <Card className="h-full">
-          <CardHeader className="flex flex-row items-center justify-between">
+          <div className="flex flex-row items-center justify-between p-6">
             <CardTitle className="flex items-center gap-2">
               <FileText className="w-5 h-5" />
               Témata ({filteredTopics.length}/{topics.length})
