@@ -486,8 +486,8 @@ export default function AdminTaxonomy() {
             </DialogContent>
           </Dialog>
           </div>
-        </div>
-        <CardContent>
+          </div>
+          <CardContent>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {disciplines.map((discipline) => {
               const disciplineOkruhy = okruhy.filter(o => o.clinical_discipline_id === discipline.id);
@@ -598,11 +598,11 @@ export default function AdminTaxonomy() {
                 </div>
               </DialogContent>
             </Dialog>
-            </div>
           </div>
-          <CardContent className="space-y-3">
-            <div className="space-y-2">
-              <Label className="text-xs">Filtrovat podle oboru</Label>
+        </div>
+        <CardContent className="space-y-3">
+          <div className="space-y-2">
+            <Label className="text-xs">Filtrovat podle oboru</Label>
               <Select value={filterDiscipline} onValueChange={setFilterDiscipline}>
                 <SelectTrigger>
                   <SelectValue placeholder="Všechny obory" />
@@ -716,11 +716,11 @@ export default function AdminTaxonomy() {
                 </div>
               </DialogContent>
             </Dialog>
-            </div>
           </div>
-          <CardContent className="space-y-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        </div>
+        <CardContent className="space-y-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <Input
                 placeholder="Hledat témata..."
                 value={searchQuery}
