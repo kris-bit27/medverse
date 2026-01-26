@@ -82,8 +82,8 @@ export default function AdminTaxonomy() {
   const [selectedTopics, setSelectedTopics] = useState([]);
   const [filterDiscipline, setFilterDiscipline] = useState('all');
   const [filterOkruh, setFilterOkruh] = useState('all');
-  const [filterStatus, setFilterStatus] = useState('all');
   const [filterTopicStatus, setFilterTopicStatus] = useState('all');
+  const [hidePublished, setHidePublished] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: disciplines = [] } = useQuery({
@@ -281,10 +281,12 @@ export default function AdminTaxonomy() {
     if (searchQuery && !t.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     if (filterOkruh !== 'all' && t.okruh_id !== filterOkruh) return false;
     if (filterTopicStatus !== 'all' && t.status !== filterTopicStatus) return false;
-    if (filterStatus === 'published' && t.status !== 'published') return false;
-    if (filterStatus === 'unpublished' && t.status === 'published') return false;
-    if (filterStatus === 'reviewed' && !t.is_reviewed) return false;
-    if (filterStatus === 'unreviewed' && t.is_reviewed) return false;
+    if (hidePublished && t.status === 'published') return false;
+    
+    // Filter by discipline (through okruh)
+    const okruhForTopic = okruhy.find(o => o.id === t.okruh_id);
+    if (filterDiscipline !== 'all' && okruhForTopic?.clinical_discipline_id !== filterDiscipline) return false;
+    
     return true;
   });
 
@@ -721,35 +723,66 @@ export default function AdminTaxonomy() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
               <div className="space-y-1">
-                <Label className="text-xs">Okruh</Label>
-                <Select value={filterOkruh} onValueChange={setFilterOkruh}>
+                <Label className="text-xs">Klinický obor</Label>
+                <Select value={filterDiscipline} onValueChange={setFilterDiscipline}>
                   <SelectTrigger className="h-9">
-                    <SelectValue placeholder="Všechny okruhy" />
+                    <SelectValue placeholder="Všechny obory" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Všechny okruhy</SelectItem>
-                    {okruhy.map(o => (
-                      <SelectItem key={o.id} value={o.id}>{o.title}</SelectItem>
+                    <SelectItem value="all">Všechny obory</SelectItem>
+                    {disciplines.map(d => (
+                      <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              <div className="space-y-1">
-                <Label className="text-xs">Status</Label>
-                <Select value={filterTopicStatus} onValueChange={setFilterTopicStatus}>
-                  <SelectTrigger className="h-9">
-                    <SelectValue placeholder="Všechny statusy" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Všechny</SelectItem>
-                    <SelectItem value="draft">Draft</SelectItem>
-                    <SelectItem value="in_review">In Review</SelectItem>
-                    <SelectItem value="published">Published</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1">
+                  <Label className="text-xs">Okruh</Label>
+                  <Select value={filterOkruh} onValueChange={setFilterOkruh}>
+                    <SelectTrigger className="h-9">
+                      <SelectValue placeholder="Všechny okruhy" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Všechny okruhy</SelectItem>
+                      {filteredOkruhy.map(o => (
+                        <SelectItem key={o.id} value={o.id}>{o.title}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-1">
+                  <Label className="text-xs">Status</Label>
+                  <Select value={filterTopicStatus} onValueChange={setFilterTopicStatus}>
+                    <SelectTrigger className="h-9">
+                      <SelectValue placeholder="Všechny statusy" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Všechny</SelectItem>
+                      <SelectItem value="draft">Draft</SelectItem>
+                      <SelectItem value="in_review">In Review</SelectItem>
+                      <SelectItem value="published">Published</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="hide-published"
+                  checked={hidePublished}
+                  onCheckedChange={setHidePublished}
+                />
+                <Label
+                  htmlFor="hide-published"
+                  className="text-sm font-medium leading-none cursor-pointer"
+                >
+                  Skrýt publikovaná témata
+                </Label>
               </div>
             </div>
 
@@ -872,12 +905,6 @@ export default function AdminTaxonomy() {
                                 Zkontrolováno
                               </Badge>
                             )}
-                            {topic.status === 'published' && (
-                              <Badge className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-                                <Eye className="w-3 h-3 mr-1" />
-                                Publikováno
-                              </Badge>
-                            )}
                           </div>
                           <div className="flex items-center gap-1">
                             <Button 
@@ -959,16 +986,10 @@ export default function AdminTaxonomy() {
                                   <span className="text-sm text-slate-900 dark:text-white">{topic.title}</span>
                                   <Badge variant="secondary" className="text-xs">{questionCount}</Badge>
                                   {topic.is_reviewed && (
-                                    <Badge className="text-xs bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                                      <CheckCircle className="w-3 h-3 mr-1" />
-                                      Zkontrolováno
-                                    </Badge>
-                                  )}
-                                  {topic.status === 'published' && (
-                                    <Badge className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-                                      <Eye className="w-3 h-3 mr-1" />
-                                      Publikováno
-                                    </Badge>
+                                   <Badge className="text-xs bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                     <CheckCircle className="w-3 h-3 mr-1" />
+                                     Zkontrolováno
+                                   </Badge>
                                   )}
                                 </div>
                                 <div className="flex items-center gap-1">
