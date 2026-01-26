@@ -598,6 +598,7 @@ export default function AdminTaxonomy() {
                 </div>
               </DialogContent>
             </Dialog>
+            </div>
           </div>
           <CardContent className="space-y-3">
             <div className="space-y-2">
@@ -715,6 +716,7 @@ export default function AdminTaxonomy() {
                 </div>
               </DialogContent>
             </Dialog>
+            </div>
           </div>
           <CardContent className="space-y-3">
             <div className="relative">
