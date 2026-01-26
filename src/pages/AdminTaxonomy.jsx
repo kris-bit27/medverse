@@ -328,13 +328,12 @@ export default function AdminTaxonomy() {
 
       {/* Clinical Disciplines */}
       <Card className="mb-6">
-        <div className="flex flex-col space-y-1.5 p-6">
-          <div className="flex flex-row items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <Stethoscope className="w-5 h-5" />
-              Klinické obory ({disciplines.length})
-            </CardTitle>
-            <Dialog open={disciplineDialogOpen} onOpenChange={setDisciplineDialogOpen}>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="flex items-center gap-2">
+            <Stethoscope className="w-5 h-5" />
+            Klinické obory ({disciplines.length})
+          </CardTitle>
+          <Dialog open={disciplineDialogOpen} onOpenChange={setDisciplineDialogOpen}>
             <DialogTrigger asChild>
               <Button size="sm" onClick={() => {
                 setEditingDiscipline(null);
@@ -485,8 +484,7 @@ export default function AdminTaxonomy() {
               </div>
             </DialogContent>
           </Dialog>
-          </div>
-          </div>
+          </CardHeader>
           <CardContent>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {disciplines.map((discipline) => {
@@ -535,13 +533,12 @@ export default function AdminTaxonomy() {
       <div className="grid lg:grid-cols-2 gap-6 items-start">
         {/* Okruhy */}
         <Card className="h-full">
-          <div className="flex flex-col space-y-1.5 p-6">
-            <div className="flex flex-row items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <FolderTree className="w-5 h-5" />
-                Okruhy ({okruhy.length})
-              </CardTitle>
-              <Dialog open={okruhDialogOpen} onOpenChange={setOkruhDialogOpen}>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <FolderTree className="w-5 h-5" />
+              Okruhy ({okruhy.length})
+            </CardTitle>
+            <Dialog open={okruhDialogOpen} onOpenChange={setOkruhDialogOpen}>
               <DialogTrigger asChild>
                 <Button size="sm" onClick={() => {
                   setEditingOkruh(null);
@@ -598,11 +595,10 @@ export default function AdminTaxonomy() {
                 </div>
               </DialogContent>
             </Dialog>
-          </div>
-        </div>
-        <CardContent className="space-y-3">
-          <div className="space-y-2">
-            <Label className="text-xs">Filtrovat podle oboru</Label>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="space-y-2">
+              <Label className="text-xs">Filtrovat podle oboru</Label>
               <Select value={filterDiscipline} onValueChange={setFilterDiscipline}>
                 <SelectTrigger>
                   <SelectValue placeholder="Všechny obory" />
@@ -661,13 +657,12 @@ export default function AdminTaxonomy() {
 
         {/* Topics */}
         <Card className="h-full">
-          <div className="flex flex-col space-y-1.5 p-6">
-            <div className="flex flex-row items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="w-5 h-5" />
-                Témata ({filteredTopics.length}/{topics.length})
-              </CardTitle>
-              <Dialog open={topicDialogOpen} onOpenChange={setTopicDialogOpen}>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="w-5 h-5" />
+              Témata ({filteredTopics.length}/{topics.length})
+            </CardTitle>
+            <Dialog open={topicDialogOpen} onOpenChange={setTopicDialogOpen}>
               <DialogTrigger asChild>
                 <Button size="sm" onClick={() => {
                   setEditingTopic(null);
@@ -716,11 +711,10 @@ export default function AdminTaxonomy() {
                 </div>
               </DialogContent>
             </Dialog>
-          </div>
-        </div>
-        <CardContent className="space-y-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <Input
                 placeholder="Hledat témata..."
                 value={searchQuery}
