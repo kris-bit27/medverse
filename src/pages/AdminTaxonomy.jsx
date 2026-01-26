@@ -860,7 +860,7 @@ export default function AdminTaxonomy() {
             <div className="space-y-2 max-h-[500px] overflow-y-auto">
               {filteredTopics.length === 0 && topics.length > 0 ? (
                 <p className="text-center py-8 text-slate-500">
-                  {searchQuery || filterOkruh !== 'all' || filterStatus !== 'all' 
+                  {searchQuery || filterOkruh !== 'all' || filterTopicStatus !== 'all' || filterDiscipline !== 'all' || hidePublished
                     ? 'Žádná témata neodpovídají filtrům' 
                     : 'Žádná témata'}
                 </p>
