@@ -530,9 +530,9 @@ export default function AdminTaxonomy() {
         </CardContent>
       </Card>
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-2 gap-6 items-start">
         {/* Okruhy */}
-        <Card>
+        <Card className="h-full">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <FolderTree className="w-5 h-5" />
@@ -656,7 +656,7 @@ export default function AdminTaxonomy() {
         </Card>
 
         {/* Topics */}
-        <Card>
+        <Card className="h-full">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <FileText className="w-5 h-5" />
