@@ -147,7 +147,20 @@ export default function Logbook() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <LoadingSpinner size="lg" />
+        <LoadingSpinner size="lg" text="Načítám logbook..." />
+      </div>
+    );
+  }
+
+  if (entriesError || disciplinesError) {
+    return (
+      <div className="p-6 max-w-2xl mx-auto">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Nepodařilo se načíst data. Zkuste to prosím znovu.
+          </AlertDescription>
+        </Alert>
       </div>
     );
   }
