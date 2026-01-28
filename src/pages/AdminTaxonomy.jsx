@@ -86,10 +86,6 @@ export default function AdminTaxonomy() {
   const [filterTopicStatus, setFilterTopicStatus] = useState('all');
   const [hidePublished, setHidePublished] = useState(false);
   const queryClient = useQueryClient();
-  const okruhForEditingTopic = editingTopic ? okruhy.find(o => o.id === editingTopic.okruh_id) : null;
-  const disciplineForEditingTopic = okruhForEditingTopic
-    ? disciplines.find(d => d.id === okruhForEditingTopic.clinical_discipline_id)
-    : null;
 
   const { data: disciplines = [] } = useQuery({
     queryKey: ['clinicalDisciplines'],
@@ -100,6 +96,11 @@ export default function AdminTaxonomy() {
     queryKey: ['okruhy'],
     queryFn: () => base44.entities.Okruh.list('order')
   });
+
+  const okruhForEditingTopic = editingTopic ? okruhy.find(o => o.id === editingTopic.okruh_id) : null;
+  const disciplineForEditingTopic = okruhForEditingTopic
+    ? disciplines.find(d => d.id === okruhForEditingTopic.clinical_discipline_id)
+    : null;
 
   const { data: topics = [] } = useQuery({
     queryKey: ['topics'],
