@@ -52,20 +52,18 @@ Generuj POUZE názvy okruhů a názvy témat. Negeneruj žádné otázky ani odp
               properties: {
                 title: { type: "string" },
                 description: { type: "string" },
-                order: { type: "number" },
                 topics: {
                   type: "array",
                   items: {
                     type: "object",
                     properties: {
-                      title: { type: "string" },
-                      order: { type: "number" }
+                      title: { type: "string" }
                     },
-                    required: ["title", "order"]
+                    required: ["title"]
                   }
                 }
               },
-              required: ["title", "description", "order", "topics"]
+              required: ["title", "description", "topics"]
             }
           }
         },

@@ -40,7 +40,7 @@ export default function OkruhDetail() {
 
   const { data: topics = [] } = useQuery({
     queryKey: ['topics', okruhId],
-    queryFn: () => base44.entities.Topic.filter({ okruh_id: okruhId }, 'order'),
+    queryFn: () => base44.entities.Topic.filter({ okruh_id: okruhId }, 'title'),
     enabled: !!okruhId
   });
 
