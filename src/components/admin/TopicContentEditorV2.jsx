@@ -140,7 +140,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
   const handleAIGenerate = async (mode) => {
     setIsGenerating(true);
     try {
-      if ((mode === 'topic_generate_high_yield' || mode === 'topic_generate_deep_dive') && !content.full_text_content) {
+      if ((mode === 'topic_summarize' || mode === 'topic_deep_dive') && !content.full_text_content) {
         toast.error('Nejprve vygeneruj nebo vlož plný studijní text.');
         return;
       }
@@ -154,9 +154,9 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
       };
 
       const promptMap = {
-        topic_generate_fulltext_v2: fillTemplate(FULLTEXT_TEMPLATE, templateVars),
-        topic_generate_high_yield: fillTemplate(HIGH_YIELD_TEMPLATE, templateVars),
-        topic_generate_deep_dive: fillTemplate(DEEP_DIVE_TEMPLATE, templateVars),
+        topic_generate_fulltext: fillTemplate(FULLTEXT_TEMPLATE, templateVars),
+        topic_summarize: fillTemplate(HIGH_YIELD_TEMPLATE, templateVars),
+        topic_deep_dive: fillTemplate(DEEP_DIVE_TEMPLATE, templateVars),
         topic_reformat: `Přeformátuj tento text pro optimální studium. NEPŘIDÁVEJ nový obsah, pouze zlepši strukturu a čitelnost.\n\n${content.full_text_content || ''}`
       };
 
@@ -168,7 +168,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
           entityId: topic.id
         },
         userPrompt: promptMap[mode] || `Vytvoř obsah pro téma: ${topic.title}`,
-        allowWeb: mode === 'topic_generate_deep_dive',
+        allowWeb: mode === 'topic_deep_dive',
         systemPromptOverride: ADMIN_CONTENT_SYSTEM_PROMPT
       });
 
@@ -178,18 +178,18 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
       }
 
       // Aplikuj výsledek podle módu
-      if (mode === 'topic_generate_fulltext_v2') {
+      if (mode === 'topic_generate_fulltext') {
         setContent(prev => ({ 
           ...prev, 
           full_text_content: result.text || result.structuredData?.answer_md || '',
           source_pack: result.citations || prev.source_pack
         }));
-      } else if (mode === 'topic_generate_high_yield') {
+      } else if (mode === 'topic_summarize') {
         setContent(prev => ({ 
           ...prev, 
           bullet_points_summary: result.text || ''
         }));
-      } else if (mode === 'topic_generate_deep_dive') {
+      } else if (mode === 'topic_deep_dive') {
         setContent(prev => ({ 
           ...prev, 
           deep_dive_content: result.text || '',
@@ -450,7 +450,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => handleAIGenerate('topic_generate_fulltext_v2')}
+                onClick={() => handleAIGenerate('topic_generate_fulltext')}
                 disabled={isGenerating}
               >
                 {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Sparkles className="w-3 h-3 mr-1" />}
@@ -480,7 +480,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
             <Button
               size="sm"
               variant="outline"
-              onClick={() => handleAIGenerate('topic_generate_high_yield')}
+              onClick={() => handleAIGenerate('topic_summarize')}
               disabled={isGenerating}
               title="Generovat z plného textu"
             >
@@ -501,7 +501,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
             <Button
               size="sm"
               variant="outline"
-              onClick={() => handleAIGenerate('topic_generate_deep_dive')}
+              onClick={() => handleAIGenerate('topic_deep_dive')}
               disabled={isGenerating}
             >
               {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Sparkles className="w-3 h-3 mr-1" />}
