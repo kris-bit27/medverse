@@ -525,7 +525,7 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb) {
     rag_sources: []
   };
 
-  const MAX_RAG_TOKENS = 150000; // Gemini 1.5 Pro optimalizovaný limit (600 000 znaků)
+  const MAX_RAG_TOKENS = 200000; // Gemini 1.5 Pro optimalizovaný limit pro rozsáhlé PDF (800 000 znaků)
   let currentLength = 0;
 
   const addSection = (text, source) => {
@@ -903,13 +903,16 @@ ${pageCtx}
     // Určení JSON schématu
     const outputSchema = OUTPUT_SCHEMAS[mode] || null;
 
+    // Dynamická temperature podle AI_STRICT_MODE
+    const temperature = AI_STRICT_MODE ? 0.1 : 0.2;
+
     // Volání Google Gemini 1.5 Pro přes Base44 Core integration
     const llmResponse = await base44.integrations.Core.InvokeLLM({
       prompt: fullPrompt,
       add_context_from_internet: effectiveAllowWeb,
       response_json_schema: outputSchema,
       model: 'gemini-1.5-pro',
-      temperature: 0.2, // Nižší pro medicínskou přesnost
+      temperature: temperature, // 0.1 v STRICT_MODE pro maximální faktickou přesnost
       maxTokens: 8192
     });
 
