@@ -111,12 +111,11 @@ export default function FloatingCopilot() {
       setIsLoading(false);
     }
 
-    // Sestavení pageContext pro invokeEduLLM včetně aktuální URL
+    // Sestavení pageContext - bez topicId aby nevyvolalo chyby s neexistujícími Topics
     const pageContext = {
       pathname: location.pathname,
       url: location.pathname,
-      title: document.title,
-      topicId: extractTopicIdFromUrl(location.pathname)
+      title: document.title
     };
 
     const userMessage = { 
