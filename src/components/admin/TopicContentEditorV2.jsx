@@ -169,7 +169,10 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         },
         userPrompt: promptMap[mode] || `Vytvoř obsah pro téma: ${topic.title}`,
         allowWeb: mode === 'topic_deep_dive',
-        systemPromptOverride: ADMIN_CONTENT_SYSTEM_PROMPT
+        systemPromptOverride: ADMIN_CONTENT_SYSTEM_PROMPT,
+        maxRagChars: 20000,
+        maxSectionChars: 8000,
+        skipRag: true
       });
 
       const result = response.data || response;

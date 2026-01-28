@@ -540,14 +540,18 @@ const OUTPUT_SCHEMAS = {
  * - Nikdy nemíchat kontext nahodile
  * - Logický pořadník: Topic → Question → Související témata → Externí zdroje
  */
-async function buildRAGContext(base44, mode, entityContext, allowWeb) {
+async function buildRAGContext(base44, mode, entityContext, allowWeb, options = {}) {
   const context = {
     rag_text: '',
     rag_sources: []
   };
 
-  const MAX_RAG_CHARS = 80000; // Hard cap to reduce timeouts in serverless execution
-  const MAX_SECTION_CHARS = 20000;
+  if (options.skipRag) {
+    return context;
+  }
+
+  const MAX_RAG_CHARS = options.maxRagChars || 80000; // Hard cap to reduce timeouts in serverless execution
+  const MAX_SECTION_CHARS = options.maxSectionChars || 20000;
   let currentLength = 0;
 
   const addSection = (text, source) => {
@@ -825,7 +829,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { mode, entityContext = {}, userPrompt, allowWeb = false, systemPromptOverride } = await req.json();
+    const { mode, entityContext = {}, userPrompt, allowWeb = false, systemPromptOverride, maxRagChars, maxSectionChars, skipRag } = await req.json();
 
     if (!mode || !MODE_PROMPTS[mode]) {
       return Response.json({ 
@@ -850,7 +854,11 @@ Deno.serve(async (req) => {
     const effectiveAllowWeb = isExamMode && mode !== 'topic_deep_dive' && mode !== 'topic_generate_deep_dive' ? false : allowWeb;
 
     // Sestavení RAG kontextu - POVINNÉ pro všechna AI volání
-    const ragContext = await buildRAGContext(base44, mode, entityContext, effectiveAllowWeb);
+    const ragContext = await buildRAGContext(base44, mode, entityContext, effectiveAllowWeb, {
+      maxRagChars,
+      maxSectionChars,
+      skipRag
+    });
 
     // Content hash pro cache invalidaci
     const contentHash = computeContentHash(entityContext);
