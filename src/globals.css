@@ -107,6 +107,7 @@
 
 .dark .tiptap-rendered-content h1 {
   color: rgb(248, 250, 252);
+  border-bottom-color: rgb(51, 65, 85);
 }
 
 .tiptap-rendered-content h2 {
@@ -122,6 +123,7 @@
 
 .dark .tiptap-rendered-content h2 {
   color: rgb(248, 250, 252);
+  border-bottom-color: rgb(51, 65, 85);
 }
 
 .tiptap-rendered-content h3 {
