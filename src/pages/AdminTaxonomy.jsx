@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
@@ -65,6 +65,7 @@ import TopicContentEditorV2 from '@/components/admin/TopicContentEditorV2';
 import DisciplineIcon from '@/components/admin/DisciplineIcon';
 import AITaxonomyGenerator from '@/components/admin/AITaxonomyGenerator';
 import { Checkbox } from '@/components/ui/checkbox';
+import { toast } from 'sonner';
 
 export default function AdminTaxonomy() {
   const [disciplineDialogOpen, setDisciplineDialogOpen] = useState(false);
@@ -85,6 +86,7 @@ export default function AdminTaxonomy() {
   const [filterOkruh, setFilterOkruh] = useState('all');
   const [filterTopicStatus, setFilterTopicStatus] = useState('all');
   const [hidePublished, setHidePublished] = useState(false);
+  const [bulkActionLoading, setBulkActionLoading] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: disciplines = [] } = useQuery({
@@ -111,6 +113,39 @@ export default function AdminTaxonomy() {
     queryKey: ['questions'],
     queryFn: () => base44.entities.Question.list()
   });
+
+  const okruhById = useMemo(() => {
+    const map = {};
+    okruhy.forEach(o => { map[o.id] = o; });
+    return map;
+  }, [okruhy]);
+
+  const questionCountByTopic = useMemo(() => {
+    const counts = {};
+    questions.forEach(q => {
+      if (!q.topic_id) return;
+      counts[q.topic_id] = (counts[q.topic_id] || 0) + 1;
+    });
+    return counts;
+  }, [questions]);
+
+  const topicCountByOkruhId = useMemo(() => {
+    const counts = {};
+    topics.forEach(t => {
+      if (!t.okruh_id) return;
+      counts[t.okruh_id] = (counts[t.okruh_id] || 0) + 1;
+    });
+    return counts;
+  }, [topics]);
+
+  const questionCountByOkruhId = useMemo(() => {
+    const counts = {};
+    questions.forEach(q => {
+      if (!q.okruh_id) return;
+      counts[q.okruh_id] = (counts[q.okruh_id] || 0) + 1;
+    });
+    return counts;
+  }, [questions]);
 
   // Mutations
   const saveDisciplineMutation = useMutation({
@@ -198,68 +233,111 @@ export default function AdminTaxonomy() {
   };
 
   const handleToggleReviewed = async (topic) => {
-    const user = await base44.auth.me();
-    await updateTopicStatusMutation.mutateAsync({
-      id: topic.id,
-      data: {
-        is_reviewed: !topic.is_reviewed,
-        reviewed_by: !topic.is_reviewed ? user.id : null,
-        reviewed_at: !topic.is_reviewed ? new Date().toISOString() : null
-      }
-    });
+    try {
+      const user = await base44.auth.me();
+      await updateTopicStatusMutation.mutateAsync({
+        id: topic.id,
+        data: {
+          is_reviewed: !topic.is_reviewed,
+          reviewed_by: !topic.is_reviewed ? user.id : null,
+          reviewed_at: !topic.is_reviewed ? new Date().toISOString() : null
+        }
+      });
+    } catch (error) {
+      console.error('Toggle review failed:', error);
+      toast.error('Nepodařilo se změnit stav kontroly');
+    }
   };
 
   const handleTogglePublished = async (topic) => {
-    await updateTopicStatusMutation.mutateAsync({
-      id: topic.id,
-      data: { 
-        status: topic.status === 'published' ? 'draft' : 'published'
-      }
-    });
+    try {
+      await updateTopicStatusMutation.mutateAsync({
+        id: topic.id,
+        data: { 
+          status: topic.status === 'published' ? 'draft' : 'published'
+        }
+      });
+    } catch (error) {
+      console.error('Toggle publish failed:', error);
+      toast.error('Nepodařilo se změnit stav publikace');
+    }
   };
 
   const handleBulkDelete = async () => {
     if (!confirm(`Opravdu smazat ${selectedTopics.length} vybraných témat?`)) return;
-    
-    for (const topicId of selectedTopics) {
-      await deleteTopicMutation.mutateAsync(topicId);
+    setBulkActionLoading(true);
+    try {
+      await Promise.all(selectedTopics.map(topicId => deleteTopicMutation.mutateAsync(topicId)));
+      setSelectedTopics([]);
+      toast.success('Témata smazána');
+    } catch (error) {
+      console.error('Bulk delete failed:', error);
+      toast.error('Hromadné mazání selhalo');
+    } finally {
+      setBulkActionLoading(false);
     }
-    setSelectedTopics([]);
   };
 
   const handleBulkPublish = async () => {
-    for (const topicId of selectedTopics) {
-      await updateTopicStatusMutation.mutateAsync({
-        id: topicId,
-        data: { status: 'published' }
-      });
+    setBulkActionLoading(true);
+    try {
+      await Promise.all(selectedTopics.map(topicId =>
+        updateTopicStatusMutation.mutateAsync({
+          id: topicId,
+          data: { status: 'published' }
+        })
+      ));
+      setSelectedTopics([]);
+      toast.success('Témata publikována');
+    } catch (error) {
+      console.error('Bulk publish failed:', error);
+      toast.error('Hromadné publikování selhalo');
+    } finally {
+      setBulkActionLoading(false);
     }
-    setSelectedTopics([]);
   };
 
   const handleBulkUnpublish = async () => {
-    for (const topicId of selectedTopics) {
-      await updateTopicStatusMutation.mutateAsync({
-        id: topicId,
-        data: { status: 'draft' }
-      });
+    setBulkActionLoading(true);
+    try {
+      await Promise.all(selectedTopics.map(topicId =>
+        updateTopicStatusMutation.mutateAsync({
+          id: topicId,
+          data: { status: 'draft' }
+        })
+      ));
+      setSelectedTopics([]);
+      toast.success('Témata přesunuta do draftu');
+    } catch (error) {
+      console.error('Bulk unpublish failed:', error);
+      toast.error('Hromadné zrušení publikace selhalo');
+    } finally {
+      setBulkActionLoading(false);
     }
-    setSelectedTopics([]);
   };
 
   const handleBulkReview = async () => {
-    const user = await base44.auth.me();
-    for (const topicId of selectedTopics) {
-      await updateTopicStatusMutation.mutateAsync({
-        id: topicId,
-        data: {
-          is_reviewed: true,
-          reviewed_by: user.id,
-          reviewed_at: new Date().toISOString()
-        }
-      });
+    setBulkActionLoading(true);
+    try {
+      const user = await base44.auth.me();
+      await Promise.all(selectedTopics.map(topicId =>
+        updateTopicStatusMutation.mutateAsync({
+          id: topicId,
+          data: {
+            is_reviewed: true,
+            reviewed_by: user.id,
+            reviewed_at: new Date().toISOString()
+          }
+        })
+      ));
+      setSelectedTopics([]);
+      toast.success('Témata označena jako zkontrolovaná');
+    } catch (error) {
+      console.error('Bulk review failed:', error);
+      toast.error('Hromadná kontrola selhala');
+    } finally {
+      setBulkActionLoading(false);
     }
-    setSelectedTopics([]);
   };
 
   const toggleSelectAll = () => {
@@ -278,23 +356,23 @@ export default function AdminTaxonomy() {
     );
   };
 
-  const filteredOkruhy = okruhy.filter(o => {
+  const filteredOkruhy = useMemo(() => okruhy.filter(o => {
     if (filterDiscipline !== 'all' && o.clinical_discipline_id !== filterDiscipline) return false;
     return true;
-  });
+  }), [okruhy, filterDiscipline]);
 
-  const filteredTopics = topics.filter(t => {
+  const filteredTopics = useMemo(() => topics.filter(t => {
     if (searchQuery && !t.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     if (filterOkruh !== 'all' && t.okruh_id !== filterOkruh) return false;
     if (filterTopicStatus !== 'all' && t.status !== filterTopicStatus) return false;
     if (hidePublished && t.status === 'published') return false;
     
     // Filter by discipline (through okruh)
-    const okruhForTopic = okruhy.find(o => o.id === t.okruh_id);
+    const okruhForTopic = okruhById[t.okruh_id];
     if (filterDiscipline !== 'all' && okruhForTopic?.clinical_discipline_id !== filterDiscipline) return false;
     
     return true;
-  });
+  }), [topics, searchQuery, filterOkruh, filterTopicStatus, hidePublished, filterDiscipline, okruhById]);
 
   if (isLoading) {
     return (
@@ -618,9 +696,9 @@ export default function AdminTaxonomy() {
               </Select>
             </div>
             <div className="space-y-2">
-              {filteredOkruhy.map((okruh) => {
-              const topicCount = topics.filter(t => t.okruh_id === okruh.id).length;
-              const questionCount = questions.filter(q => q.okruh_id === okruh.id).length;
+            {filteredOkruhy.map((okruh) => {
+              const topicCount = topicCountByOkruhId[okruh.id] || 0;
+              const questionCount = questionCountByOkruhId[okruh.id] || 0;
               
               return (
                 <div 
@@ -803,8 +881,13 @@ export default function AdminTaxonomy() {
                     variant="outline" 
                     className="h-7 text-xs"
                     onClick={handleBulkReview}
+                    disabled={bulkActionLoading}
                   >
-                    <CheckCircle className="w-3 h-3 mr-1" />
+                    {bulkActionLoading ? (
+                      <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                    ) : (
+                      <CheckCircle className="w-3 h-3 mr-1" />
+                    )}
                     Zkontrolovat
                   </Button>
                   <Button 
@@ -812,6 +895,7 @@ export default function AdminTaxonomy() {
                     variant="outline" 
                     className="h-7 text-xs"
                     onClick={handleBulkPublish}
+                    disabled={bulkActionLoading}
                   >
                     <Eye className="w-3 h-3 mr-1" />
                     Publikovat
@@ -821,6 +905,7 @@ export default function AdminTaxonomy() {
                     variant="outline" 
                     className="h-7 text-xs"
                     onClick={handleBulkUnpublish}
+                    disabled={bulkActionLoading}
                   >
                     <EyeOff className="w-3 h-3 mr-1" />
                     Skrýt
@@ -830,6 +915,7 @@ export default function AdminTaxonomy() {
                     variant="outline" 
                     className="h-7 text-xs text-red-600 hover:text-red-700"
                     onClick={handleBulkDelete}
+                    disabled={bulkActionLoading}
                   >
                     <Trash2 className="w-3 h-3 mr-1" />
                     Smazat
@@ -839,6 +925,7 @@ export default function AdminTaxonomy() {
                     variant="ghost" 
                     className="h-7 w-7 p-0"
                     onClick={() => setSelectedTopics([])}
+                    disabled={bulkActionLoading}
                   >
                     <X className="w-3 h-3" />
                   </Button>
@@ -883,7 +970,7 @@ export default function AdminTaxonomy() {
                       <p className="text-xs font-semibold text-slate-500 uppercase mb-2">{okruh.title}</p>
                       <div className="space-y-1">
                         {okruhTopics.map((topic) => {
-                            const questionCount = questions.filter(q => q.topic_id === topic.id).length;
+                            const questionCount = questionCountByTopic[topic.id] || 0;
                             return (
                               <div 
                                 key={topic.id}
@@ -975,7 +1062,7 @@ export default function AdminTaxonomy() {
                         <p className="text-xs font-semibold text-red-500 uppercase mb-2">Témata bez okruhu ({orphanedTopics.length})</p>
                         <div className="space-y-1">
                           {orphanedTopics.map((topic) => {
-                            const questionCount = questions.filter(q => q.topic_id === topic.id).length;
+                            const questionCount = questionCountByTopic[topic.id] || 0;
                             return (
                               <div 
                                 key={topic.id}
