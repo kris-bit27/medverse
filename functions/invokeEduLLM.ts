@@ -583,30 +583,34 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb) {
 
   // 2. Topic (pokud existuje) - PRIORITA 2
   if (entityContext.topic) {
-    const topic = entityContext.topic;
-    
-    // Topic full text
-    if (topic.full_text_content && topic.status === 'published') {
-      addSection(
-        `=== TOPIC: ${topic.title} (PRIMÁRNÍ ZDROJ) ===\n\n${topic.full_text_content}`,
-        { type: 'topic', entity: 'Topic', id: topic.id, section_hint: 'full_text', title: topic.title }
-      );
-    }
+    try {
+      const topic = entityContext.topic;
+      
+      // Topic full text
+      if (topic.full_text_content && topic.status === 'published') {
+        addSection(
+          `=== TOPIC: ${topic.title} (PRIMÁRNÍ ZDROJ) ===\n\n${topic.full_text_content}`,
+          { type: 'topic', entity: 'Topic', id: topic.id, section_hint: 'full_text', title: topic.title }
+        );
+      }
 
-    // Topic bullets
-    if (topic.bullet_points_summary && topic.status === 'published') {
-      addSection(
-        `=== SHRNUTÍ: ${topic.title} ===\n\n${topic.bullet_points_summary}`,
-        { type: 'topic', entity: 'Topic', id: topic.id, section_hint: 'bullets', title: topic.title }
-      );
-    }
+      // Topic bullets
+      if (topic.bullet_points_summary && topic.status === 'published') {
+        addSection(
+          `=== SHRNUTÍ: ${topic.title} ===\n\n${topic.bullet_points_summary}`,
+          { type: 'topic', entity: 'Topic', id: topic.id, section_hint: 'bullets', title: topic.title }
+        );
+      }
 
-    // Learning objectives
-    if (topic.learning_objectives?.length > 0) {
-      addSection(
-        `=== VÝUKOVÉ CÍLE: ${topic.title} ===\n\n${topic.learning_objectives.map(o => `- ${o}`).join('\n')}`,
-        { type: 'topic', entity: 'Topic', id: topic.id, section_hint: 'learning_objectives', title: topic.title }
-      );
+      // Learning objectives
+      if (topic.learning_objectives?.length > 0) {
+        addSection(
+          `=== VÝUKOVÉ CÍLE: ${topic.title} ===\n\n${topic.learning_objectives.map(o => `- ${o}`).join('\n')}`,
+          { type: 'topic', entity: 'Topic', id: topic.id, section_hint: 'learning_objectives', title: topic.title }
+        );
+      }
+    } catch (e) {
+      console.log('Topic context unavailable:', e.message);
     }
   }
 
