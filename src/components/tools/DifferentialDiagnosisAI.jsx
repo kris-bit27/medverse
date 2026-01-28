@@ -72,6 +72,9 @@ Odpověď piš česky, strukturovaně a prakticky využitelně pro klinickou pra
         }
       });
 
+      if (!response || !response.differential_diagnoses) {
+        throw new Error('AI nevrátila validní výstup');
+      }
       setResult(response);
     } catch (error) {
       toast.error('Chyba při analýze');

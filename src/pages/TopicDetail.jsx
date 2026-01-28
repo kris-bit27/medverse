@@ -112,6 +112,10 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
         }
       });
 
+      if (!response?.questions || !Array.isArray(response.questions)) {
+        throw new Error('AI nevrátila seznam otázek');
+      }
+
       const generatedQuestions = response.questions.map(q => ({
         ...q,
         okruh_id: topic.okruh_id,

@@ -120,6 +120,10 @@ Otázky musí být relevantní pro české lékařské atestace a odpovídat bě
         }
       });
 
+      if (!response?.questions || !Array.isArray(response.questions)) {
+        throw new Error('AI nevrátila žádné otázky');
+      }
+
       const generatedQuestions = response.questions.map(q => ({
         ...q,
         okruh_id: selectedOkruh,

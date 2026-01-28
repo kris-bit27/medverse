@@ -173,6 +173,10 @@ Vrať JSON s týdenním rozpisu úkolů.`;
         }
       });
 
+      if (!response || !Array.isArray(response.weekly_tasks)) {
+        throw new Error('AI nevrátila validní studijní plán');
+      }
+
       // Convert to plan and tasks
       const planData = {
         user_id: user.id,

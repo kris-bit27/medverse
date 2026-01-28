@@ -87,6 +87,9 @@ Odpověď piš česky, strukturovaně a s ohledem na individuální parametry pa
         }
       });
 
+      if (!response || !response.pharmacological_treatment) {
+        throw new Error('AI nevrátila validní výstup');
+      }
       setResult(response);
     } catch (error) {
       toast.error('Chyba při generování plánu');
