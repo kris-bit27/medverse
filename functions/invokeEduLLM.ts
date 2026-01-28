@@ -246,12 +246,27 @@ Strukturovaně. Bez povídání.`,
   // Chat modes
   floating_copilot_chat: `Odpovídej stručně (2-3 věty). Používej kontext stránky (current_page_context). Pomáhej s navigací, vysvětluj termíny viditelné na obrazovce.`,
   
-  question_exam_answer: `Vysvětluješ téma otázky strukturovaně na ATESTAČNÍ ÚROVNI. ${ATTESTATION_GRADE_PROMPT}\n\nCITACE: pokud máš k dispozici interní text tématu, MUSÍŠ ho použít jako primární zdroj. Web search: ZAKÁZÁN.\n\nFORMÁTOVÁNÍ: Vždy používej bohaté formátování Markdownu. Používej tabulky pro srovnání léků nebo diferenciální diagnostiku. Klíčové termíny dávej do tučného písma. Používej odrážky pro symptomy a postupy. Rozděluj dlouhé odstavce na menší celky s mezititulky.`,
+  question_exam_answer: `Vysvětluješ téma otázky strukturovaně na ATESTAČNÍ ÚROVNI. ${ATTESTATION_GRADE_PROMPT}\n\nCITACE: pokud máš k dispozici interní text tématu, MUSÍŠ ho použít jako primární zdroj. Web search: ZAKÁZÁN.\n\nFORMÁTOVÁNÍ:
+- Nepoužívej dlouhé odstavce (max 3-4 věty)
+- Klíčové diagnózy, léky a dávkování piš vždy tučně
+- Používej tabulky (Markdown tables) pro srovnání nebo klasifikace
+- Každou sekci začni jasným nadpisem druhé úrovně (##)
+- Pokud popisuješ algoritmus (např. 'Co dělat u OPSI'), použij číslovaný seznam`,
   question_high_yield: `Vytvoř přehledné shrnutí klíčových konceptů pro rychlé zopakování. Formát: bullet points, max 10-12 bodů. Zaměř se na pochopení, ne testování.`,
   question_quiz: `Vytvoř 5 MCQ otázek (A/B/C/D) pro procvičení pochopení tématu. Mix obtížnosti: 2 easy, 2 medium, 1 hard.`,
   question_simplify: `Vysvětli téma srozumitelně pro studenta medicíny. Zachovej faktickou správnost a zaměř se na porozumění.`,
-  topic_generate_fulltext: `${ATTESTATION_GRADE_PROMPT}\n\nGeneruješ kompletní studijní text na ATESTAČNÍ ÚROVNI. Rozsah: 3-5 stránek plnohodnotného textu. Dodržuj všechny požadavky výše.\n\nFORMÁTOVÁNÍ: Vždy používej bohaté formátování Markdownu. Používej tabulky pro srovnání léků nebo diferenciální diagnostiku. Klíčové termíny dávej do tučného písma. Používej odrážky pro symptomy a postupy. Rozděluj dlouhé odstavce na menší celky s mezititulky.`,
-  topic_generate_template: `${ATTESTATION_GRADE_PROMPT}\n\nGeneruješ obsah pro všechny sekce EDU template tématu na ATESTAČNÍ ÚROVNI. Zaměř se na praktické znalosti, právní rámec a sporné situace. NIKDY negeneruj léčebné postupy pro pacienty. Výstup: JSON s 8 sekcemi markdown (overview_md, principles_md, relations_md, clinical_thinking_md, common_pitfalls_md, mental_model_md, scenarios_md, key_takeaways_md).\n\nFORMÁTOVÁNÍ: Vždy používej bohaté formátování Markdownu. Používej tabulky pro srovnání léků nebo diferenciální diagnostiku. Klíčové termíny dávej do tučného písma. Používej odrážky pro symptomy a postupy. Rozděluj dlouhé odstavce na menší celky s mezititulky.`,
+  topic_generate_fulltext: `${ATTESTATION_GRADE_PROMPT}\n\nGeneruješ kompletní studijní text na ATESTAČNÍ ÚROVNI. Rozsah: 3-5 stránek plnohodnotného textu. Dodržuj všechny požadavky výše.\n\nFORMÁTOVÁNÍ:
+- Nepoužívej dlouhé odstavce (max 3-4 věty)
+- Klíčové diagnózy, léky a dávkování piš vždy tučně
+- Používej tabulky (Markdown tables) pro srovnání nebo klasifikace
+- Každou sekci začni jasným nadpisem druhé úrovně (##)
+- Pokud popisuješ algoritmus (např. 'Co dělat u OPSI'), použij číslovaný seznam`,
+  topic_generate_template: `${ATTESTATION_GRADE_PROMPT}\n\nGeneruješ obsah pro všechny sekce EDU template tématu na ATESTAČNÍ ÚROVNI. Zaměř se na praktické znalosti, právní rámec a sporné situace. NIKDY negeneruj léčebné postupy pro pacienty. Výstup: JSON s 8 sekcemi markdown (overview_md, principles_md, relations_md, clinical_thinking_md, common_pitfalls_md, mental_model_md, scenarios_md, key_takeaways_md).\n\nFORMÁTOVÁNÍ:
+- Nepoužívej dlouhé odstavce (max 3-4 věty)
+- Klíčové diagnózy, léky a dávkování piš vždy tučně
+- Používej tabulky (Markdown tables) pro srovnání nebo klasifikace
+- Každou sekci začni jasným nadpisem druhé úrovně (##)
+- Pokud popisuješ algoritmus (např. 'Co dělat u OPSI'), použij číslovaný seznam`,
   topic_summarize: `Vytvoř shrnutí v odrážkách z poskytnutého plného textu. Zachyť všechny klíčové body, definice, souvislosti.`,
   topic_deep_dive: `${ATTESTATION_GRADE_PROMPT}\n\nVytvoř rozšířený obsah zahrnující hlubší souvislosti, nejnovější výzkum, pokročilé koncepty a edge cases. Zaměř se na právní aspekty a sporné situace v praxi.`,
   topic_fill_missing: `Doplň pouze pole, která jsou prázdná. Nepiš nic navíc.`,
