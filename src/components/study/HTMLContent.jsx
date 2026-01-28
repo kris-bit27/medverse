@@ -16,7 +16,7 @@ export default function HTMLContent({ content }) {
 
   return (
     <div 
-      className="tiptap-rendered-content"
+      className="study-content"
       dangerouslySetInnerHTML={{ __html: cleanHTML }}
     />
   );

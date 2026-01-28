@@ -327,3 +327,48 @@
   margin-top: 1em;
   margin-bottom: 1em;
 }
+
+/* Study content styles - optimized for learning */
+.study-content {
+  line-height: 1.8;
+  font-size: 1.125rem;
+  color: hsl(var(--foreground));
+}
+
+.study-content p {
+  margin-bottom: 1.5rem;
+}
+
+.study-content strong {
+  color: #60a5fa;
+  font-weight: 600;
+}
+
+.study-content h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  border-left: 4px solid hsl(var(--primary));
+  padding-left: 1rem;
+  color: hsl(var(--primary));
+}
+
+.study-content ul {
+  margin-bottom: 1.5rem;
+  list-style-type: none;
+}
+
+.study-content li {
+  margin-bottom: 0.75rem;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.study-content li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: hsl(var(--primary));
+  font-weight: bold;
+}
