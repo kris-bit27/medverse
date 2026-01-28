@@ -101,7 +101,18 @@ export default function FloatingCopilot() {
       setIsLoading(false);
     }
 
-    const userMessage = { role: 'user', content: messageContent };
+    // Sestavení pageContext pro invokeEduLLM
+    const pageContext = {
+      pathname: window.location.pathname,
+      title: document.title,
+      topicId: extractTopicIdFromUrl(window.location.pathname)
+    };
+
+    const userMessage = { 
+      role: 'user', 
+      content: messageContent,
+      pageContext 
+    };
     setMessages(prev => [...prev, userMessage]);
     setIsStreaming(true);
 
@@ -122,6 +133,40 @@ export default function FloatingCopilot() {
       unsubscribe();
       setIsStreaming(false);
     }, 30000);
+  };
+
+  const extractTopicIdFromUrl = (pathname) => {
+    // Extrahuje topicId z URL typu /topic/123 nebo /TopicDetail?id=123
+    const match = pathname.match(/\/topic\/([^/]+)/);
+    if (match) return match[1];
+    
+    const params = new URLSearchParams(window.location.search);
+    return params.get('id') || params.get('topicId') || null;
+  };
+
+  const getContextualGreeting = () => {
+    const path = window.location.pathname;
+    const title = document.title;
+    
+    if (path.includes('TopicDetail') || path.includes('/topic/')) {
+      const topicMatch = title.match(/^([^|]+)/);
+      const topicName = topicMatch ? topicMatch[1].trim() : 'toto téma';
+      return `Vidím, že studuješ ${topicName}, chceš s něčím pomoci?`;
+    }
+    
+    if (path.includes('Atestace') || path.includes('OkruhDetail')) {
+      return 'Vidím, že procházíš atestační okruhy. Na co se chceš zeptat?';
+    }
+    
+    if (path.includes('QuestionDetail')) {
+      return 'Řešíš konkrétní otázku? Můžu ti pomoci ji pochopit.';
+    }
+    
+    if (path.includes('Logbook')) {
+      return 'Doplňuješ logbook? Rád ti pomůžu s kategorizací nebo popisem.';
+    }
+    
+    return 'Začněte konverzaci';
   };
 
   const handleKeyDown = (e) => {
@@ -185,7 +230,7 @@ export default function FloatingCopilot() {
                   <MessageSquare className="w-8 h-8 text-teal-600" />
                 </div>
                 <p className="font-semibold text-slate-900 dark:text-white mb-2">
-                  Začněte konverzaci
+                  {getContextualGreeting()}
                 </p>
                 <p className="text-sm text-slate-500 dark:text-slate-400 max-w-[280px]">
                   Zeptejte se Hippa na pomoc s porozuměním medicíně
