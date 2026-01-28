@@ -56,7 +56,8 @@ import {
   Sparkles,
   CheckSquare,
   Square,
-  X
+  X,
+  Shield
 } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import QuestionImporter from '@/components/admin/QuestionImporter';
@@ -884,28 +885,25 @@ export default function AdminTaxonomy() {
                                 className="flex items-center justify-between p-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg"
                               >
                                 <div className="flex items-center gap-2 flex-1">
-                                  <Checkbox
-                                   checked={selectedTopics.includes(topic.id)}
-                                   onCheckedChange={() => toggleSelectTopic(topic.id)}
-                                  />
-                                  <span className="text-sm text-slate-900 dark:text-white">{topic.title}</span>
-                                  <Badge variant="secondary" className="text-xs">{questionCount}</Badge>
-                                  {topic.status && (
-                                  <Badge className={
-                                  topic.status === 'published' ? 'bg-green-100 text-green-700' :
-                                  topic.status === 'in_review' ? 'bg-amber-100 text-amber-700' :
-                                  'bg-slate-100 text-slate-700'
-                                  }>
-                                  {topic.status}
-                                  </Badge>
-                                  )}
-                            {topic.is_reviewed && (
-                              <Badge className="text-xs bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                                <CheckCircle className="w-3 h-3 mr-1" />
-                                Zkontrolováno
-                              </Badge>
-                            )}
-                          </div>
+                                 <Checkbox
+                                  checked={selectedTopics.includes(topic.id)}
+                                  onCheckedChange={() => toggleSelectTopic(topic.id)}
+                                 />
+                                 {topic.is_reviewed && (
+                                   <Shield className="w-4 h-4 text-teal-600 dark:text-teal-400" title="Revidováno odborníkem" />
+                                 )}
+                                 <span className="text-sm text-slate-900 dark:text-white">{topic.title}</span>
+                                 <Badge variant="secondary" className="text-xs">{questionCount}</Badge>
+                                 {topic.status && (
+                                 <Badge className={
+                                 topic.status === 'published' ? 'bg-green-100 text-green-700' :
+                                 topic.status === 'in_review' ? 'bg-amber-100 text-amber-700' :
+                                 'bg-slate-100 text-slate-700'
+                                 }>
+                                 {topic.status}
+                                 </Badge>
+                                 )}
+                                </div>
                           <div className="flex items-center gap-1">
                             <Button 
                               variant="ghost" 
@@ -983,14 +981,11 @@ export default function AdminTaxonomy() {
                                     checked={selectedTopics.includes(topic.id)}
                                     onCheckedChange={() => toggleSelectTopic(topic.id)}
                                   />
+                                  {topic.is_reviewed && (
+                                    <Shield className="w-4 h-4 text-teal-600 dark:text-teal-400" title="Revidováno odborníkem" />
+                                  )}
                                   <span className="text-sm text-slate-900 dark:text-white">{topic.title}</span>
                                   <Badge variant="secondary" className="text-xs">{questionCount}</Badge>
-                                  {topic.is_reviewed && (
-                                   <Badge className="text-xs bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                                     <CheckCircle className="w-3 h-3 mr-1" />
-                                     Zkontrolováno
-                                   </Badge>
-                                  )}
                                 </div>
                                 <div className="flex items-center gap-1">
                                   <Button 
