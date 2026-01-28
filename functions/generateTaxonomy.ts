@@ -33,16 +33,19 @@ ${sourceUrl ? `\n\nVyužij jako hlavní zdroj informací: ${sourceUrl}` : ''}
 Vrať data ve formátu JSON podle následujícího schématu.`;
 
         // Připrav finální prompt s instrukcemi
-        const finalPrompt = `Jsi expert na přípravu lékařů k atestacím. Vytváříš strukturovaný vzdělávací obsah dle českých zdravotnických standardů.
+        const finalPrompt = `Jsi elitní atestační komisař a expert na přípravu lékařů k atestacím. Vytváříš strukturovaný vzdělávací obsah dle českých zdravotnických standardů.
 
-${prompt}`;
+${prompt}
 
-        // Call Google Gemini 1.5 Flash for taxonomy generation (rychlejší a levnější)
+KRITICKÉ: Odpověz POUZE validním JSONem. NEZAČÍNEJ odpověď žádným textem jako "Zde je vaše struktura..." nebo podobně. Vrať přímo JSON objekt.`;
+
+        // Call Google Gemini 1.5 Pro for taxonomy generation (větší kontext a kapacita)
         const llmResponse = await base44.integrations.Core.InvokeLLM({
             prompt: finalPrompt,
             add_context_from_internet: sourceUrl ? true : false,
-            model: 'gemini-1.5-flash',
+            model: 'gemini-1.5-pro',
             temperature: 0.7,
+            maxTokens: 8192,
             response_json_schema: {
                 type: "object",
                 properties: {
@@ -95,7 +98,7 @@ ${prompt}`;
         return Response.json({ 
             success: true, 
             data: generatedData,
-            model: "gemini-1.5-flash"
+            model: "gemini-1.5-pro"
         });
 
     } catch (error) {
