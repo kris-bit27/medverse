@@ -14,7 +14,8 @@ import {
   Microscope,
   Target,
   Sparkles,
-  ChevronRight
+  ChevronRight,
+  AlertCircle
 } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ReactMarkdown from 'react-markdown';
@@ -24,6 +25,8 @@ import HighlightableText from '@/components/study/HighlightableText';
 import TopicNotes from '@/components/study/TopicNotes.jsx';
 import TopicHippoAssistant from '@/components/topics/TopicHippoAssistant';
 import HTMLContent from '@/components/study/HTMLContent';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import EmptyState from '@/components/common/EmptyState';
 
 export default function TopicDetail() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -40,7 +43,7 @@ export default function TopicDetail() {
     setNotesKey(prev => prev + 1);
   };
 
-  const { data: topic, isLoading } = useQuery({
+  const { data: topic, isLoading, isError, error } = useQuery({
     queryKey: ['topic', topicId],
     queryFn: async () => {
       const topics = await base44.entities.Topic.filter({ id: topicId });
@@ -129,10 +132,43 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
     );
   }
 
+  if (isError) {
+    return (
+      <div className="p-6 max-w-2xl mx-auto">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Nepodařilo se načíst téma. {error?.message || 'Zkuste to prosím znovu.'}
+          </AlertDescription>
+        </Alert>
+        <div className="mt-4">
+          <Button variant="outline" asChild>
+            <Link to={createPageUrl('Atestace')}>
+              <ChevronLeft className="w-4 h-4 mr-2" />
+              Zpět na studium
+            </Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   if (!topic) {
     return (
-      <div className="p-6 text-center">
-        <p className="text-slate-500">Téma nenalezeno</p>
+      <div className="p-6 max-w-2xl mx-auto">
+        <EmptyState
+          icon={BookOpen}
+          title="Téma nenalezeno"
+          description="Toto téma neexistuje nebo bylo smazáno"
+          action={
+            <Button asChild>
+              <Link to={createPageUrl('Atestace')}>
+                <ChevronLeft className="w-4 h-4 mr-2" />
+                Zpět na studium
+              </Link>
+            </Button>
+          }
+        />
       </div>
     );
   }

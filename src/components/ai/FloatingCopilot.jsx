@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Send, Loader2, Plus, MessageSquare, X, Bot } from 'lucide-react';
+import { Send, Loader2, Plus, MessageSquare, X, Bot, AlertCircle } from 'lucide-react';
 import ChatMessage from './ChatMessage';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 
 export default function FloatingCopilot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -41,6 +42,7 @@ export default function FloatingCopilot() {
       }
     } catch (error) {
       console.error('Error loading conversations:', error);
+      toast.error('Nepodařilo se načíst konverzace');
     }
   };
 
@@ -58,6 +60,7 @@ export default function FloatingCopilot() {
       await loadConversations();
     } catch (error) {
       console.error('Error creating conversation:', error);
+      toast.error('Nepodařilo se vytvořit novou konverzaci');
     }
     setIsLoading(false);
   };
@@ -70,6 +73,7 @@ export default function FloatingCopilot() {
       setMessages(conv.messages || []);
     } catch (error) {
       console.error('Error selecting conversation:', error);
+      toast.error('Nepodařilo se načíst konverzaci');
     }
     setIsLoading(false);
   };
@@ -127,6 +131,10 @@ export default function FloatingCopilot() {
       await base44.agents.addMessage(convToUse, userMessage);
     } catch (error) {
       console.error('Error sending message:', error);
+      toast.error('Nepodařilo se odeslat zprávu');
+      setIsStreaming(false);
+      unsubscribe();
+      return;
     }
     
     setTimeout(() => {
