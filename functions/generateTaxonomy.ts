@@ -15,10 +15,42 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Discipline name is required' }, { status: 400 });
         }
 
-        // Build prompt
-        let prompt = `Vytvoř kompletní strukturu okruhů a témat pro klinickou disciplínu: ${disciplineName}
+        // Try to fetch source content if URL provided
+        let sourceContent = '';
+        if (sourceUrl) {
+            try {
+                const fetchResponse = await fetch(sourceUrl);
+                if (fetchResponse.ok) {
+                    const contentType = fetchResponse.headers.get('content-type');
+                    // If it's text/plain or text/html, extract content
+                    if (contentType?.includes('text/plain') || contentType?.includes('text/html')) {
+                        sourceContent = await fetchResponse.text();
+                    }
+                }
+            } catch (error) {
+                console.log('Could not fetch source URL, will rely on Gemini search:', error);
+            }
+        }
 
-Struktura by měla pokrývat všechny klíčové oblasti oboru podle doporučení MZČR (Ministerstvo zdravotnictví České republiky).
+        // Build prompt
+        let prompt = `Vytvoř KOMPLETNÍ strukturu okruhů a témat pro klinickou disciplínu: ${disciplineName}
+
+${sourceContent ? `
+=== ZDROJOVÁ DATA ===
+${sourceContent.substring(0, 50000)}
+=== KONEC ZDROJOVÝCH DAT ===
+
+Důkladně analyzuj výše uvedená zdrojová data. Jedná se o oficiální atestační materiály. Přepiš VŠE do níže uvedené JSON struktury.
+` : ''}
+
+${!sourceContent && sourceUrl ? `
+INSTRUKCE PRO VYHLEDÁVÁNÍ:
+Použij své schopnosti vyhledávání a znalosti oficiálních kurikul MZČR (Věstník MZČR) pro daný obor. 
+URL zdroje: ${sourceUrl}
+Nesmíš vynechat žádnou klíčovou oblast uvedenou v legislativě nebo oficiálních atestačních požadavcích.
+` : ''}
+
+Struktura by měla pokrývat VŠECHNY klíčové oblasti oboru podle doporučení MZČR (Ministerstvo zdravotnictví České republiky).
 
 Pro každý okruh vygeneruj 3-5 hlavních témat a pro každé téma 2-3 konkrétní otázky s odpověďmi.
 
@@ -27,8 +59,6 @@ Odpovědi by měly obsahovat:
 - Základní diagnostiku
 - Léčbu
 - Případné komplikace
-
-${sourceUrl ? `\n\nVyužij jako hlavní zdroj informací: ${sourceUrl}` : ''}
 
 Vrať data ve formátu JSON podle následujícího schématu.`;
 
