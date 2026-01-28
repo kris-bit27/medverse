@@ -892,15 +892,14 @@ ${pageCtx}
     // Určení JSON schématu
     const outputSchema = OUTPUT_SCHEMAS[mode] || null;
 
-    // Volání Gemini 1.5 Pro (gemini-1.5-pro-002) přes Base44 Core integration
+    // Volání Google Gemini 1.5 Pro přes Base44 Core integration
     const llmResponse = await base44.integrations.Core.InvokeLLM({
       prompt: fullPrompt,
       add_context_from_internet: effectiveAllowWeb,
       response_json_schema: outputSchema,
-      // Gemini 1.5 Pro optimalizace
+      model: 'gemini-1.5-pro',
       temperature: 0.2, // Nižší pro medicínskou přesnost
       maxTokens: 8192
-      // Model: gemini-1.5-pro-002 (nastaveno na straně Base44 Core)
     });
 
     // Normalizace výstupu
