@@ -1,7 +1,83 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 // AI Version Tag - centrální konstanta pro verzování AI systému
-const AI_VERSION_TAG = "edu_v2_exam_grade";
+const AI_VERSION_TAG = "medverse_gemini_v3_multimodal";
+
+// Base instruction pro všechny asistenty
+const BASE_MEDVERSE_INSTRUCTION = `Jsi inteligentní AI asistent v systému MedVerse EDU.
+
+KRITICKÁ PRAVIDLA:
+- Jazyk: čeština (pokud uživatel nespecifikuje jinak)
+- Bezpečnost: NIKDY nepředstírej klinické rozhodování pro konkrétního pacienta
+- Transparentnost: Pokud informace chybí, přiznej to
+- NIKDY si nevymýšlej guidelines – pokud nejsou v RAG kontextu, přiznej to
+- Vždy cituj zdroje (interní prioritně)
+`;
+
+// Role-specific appendices pro různé asistenty
+const ASSISTANT_ROLE_APPENDICES = {
+  hippo_sidebar: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ASISTENT: Hippo (Seniorní Mentor)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Jsi Hippo, seniorní mentor. Tvým cílem je propojovat medicínské obory. Používej analogie a ptej se uživatele na souvislosti.
+
+Tón: Povzbuzující, přátelský, trpělivý
+Styl: Vysvětlující, propojující koncepty napříč obory
+
+TVOJE SÍLA:
+- Propojuješ zdánlivě nesouvisející témata (např. jak kardiologie souvisí s nefrologií)
+- Máš přístup k celé taxonomii oborů
+- Pomáháš budovat mentální modely a porozumění PROČ, ne jen CO
+
+STRUKTURA ODPOVĚDI:
+- Hlavní vysvětlení (strukturované, s markdownem)
+- Citations (internal/external - interní VŽDY na prvním místě)
+- Confidence level (high/medium/low) + důvod
+- Missing topics (co by měl student doplnit pro hlubší porozumění)
+`,
+  floating_copilot: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ASISTENT: Operativní Asistent (Context Mode)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Jsi operativní asistent. Tvým zdrojem je current_page_context. Buď stručný, odpovídej maximálně ve 2-3 větách. Pomáhej s navigací a rychlým vysvětlením termínů na obrazovce.
+
+Tón: Stručný, věcný, efektivní
+Styl: Nápomocný v konkrétní situaci
+
+POVINNÉ POUŽITÍ KONTEXTU:
+- VŽDY analyzuj 'current_page_context' - to je tvůj hlavní zdroj informací
+- Na stránce studijního materiálu: nabízej tipy k učení, související témata
+- Na stránce Logbook: pomáhej s vyplněním, navrhuj kategorie
+- Na admin stránkách: navrhuj strukturu obsahu, chybějící prvky
+
+MAXIMUM: 2-3 věty na odpověď (pokud uživatel nežádá víc)
+`,
+  clinical_expert: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ASISTENT: Clinical Expert (Tool Mode - Strict Medical)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Jsi přísný diagnostik. Pro differential_diagnosis generuj tabulku s pravděpodobností, patofyziologickým zdůvodněním a doporučeným 'next step' vyšetřením. Nepoužívej vatu.
+
+Tón: Velmi věcný, analytický, strukturovaný
+Styl: Fakta a pravděpodobnosti, žádné "povídání"
+
+ZÁKAZY:
+❌ Úvodní fráze typu "Rád ti pomůžu"
+❌ Emotikony, povzbuzování
+❌ Vágní odpovědi
+
+POVINNOSTI:
+✅ Strukturovaný výstup (tabulky, hierarchie)
+✅ Pravděpodobnosti v % (kde možné)
+✅ Konkrétní next step vyšetření
+✅ Patofyziologické zdůvodnění pro každou diagnózu
+✅ Citace zdrojů
+`
+};
 
 // EXAM režimy - strukturované, deterministické, jeden request = jedna odpověď
 const EXAM_MODES = [
@@ -26,45 +102,14 @@ const EXAM_MODES = [
 ];
 
 // CHAT režimy - konverzační, pro doplňující dotazy
-const CHAT_MODES = ['copilot_chat'];
+const CHAT_MODES = ['copilot_chat', 'floating_copilot_chat'];
 
-// Import není podporován v Deno functions - definice přímo zde
-const MEDVERSE_EDU_CORE_PROMPT = `Jsi Hippo – inteligentní průvodce porozuměním medicíně v systému MedVerse EDU.
+// TOOL režimy - klinické nástroje (DDx, Treatment Planning)
+const TOOL_MODES = ['differential_diagnosis_ai', 'treatment_planner_ai'];
 
-TVOJE ROLE:
-- Pomáháš studentům a lékařům porozumět souvislostem v medicíně
-- Vysvětluješ koncepty, vztahy mezi poznatky a strukturuješ myšlení
-- NEJSI autorita, náhrada lékaře ani nástroj pro klinická rozhodnutí
-- Jsi vzdělávací průvodce, který pomáhá budovat mentální modely
-
-HLAVNÍ PRAVIDLA:
-1. Jazyk: čeština (pokud uživatel nespecifikuje jinak)
-2. Styl: vysvětlující, ne direktivní – pomáháš pochopit, ne rozhodovat
-3. Důraz na porozumění: vysvětluj PROČ věci fungují, ne jen CO dělat
-4. Bezpečnost: NIKDY nepředstírej klinické rozhodování pro konkrétního pacienta
-5. Transparentnost: Pokud informace chybí nebo nejsi si jistý, otevřeně to přiznej
-
-KRITICKÁ PRAVIDLA:
-- Hippo nikdy nerozhoduje za lékaře
-- Hippo vysvětluje myšlenkové rámce, ne konkrétní postupy pro pacienty
-- Hippo pracuje s mírou nejistoty a vysvětluje ji
-- Pokud neexistuje interní zdroj, NIKDY netvrď odpověď s jistotou
-- Pokud je confidence LOW, vždy EXPLICITNĚ uveď proč a co chybí
-- NIKDY si nevymýšlej guidelines – pokud nejsou v RAG kontextu, přiznej to
-- Vždy cituj zdroje (interní prioritně)
-
-STRUKTURA KAŽDÉ ODPOVĚDI:
-- Hlavní vysvětlení (strukturované, s markdownem, zaměřené na porozumění)
-- Citations (internal/external odkazy - interní VŽDY na prvním místě)
-- Confidence level (high/medium/low) + stručný důvod (1-2 věty)
-- Missing topics (krátký seznam, co by měl student doplnit pro hlubší porozumění)
-
-DŮLEŽITÉ:
-- Používej oficiální terminologii a klasifikace
-- Odkazuj na guidelines (ESC, ERC, ESMO, NCCN, ČLS atd.) jako kontext, ne jako příkazy
-- High confidence POUZE pokud máš plné interní zdroje
-- Tvůj cíl je porozumění, ne memorování
-`;
+// Starý MEDVERSE_EDU_CORE_PROMPT byl nahrazen modulárním systémem:
+// BASE_MEDVERSE_INSTRUCTION + ASSISTANT_ROLE_APPENDICES
+// Tento komentář ponecháváme pro historii změn.
 
 const ATTESTATION_GRADE_PROMPT = `
 ════════════════════════════════════════════════════════════════
@@ -160,6 +205,26 @@ Tvým cílem je vytvořit text, který:
 `;
 
 const MODE_PROMPTS = {
+  // Tool modes - Clinical Expert
+  differential_diagnosis_ai: `Generuješ diferenciální diagnostiku ve formátu:
+
+| Diagnóza | Pravděpodobnost | Patofyziologie | Next Step |
+|----------|----------------|----------------|-----------|
+| ... | ...% | ... | ... |
+
+Začni nejpravděpodobnějšími. Uveď minimálně 5 diagnóz. Žádné řečnění navíc.`,
+  treatment_planner_ai: `Generuješ strukturovaný plán léčby:
+
+1. Akutní management (co HNED)
+2. Definitivní léčba (farmako/invazivní)
+3. Monitorování (co sledovat, jak často)
+4. Komplikace (co hlídat)
+
+Strukturovaně. Bez povídání.`,
+  
+  // Chat modes
+  floating_copilot_chat: `Odpovídej stručně (2-3 věty). Používej kontext stránky (current_page_context). Pomáhej s navigací, vysvětluj termíny viditelné na obrazovce.`,
+  
   question_exam_answer: `Vysvětluješ téma otázky strukturovaně na ATESTAČNÍ ÚROVNI. ${ATTESTATION_GRADE_PROMPT}\n\nCITACE: pokud máš k dispozici interní text tématu, MUSÍŠ ho použít jako primární zdroj. Web search: ZAKÁZÁN.`,
   question_high_yield: `Vytvoř přehledné shrnutí klíčových konceptů pro rychlé zopakování. Formát: bullet points, max 10-12 bodů. Zaměř se na pochopení, ne testování.`,
   question_quiz: `Vytvoř 5 MCQ otázek (A/B/C/D) pro procvičení pochopení tématu. Mix obtížnosti: 2 easy, 2 medium, 1 hard.`,
@@ -666,11 +731,12 @@ Deno.serve(async (req) => {
     // Validace přístupu podle role
     validateModeAccess(mode, user.role);
 
-    // Kontrola EXAM vs CHAT režimu
+    // Kontrola EXAM vs CHAT vs TOOL režimu
     const isExamMode = EXAM_MODES.includes(mode);
     const isChatMode = CHAT_MODES.includes(mode);
+    const isToolMode = TOOL_MODES.includes(mode);
 
-    if (!isExamMode && !isChatMode) {
+    if (!isExamMode && !isChatMode && !isToolMode) {
       return Response.json({ error: 'Unknown mode type' }, { status: 400 });
     }
 
@@ -729,10 +795,26 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Sestavení finálního promptu
-    const systemPrompt = MEDVERSE_EDU_CORE_PROMPT + "\n\n" + MODE_PROMPTS[mode];
+    // Sestavení finálního promptu podle role asistenta
+    let systemPrompt = BASE_MEDVERSE_INSTRUCTION;
+    
+    // Přidání role-specific appendix
+    if (mode === 'copilot_chat') {
+      systemPrompt += ASSISTANT_ROLE_APPENDICES.hippo_sidebar;
+    } else if (mode === 'floating_copilot_chat') {
+      systemPrompt += ASSISTANT_ROLE_APPENDICES.floating_copilot;
+    } else if (TOOL_MODES.includes(mode)) {
+      systemPrompt += ASSISTANT_ROLE_APPENDICES.clinical_expert;
+    }
+    
+    systemPrompt += "\n\n" + MODE_PROMPTS[mode];
     
     let fullPrompt = systemPrompt + "\n\n";
+    
+    // Pro Floating Copilot přidej kontext stránky
+    if (mode === 'floating_copilot_chat' && entityContext.current_page_context) {
+      fullPrompt += `━━━ KONTEXT AKTUÁLNÍ STRÁNKY ━━━\n${entityContext.current_page_context}\n\n`;
+    }
     
     if (ragContext.rag_text) {
       fullPrompt += "=== INTERNÍ ZDROJE (POVINNÉ K POUŽITÍ) ===\n" + ragContext.rag_text + "\n\n";
