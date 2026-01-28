@@ -3,6 +3,9 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 // AI Version Tag - centrální konstanta pro verzování AI systému
 const AI_VERSION_TAG = "medverse_gemini_1.5_pro_v3";
 
+// Strict Mode kontrola
+const AI_STRICT_MODE = Deno.env.get("AI_STRICT_MODE") === "true";
+
 // Base instruction pro všechny asistenty
 const BASE_MEDVERSE_INSTRUCTION = `Jsi inteligentní AI asistent v systému MedVerse EDU.
 
@@ -12,6 +15,14 @@ KRITICKÁ PRAVIDLA:
 - Transparentnost: Pokud informace chybí, přiznej to
 - NIKDY si nevymýšlej guidelines – pokud nejsou v RAG kontextu, přiznej to
 - Vždy cituj zdroje (interní prioritně)
+${AI_STRICT_MODE ? `
+⚠️ STRICT MODE AKTIVNÍ ⚠️
+- ABSOLUTNÍ ZÁKAZ spekulativních odpovědí
+- POVINNÁ citace u KAŽDÉHO medicínského faktu
+- Confidence NESMÍ být 'high' bez interních zdrojů
+- ZAKÁZÁNO generovat léčebné protokoly bez RAG kontextu
+- Při jakékoli nejistotě: "Nemám dostatečné informace"
+` : ''}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 HIERARCHIE ASISTENTŮ
