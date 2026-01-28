@@ -32,6 +32,8 @@ Pro každý článek vrať:
 
 Najdi 5-8 nejrelevantnějších článků z renomovaných zdrojů.`,
         add_context_from_internet: true,
+        model: 'gemini-1.5-pro',
+        maxTokens: 2048,
         response_json_schema: {
           type: "object",
           properties: {

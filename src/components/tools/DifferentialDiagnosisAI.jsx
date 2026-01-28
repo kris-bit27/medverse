@@ -25,16 +25,20 @@ export default function DifferentialDiagnosisAI() {
 
     setLoading(true);
     try {
+      const MAX_INPUT_CHARS = 2000;
+      const safeSymptoms = symptoms.slice(0, MAX_INPUT_CHARS);
+      const safeHistory = (patientInfo.history || '').slice(0, MAX_INPUT_CHARS);
+      const safeTests = (patientInfo.performed_tests || '').slice(0, MAX_INPUT_CHARS);
       const response = await base44.integrations.Core.InvokeLLM({
         prompt: `Jsi zkušený klinický lékař. Na základě následujících informací vytvoř diferenciální diagnózu:
 
-SYMPTOMY: ${symptoms}
+SYMPTOMY: ${safeSymptoms}
 
 INFORMACE O PACIENTOVI:
 - Věk: ${patientInfo.age || 'neuvedeno'}
 - Pohlaví: ${patientInfo.sex || 'neuvedeno'}
-- Anamnéza: ${patientInfo.history || 'neuvedeno'}
-- Provedená vyšetření: ${patientInfo.performed_tests || 'žádná'}
+- Anamnéza: ${safeHistory || 'neuvedeno'}
+- Provedená vyšetření: ${safeTests || 'žádná'}
 
 Poskytni:
 1. Seznam nejpravděpodobnějších diagnóz seřazených podle pravděpodobnosti
@@ -44,6 +48,8 @@ Poskytni:
 
 Odpověď piš česky, strukturovaně a prakticky využitelně pro klinickou praxi.`,
         add_context_from_internet: false,
+        model: 'gemini-1.5-pro',
+        maxTokens: 1024,
         response_json_schema: {
           type: "object",
           properties: {

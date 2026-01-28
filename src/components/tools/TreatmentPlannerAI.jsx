@@ -32,18 +32,24 @@ export default function TreatmentPlannerAI() {
 
     setLoading(true);
     try {
+      const MAX_INPUT_CHARS = 2000;
+      const safeDiagnosis = diagnosis.slice(0, MAX_INPUT_CHARS);
+      const safeComorbidities = (patientInfo.comorbidities || '').slice(0, MAX_INPUT_CHARS);
+      const safeAllergies = (patientInfo.allergies || '').slice(0, MAX_INPUT_CHARS);
+      const safeMeds = (patientInfo.current_medications || '').slice(0, MAX_INPUT_CHARS);
+      const safeTests = (patientInfo.performed_tests || '').slice(0, MAX_INPUT_CHARS);
       const response = await base44.integrations.Core.InvokeLLM({
         prompt: `Jsi zkušený klinický lékař. Vytvoř léčebný plán na základě následujících informací:
 
-DIAGNÓZA: ${diagnosis}
+DIAGNÓZA: ${safeDiagnosis}
 
 INFORMACE O PACIENTOVI:
 - Věk: ${patientInfo.age || 'neuvedeno'}
 - Pohlaví: ${patientInfo.sex || 'neuvedeno'}
-- Komorbidity: ${patientInfo.comorbidities || 'žádné'}
-- Alergie: ${patientInfo.allergies || 'žádné'}
-- Současná medikace: ${patientInfo.current_medications || 'žádná'}
-- Provedená vyšetření: ${patientInfo.performed_tests || 'žádná'}
+- Komorbidity: ${safeComorbidities || 'žádné'}
+- Alergie: ${safeAllergies || 'žádné'}
+- Současná medikace: ${safeMeds || 'žádná'}
+- Provedená vyšetření: ${safeTests || 'žádná'}
 
 Vytvoř komplexní léčebný plán dle současných klinických doporučení, který zahrnuje:
 1. Farmakologickou léčbu (konkrétní léky, dávkování, délka léčby)
@@ -55,6 +61,8 @@ Vytvoř komplexní léčebný plán dle současných klinických doporučení, k
 
 Odpověď piš česky, strukturovaně a s ohledem na individuální parametry pacienta.`,
         add_context_from_internet: true,
+        model: 'gemini-1.5-pro',
+        maxTokens: 2048,
         response_json_schema: {
           type: "object",
           properties: {

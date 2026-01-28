@@ -37,6 +37,8 @@ export default function TopicContentEditor({ topic, onSave }) {
   const handleAIGenerate = async (type) => {
     setIsGenerating(true);
     try {
+      const MAX_TEXT_CHARS = 8000;
+      const fullTextSnippet = (content.full_text_content || '').slice(0, MAX_TEXT_CHARS);
       let prompt = '';
       
       if (type === 'full') {
@@ -56,7 +58,7 @@ export default function TopicContentEditor({ topic, onSave }) {
         prompt = `Vytvoř stručné shrnutí v odrážkách z následujícího studijního textu. Zaměř se na klíčové body pro rychlé opakování před atestací. Text v češtině, formát markdown.
 
 STUDIJNÍ TEXT:
-${content.full_text_content}`;
+${fullTextSnippet}`;
       } else if (type === 'deepdive_from_full') {
         if (!content.full_text_content) {
           toast.error('Nejprve vytvořte plný text');
@@ -73,12 +75,13 @@ ${content.full_text_content}`;
 Text v češtině, formát markdown.
 
 STUDIJNÍ TEXT:
-${content.full_text_content}`;
+${fullTextSnippet}`;
       }
 
       const response = await base44.integrations.Core.InvokeLLM({
         prompt,
         add_context_from_internet: type === 'deepdive_from_full',
+        maxTokens: type === 'deepdive_from_full' ? 2048 : 1024,
         response_json_schema: type === 'objectives' ? {
           type: "object",
           properties: {
@@ -126,11 +129,16 @@ ${content.full_text_content}`;
         return;
       }
 
+      const MAX_REVIEW_CHARS = 4000;
+      const fullTextReview = (content.full_text_content || '').slice(0, MAX_REVIEW_CHARS);
+      const bulletsReview = (content.bullet_points_summary || '').slice(0, MAX_REVIEW_CHARS);
+      const deepDiveReview = (content.deep_dive_content || '').slice(0, MAX_REVIEW_CHARS);
+
       const prompt = `Proveď odborné hodnocení následujícího studijního materiálu pro téma "${topic.title}" určeného pro přípravu na lékařskou atestaci.
 
-${content.full_text_content ? `PLNÝ TEXT:\n${content.full_text_content}\n\n` : ''}
-${content.bullet_points_summary ? `SHRNUTÍ V ODRÁŽKÁCH:\n${content.bullet_points_summary}\n\n` : ''}
-${content.deep_dive_content ? `DEEP DIVE:\n${content.deep_dive_content}\n\n` : ''}
+${fullTextReview ? `PLNÝ TEXT:\n${fullTextReview}\n\n` : ''}
+${bulletsReview ? `SHRNUTÍ V ODRÁŽKÁCH:\n${bulletsReview}\n\n` : ''}
+${deepDiveReview ? `DEEP DIVE:\n${deepDiveReview}\n\n` : ''}
 
 Zhodnoť:
 1. Úplnost a správnost informací
@@ -144,6 +152,8 @@ Vrať konkrétní doporučení pro každou sekci.`;
       const response = await base44.integrations.Core.InvokeLLM({
         prompt,
         add_context_from_internet: true,
+        model: 'gemini-1.5-pro',
+        maxTokens: 1024,
         response_json_schema: {
           type: "object",
           properties: {

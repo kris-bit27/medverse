@@ -110,6 +110,11 @@ export default function StudyPlanAI() {
       const endDate = new Date(targetDate);
       const daysAvailable = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
 
+      const weakTopicsSummary = weakTopics
+        .slice(0, 10)
+        .map(t => `${t.topic.title} (${Math.round(t.percentage * 100)}%)`)
+        .join(', ');
+
       const prompt = `Vytvoř personalizovaný studijní plán pro přípravu na lékařskou atestaci.
 
 **Uživatelův profil:**
@@ -121,7 +126,7 @@ export default function StudyPlanAI() {
 **Aktuální pokrok:**
 - Celkem otázek v oblasti: ${selectedQuestions.length}
 - Zvládnutých: ${masteredCount} (${Math.round(masteredCount/selectedQuestions.length*100)}%)
-- Témata k posílení: ${weakTopics.map(t => `${t.topic.title} (${Math.round(t.percentage*100)}%)`).join(', ')}
+- Témata k posílení: ${weakTopicsSummary}
 
 **Dostupná témata pro studium:**
 ${selectedTopics.slice(0, 20).map(t => `- ${t.title}`).join('\n')}
@@ -137,6 +142,8 @@ Vrať JSON s týdenním rozpisu úkolů.`;
 
       const response = await base44.integrations.Core.InvokeLLM({
         prompt,
+        model: 'gemini-1.5-pro',
+        maxTokens: 2048,
         response_json_schema: {
           type: "object",
           properties: {

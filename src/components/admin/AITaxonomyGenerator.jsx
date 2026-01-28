@@ -78,7 +78,7 @@ Generuj POUZE názvy okruhů a názvy témat. Negeneruj žádné otázky ani odp
         response_json_schema: jsonSchema,
         model: 'gemini-1.5-pro',
         temperature: 0.1,
-        maxTokens: 8000
+        maxTokens: 4096
       });
 
       console.log('AI Response:', response);

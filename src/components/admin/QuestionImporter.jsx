@@ -99,6 +99,8 @@ Otázky musí být relevantní pro české lékařské atestace a odpovídat bě
 
       const response = await base44.integrations.Core.InvokeLLM({
         prompt,
+        model: 'gemini-1.5-pro',
+        maxTokens: 4096,
         response_json_schema: {
           type: "object",
           properties: {

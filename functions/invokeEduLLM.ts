@@ -130,6 +130,7 @@ const CHAT_MODES = ['copilot_chat', 'floating_copilot_chat'];
 
 // TOOL režimy - klinické nástroje (DDx, Treatment Planning)
 const TOOL_MODES = ['differential_diagnosis_ai', 'treatment_planner_ai'];
+const ALLOW_WEB_MODES = new Set(['topic_deep_dive', 'topic_generate_deep_dive', 'topic_legal_deepen']);
 
 const MAX_TOKENS_BY_MODE = {
   topic_generate_fulltext: 4096,
@@ -676,8 +677,10 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb, options = 
   // 4. UserProgress (pro copilot_chat) - PRIORITA 4
   if (mode === 'copilot_chat') {
     try {
+      const currentUser = await base44.auth.me().catch(() => null);
+      if (!currentUser?.id) return context;
       const recentProgress = await base44.asServiceRole.entities.UserProgress.filter(
-        { user_id: base44.auth.me().id },
+        { user_id: currentUser.id },
         '-last_reviewed_at',
         5
       );
@@ -837,6 +840,7 @@ function validateModeAccess(mode, userRole) {
  */
 Deno.serve(async (req) => {
   const startTime = Date.now();
+  let payload = null;
   
   try {
     const base44 = createClientFromRequest(req);
@@ -846,7 +850,18 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { mode, entityContext = {}, userPrompt, allowWeb = false, systemPromptOverride, maxRagChars, maxSectionChars, skipRag } = await req.json();
+    payload = await req.json();
+    const {
+      mode,
+      entityContext = {},
+      userPrompt,
+      allowWeb = false,
+      systemPromptOverride,
+      maxRagChars,
+      maxSectionChars,
+      skipRag
+    } = payload || {};
+    const safeUserPrompt = typeof userPrompt === 'string' ? userPrompt : '';
 
     if (!mode || !MODE_PROMPTS[mode]) {
       return Response.json({ 
@@ -868,7 +883,7 @@ Deno.serve(async (req) => {
     }
 
     // V EXAM režimu je zakázán web search (kromě deep_dive)
-    const effectiveAllowWeb = isExamMode && mode !== 'topic_deep_dive' && mode !== 'topic_generate_deep_dive' ? false : allowWeb;
+    const effectiveAllowWeb = isExamMode && !ALLOW_WEB_MODES.has(mode) ? false : allowWeb;
 
     // Sestavení RAG kontextu - POVINNÉ pro všechna AI volání
     const ragContext = await buildRAGContext(base44, mode, entityContext, effectiveAllowWeb, {
@@ -881,7 +896,7 @@ Deno.serve(async (req) => {
     const contentHash = computeContentHash(entityContext);
     
     // User prompt hash
-    const userPromptNormalized = (userPrompt || '').toLowerCase().trim().replace(/\s+/g, ' ');
+    const userPromptNormalized = safeUserPrompt.toLowerCase().trim().replace(/\s+/g, ' ');
     let userPromptHash = 0;
     for (let i = 0; i < userPromptNormalized.length; i++) {
       userPromptHash = ((userPromptHash << 5) - userPromptHash) + userPromptNormalized.charCodeAt(i);
@@ -911,7 +926,7 @@ Deno.serve(async (req) => {
         entity_type: entityContext.entityType || 'none',
         entity_id: entityContext.entityId || null,
         prompt_version: AI_VERSION_TAG,
-        input_summary: (userPrompt || '').substring(0, 200),
+        input_summary: safeUserPrompt.substring(0, 200),
         output_text: cachedResult.text.substring(0, 1000),
         citations_json: cachedResult.citations,
         confidence: cachedResult.confidence?.level || 'medium',
@@ -974,7 +989,7 @@ ${pageCtx}
       fullPrompt += "=== UPOZORNĚNÍ ===\nNejsou k dispozici žádné interní zdroje. Confidence MUSÍ být LOW.\n\n";
     }
     
-    fullPrompt += "=== UŽIVATELSKÝ DOTAZ ===\n" + userPrompt;
+    fullPrompt += "=== UŽIVATELSKÝ DOTAZ ===\n" + safeUserPrompt;
 
     const MAX_PROMPT_CHARS = 120000;
     if (fullPrompt.length > MAX_PROMPT_CHARS) {
@@ -1017,7 +1032,7 @@ ${pageCtx}
       entity_type: entityContext.entityType || 'none',
       entity_id: entityContext.entityId || null,
       prompt_version: AI_VERSION_TAG,
-      input_summary: (userPrompt || '').substring(0, 200),
+      input_summary: safeUserPrompt.substring(0, 200),
       output_text: result.text.substring(0, 1000),
       citations_json: result.citations,
       confidence: result.confidence?.level || 'medium',
@@ -1059,14 +1074,13 @@ ${pageCtx}
       const base44 = createClientFromRequest(req);
       const user = await base44.auth.me();
       if (user) {
-        const payload = await req.json().catch(() => ({}));
         await base44.asServiceRole.entities.AIInteractionLog.create({
           user_id: user.id,
-          mode: payload.mode || 'unknown',
-          entity_type: payload.entityContext?.entityType || 'none',
-          entity_id: payload.entityContext?.entityId || null,
+          mode: payload?.mode || 'unknown',
+          entity_type: payload?.entityContext?.entityType || 'none',
+          entity_id: payload?.entityContext?.entityId || null,
           prompt_version: AI_VERSION_TAG,
-          input_summary: (payload.userPrompt || 'Error occurred').substring(0, 200),
+          input_summary: (typeof payload?.userPrompt === 'string' ? payload.userPrompt : 'Error occurred').substring(0, 200),
           output_text: errorResult.text,
           success: false,
           error_text: error.message,

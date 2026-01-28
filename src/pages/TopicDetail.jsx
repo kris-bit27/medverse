@@ -77,11 +77,12 @@ export default function TopicDetail() {
 
   const handleGeneratePracticeQuestions = async () => {
     if (!topic) return;
-    
+    const MAX_SOURCE_CHARS = 8000;
+    const sourceText = (topic.full_text_content || topic.bullet_points_summary || '').slice(0, MAX_SOURCE_CHARS);
     const prompt = `Na základě následujícího studijního obsahu vygeneruj 5 atestačních otázek pro opakování:
 
 Téma: ${topic.title}
-${topic.full_text_content || topic.bullet_points_summary || ''}
+${sourceText}
 
 Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z tohoto tématu.`;
 
@@ -89,6 +90,7 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
       const response = await base44.integrations.Core.InvokeLLM({
         prompt,
         model: 'gemini-1.5-pro',
+        maxTokens: 2048,
         response_json_schema: {
           type: "object",
           properties: {
