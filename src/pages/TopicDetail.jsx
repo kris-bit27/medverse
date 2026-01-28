@@ -15,7 +15,8 @@ import {
   Target,
   Sparkles,
   ChevronRight,
-  AlertCircle
+  AlertCircle,
+  Shield
 } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ReactMarkdown from 'react-markdown';
@@ -200,9 +201,17 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
 
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white mb-4">
-          {topic.title}
-        </h1>
+        <div className="flex items-start gap-3 mb-4">
+          <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white">
+            {topic.title}
+          </h1>
+          {topic.is_reviewed && (
+            <Badge className="bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300 flex items-center gap-1">
+              <Shield className="w-3.5 h-3.5" />
+              Revidováno odborníkem
+            </Badge>
+          )}
+        </div>
         
         {topic.learning_objectives && topic.learning_objectives.length > 0 && (
           <Card className="bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800">
