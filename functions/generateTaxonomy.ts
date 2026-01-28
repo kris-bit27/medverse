@@ -1,9 +1,4 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import OpenAI from 'npm:openai@4.77.3';
-
-const openai = new OpenAI({
-    apiKey: Deno.env.get("OPENAI_API_KEY"),
-});
 
 Deno.serve(async (req) => {
     try {
@@ -37,85 +32,70 @@ ${sourceUrl ? `\n\nVyužij jako hlavní zdroj informací: ${sourceUrl}` : ''}
 
 Vrať data ve formátu JSON podle následujícího schématu.`;
 
-        // Call GPT-4o for taxonomy generation
-        const completion = await openai.chat.completions.create({
-            model: "gpt-4o",
-            messages: [
-                {
-                    role: "system",
-                    content: "Jsi expert na přípravu lékařů k atestacím. Vytváříš strukturovaný vzdělávací obsah dle českých zdravotnických standardů."
-                },
-                {
-                    role: "user",
-                    content: prompt
-                }
-            ],
-            response_format: {
-                type: "json_schema",
-                json_schema: {
-                    name: "taxonomy_structure",
-                    strict: true,
-                    schema: {
-                        type: "object",
-                        properties: {
-                            okruhy: {
-                                type: "array",
-                                items: {
-                                    type: "object",
-                                    properties: {
-                                        title: { type: "string" },
-                                        description: { type: "string" },
-                                        icon: { type: "string" },
-                                        topics: {
-                                            type: "array",
-                                            items: {
-                                                type: "object",
-                                                properties: {
-                                                    title: { type: "string" },
-                                                    tags: {
-                                                        type: "array",
-                                                        items: { type: "string" }
-                                                    },
-                                                    questions: {
-                                                        type: "array",
-                                                        items: {
-                                                            type: "object",
-                                                            properties: {
-                                                                title: { type: "string" },
-                                                                question_text: { type: "string" },
-                                                                answer_rich: { type: "string" },
-                                                                difficulty: { type: "number" }
-                                                            },
-                                                            required: ["title", "question_text", "answer_rich", "difficulty"],
-                                                            additionalProperties: false
-                                                        }
-                                                    }
-                                                },
-                                                required: ["title", "tags", "questions"],
-                                                additionalProperties: false
-                                            }
-                                        }
-                                    },
-                                    required: ["title", "description", "icon", "topics"],
-                                    additionalProperties: false
-                                }
-                            }
-                        },
-                        required: ["okruhy"],
-                        additionalProperties: false
-                    }
-                }
-            },
+        // Připrav finální prompt s instrukcemi
+        const finalPrompt = `Jsi expert na přípravu lékařů k atestacím. Vytváříš strukturovaný vzdělávací obsah dle českých zdravotnických standardů.
+
+${prompt}`;
+
+        // Call Google Gemini 1.5 Pro for taxonomy generation
+        const llmResponse = await base44.integrations.Core.InvokeLLM({
+            prompt: finalPrompt,
+            add_context_from_internet: sourceUrl ? true : false,
+            model: 'gemini-1.5-pro',
             temperature: 0.7,
+            response_json_schema: {
+                type: "object",
+                properties: {
+                    okruhy: {
+                        type: "array",
+                        items: {
+                            type: "object",
+                            properties: {
+                                title: { type: "string" },
+                                description: { type: "string" },
+                                icon: { type: "string" },
+                                topics: {
+                                    type: "array",
+                                    items: {
+                                        type: "object",
+                                        properties: {
+                                            title: { type: "string" },
+                                            tags: {
+                                                type: "array",
+                                                items: { type: "string" }
+                                            },
+                                            questions: {
+                                                type: "array",
+                                                items: {
+                                                    type: "object",
+                                                    properties: {
+                                                        title: { type: "string" },
+                                                        question_text: { type: "string" },
+                                                        answer_rich: { type: "string" },
+                                                        difficulty: { type: "number" }
+                                                    },
+                                                    required: ["title", "question_text", "answer_rich", "difficulty"]
+                                                }
+                                            }
+                                        },
+                                        required: ["title", "tags", "questions"]
+                                    }
+                                }
+                            },
+                            required: ["title", "description", "icon", "topics"]
+                        }
+                    }
+                },
+                required: ["okruhy"]
+            }
         });
 
-        const generatedData = JSON.parse(completion.choices[0].message.content);
+        const generatedData = llmResponse;
 
         return Response.json({ 
             success: true, 
             data: generatedData,
-            model: "gpt-4o",
-            tokens: completion.usage
+            model: "gemini-1.5-pro"
         });
 
     } catch (error) {
