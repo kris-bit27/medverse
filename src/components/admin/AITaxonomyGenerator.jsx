@@ -33,9 +33,9 @@ export default function AITaxonomyGenerator({ disciplines, onComplete }) {
       const discipline = disciplines.find(d => d.id === selectedDiscipline);
       
       // Build prompt for AI
-      const prompt = `Jsi špičkový český atestační komisař s přístupem k rozsáhlému kontextovému oknu. Tvým úkolem je vytvořit neprůstřelnou strukturu oboru ${discipline.name}.
+      const prompt = `Jsi elitní atestační komisař s přístupem k rozsáhlému kontextovému oknu. Tvým úkolem je vytvořit neprůstřelnou strukturu oboru ${discipline.name}.
 
-Máš k dispozici velké kontextové okno - využij ho pro detailní a komplexní odpovědi.
+Generuj obsah, který odpovídá nejnovějším guidelines (ESC, ČKS, AHA, WHO, atd.). Máš k dispozici velké kontextové okno - využij ho pro detailní a komplexní odpovědi.
 
 Vytvoř komplexní strukturu pro tento obor:
 
@@ -43,11 +43,15 @@ Vytvoř komplexní strukturu pro tento obor:
 2. **Témata** (pro každý okruh 5-10 konkrétních témat)
 3. **Otázky** (pro každé téma 3-5 atestačních otázek s odpověďmi)
 
-KRITICKÁ PRAVIDLA:
-- Odpovědi v answer_rich MUSÍ být formátovány pro moderní studium: **tučné klíčové pojmy**, odrážky, markdown tabulky
+KRITICKÁ PRAVIDLA PRO FORMÁTOVÁNÍ:
+- Odpovědi v answer_rich formátuj pomocí Markdownu
+- POVINNĚ použij tabulky pro srovnání léků, postupů nebo klasifikací
+- **Tučně zvýrazni všechny klíčové pojmy** (diagnózy, léky, syndromy)
+- Používej přehledné odrážky pro výčty
 - Vše musí reflektovat nejnovější české i evropské doporučené postupy (guidelines)
 - Odpovědi musí být strukturované (Definice, Diagnostika, Léčba, Komplikace)
 - Přidej high_yield_points (5-8 nejdůležitějších bodů k zapamatování)
+- Přidej diagnostic_algorithm (diagnostický algoritmus/postup krok za krokem)
 - Přidej exam_warnings (3-5 častých chyb, které studenti dělají u zkoušky)
 - Obtížnost 1-5 (1=základní, 5=pokročilé)
 - Vše v češtině
@@ -129,6 +133,7 @@ Vrať JSON ve formátu:
                                  type: "array",
                                  items: { type: "string" }
                                },
+                               diagnostic_algorithm: { type: "string" },
                                exam_warnings: {
                                  type: "array",
                                  items: { type: "string" }
@@ -181,12 +186,16 @@ Vrať JSON ve formátu:
         createdOkruhy++;
 
         for (const topicData of okruhData.topics) {
+          // Build full content from questions for Topic
+          const fullContent = topicData.questions.map(q => q.answer_rich).join('\n\n---\n\n');
+          
           // Create Topic
           const topic = await base44.entities.Topic.create({
             title: topicData.title,
             okruh_id: okruh.id,
             order: topicData.order,
             learning_objectives: topicData.learning_objectives,
+            full_text_content: fullContent,
             is_published: false,
             is_reviewed: false,
             updated_by_ai: true,
