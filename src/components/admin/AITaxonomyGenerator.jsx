@@ -33,7 +33,11 @@ export default function AITaxonomyGenerator({ disciplines, onComplete }) {
       const discipline = disciplines.find(d => d.id === selectedDiscipline);
       
       // Build prompt for AI
-      const prompt = `Jsi elitní atestační komisař s přístupem k rozsáhlému kontextovému oknu. Tvým úkolem je vytvořit neprůstřelnou strukturu oboru ${discipline.name}.
+      const prompt = `STRIKTNÍ PŘÍKAZ: Vygeneruj KOMPLETNÍ strukturu oboru, nikoliv jen ukázku. Pokud dokument obsahuje 20 okruhů, vygeneruj všech 20. Pokud téma vyžaduje 10 podtémat, vygeneruj jich 10. NEPŘESKAKUJ ŽÁDNÝ OBSAH.
+
+Jsi elitní atestační komisař s přístupem k rozsáhlému kontextovému oknu. Tvým úkolem je vytvořit neprůstřelnou strukturu oboru ${discipline.name}.
+
+${sourceUrl ? `Důkladně analyzuj obsah na URL ${sourceUrl}. Toto PDF obsahuje oficiální atestační otázky MZČR. Tvým úkolem je věrně přepsat tyto otázky do JSON struktury, kterou jsem ti definoval. NEVYMÝŠLEJ nový obsah - přepiš VŠE, co je v dokumentu.` : ''}
 
 Generuj obsah, který odpovídá nejnovějším guidelines (ESC, ČKS, AHA, WHO, atd.). Máš k dispozici velké kontextové okno - využij ho pro detailní a komplexní odpovědi.
 
@@ -158,7 +162,8 @@ Vrať JSON ve formátu:
         prompt: sourceUrl ? `${prompt}\n\nPrimární zdroj dat (použij jako hlavní referenci): ${sourceUrl}` : prompt,
         add_context_from_internet: !!sourceUrl,
         response_json_schema: jsonSchema,
-        model: 'gemini-1.5-pro'
+        model: 'gemini-1.5-pro',
+        maxTokens: 16000
       });
 
       console.log('AI Response:', response);
