@@ -3,11 +3,17 @@ import React from 'react';
 export default function HTMLContent({ content }) {
   if (!content) return null;
 
-  // Always render as HTML since TipTap editor produces HTML
+  // Remove Tailwind classes from HTML content to let CSS styles apply
+  const cleanContent = content
+    .replace(/class="[^"]*list-disc[^"]*"/g, '')
+    .replace(/class="[^"]*pl-\d+[^"]*"/g, '')
+    .replace(/class="[^"]*"/g, '')
+    .replace(/class='[^']*'/g, '');
+
   return (
     <div 
       className="tiptap-rendered-content"
-      dangerouslySetInnerHTML={{ __html: content }}
+      dangerouslySetInnerHTML={{ __html: cleanContent }}
     />
   );
 }
