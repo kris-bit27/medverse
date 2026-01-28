@@ -68,6 +68,8 @@ export default function FloatingCopilot() {
   };
 
   const selectConversation = async (convId) => {
+    if (!convId) return;
+    
     setIsLoading(true);
     try {
       const conv = await base44.agents.getConversation(convId);
@@ -75,7 +77,9 @@ export default function FloatingCopilot() {
       setMessages(conv.messages || []);
     } catch (error) {
       console.error('Error selecting conversation:', error);
-      toast.error('Nepodařilo se načíst konverzaci');
+      // Silently fail if conversation doesn't exist anymore
+      setCurrentConversation(null);
+      setMessages([]);
     }
     setIsLoading(false);
   };
