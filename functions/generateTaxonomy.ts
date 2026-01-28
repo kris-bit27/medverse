@@ -37,11 +37,11 @@ Vrať data ve formátu JSON podle následujícího schématu.`;
 
 ${prompt}`;
 
-        // Call Google Gemini 1.5 Pro for taxonomy generation
+        // Call Google Gemini 1.5 Flash for taxonomy generation (rychlejší a levnější)
         const llmResponse = await base44.integrations.Core.InvokeLLM({
             prompt: finalPrompt,
             add_context_from_internet: sourceUrl ? true : false,
-            model: 'gemini-1.5-pro',
+            model: 'gemini-1.5-flash',
             temperature: 0.7,
             response_json_schema: {
                 type: "object",
@@ -95,7 +95,7 @@ ${prompt}`;
         return Response.json({ 
             success: true, 
             data: generatedData,
-            model: "gemini-1.5-pro"
+            model: "gemini-1.5-flash"
         });
 
     } catch (error) {

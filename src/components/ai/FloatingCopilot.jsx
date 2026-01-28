@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,6 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 
 export default function FloatingCopilot() {
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [conversations, setConversations] = useState([]);
   const [currentConversation, setCurrentConversation] = useState(null);
@@ -105,11 +107,12 @@ export default function FloatingCopilot() {
       setIsLoading(false);
     }
 
-    // Sestavení pageContext pro invokeEduLLM
+    // Sestavení pageContext pro invokeEduLLM včetně aktuální URL
     const pageContext = {
-      pathname: window.location.pathname,
+      pathname: location.pathname,
+      url: location.pathname,
       title: document.title,
-      topicId: extractTopicIdFromUrl(window.location.pathname)
+      topicId: extractTopicIdFromUrl(location.pathname)
     };
 
     const userMessage = { 
