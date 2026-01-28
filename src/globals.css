@@ -69,9 +69,9 @@
 
 /* TipTap rendered content styles - matching admin editor exactly */
 .tiptap-rendered-content {
-  font-size: 1rem;
+  font-size: 1rem !important;
   line-height: 1.8 !important;
-  color: rgb(51, 65, 85);
+  color: rgb(51, 65, 85) !important;
 }
 
 .dark .tiptap-rendered-content {
@@ -156,15 +156,15 @@
 /* Lists - proper spacing */
 .tiptap-rendered-content ul,
 .tiptap-rendered-content ol {
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin-top: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
   padding-left: 1.5rem !important;
   list-style-position: outside !important;
   display: block !important;
-  background-color: rgb(248, 250, 252);
-  border-left: 3px solid rgb(20, 184, 166);
+  background-color: rgb(248, 250, 252) !important;
+  border-left: 3px solid rgb(20, 184, 166) !important;
   padding: 1rem 1rem 1rem 2rem !important;
-  border-radius: 0.5rem;
+  border-radius: 0.5rem !important;
 }
 
 .dark .tiptap-rendered-content ul,
