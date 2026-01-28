@@ -16,7 +16,8 @@ import {
   Sparkles,
   ChevronRight,
   AlertCircle,
-  Shield
+  Shield,
+  AlertTriangle
 } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ReactMarkdown from 'react-markdown';
@@ -205,10 +206,15 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
           <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white">
             {topic.title}
           </h1>
-          {topic.is_reviewed && (
+          {topic.is_reviewed ? (
             <Badge className="bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300 flex items-center gap-1">
               <Shield className="w-3.5 h-3.5" />
-              Revidováno odborníkem
+              Ověřeno odborníkem
+            </Badge>
+          ) : (
+            <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 flex items-center gap-1">
+              <AlertTriangle className="w-3.5 h-3.5" />
+              AI Draft - vyžaduje odbornou kontrolu
             </Badge>
           )}
         </div>
