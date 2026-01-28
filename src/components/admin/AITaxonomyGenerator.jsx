@@ -33,9 +33,9 @@ export default function AITaxonomyGenerator({ disciplines, onComplete }) {
       const discipline = disciplines.find(d => d.id === selectedDiscipline);
       
       // Build prompt for AI
-      const prompt = `Jsi expert na medicínské vzdělávání a vytváříš strukturovanou taxonomii pro atestační zkoušky v oboru ${discipline.name}.
+      const prompt = `Jsi špičkový český atestační komisař s přístupem k rozsáhlému kontextovému oknu. Tvým úkolem je vytvořit neprůstřelnou strukturu oboru ${discipline.name}.
 
-${sourceUrl ? `Použij informace z tohoto zdroje: ${sourceUrl}` : 'Použij oficiální požadavky MZČR pro atestační zkoušky.'}
+Máš k dispozici velké kontextové okno - využij ho pro detailní a komplexní odpovědi.
 
 Vytvoř komplexní strukturu pro tento obor:
 
@@ -43,9 +43,12 @@ Vytvoř komplexní strukturu pro tento obor:
 2. **Témata** (pro každý okruh 5-10 konkrétních témat)
 3. **Otázky** (pro každé téma 3-5 atestačních otázek s odpověďmi)
 
-DŮLEŽITÉ:
-- Otázky musí být v souladu s požadavky MZČR pro atestace
+KRITICKÁ PRAVIDLA:
+- Odpovědi v answer_rich MUSÍ být formátovány pro moderní studium: **tučné klíčové pojmy**, odrážky, markdown tabulky
+- Vše musí reflektovat nejnovější české i evropské doporučené postupy (guidelines)
 - Odpovědi musí být strukturované (Definice, Diagnostika, Léčba, Komplikace)
+- Přidej high_yield_points (5-8 nejdůležitějších bodů k zapamatování)
+- Přidej exam_warnings (3-5 častých chyb, které studenti dělají u zkoušky)
 - Obtížnost 1-5 (1=základní, 5=pokročilé)
 - Vše v češtině
 
@@ -115,14 +118,22 @@ Vrať JSON ve formátu:
                             question_text: { type: "string" },
                             answer_rich: { type: "string" },
                             answer_structured: {
-                              type: "object",
-                              properties: {
-                                definice: { type: "string" },
-                                diagnostika: { type: "string" },
-                                lecba: { type: "string" },
-                                komplikace: { type: "string" },
-                                pearls: { type: "string" }
-                              }
+                             type: "object",
+                             properties: {
+                               definice: { type: "string" },
+                               diagnostika: { type: "string" },
+                               lecba: { type: "string" },
+                               komplikace: { type: "string" },
+                               pearls: { type: "string" },
+                               high_yield_points: {
+                                 type: "array",
+                                 items: { type: "string" }
+                               },
+                               exam_warnings: {
+                                 type: "array",
+                                 items: { type: "string" }
+                               }
+                             }
                             },
                             difficulty: { type: "number" },
                             visibility: { type: "string" }
@@ -139,9 +150,10 @@ Vrať JSON ve formátu:
       };
 
       const response = await base44.integrations.Core.InvokeLLM({
-        prompt: prompt,
+        prompt: sourceUrl ? `${prompt}\n\nPrimární zdroj dat (použij jako hlavní referenci): ${sourceUrl}` : prompt,
         add_context_from_internet: !!sourceUrl,
-        response_json_schema: jsonSchema
+        response_json_schema: jsonSchema,
+        model: 'gemini-1.5-pro'
       });
 
       console.log('AI Response:', response);
@@ -176,7 +188,9 @@ Vrať JSON ve formátu:
             order: topicData.order,
             learning_objectives: topicData.learning_objectives,
             is_published: false,
-            is_reviewed: false
+            is_reviewed: false,
+            updated_by_ai: true,
+            ai_version_tag: 'Gemini 1.5 Pro'
           });
           createdTopics++;
 
