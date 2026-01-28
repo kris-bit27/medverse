@@ -16,7 +16,7 @@ export default function HTMLContent({ content }) {
 
   return (
     <div 
-      className="study-content"
+      className="study-content max-w-4xl mx-auto"
       dangerouslySetInnerHTML={{ __html: cleanHTML }}
     />
   );
