@@ -58,7 +58,7 @@ export default function Logbook() {
     queryFn: () => base44.auth.me()
   });
 
-  const { data: entries = [], isLoading, isError, error } = useQuery({
+  const { data: entries = [], isLoading, isError: entriesError, error } = useQuery({
     queryKey: ['logbookEntries', user?.id],
     queryFn: () => base44.entities.LogbookEntry.filter({ user_id: user.id }, '-date'),
     enabled: !!user?.id
@@ -165,23 +165,7 @@ export default function Logbook() {
     );
   }
 
-  if (isError) {
-    return (
-      <div className="p-6 max-w-2xl mx-auto">
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            Nepodařilo se načíst logbook. {error?.message || 'Zkuste to prosím znovu.'}
-          </AlertDescription>
-        </Alert>
-        <div className="mt-4">
-          <Button variant="outline" onClick={() => window.location.reload()}>
-            Zkusit znovu
-          </Button>
-        </div>
-      </div>
-    );
-  }
+
 
   if (disciplinesError) {
     toast.error('Nepodařilo se načíst klinické obory');
