@@ -15,18 +15,55 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Discipline name is required' }, { status: 400 });
         }
 
+        const isPrivateHost = (host) => {
+            const lower = host.toLowerCase();
+            if (lower === 'localhost' || lower === '127.0.0.1' || lower === '0.0.0.0' || lower === '::1') {
+                return true;
+            }
+            if (lower.startsWith('10.') || lower.startsWith('192.168.')) return true;
+            if (lower.startsWith('169.254.')) return true;
+            const match172 = lower.match(/^172\.(\d+)\./);
+            if (match172) {
+                const second = Number(match172[1]);
+                if (second >= 16 && second <= 31) return true;
+            }
+            return false;
+        };
+
+        const safeFetchText = async (url) => {
+            const parsed = new URL(url);
+            if (!['http:', 'https:'].includes(parsed.protocol)) {
+                throw new Error('Unsupported URL protocol');
+            }
+            if (isPrivateHost(parsed.hostname)) {
+                throw new Error('Blocked private host');
+            }
+
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 8000);
+            try {
+                const fetchResponse = await fetch(url, { signal: controller.signal });
+                if (!fetchResponse.ok) return '';
+
+                const contentType = fetchResponse.headers.get('content-type') || '';
+                if (!contentType.includes('text/plain') && !contentType.includes('text/html')) {
+                    return '';
+                }
+
+                const buffer = await fetchResponse.arrayBuffer();
+                const maxBytes = 30000;
+                const limited = buffer.byteLength > maxBytes ? buffer.slice(0, maxBytes) : buffer;
+                return new TextDecoder().decode(limited);
+            } finally {
+                clearTimeout(timeoutId);
+            }
+        };
+
         // Try to fetch source content if URL provided
         let sourceContent = '';
         if (sourceUrl) {
             try {
-                const fetchResponse = await fetch(sourceUrl);
-                if (fetchResponse.ok) {
-                    const contentType = fetchResponse.headers.get('content-type');
-                    // If it's text/plain or text/html, extract content
-                    if (contentType?.includes('text/plain') || contentType?.includes('text/html')) {
-                        sourceContent = await fetchResponse.text();
-                    }
-                }
+                sourceContent = await safeFetchText(sourceUrl);
             } catch (error) {
                 console.log('Could not fetch source URL, will rely on Gemini search:', error);
             }
@@ -37,7 +74,7 @@ Deno.serve(async (req) => {
 
 ${sourceContent ? `
 === ZDROJOVÁ DATA ===
-${sourceContent.substring(0, 50000)}
+${sourceContent.substring(0, 20000)}
 === KONEC ZDROJOVÝCH DAT ===
 
 Důkladně analyzuj výše uvedená zdrojová data. Jedná se o oficiální atestační materiály. Přepiš VŠE do níže uvedené JSON struktury.
@@ -75,7 +112,7 @@ KRITICKÉ: Odpověz POUZE validním JSONem. NEZAČÍNEJ odpověď žádným text
             add_context_from_internet: sourceUrl ? true : false,
             model: 'gemini-1.5-pro',
             temperature: 0.7,
-            maxTokens: 8192,
+            maxTokens: 4096,
             response_json_schema: {
                 type: "object",
                 properties: {

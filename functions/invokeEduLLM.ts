@@ -131,6 +131,23 @@ const CHAT_MODES = ['copilot_chat', 'floating_copilot_chat'];
 // TOOL režimy - klinické nástroje (DDx, Treatment Planning)
 const TOOL_MODES = ['differential_diagnosis_ai', 'treatment_planner_ai'];
 
+const MAX_TOKENS_BY_MODE = {
+  topic_generate_fulltext: 4096,
+  topic_generate_template: 4096,
+  topic_deep_dive: 4096,
+  topic_generate_fulltext_v2: 4096,
+  topic_generate_deep_dive: 4096,
+  question_exam_answer: 2048,
+  question_quiz: 1024,
+  question_high_yield: 1024,
+  question_simplify: 1024,
+  topic_summarize: 1024,
+  copilot_chat: 1024,
+  floating_copilot_chat: 512,
+  differential_diagnosis_ai: 1024,
+  treatment_planner_ai: 1024
+};
+
 // Starý MEDVERSE_EDU_CORE_PROMPT byl nahrazen modulárním systémem:
 // BASE_MEDVERSE_INSTRUCTION + ASSISTANT_ROLE_APPENDICES
 // Tento komentář ponecháváme pro historii změn.
@@ -894,7 +911,7 @@ Deno.serve(async (req) => {
         entity_type: entityContext.entityType || 'none',
         entity_id: entityContext.entityId || null,
         prompt_version: AI_VERSION_TAG,
-        input_summary: userPrompt.substring(0, 200),
+        input_summary: (userPrompt || '').substring(0, 200),
         output_text: cachedResult.text.substring(0, 1000),
         citations_json: cachedResult.citations,
         confidence: cachedResult.confidence?.level || 'medium',
@@ -959,6 +976,13 @@ ${pageCtx}
     
     fullPrompt += "=== UŽIVATELSKÝ DOTAZ ===\n" + userPrompt;
 
+    const MAX_PROMPT_CHARS = 120000;
+    if (fullPrompt.length > MAX_PROMPT_CHARS) {
+      fullPrompt = systemPrompt + "\n\n" +
+        "=== UPOZORNĚNÍ ===\nInterní zdroje byly zkráceny kvůli limitu délky promptu.\n\n" +
+        "=== UŽIVATELSKÝ DOTAZ ===\n" + userPrompt;
+    }
+
     // Určení JSON schématu
     const outputSchema = OUTPUT_SCHEMAS[mode] || null;
 
@@ -972,7 +996,7 @@ ${pageCtx}
       response_json_schema: outputSchema,
       model: 'gemini-1.5-pro',
       temperature: temperature, // 0.1 v STRICT_MODE pro maximální faktickou přesnost
-      maxTokens: 8192
+      maxTokens: MAX_TOKENS_BY_MODE[mode] || 2048
     });
 
     // Normalizace výstupu
@@ -993,7 +1017,7 @@ ${pageCtx}
       entity_type: entityContext.entityType || 'none',
       entity_id: entityContext.entityId || null,
       prompt_version: AI_VERSION_TAG,
-      input_summary: userPrompt.substring(0, 200),
+      input_summary: (userPrompt || '').substring(0, 200),
       output_text: result.text.substring(0, 1000),
       citations_json: result.citations,
       confidence: result.confidence?.level || 'medium',
