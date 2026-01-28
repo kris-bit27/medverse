@@ -41,6 +41,7 @@ import {
   Heart,
   Brain,
   Bone,
+  ExternalLink,
   Syringe,
   Activity,
   Scale,
@@ -87,6 +88,7 @@ export default function AdminTaxonomy() {
   const [filterTopicStatus, setFilterTopicStatus] = useState('all');
   const [hidePublished, setHidePublished] = useState(false);
   const [bulkActionLoading, setBulkActionLoading] = useState(false);
+  const [bulkMoveOkruhId, setBulkMoveOkruhId] = useState('all');
   const queryClient = useQueryClient();
   const searchLower = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
 
@@ -336,6 +338,29 @@ export default function AdminTaxonomy() {
     } catch (error) {
       console.error('Bulk review failed:', error);
       toast.error('Hromadná kontrola selhala');
+    } finally {
+      setBulkActionLoading(false);
+    }
+  };
+
+  const handleBulkMoveOkruh = async () => {
+    if (!bulkMoveOkruhId || bulkMoveOkruhId === 'all') {
+      toast.error('Vyberte cílový okruh');
+      return;
+    }
+    setBulkActionLoading(true);
+    try {
+      await Promise.all(selectedTopics.map(topicId =>
+        updateTopicStatusMutation.mutateAsync({
+          id: topicId,
+          data: { okruh_id: bulkMoveOkruhId }
+        })
+      ));
+      setSelectedTopics([]);
+      toast.success('Témata přesunuta do okruhu');
+    } catch (error) {
+      console.error('Bulk move failed:', error);
+      toast.error('Hromadný přesun selhal');
     } finally {
       setBulkActionLoading(false);
     }
@@ -805,159 +830,182 @@ export default function AdminTaxonomy() {
             </Dialog>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <Input
-                placeholder="Hledat témata..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <div className="space-y-1">
-                <Label className="text-xs">Klinický obor</Label>
-                <Select value={filterDiscipline} onValueChange={setFilterDiscipline}>
-                  <SelectTrigger className="h-9">
-                    <SelectValue placeholder="Všechny obory" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Všechny obory</SelectItem>
-                    {disciplines.map(d => (
-                      <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+            <div className="sticky top-0 z-10 bg-white dark:bg-slate-900 pb-3">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Input
+                  placeholder="Hledat témata..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-2 mt-3">
                 <div className="space-y-1">
-                  <Label className="text-xs">Okruh</Label>
-                  <Select value={filterOkruh} onValueChange={setFilterOkruh}>
+                  <Label className="text-xs">Klinický obor</Label>
+                  <Select value={filterDiscipline} onValueChange={setFilterDiscipline}>
                     <SelectTrigger className="h-9">
-                      <SelectValue placeholder="Všechny okruhy" />
+                      <SelectValue placeholder="Všechny obory" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">Všechny okruhy</SelectItem>
-                      {filteredOkruhy.map(o => (
-                        <SelectItem key={o.id} value={o.id}>{o.title}</SelectItem>
+                      <SelectItem value="all">Všechny obory</SelectItem>
+                      {disciplines.map(d => (
+                        <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
 
-                <div className="space-y-1">
-                  <Label className="text-xs">Status</Label>
-                  <Select value={filterTopicStatus} onValueChange={setFilterTopicStatus}>
-                    <SelectTrigger className="h-9">
-                      <SelectValue placeholder="Všechny statusy" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Všechny</SelectItem>
-                      <SelectItem value="draft">Draft</SelectItem>
-                      <SelectItem value="in_review">In Review</SelectItem>
-                      <SelectItem value="published">Published</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1">
+                    <Label className="text-xs">Okruh</Label>
+                    <Select value={filterOkruh} onValueChange={setFilterOkruh}>
+                      <SelectTrigger className="h-9">
+                        <SelectValue placeholder="Všechny okruhy" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Všechny okruhy</SelectItem>
+                        {filteredOkruhy.map(o => (
+                          <SelectItem key={o.id} value={o.id}>{o.title}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-1">
+                    <Label className="text-xs">Status</Label>
+                    <Select value={filterTopicStatus} onValueChange={setFilterTopicStatus}>
+                      <SelectTrigger className="h-9">
+                        <SelectValue placeholder="Všechny statusy" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Všechny</SelectItem>
+                        <SelectItem value="draft">Draft</SelectItem>
+                        <SelectItem value="in_review">In Review</SelectItem>
+                        <SelectItem value="published">Published</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="hide-published"
+                    checked={hidePublished}
+                    onCheckedChange={setHidePublished}
+                  />
+                  <Label
+                    htmlFor="hide-published"
+                    className="text-sm font-medium leading-none cursor-pointer"
+                  >
+                    Skrýt publikovaná témata
+                  </Label>
                 </div>
               </div>
 
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="hide-published"
-                  checked={hidePublished}
-                  onCheckedChange={setHidePublished}
-                />
-                <Label
-                  htmlFor="hide-published"
-                  className="text-sm font-medium leading-none cursor-pointer"
-                >
-                  Skrýt publikovaná témata
-                </Label>
-              </div>
-            </div>
+              {selectedTopics.length > 0 && (
+                <div className="flex items-center gap-2 p-3 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-200 dark:border-teal-800 mt-3">
+                  <span className="text-sm font-medium text-teal-900 dark:text-teal-100">
+                    Vybráno: {selectedTopics.length}
+                  </span>
+                  <div className="flex gap-2 ml-auto items-center">
+                    <Select value={bulkMoveOkruhId} onValueChange={setBulkMoveOkruhId}>
+                      <SelectTrigger className="h-7 text-xs w-[220px]">
+                        <SelectValue placeholder="Přesunout do okruhu" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Vyberte okruh</SelectItem>
+                        {okruhy.map(o => (
+                          <SelectItem key={o.id} value={o.id}>{o.title}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-7 text-xs"
+                      onClick={handleBulkMoveOkruh}
+                      disabled={bulkActionLoading}
+                    >
+                      <FolderTree className="w-3 h-3 mr-1" />
+                      Přesunout
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="h-7 text-xs"
+                      onClick={handleBulkReview}
+                      disabled={bulkActionLoading}
+                    >
+                      {bulkActionLoading ? (
+                        <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                      ) : (
+                        <CheckCircle className="w-3 h-3 mr-1" />
+                      )}
+                      Zkontrolovat
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="h-7 text-xs"
+                      onClick={handleBulkPublish}
+                      disabled={bulkActionLoading}
+                    >
+                      <Eye className="w-3 h-3 mr-1" />
+                      Publikovat
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="h-7 text-xs"
+                      onClick={handleBulkUnpublish}
+                      disabled={bulkActionLoading}
+                    >
+                      <EyeOff className="w-3 h-3 mr-1" />
+                      Skrýt
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="h-7 text-xs text-red-600 hover:text-red-700"
+                      onClick={handleBulkDelete}
+                      disabled={bulkActionLoading}
+                    >
+                      <Trash2 className="w-3 h-3 mr-1" />
+                      Smazat
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="ghost" 
+                      className="h-7 w-7 p-0"
+                      onClick={() => setSelectedTopics([])}
+                      disabled={bulkActionLoading}
+                    >
+                      <X className="w-3 h-3" />
+                    </Button>
+                  </div>
+                </div>
+              )}
 
-            {selectedTopics.length > 0 && (
-              <div className="flex items-center gap-2 p-3 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-200 dark:border-teal-800">
-                <span className="text-sm font-medium text-teal-900 dark:text-teal-100">
-                  Vybráno: {selectedTopics.length}
-                </span>
-                <div className="flex gap-1 ml-auto">
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
+              {filteredTopics.length > 0 && (
+                <div className="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-700 mt-3">
+                  <Button
+                    variant="ghost"
+                    size="sm"
                     className="h-7 text-xs"
-                    onClick={handleBulkReview}
-                    disabled={bulkActionLoading}
+                    onClick={toggleSelectAll}
                   >
-                    {bulkActionLoading ? (
-                      <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                    {selectedTopics.length === filteredTopics.length ? (
+                      <CheckSquare className="w-4 h-4 mr-1" />
                     ) : (
-                      <CheckCircle className="w-3 h-3 mr-1" />
+                      <Square className="w-4 h-4 mr-1" />
                     )}
-                    Zkontrolovat
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    className="h-7 text-xs"
-                    onClick={handleBulkPublish}
-                    disabled={bulkActionLoading}
-                  >
-                    <Eye className="w-3 h-3 mr-1" />
-                    Publikovat
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    className="h-7 text-xs"
-                    onClick={handleBulkUnpublish}
-                    disabled={bulkActionLoading}
-                  >
-                    <EyeOff className="w-3 h-3 mr-1" />
-                    Skrýt
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    className="h-7 text-xs text-red-600 hover:text-red-700"
-                    onClick={handleBulkDelete}
-                    disabled={bulkActionLoading}
-                  >
-                    <Trash2 className="w-3 h-3 mr-1" />
-                    Smazat
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="ghost" 
-                    className="h-7 w-7 p-0"
-                    onClick={() => setSelectedTopics([])}
-                    disabled={bulkActionLoading}
-                  >
-                    <X className="w-3 h-3" />
+                    {selectedTopics.length === filteredTopics.length ? 'Zrušit výběr' : 'Vybrat vše'}
                   </Button>
                 </div>
-              </div>
-            )}
-
-            {filteredTopics.length > 0 && (
-              <div className="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-700">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-7 text-xs"
-                  onClick={toggleSelectAll}
-                >
-                  {selectedTopics.length === filteredTopics.length ? (
-                    <CheckSquare className="w-4 h-4 mr-1" />
-                  ) : (
-                    <Square className="w-4 h-4 mr-1" />
-                  )}
-                  {selectedTopics.length === filteredTopics.length ? 'Zrušit výběr' : 'Vybrat vše'}
-                </Button>
-              </div>
-            )}
+              )}
+            </div>
             <div className="space-y-2 max-h-[500px] overflow-y-auto">
               {filteredTopics.length === 0 && topics.length > 0 ? (
                 <p className="text-center py-8 text-slate-500">
@@ -1005,6 +1053,21 @@ export default function AdminTaxonomy() {
                                  )}
                                 </div>
                           <div className="flex items-center gap-1">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7"
+                              asChild
+                              title="Otevřít v novém panelu"
+                            >
+                              <a
+                                href={createPageUrl('TopicDetail') + `?id=${topic.id}`}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                <ExternalLink className="w-3 h-3" />
+                              </a>
+                            </Button>
                             <Button 
                               variant="ghost" 
                               size="icon" 
@@ -1088,6 +1151,21 @@ export default function AdminTaxonomy() {
                                   <Badge variant="secondary" className="text-xs">{questionCount}</Badge>
                                 </div>
                                 <div className="flex items-center gap-1">
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-7 w-7"
+                                    asChild
+                                    title="Otevřít v novém panelu"
+                                  >
+                                    <a
+                                      href={createPageUrl('TopicDetail') + `?id=${topic.id}`}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      <ExternalLink className="w-3 h-3" />
+                                    </a>
+                                  </Button>
                                   <Button 
                                     variant="ghost" 
                                     size="icon" 
