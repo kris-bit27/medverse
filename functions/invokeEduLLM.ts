@@ -504,7 +504,7 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb) {
     rag_sources: []
   };
 
-  const MAX_RAG_TOKENS = 8000; // Limit pro RAG kontext (~32000 znaků)
+  const MAX_RAG_TOKENS = 200000; // Gemini 1.5 Pro - masivní kontext (800 000 znaků)
   let currentLength = 0;
 
   const addSection = (text, source) => {
@@ -570,7 +570,31 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb) {
     }
   }
 
-  // 3. Související témata ze stejného okruhu - PRIORITA 3 (max 2)
+  // 3. UserProgress (pro copilot_chat) - PRIORITA 3
+  if (mode === 'copilot_chat') {
+    try {
+      const recentProgress = await base44.asServiceRole.entities.UserProgress.filter(
+        { user_id: base44.auth.me().id },
+        '-last_reviewed_at',
+        5
+      );
+      
+      if (recentProgress && recentProgress.length > 0) {
+        const progressText = recentProgress.map(p => 
+          `- ${p.question_id}: ${p.status} (ease: ${p.ease_factor}, repetitions: ${p.repetitions})`
+        ).join('\n');
+        
+        addSection(
+          `=== POSLEDNÍ AKTIVITA UŽIVATELE ===\n\n${progressText}`,
+          { type: 'user_progress', entity: 'UserProgress', section_hint: 'recent_activity' }
+        );
+      }
+    } catch (e) {
+      console.error('Failed to fetch user progress:', e);
+    }
+  }
+
+  // 4. Související témata ze stejného okruhu - PRIORITA 4 (max 2)
   if (entityContext.question?.okruh_id && currentLength < MAX_RAG_TOKENS * 4 * 0.7) {
     try {
       const relatedTopics = await base44.asServiceRole.entities.Topic.filter(
@@ -600,7 +624,7 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb) {
     }
   }
 
-  // 4. Externí zdroje - PRIORITA 4 (pouze pokud allowWeb === true)
+  // 5. Externí zdroje - PRIORITA 5 (pouze pokud allowWeb === true)
   if (allowWeb && currentLength < MAX_RAG_TOKENS * 4 * 0.9) {
     context.rag_text += `\n\n=== POZNÁMKA ===\nMůžeš použít web search pro aktuální informace, ALE:
 - Odděl interní část vs externí aktuality
@@ -811,9 +835,14 @@ Deno.serve(async (req) => {
     
     let fullPrompt = systemPrompt + "\n\n";
     
-    // Pro Floating Copilot přidej kontext stránky
-    if (mode === 'floating_copilot_chat' && entityContext.current_page_context) {
-      fullPrompt += `━━━ KONTEXT AKTUÁLNÍ STRÁNKY ━━━\n${entityContext.current_page_context}\n\n`;
+    // DATA AKTUÁLNÍ OBRAZOVKY - nejvyšší priorita pro Floating Copilot
+    if (entityContext.current_page_context) {
+      fullPrompt += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DATA AKTUÁLNÍ OBRAZOVKY (NEJVYŠŠÍ PRIORITA)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${entityContext.current_page_context}
+
+`;
     }
     
     if (ragContext.rag_text) {
@@ -827,11 +856,14 @@ Deno.serve(async (req) => {
     // Určení JSON schématu
     const outputSchema = OUTPUT_SCHEMAS[mode] || null;
 
-    // Volání LLM
+    // Volání Gemini 1.5 Pro přes Base44 Core integration
     const llmResponse = await base44.integrations.Core.InvokeLLM({
       prompt: fullPrompt,
       add_context_from_internet: effectiveAllowWeb,
-      response_json_schema: outputSchema
+      response_json_schema: outputSchema,
+      // Gemini-specific params (pokud Base44 Core je podporuje)
+      temperature: 0.2, // Nižší pro medicínskou přesnost
+      maxTokens: 8192
     });
 
     // Normalizace výstupu
