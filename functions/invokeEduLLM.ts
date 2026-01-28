@@ -546,20 +546,31 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb) {
     rag_sources: []
   };
 
-  const MAX_RAG_TOKENS = 200000; // Gemini 1.5 Pro optimalizovaný limit pro rozsáhlé PDF (800 000 znaků)
+  const MAX_RAG_CHARS = 80000; // Hard cap to reduce timeouts in serverless execution
+  const MAX_SECTION_CHARS = 20000;
   let currentLength = 0;
 
   const addSection = (text, source) => {
-    if (!text || currentLength >= MAX_RAG_TOKENS * 4) return false;
-    
-    const sectionLength = text.length;
-    if (currentLength + sectionLength <= MAX_RAG_TOKENS * 4) {
-      context.rag_text += text + '\n\n';
-      context.rag_sources.push(source);
-      currentLength += sectionLength;
-      return true;
+    if (!text || currentLength >= MAX_RAG_CHARS) return false;
+
+    let trimmedText = text;
+    if (trimmedText.length > MAX_SECTION_CHARS) {
+      trimmedText = trimmedText.slice(0, MAX_SECTION_CHARS);
     }
-    return false;
+
+    const remaining = MAX_RAG_CHARS - currentLength;
+    if (remaining <= 0) return false;
+
+    if (trimmedText.length > remaining) {
+      trimmedText = trimmedText.slice(0, remaining);
+    }
+
+    if (!trimmedText) return false;
+
+    context.rag_text += trimmedText + '\n\n';
+    context.rag_sources.push(source);
+    currentLength += trimmedText.length;
+    return true;
   };
 
   // 1. SourceDocument (pokud existuje k tématu) - NEJVYŠŠÍ PRIORITA
@@ -666,7 +677,7 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb) {
   }
 
   // 5. Související témata ze stejného okruhu - PRIORITA 5 (max 2)
-  if (entityContext.question?.okruh_id && currentLength < MAX_RAG_TOKENS * 4 * 0.7) {
+  if (entityContext.question?.okruh_id && currentLength < MAX_RAG_CHARS * 0.7) {
     try {
       const relatedTopics = await base44.asServiceRole.entities.Topic.filter(
         { 
@@ -696,7 +707,7 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb) {
   }
 
   // 6. Externí zdroje - PRIORITA 6 (pouze pokud allowWeb === true)
-  if (allowWeb && currentLength < MAX_RAG_TOKENS * 4 * 0.9) {
+  if (allowWeb && currentLength < MAX_RAG_CHARS * 0.9) {
     context.rag_text += `\n\n=== POZNÁMKA ===\nMůžeš použít web search pro aktuální informace, ALE:
 - Odděl interní část vs externí aktuality
 - Externí zdroje označ jako "Externí zdroje"
