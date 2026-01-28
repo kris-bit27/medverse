@@ -1,7 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 // AI Version Tag - centrální konstanta pro verzování AI systému
-const AI_VERSION_TAG = "medverse_gemini_v3_multimodal";
+const AI_VERSION_TAG = "medverse_gemini_1.5_pro_v3";
 
 // Base instruction pro všechny asistenty
 const BASE_MEDVERSE_INSTRUCTION = `Jsi inteligentní AI asistent v systému MedVerse EDU.
@@ -12,6 +12,16 @@ KRITICKÁ PRAVIDLA:
 - Transparentnost: Pokud informace chybí, přiznej to
 - NIKDY si nevymýšlej guidelines – pokud nejsou v RAG kontextu, přiznej to
 - Vždy cituj zdroje (interní prioritně)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+HIERARCHIE ASISTENTŮ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**Hippo (Sidebar)**: Seniorní mentor, propojuje obory, ptá se na souvislosti. Má přístup k celé taxonomii, zaměřuje se na porozumění PROČ a budování mentálních modelů.
+
+**Floating Copilot (Corner)**: Operativní pomocník, stručný (max 2 věty), reaguje na current_page_context. Poskytuje rychlé tipy relevantní k aktuální činnosti uživatele.
+
+**Clinical Expert (Tools)**: Přísný diagnostik, generuje tabulky diferenciální diagnózy s pravděpodobností. Strukturovaný, analytický, bez zbytečných slov.
 `;
 
 // Role-specific appendices pro různé asistenty
@@ -504,7 +514,7 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb) {
     rag_sources: []
   };
 
-  const MAX_RAG_TOKENS = 200000; // Gemini 1.5 Pro - masivní kontext (800 000 znaků)
+  const MAX_RAG_TOKENS = 150000; // Gemini 1.5 Pro optimalizovaný limit (600 000 znaků)
   let currentLength = 0;
 
   const addSection = (text, source) => {
@@ -520,7 +530,32 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb) {
     return false;
   };
 
-  // 1. Topic (pokud existuje) - PRIORITA 1
+  // 1. SourceDocument (pokud existuje k tématu) - NEJVYŠŠÍ PRIORITA
+  if (entityContext.topic?.id) {
+    try {
+      const sourceDocs = await base44.asServiceRole.entities.SourceDocument?.filter(
+        { topic_id: entityContext.topic.id },
+        '-created_date',
+        3
+      ).catch(() => []);
+      
+      if (sourceDocs && sourceDocs.length > 0) {
+        for (const doc of sourceDocs) {
+          if (doc.content) {
+            addSection(
+              `=== ZDROJOVÝ DOKUMENT: ${doc.title || 'Unnamed'} (NEJVYŠŠÍ PRIORITA) ===\n\n${doc.content}`,
+              { type: 'source_document', entity: 'SourceDocument', id: doc.id, title: doc.title }
+            );
+          }
+        }
+      }
+    } catch (e) {
+      // SourceDocument entity neexistuje - pokračuj normálně
+      console.log('SourceDocument entity not available:', e.message);
+    }
+  }
+
+  // 2. Topic (pokud existuje) - PRIORITA 2
   if (entityContext.topic) {
     const topic = entityContext.topic;
     
@@ -549,7 +584,7 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb) {
     }
   }
 
-  // 2. Question - PRIORITA 2
+  // 3. Question - PRIORITA 3
   if (entityContext.question) {
     const question = entityContext.question;
     
@@ -570,7 +605,7 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb) {
     }
   }
 
-  // 3. UserProgress (pro copilot_chat) - PRIORITA 3
+  // 4. UserProgress (pro copilot_chat) - PRIORITA 4
   if (mode === 'copilot_chat') {
     try {
       const recentProgress = await base44.asServiceRole.entities.UserProgress.filter(
@@ -594,7 +629,7 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb) {
     }
   }
 
-  // 4. Související témata ze stejného okruhu - PRIORITA 4 (max 2)
+  // 5. Související témata ze stejného okruhu - PRIORITA 5 (max 2)
   if (entityContext.question?.okruh_id && currentLength < MAX_RAG_TOKENS * 4 * 0.7) {
     try {
       const relatedTopics = await base44.asServiceRole.entities.Topic.filter(
@@ -624,7 +659,7 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb) {
     }
   }
 
-  // 5. Externí zdroje - PRIORITA 5 (pouze pokud allowWeb === true)
+  // 6. Externí zdroje - PRIORITA 6 (pouze pokud allowWeb === true)
   if (allowWeb && currentLength < MAX_RAG_TOKENS * 4 * 0.9) {
     context.rag_text += `\n\n=== POZNÁMKA ===\nMůžeš použít web search pro aktuální informace, ALE:
 - Odděl interní část vs externí aktuality
@@ -835,12 +870,13 @@ Deno.serve(async (req) => {
     
     let fullPrompt = systemPrompt + "\n\n";
     
-    // DATA AKTUÁLNÍ OBRAZOVKY - nejvyšší priorita pro Floating Copilot
-    if (entityContext.current_page_context) {
+    // KONTEXT AKTUÁLNÍ OBRAZOVKY UŽIVATELE - nejvyšší priorita
+    if (entityContext.current_page_context || entityContext.pageContext) {
+      const pageCtx = entityContext.current_page_context || entityContext.pageContext;
       fullPrompt += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-DATA AKTUÁLNÍ OBRAZOVKY (NEJVYŠŠÍ PRIORITA)
+KONTEXT AKTUÁLNÍ OBRAZOVKY UŽIVATELE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-${entityContext.current_page_context}
+${pageCtx}
 
 `;
     }
@@ -856,14 +892,15 @@ ${entityContext.current_page_context}
     // Určení JSON schématu
     const outputSchema = OUTPUT_SCHEMAS[mode] || null;
 
-    // Volání Gemini 1.5 Pro přes Base44 Core integration
+    // Volání Gemini 1.5 Pro (gemini-1.5-pro-002) přes Base44 Core integration
     const llmResponse = await base44.integrations.Core.InvokeLLM({
       prompt: fullPrompt,
       add_context_from_internet: effectiveAllowWeb,
       response_json_schema: outputSchema,
-      // Gemini-specific params (pokud Base44 Core je podporuje)
+      // Gemini 1.5 Pro optimalizace
       temperature: 0.2, // Nižší pro medicínskou přesnost
       maxTokens: 8192
+      // Model: gemini-1.5-pro-002 (nastaveno na straně Base44 Core)
     });
 
     // Normalizace výstupu
