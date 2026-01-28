@@ -13,6 +13,9 @@ const EXAM_MODES = [
   'topic_generate_template',
   'topic_summarize',
   'topic_deep_dive',
+  'topic_generate_fulltext_v2',
+  'topic_generate_high_yield',
+  'topic_generate_deep_dive',
   'topic_fill_missing',
   'content_review_critic',
   'content_review_editor',
@@ -165,9 +168,12 @@ const MODE_PROMPTS = {
   question_quiz: `Vytvoř 5 MCQ otázek (A/B/C/D) pro procvičení pochopení tématu. Mix obtížnosti: 2 easy, 2 medium, 1 hard.`,
   question_simplify: `Vysvětli téma srozumitelně pro studenta medicíny. Zachovej faktickou správnost a zaměř se na porozumění.`,
   topic_generate_fulltext: `${ATTESTATION_GRADE_PROMPT}\n\nGeneruješ kompletní studijní text na ATESTAČNÍ ÚROVNI. Rozsah: 3-5 stránek plnohodnotného textu. Dodržuj všechny požadavky výše.`,
+  topic_generate_fulltext_v2: `Řiď se přesně zadáním uživatele.`,
   topic_generate_template: `${ATTESTATION_GRADE_PROMPT}\n\nGeneruješ obsah pro všechny sekce EDU template tématu na ATESTAČNÍ ÚROVNI. Zaměř se na praktické znalosti, právní rámec a sporné situace. NIKDY negeneruj léčebné postupy pro pacienty. Výstup: JSON s 8 sekcemi markdown (overview_md, principles_md, relations_md, clinical_thinking_md, common_pitfalls_md, mental_model_md, scenarios_md, key_takeaways_md).`,
   topic_summarize: `Vytvoř shrnutí v odrážkách z poskytnutého plného textu. Zachyť všechny klíčové body, definice, souvislosti.`,
   topic_deep_dive: `${ATTESTATION_GRADE_PROMPT}\n\nVytvoř rozšířený obsah zahrnující hlubší souvislosti, nejnovější výzkum, pokročilé koncepty a edge cases. Zaměř se na právní aspekty a sporné situace v praxi.`,
+  topic_generate_high_yield: `Řiď se přesně zadáním uživatele.`,
+  topic_generate_deep_dive: `Řiď se přesně zadáním uživatele.`,
   topic_fill_missing: `Doplň pouze pole, která jsou prázdná. Nepiš nic navíc.`,
   content_review_critic: `Prováděj odborné kritické hodnocení studijního materiálu. Buď konstruktivní ale přísný. Hodnoť i atestační úroveň textu.`,
   content_review_editor: `Na základě kritického hodnocení vytvoř konkrétní návrh oprav a aktualizovaný text.`,
@@ -577,8 +583,8 @@ function computeContentHash(entityContext) {
   return `ch_${Math.abs(hash).toString(36)}`;
 }
 
-function generateCacheKey(mode, entityId, contentHash, userPromptHash) {
-  const input = `${mode}:${entityId || 'none'}:${contentHash}:${AI_VERSION_TAG}:${userPromptHash}`;
+function generateCacheKey(mode, entityId, contentHash, userPromptHash, systemPromptHash) {
+  const input = `${mode}:${entityId || 'none'}:${contentHash}:${AI_VERSION_TAG}:${userPromptHash}:${systemPromptHash || 'none'}`;
   
   let hash = 0;
   for (let i = 0; i < input.length; i++) {
@@ -654,7 +660,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { mode, entityContext = {}, userPrompt, allowWeb = false } = await req.json();
+    const { mode, entityContext = {}, userPrompt, allowWeb = false, systemPromptOverride } = await req.json();
 
     if (!mode || !MODE_PROMPTS[mode]) {
       return Response.json({ 
@@ -675,7 +681,7 @@ Deno.serve(async (req) => {
     }
 
     // V EXAM režimu je zakázán web search (kromě deep_dive)
-    const effectiveAllowWeb = isExamMode && mode !== 'topic_deep_dive' ? false : allowWeb;
+    const effectiveAllowWeb = isExamMode && mode !== 'topic_deep_dive' && mode !== 'topic_generate_deep_dive' ? false : allowWeb;
 
     // Sestavení RAG kontextu - POVINNÉ pro všechna AI volání
     const ragContext = await buildRAGContext(base44, mode, entityContext, effectiveAllowWeb);
@@ -692,8 +698,17 @@ Deno.serve(async (req) => {
     }
     userPromptHash = Math.abs(userPromptHash).toString(36);
 
+    // System prompt hash (override should affect cache)
+    const systemPromptNormalized = (systemPromptOverride || '').toLowerCase().trim().replace(/\s+/g, ' ');
+    let systemPromptHash = 0;
+    for (let i = 0; i < systemPromptNormalized.length; i++) {
+      systemPromptHash = ((systemPromptHash << 5) - systemPromptHash) + systemPromptNormalized.charCodeAt(i);
+      systemPromptHash = systemPromptHash & systemPromptHash;
+    }
+    systemPromptHash = Math.abs(systemPromptHash).toString(36);
+
     // Cache key
-    const cacheKey = generateCacheKey(mode, entityContext.entityId, contentHash, userPromptHash);
+    const cacheKey = generateCacheKey(mode, entityContext.entityId, contentHash, userPromptHash, systemPromptHash);
 
     // Pokus o cache hit
     const cachedResult = await checkCache(base44, cacheKey, mode, entityContext);
@@ -730,7 +745,8 @@ Deno.serve(async (req) => {
     }
 
     // Sestavení finálního promptu
-    const systemPrompt = MEDVERSE_EDU_CORE_PROMPT + "\n\n" + MODE_PROMPTS[mode];
+    const systemPromptBase = (systemPromptOverride || '').trim() || MEDVERSE_EDU_CORE_PROMPT;
+    const systemPrompt = systemPromptBase + "\n\n" + MODE_PROMPTS[mode];
     
     let fullPrompt = systemPrompt + "\n\n";
     

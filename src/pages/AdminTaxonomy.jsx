@@ -85,6 +85,10 @@ export default function AdminTaxonomy() {
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterTopicStatus, setFilterTopicStatus] = useState('all');
   const queryClient = useQueryClient();
+  const okruhForEditingTopic = editingTopic ? okruhy.find(o => o.id === editingTopic.okruh_id) : null;
+  const disciplineForEditingTopic = okruhForEditingTopic
+    ? disciplines.find(d => d.id === okruhForEditingTopic.clinical_discipline_id)
+    : null;
 
   const { data: disciplines = [] } = useQuery({
     queryKey: ['clinicalDisciplines'],
@@ -1065,6 +1069,11 @@ export default function AdminTaxonomy() {
           {editingTopic && (
             <TopicContentEditorV2 
               topic={editingTopic}
+              context={{
+                specialty: disciplineForEditingTopic?.name || '',
+                okruh: okruhForEditingTopic?.title || '',
+                tema: editingTopic?.title || ''
+              }}
               onSave={() => {
                 setContentEditorOpen(false);
                 setEditingTopic(null);

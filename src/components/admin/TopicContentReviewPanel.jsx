@@ -18,6 +18,7 @@ import {
   ChevronUp
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { ADMIN_CONTENT_SYSTEM_PROMPT } from './aiSystemPrompt';
 
 export default function TopicContentReviewPanel({ topic, aiResponse, onContentImproved }) {
   const [isImproving, setIsImproving] = useState(false);
@@ -62,7 +63,8 @@ export default function TopicContentReviewPanel({ topic, aiResponse, onContentIm
           entityId: topic.id
         },
         userPrompt: prompts[mode] || prompts.custom,
-        allowWeb: mode === 'legal_deepen'
+        allowWeb: mode === 'legal_deepen',
+        systemPromptOverride: ADMIN_CONTENT_SYSTEM_PROMPT
       });
 
       const result = response.data || response;

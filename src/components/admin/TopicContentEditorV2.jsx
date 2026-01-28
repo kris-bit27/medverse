@@ -19,8 +19,84 @@ import {
 import { Loader2, Sparkles, Save, BookOpen, List, Microscope, ArrowDown, CheckCircle, Shield, Eye, AlertTriangle, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 import { AI_VERSION_TAG } from '../utils/aiConfig';
+import { ADMIN_CONTENT_SYSTEM_PROMPT } from './aiSystemPrompt';
 
-export default function TopicContentEditorV2({ topic, onSave }) {
+const FULLTEXT_TEMPLATE = `FULLTEXT
+TASK:
+Generate a comprehensive, structured educational text on the given topic.
+
+REQUIREMENTS:
+- Depth: advanced medical education (residents / specialists)
+- Structure with clear headings and subheadings
+- Explain pathophysiology, diagnostics, treatment principles, and clinical decision-making
+- Include current standard-of-care approaches
+- Adapt recommendations to Czech/European practice where relevant
+
+OPTIONAL (only if appropriate):
+- Tables for classification or comparison
+- Simple algorithms for decision-making
+- References to guideline-level concepts (without citations list)
+
+DO NOT:
+- Oversimplify
+- Write exam-focused bullet dumps
+- Assume beginner-level knowledge
+
+CONTEXT:
+Specialty: {{specialty}}
+Okruh: {{okruh}}
+Téma: {{tema}}
+Topic / Question: {{title}}
+
+OUTPUT:
+Return the full educational text.`;
+
+const HIGH_YIELD_TEMPLATE = `HIGH-YIELD
+TASK:
+Extract the most clinically important HIGH-YIELD points from the full text.
+
+RULES:
+- Bullet points only
+- Focus on decision-making, red flags, key principles
+- No repetition of full explanations
+- No new information beyond the full text
+
+FULL TEXT:
+{{full_text}}
+
+OUTPUT:
+Return a concise high-yield bullet list.`;
+
+const DEEP_DIVE_TEMPLATE = `DEEP-DIVE
+TASK:
+Create an advanced deep-dive expansion of the topic.
+
+INCLUDE:
+- Clinical nuances and controversies
+- Decision-making trade-offs
+- Common pitfalls and mistakes
+- Complications and their management
+- Differences between international and Czech/European practice
+- Emerging trends (if relevant)
+
+RULES:
+- Do NOT repeat or summarize the full text
+- Add expert reasoning and context
+- Use tables or diagrams ONLY if they clarify complex decisions
+
+FULL TEXT:
+{{full_text}}
+
+OUTPUT:
+Return the deep-dive expert content.`;
+
+const fillTemplate = (template, vars) =>
+  Object.entries(vars).reduce(
+    (acc, [key, value]) => acc.replaceAll(`{{${key}}}`, value || ''),
+    template
+  );
+
+export default function TopicContentEditorV2({ topic, context, onSave }) {
   const [content, setContent] = useState({
     status: topic?.status || 'draft',
     full_text_content: topic?.full_text_content || '',
@@ -35,6 +111,13 @@ export default function TopicContentEditorV2({ topic, onSave }) {
   const [reviewResult, setReviewResult] = useState(null);
   const [lastGenerated, setLastGenerated] = useState(null);
   const [useRichEditor, setUseRichEditor] = useState(true);
+  const lastUpdatedRaw = topic?.updated_date || topic?.updated_at || topic?.modified_date || topic?.created_date || null;
+  const lastUpdatedLabel = lastUpdatedRaw ? `Poslední změna: ${new Date(lastUpdatedRaw).toLocaleString('cs-CZ')}` : '';
+  const contextSummary = [
+    context?.specialty ? `Obor: ${context.specialty}` : null,
+    context?.okruh ? `Okruh: ${context.okruh}` : null,
+    topic?.title ? `Téma: ${topic.title}` : null
+  ].filter(Boolean).join(' • ');
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -57,10 +140,18 @@ export default function TopicContentEditorV2({ topic, onSave }) {
   const handleAIGenerate = async (mode) => {
     setIsGenerating(true);
     try {
+      const templateVars = {
+        specialty: context?.specialty || '',
+        okruh: context?.okruh || '',
+        tema: context?.tema || topic.title || '',
+        title: topic.title || '',
+        full_text: content.full_text_content || ''
+      };
+
       const promptMap = {
-        topic_generate_fulltext: `Vytvoř plný studijní text pro téma: ${topic.title}`,
-        topic_summarize: `Vytvoř shrnutí z plného textu tématu: ${topic.title}`,
-        topic_deep_dive: `Rozviň téma do hloubky: ${topic.title}`,
+        topic_generate_fulltext_v2: fillTemplate(FULLTEXT_TEMPLATE, templateVars),
+        topic_generate_high_yield: fillTemplate(HIGH_YIELD_TEMPLATE, templateVars),
+        topic_generate_deep_dive: fillTemplate(DEEP_DIVE_TEMPLATE, templateVars),
         topic_reformat: `Přeformátuj tento text pro optimální studium. NEPŘIDÁVEJ nový obsah, pouze zlepši strukturu a čitelnost.\n\n${content.full_text_content || ''}`
       };
 
@@ -72,24 +163,25 @@ export default function TopicContentEditorV2({ topic, onSave }) {
           entityId: topic.id
         },
         userPrompt: promptMap[mode] || `Vytvoř obsah pro téma: ${topic.title}`,
-        allowWeb: mode === 'topic_deep_dive'
+        allowWeb: mode === 'topic_generate_deep_dive',
+        systemPromptOverride: ADMIN_CONTENT_SYSTEM_PROMPT
       });
 
       const result = response.data || response;
 
       // Aplikuj výsledek podle módu
-      if (mode === 'topic_generate_fulltext') {
+      if (mode === 'topic_generate_fulltext_v2') {
         setContent(prev => ({ 
           ...prev, 
           full_text_content: result.text || result.structuredData?.answer_md || '',
           source_pack: result.citations || prev.source_pack
         }));
-      } else if (mode === 'topic_summarize') {
+      } else if (mode === 'topic_generate_high_yield') {
         setContent(prev => ({ 
           ...prev, 
           bullet_points_summary: result.text || ''
         }));
-      } else if (mode === 'topic_deep_dive') {
+      } else if (mode === 'topic_generate_deep_dive') {
         setContent(prev => ({ 
           ...prev, 
           deep_dive_content: result.text || '',
@@ -133,7 +225,8 @@ export default function TopicContentEditorV2({ topic, onSave }) {
           entityId: topic.id
         },
         userPrompt: `Zhodnoť kvalitu studijního materiálu pro téma "${topic.title}". Materiál:\n\n${content.full_text_content || ''}\n\n${content.bullet_points_summary || ''}`,
-        allowWeb: true
+        allowWeb: true,
+        systemPromptOverride: ADMIN_CONTENT_SYSTEM_PROMPT
       });
 
       const result = response.data || response;
@@ -196,8 +289,20 @@ export default function TopicContentEditorV2({ topic, onSave }) {
   return (
     <div className="space-y-6">
       <Alert className="bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800">
-        <AlertDescription className="text-sm text-teal-700 dark:text-teal-300">
-          Upravujete téma <strong>{topic.title}</strong> | AI verze: {AI_VERSION_TAG}
+        <AlertDescription className="text-sm text-teal-700 dark:text-teal-300 space-y-1">
+          <div>
+            Upravujete téma <strong>{topic.title}</strong> | AI verze: {AI_VERSION_TAG}
+          </div>
+          {contextSummary && (
+            <div className="text-xs text-teal-700/80 dark:text-teal-300/80">
+              {contextSummary}
+            </div>
+          )}
+          {lastUpdatedLabel && (
+            <div className="text-xs text-teal-700/80 dark:text-teal-300/80">
+              {lastUpdatedLabel}
+            </div>
+          )}
         </AlertDescription>
       </Alert>
 
@@ -337,7 +442,7 @@ export default function TopicContentEditorV2({ topic, onSave }) {
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => handleAIGenerate('topic_generate_fulltext')}
+                onClick={() => handleAIGenerate('topic_generate_fulltext_v2')}
                 disabled={isGenerating}
               >
                 {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Sparkles className="w-3 h-3 mr-1" />}
@@ -367,12 +472,12 @@ export default function TopicContentEditorV2({ topic, onSave }) {
             <Button
               size="sm"
               variant="outline"
-              onClick={() => handleAIGenerate('topic_summarize')}
+              onClick={() => handleAIGenerate('topic_generate_high_yield')}
               disabled={isGenerating || !content.full_text_content}
-              title="Sumarizovat z plného textu"
+              title="Generovat z plného textu"
             >
               {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <ArrowDown className="w-3 h-3 mr-1" />}
-              Sumarizovat
+              Generovat AI
             </Button>
           </div>
           <TipTapEditor
@@ -388,8 +493,8 @@ export default function TopicContentEditorV2({ topic, onSave }) {
             <Button
               size="sm"
               variant="outline"
-              onClick={() => handleAIGenerate('topic_deep_dive')}
-              disabled={isGenerating}
+              onClick={() => handleAIGenerate('topic_generate_deep_dive')}
+              disabled={isGenerating || !content.full_text_content}
             >
               {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Sparkles className="w-3 h-3 mr-1" />}
               Generovat AI
