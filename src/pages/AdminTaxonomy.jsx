@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
@@ -88,6 +88,7 @@ export default function AdminTaxonomy() {
   const [hidePublished, setHidePublished] = useState(false);
   const [bulkActionLoading, setBulkActionLoading] = useState(false);
   const queryClient = useQueryClient();
+  const searchLower = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
 
   const { data: disciplines = [] } = useQuery({
     queryKey: ['clinicalDisciplines'],
@@ -362,7 +363,7 @@ export default function AdminTaxonomy() {
   }), [okruhy, filterDiscipline]);
 
   const filteredTopics = useMemo(() => topics.filter(t => {
-    if (searchQuery && !t.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    if (searchLower && !t.title.toLowerCase().includes(searchLower)) return false;
     if (filterOkruh !== 'all' && t.okruh_id !== filterOkruh) return false;
     if (filterTopicStatus !== 'all' && t.status !== filterTopicStatus) return false;
     if (hidePublished && t.status === 'published') return false;
@@ -372,7 +373,14 @@ export default function AdminTaxonomy() {
     if (filterDiscipline !== 'all' && okruhForTopic?.clinical_discipline_id !== filterDiscipline) return false;
     
     return true;
-  }), [topics, searchQuery, filterOkruh, filterTopicStatus, hidePublished, filterDiscipline, okruhById]);
+  }), [topics, searchLower, filterOkruh, filterTopicStatus, hidePublished, filterDiscipline, okruhById]);
+
+  const filteredTopicIdSet = useMemo(() => new Set(filteredTopics.map(t => t.id)), [filteredTopics]);
+
+  useEffect(() => {
+    if (selectedTopics.length === 0) return;
+    setSelectedTopics(prev => prev.filter(id => filteredTopicIdSet.has(id)));
+  }, [filteredTopicIdSet, selectedTopics.length]);
 
   if (isLoading) {
     return (
