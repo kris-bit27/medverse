@@ -33,13 +33,13 @@ export default function AITaxonomyGenerator({ disciplines, onComplete }) {
       const discipline = disciplines.find(d => d.id === selectedDiscipline);
       
       // Build prompt for AI
-      const prompt = `STRIKTNÍ PŘÍKAZ: Vygeneruj KOMPLETNÍ strukturu oboru, nikoliv jen ukázku. Pokud dokument obsahuje 20 okruhů, vygeneruj všech 20. Pokud téma vyžaduje 10 podtémat, vygeneruj jich 10. NEPŘESKAKUJ ŽÁDNÝ OBSAH.
+      const prompt = `Jsi specialista na medicínské kurikulum. Tvým úkolem je vytvořit KOMPLETNÍ seznam okruhů a témat pro atestační obor ${discipline.name}.
 
-Jsi elitní atestační komisař s přístupem k rozsáhlému kontextovému oknu. Tvým úkolem je vytvořit neprůstřelnou strukturu oboru ${discipline.name}.
+${sourceUrl ? `Pokud je k dispozici zdroj (${sourceUrl}), extrahuj z něj VŠECHNY atestační otázky a kapitoly.` : ''}
 
-${sourceUrl ? `Důkladně analyzuj obsah na URL ${sourceUrl}. Toto PDF obsahuje oficiální atestační otázky MZČR. Tvým úkolem je věrně přepsat tyto otázky do JSON struktury, kterou jsem ti definoval. NEVYMÝŠLEJ nový obsah - přepiš VŠE, co je v dokumentu.` : ''}
+NESMÍŠ nic vynechat. Pokud dokument obsahuje 50 témat, vypiš všech 50.
 
-Generuj obsah, který odpovídá nejnovějším guidelines (ESC, ČKS, AHA, WHO, atd.). Máš k dispozici velké kontextové okno - využij ho pro detailní a komplexní odpovědi.
+Generuj POUZE názvy okruhů a názvy témat. Negeneruj žádné otázky ani odpovědi.`;
 
 Vytvoř komplexní strukturu pro tento obor:
 
@@ -163,7 +163,8 @@ Vrať JSON ve formátu:
         add_context_from_internet: !!sourceUrl,
         response_json_schema: jsonSchema,
         model: 'gemini-1.5-pro',
-        maxTokens: 16000
+        temperature: 0.1,
+        maxTokens: 8000
       });
 
       console.log('AI Response:', response);
