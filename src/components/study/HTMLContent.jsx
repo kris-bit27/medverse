@@ -3,17 +3,15 @@ import React from 'react';
 export default function HTMLContent({ content }) {
   if (!content) return null;
 
-  // Remove Tailwind classes from HTML content to let CSS styles apply
-  const cleanContent = content
-    .replace(/class="[^"]*list-disc[^"]*"/g, '')
-    .replace(/class="[^"]*pl-\d+[^"]*"/g, '')
-    .replace(/class="[^"]*"/g, '')
-    .replace(/class='[^']*'/g, '');
+  // Remove all inline classes from TipTap HTML to let our CSS styles take over
+  const cleanHTML = content
+    .replace(/\sclass="[^"]*"/g, '')
+    .replace(/\sclass='[^']*'/g, '');
 
   return (
     <div 
-      className="tiptap-rendered-content"
-      dangerouslySetInnerHTML={{ __html: cleanContent }}
+      className="tiptap-rendered-content prose prose-slate max-w-none"
+      dangerouslySetInnerHTML={{ __html: cleanHTML }}
     />
   );
 }
