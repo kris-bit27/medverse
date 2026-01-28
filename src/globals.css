@@ -70,7 +70,7 @@
 /* TipTap rendered content styles - matching admin editor exactly */
 .tiptap-rendered-content {
   font-size: 1rem;
-  line-height: 1.8;
+  line-height: 1.8 !important;
   color: rgb(51, 65, 85);
 }
 
@@ -80,9 +80,9 @@
 
 /* Paragraphs - large spacing like in editor */
 .tiptap-rendered-content p {
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
-  line-height: 1.8;
+  margin-top: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+  line-height: 1.8 !important;
 }
 
 .tiptap-rendered-content p:first-child {
@@ -141,12 +141,12 @@
 
 /* Text formatting */
 .tiptap-rendered-content strong {
-  font-weight: 700;
-  color: rgb(20, 184, 166);
+  font-weight: 700 !important;
+  color: rgb(20, 184, 166) !important;
 }
 
 .dark .tiptap-rendered-content strong {
-  color: rgb(94, 234, 212);
+  color: rgb(94, 234, 212) !important;
 }
 
 .tiptap-rendered-content em {
@@ -182,9 +182,9 @@
 }
 
 .tiptap-rendered-content li {
-  margin-top: 0.75em;
-  margin-bottom: 0.75em;
-  line-height: 1.8;
+  margin-top: 0.75em !important;
+  margin-bottom: 0.75em !important;
+  line-height: 1.8 !important;
 }
 
 .tiptap-rendered-content li p {
