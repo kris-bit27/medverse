@@ -83,6 +83,7 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
     try {
       const response = await base44.integrations.Core.InvokeLLM({
         prompt,
+        model: 'gemini-1.5-pro',
         response_json_schema: {
           type: "object",
           properties: {
@@ -95,10 +96,12 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
                   question_text: { type: "string" },
                   answer_rich: { type: "string" },
                   difficulty: { type: "number" }
-                }
+                },
+                required: ["title", "question_text", "answer_rich", "difficulty"]
               }
             }
-          }
+          },
+          required: ["questions"]
         }
       });
 
