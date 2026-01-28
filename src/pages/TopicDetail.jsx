@@ -14,7 +14,10 @@ import {
   Microscope,
   Target,
   Sparkles,
-  ChevronRight
+  ChevronRight,
+  AlertCircle,
+  Shield,
+  AlertTriangle
 } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ReactMarkdown from 'react-markdown';
@@ -24,6 +27,8 @@ import HighlightableText from '@/components/study/HighlightableText';
 import TopicNotes from '@/components/study/TopicNotes.jsx';
 import TopicHippoAssistant from '@/components/topics/TopicHippoAssistant';
 import HTMLContent from '@/components/study/HTMLContent';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import EmptyState from '@/components/common/EmptyState';
 
 export default function TopicDetail() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -40,7 +45,7 @@ export default function TopicDetail() {
     setNotesKey(prev => prev + 1);
   };
 
-  const { data: topic, isLoading } = useQuery({
+  const { data: topic, isLoading, isError, error } = useQuery({
     queryKey: ['topic', topicId],
     queryFn: async () => {
       const topics = await base44.entities.Topic.filter({ id: topicId });
@@ -83,6 +88,7 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
     try {
       const response = await base44.integrations.Core.InvokeLLM({
         prompt,
+        model: 'gemini-1.5-pro',
         response_json_schema: {
           type: "object",
           properties: {
@@ -95,10 +101,12 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
                   question_text: { type: "string" },
                   answer_rich: { type: "string" },
                   difficulty: { type: "number" }
-                }
+                },
+                required: ["title", "question_text", "answer_rich", "difficulty"]
               }
             }
-          }
+          },
+          required: ["questions"]
         }
       });
 
@@ -126,10 +134,43 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
     );
   }
 
+  if (isError) {
+    return (
+      <div className="p-6 max-w-2xl mx-auto">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Nepodařilo se načíst téma. {error?.message || 'Zkuste to prosím znovu.'}
+          </AlertDescription>
+        </Alert>
+        <div className="mt-4">
+          <Button variant="outline" asChild>
+            <Link to={createPageUrl('Atestace')}>
+              <ChevronLeft className="w-4 h-4 mr-2" />
+              Zpět na studium
+            </Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   if (!topic) {
     return (
-      <div className="p-6 text-center">
-        <p className="text-slate-500">Téma nenalezeno</p>
+      <div className="p-6 max-w-2xl mx-auto">
+        <EmptyState
+          icon={BookOpen}
+          title="Téma nenalezeno"
+          description="Toto téma neexistuje nebo bylo smazáno"
+          action={
+            <Button asChild>
+              <Link to={createPageUrl('Atestace')}>
+                <ChevronLeft className="w-4 h-4 mr-2" />
+                Zpět na studium
+              </Link>
+            </Button>
+          }
+        />
       </div>
     );
   }
@@ -161,9 +202,22 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
 
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white mb-4">
-          {topic.title}
-        </h1>
+        <div className="flex items-start gap-3 mb-4">
+          <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white">
+            {topic.title}
+          </h1>
+          {topic.is_reviewed ? (
+            <Badge className="bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300 flex items-center gap-1">
+              <Shield className="w-3.5 h-3.5" />
+              Ověřeno odborníkem
+            </Badge>
+          ) : (
+            <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 flex items-center gap-1">
+              <AlertTriangle className="w-3.5 h-3.5" />
+              AI Draft - vyžaduje odbornou kontrolu
+            </Badge>
+          )}
+        </div>
         
         {topic.learning_objectives && topic.learning_objectives.length > 0 && (
           <Card className="bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800">

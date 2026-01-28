@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Loader2, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 const entryTypes = [
   { value: 'procedure', label: 'Výkon' },
@@ -83,6 +84,18 @@ export default function LogbookEntryForm({ entry, disciplines, userId, onClose }
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Validace
+    if (!formData.title.trim()) {
+      toast.error('Vyplňte název záznamu');
+      return;
+    }
+    
+    if (!formData.date) {
+      toast.error('Vyplňte datum');
+      return;
+    }
+    
     if (isEditing) {
       updateMutation.mutate(formData);
     } else {

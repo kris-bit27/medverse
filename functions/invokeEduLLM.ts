@@ -1,7 +1,104 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 // AI Version Tag - centrální konstanta pro verzování AI systému
-const AI_VERSION_TAG = "edu_v2_exam_grade";
+const AI_VERSION_TAG = "medverse_gemini_1.5_pro_v3";
+
+// Strict Mode kontrola
+const AI_STRICT_MODE = Deno.env.get("AI_STRICT_MODE") === "true";
+
+// Base instruction pro všechny asistenty
+const BASE_MEDVERSE_INSTRUCTION = `Jsi inteligentní AI asistent v systému MedVerse EDU.
+
+KRITICKÁ PRAVIDLA:
+- Jazyk: čeština (pokud uživatel nespecifikuje jinak)
+- Bezpečnost: NIKDY nepředstírej klinické rozhodování pro konkrétního pacienta
+- Transparentnost: Pokud informace chybí, přiznej to
+- NIKDY si nevymýšlej guidelines – pokud nejsou v RAG kontextu, přiznej to
+- Vždy cituj zdroje (interní prioritně)
+${AI_STRICT_MODE ? `
+⚠️ STRICT MODE AKTIVNÍ ⚠️
+- ABSOLUTNÍ ZÁKAZ spekulativních odpovědí
+- POVINNÁ citace u KAŽDÉHO medicínského faktu
+- Confidence NESMÍ být 'high' bez interních zdrojů
+- ZAKÁZÁNO generovat léčebné protokoly bez RAG kontextu
+- Při jakékoli nejistotě: "Nemám dostatečné informace"
+` : ''}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+HIERARCHIE ASISTENTŮ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**Hippo (Sidebar)**: Seniorní mentor, propojuje obory, ptá se na souvislosti. Má přístup k celé taxonomii, zaměřuje se na porozumění PROČ a budování mentálních modelů.
+
+**Floating Copilot (Corner)**: Operativní pomocník, stručný (max 2 věty), reaguje na current_page_context. Poskytuje rychlé tipy relevantní k aktuální činnosti uživatele.
+
+**Clinical Expert (Tools)**: Přísný diagnostik, generuje tabulky diferenciální diagnózy s pravděpodobností. Strukturovaný, analytický, bez zbytečných slov.
+`;
+
+// Role-specific appendices pro různé asistenty
+const ASSISTANT_ROLE_APPENDICES = {
+  hippo_sidebar: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ASISTENT: Hippo (Seniorní Mentor)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Jsi Hippo, seniorní mentor. Tvým cílem je propojovat medicínské obory. Používej analogie a ptej se uživatele na souvislosti.
+
+Tón: Povzbuzující, přátelský, trpělivý
+Styl: Vysvětlující, propojující koncepty napříč obory
+
+TVOJE SÍLA:
+- Propojuješ zdánlivě nesouvisející témata (např. jak kardiologie souvisí s nefrologií)
+- Máš přístup k celé taxonomii oborů
+- Pomáháš budovat mentální modely a porozumění PROČ, ne jen CO
+
+STRUKTURA ODPOVĚDI:
+- Hlavní vysvětlení (strukturované, s markdownem)
+- Citations (internal/external - interní VŽDY na prvním místě)
+- Confidence level (high/medium/low) + důvod
+- Missing topics (co by měl student doplnit pro hlubší porozumění)
+`,
+  floating_copilot: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ASISTENT: Operativní Asistent (Context Mode)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Jsi operativní asistent. Tvým zdrojem je current_page_context. Buď stručný, odpovídej maximálně ve 2-3 větách. Pomáhej s navigací a rychlým vysvětlením termínů na obrazovce.
+
+Tón: Stručný, věcný, efektivní
+Styl: Nápomocný v konkrétní situaci
+
+POVINNÉ POUŽITÍ KONTEXTU:
+- VŽDY analyzuj 'current_page_context' - to je tvůj hlavní zdroj informací
+- Na stránce studijního materiálu: nabízej tipy k učení, související témata
+- Na stránce Logbook: pomáhej s vyplněním, navrhuj kategorie
+- Na admin stránkách: navrhuj strukturu obsahu, chybějící prvky
+
+MAXIMUM: 2-3 věty na odpověď (pokud uživatel nežádá víc)
+`,
+  clinical_expert: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ASISTENT: Clinical Expert (Tool Mode - Strict Medical)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Jsi přísný diagnostik. Pro differential_diagnosis generuj tabulku s pravděpodobností, patofyziologickým zdůvodněním a doporučeným 'next step' vyšetřením. Nepoužívej vatu.
+
+Tón: Velmi věcný, analytický, strukturovaný
+Styl: Fakta a pravděpodobnosti, žádné "povídání"
+
+ZÁKAZY:
+❌ Úvodní fráze typu "Rád ti pomůžu"
+❌ Emotikony, povzbuzování
+❌ Vágní odpovědi
+
+POVINNOSTI:
+✅ Strukturovaný výstup (tabulky, hierarchie)
+✅ Pravděpodobnosti v % (kde možné)
+✅ Konkrétní next step vyšetření
+✅ Patofyziologické zdůvodnění pro každou diagnózu
+✅ Citace zdrojů
+`
+};
 
 // EXAM režimy - strukturované, deterministické, jeden request = jedna odpověď
 const EXAM_MODES = [
@@ -29,45 +126,14 @@ const EXAM_MODES = [
 ];
 
 // CHAT režimy - konverzační, pro doplňující dotazy
-const CHAT_MODES = ['copilot_chat'];
+const CHAT_MODES = ['copilot_chat', 'floating_copilot_chat'];
 
-// Import není podporován v Deno functions - definice přímo zde
-const MEDVERSE_EDU_CORE_PROMPT = `Jsi Hippo – inteligentní průvodce porozuměním medicíně v systému MedVerse EDU.
+// TOOL režimy - klinické nástroje (DDx, Treatment Planning)
+const TOOL_MODES = ['differential_diagnosis_ai', 'treatment_planner_ai'];
 
-TVOJE ROLE:
-- Pomáháš studentům a lékařům porozumět souvislostem v medicíně
-- Vysvětluješ koncepty, vztahy mezi poznatky a strukturuješ myšlení
-- NEJSI autorita, náhrada lékaře ani nástroj pro klinická rozhodnutí
-- Jsi vzdělávací průvodce, který pomáhá budovat mentální modely
-
-HLAVNÍ PRAVIDLA:
-1. Jazyk: čeština (pokud uživatel nespecifikuje jinak)
-2. Styl: vysvětlující, ne direktivní – pomáháš pochopit, ne rozhodovat
-3. Důraz na porozumění: vysvětluj PROČ věci fungují, ne jen CO dělat
-4. Bezpečnost: NIKDY nepředstírej klinické rozhodování pro konkrétního pacienta
-5. Transparentnost: Pokud informace chybí nebo nejsi si jistý, otevřeně to přiznej
-
-KRITICKÁ PRAVIDLA:
-- Hippo nikdy nerozhoduje za lékaře
-- Hippo vysvětluje myšlenkové rámce, ne konkrétní postupy pro pacienty
-- Hippo pracuje s mírou nejistoty a vysvětluje ji
-- Pokud neexistuje interní zdroj, NIKDY netvrď odpověď s jistotou
-- Pokud je confidence LOW, vždy EXPLICITNĚ uveď proč a co chybí
-- NIKDY si nevymýšlej guidelines – pokud nejsou v RAG kontextu, přiznej to
-- Vždy cituj zdroje (interní prioritně)
-
-STRUKTURA KAŽDÉ ODPOVĚDI:
-- Hlavní vysvětlení (strukturované, s markdownem, zaměřené na porozumění)
-- Citations (internal/external odkazy - interní VŽDY na prvním místě)
-- Confidence level (high/medium/low) + stručný důvod (1-2 věty)
-- Missing topics (krátký seznam, co by měl student doplnit pro hlubší porozumění)
-
-DŮLEŽITÉ:
-- Používej oficiální terminologii a klasifikace
-- Odkazuj na guidelines (ESC, ERC, ESMO, NCCN, ČLS atd.) jako kontext, ne jako příkazy
-- High confidence POUZE pokud máš plné interní zdroje
-- Tvůj cíl je porozumění, ne memorování
-`;
+// Starý MEDVERSE_EDU_CORE_PROMPT byl nahrazen modulárním systémem:
+// BASE_MEDVERSE_INSTRUCTION + ASSISTANT_ROLE_APPENDICES
+// Tento komentář ponecháváme pro historii změn.
 
 const ATTESTATION_GRADE_PROMPT = `
 ════════════════════════════════════════════════════════════════
@@ -163,13 +229,48 @@ Tvým cílem je vytvořit text, který:
 `;
 
 const MODE_PROMPTS = {
-  question_exam_answer: `Vysvětluješ téma otázky strukturovaně na ATESTAČNÍ ÚROVNI. ${ATTESTATION_GRADE_PROMPT}\n\nCITACE: pokud máš k dispozici interní text tématu, MUSÍŠ ho použít jako primární zdroj. Web search: ZAKÁZÁN.`,
+  // Tool modes - Clinical Expert
+  differential_diagnosis_ai: `Generuješ diferenciální diagnostiku ve formátu:
+
+| Diagnóza | Pravděpodobnost | Patofyziologie | Next Step |
+|----------|----------------|----------------|-----------|
+| ... | ...% | ... | ... |
+
+Začni nejpravděpodobnějšími. Uveď minimálně 5 diagnóz. Žádné řečnění navíc.`,
+  treatment_planner_ai: `Generuješ strukturovaný plán léčby:
+
+1. Akutní management (co HNED)
+2. Definitivní léčba (farmako/invazivní)
+3. Monitorování (co sledovat, jak často)
+4. Komplikace (co hlídat)
+
+Strukturovaně. Bez povídání.`,
+  
+  // Chat modes
+  floating_copilot_chat: `Odpovídej stručně (2-3 věty). Používej kontext stránky (current_page_context). Pomáhej s navigací, vysvětluj termíny viditelné na obrazovce.`,
+  
+  question_exam_answer: `Vysvětluješ téma otázky strukturovaně na ATESTAČNÍ ÚROVNI. ${ATTESTATION_GRADE_PROMPT}\n\nCITACE: pokud máš k dispozici interní text tématu, MUSÍŠ ho použít jako primární zdroj. Web search: ZAKÁZÁN.\n\nFORMÁTOVÁNÍ:
+- Nepoužívej dlouhé odstavce (max 3-4 věty)
+- Klíčové diagnózy, léky a dávkování piš vždy tučně
+- Používej tabulky (Markdown tables) pro srovnání nebo klasifikace
+- Každou sekci začni jasným nadpisem druhé úrovně (##)
+- Pokud popisuješ algoritmus (např. 'Co dělat u OPSI'), použij číslovaný seznam`,
   question_high_yield: `Vytvoř přehledné shrnutí klíčových konceptů pro rychlé zopakování. Formát: bullet points, max 10-12 bodů. Zaměř se na pochopení, ne testování.`,
   question_quiz: `Vytvoř 5 MCQ otázek (A/B/C/D) pro procvičení pochopení tématu. Mix obtížnosti: 2 easy, 2 medium, 1 hard.`,
   question_simplify: `Vysvětli téma srozumitelně pro studenta medicíny. Zachovej faktickou správnost a zaměř se na porozumění.`,
-  topic_generate_fulltext: `${ATTESTATION_GRADE_PROMPT}\n\nGeneruješ kompletní studijní text na ATESTAČNÍ ÚROVNI. Rozsah: 3-5 stránek plnohodnotného textu. Dodržuj všechny požadavky výše.`,
+  topic_generate_fulltext: `${ATTESTATION_GRADE_PROMPT}\n\nGeneruješ kompletní studijní text na ATESTAČNÍ ÚROVNI. Rozsah: 3-5 stránek plnohodnotného textu. Dodržuj všechny požadavky výše.\n\nFORMÁTOVÁNÍ:
+- Nepoužívej dlouhé odstavce (max 3-4 věty)
+- Klíčové diagnózy, léky a dávkování piš vždy tučně
+- Používej tabulky (Markdown tables) pro srovnání nebo klasifikace
+- Každou sekci začni jasným nadpisem druhé úrovně (##)
+- Pokud popisuješ algoritmus (např. 'Co dělat u OPSI'), použij číslovaný seznam`,
   topic_generate_fulltext_v2: `Řiď se přesně zadáním uživatele.`,
-  topic_generate_template: `${ATTESTATION_GRADE_PROMPT}\n\nGeneruješ obsah pro všechny sekce EDU template tématu na ATESTAČNÍ ÚROVNI. Zaměř se na praktické znalosti, právní rámec a sporné situace. NIKDY negeneruj léčebné postupy pro pacienty. Výstup: JSON s 8 sekcemi markdown (overview_md, principles_md, relations_md, clinical_thinking_md, common_pitfalls_md, mental_model_md, scenarios_md, key_takeaways_md).`,
+  topic_generate_template: `${ATTESTATION_GRADE_PROMPT}\n\nGeneruješ obsah pro všechny sekce EDU template tématu na ATESTAČNÍ ÚROVNI. Zaměř se na praktické znalosti, právní rámec a sporné situace. NIKDY negeneruj léčebné postupy pro pacienty. Výstup: JSON s 8 sekcemi markdown (overview_md, principles_md, relations_md, clinical_thinking_md, common_pitfalls_md, mental_model_md, scenarios_md, key_takeaways_md).\n\nFORMÁTOVÁNÍ:
+- Nepoužívej dlouhé odstavce (max 3-4 věty)
+- Klíčové diagnózy, léky a dávkování piš vždy tučně
+- Používej tabulky (Markdown tables) pro srovnání nebo klasifikace
+- Každou sekci začni jasným nadpisem druhé úrovně (##)
+- Pokud popisuješ algoritmus (např. 'Co dělat u OPSI'), použij číslovaný seznam`,
   topic_summarize: `Vytvoř shrnutí v odrážkách z poskytnutého plného textu. Zachyť všechny klíčové body, definice, souvislosti.`,
   topic_deep_dive: `${ATTESTATION_GRADE_PROMPT}\n\nVytvoř rozšířený obsah zahrnující hlubší souvislosti, nejnovější výzkum, pokročilé koncepty a edge cases. Zaměř se na právní aspekty a sporné situace v praxi.`,
   topic_generate_high_yield: `Řiď se přesně zadáním uživatele.`,
@@ -445,7 +546,7 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb) {
     rag_sources: []
   };
 
-  const MAX_RAG_TOKENS = 8000; // Limit pro RAG kontext (~32000 znaků)
+  const MAX_RAG_TOKENS = 200000; // Gemini 1.5 Pro optimalizovaný limit pro rozsáhlé PDF (800 000 znaků)
   let currentLength = 0;
 
   const addSection = (text, source) => {
@@ -461,36 +562,65 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb) {
     return false;
   };
 
-  // 1. Topic (pokud existuje) - PRIORITA 1
-  if (entityContext.topic) {
-    const topic = entityContext.topic;
-    
-    // Topic full text
-    if (topic.full_text_content && topic.status === 'published') {
-      addSection(
-        `=== TOPIC: ${topic.title} (PRIMÁRNÍ ZDROJ) ===\n\n${topic.full_text_content}`,
-        { type: 'topic', entity: 'Topic', id: topic.id, section_hint: 'full_text', title: topic.title }
-      );
-    }
-
-    // Topic bullets
-    if (topic.bullet_points_summary && topic.status === 'published') {
-      addSection(
-        `=== SHRNUTÍ: ${topic.title} ===\n\n${topic.bullet_points_summary}`,
-        { type: 'topic', entity: 'Topic', id: topic.id, section_hint: 'bullets', title: topic.title }
-      );
-    }
-
-    // Learning objectives
-    if (topic.learning_objectives?.length > 0) {
-      addSection(
-        `=== VÝUKOVÉ CÍLE: ${topic.title} ===\n\n${topic.learning_objectives.map(o => `- ${o}`).join('\n')}`,
-        { type: 'topic', entity: 'Topic', id: topic.id, section_hint: 'learning_objectives', title: topic.title }
-      );
+  // 1. SourceDocument (pokud existuje k tématu) - NEJVYŠŠÍ PRIORITA
+  if (entityContext.topic?.id) {
+    try {
+      const sourceDocs = await base44.asServiceRole.entities.SourceDocument?.filter(
+        { topic_id: entityContext.topic.id },
+        '-created_date',
+        3
+      ).catch(() => []);
+      
+      if (sourceDocs && sourceDocs.length > 0) {
+        for (const doc of sourceDocs) {
+          if (doc.content) {
+            addSection(
+              `=== ZDROJOVÝ DOKUMENT: ${doc.title || 'Unnamed'} (NEJVYŠŠÍ PRIORITA) ===\n\n${doc.content}`,
+              { type: 'source_document', entity: 'SourceDocument', id: doc.id, title: doc.title }
+            );
+          }
+        }
+      }
+    } catch (e) {
+      // SourceDocument entity neexistuje - pokračuj normálně
+      console.log('SourceDocument entity not available:', e.message);
     }
   }
 
-  // 2. Question - PRIORITA 2
+  // 2. Topic (pokud existuje) - PRIORITA 2
+  if (entityContext.topic) {
+    try {
+      const topic = entityContext.topic;
+      
+      // Topic full text
+      if (topic.full_text_content && topic.status === 'published') {
+        addSection(
+          `=== TOPIC: ${topic.title} (PRIMÁRNÍ ZDROJ) ===\n\n${topic.full_text_content}`,
+          { type: 'topic', entity: 'Topic', id: topic.id, section_hint: 'full_text', title: topic.title }
+        );
+      }
+
+      // Topic bullets
+      if (topic.bullet_points_summary && topic.status === 'published') {
+        addSection(
+          `=== SHRNUTÍ: ${topic.title} ===\n\n${topic.bullet_points_summary}`,
+          { type: 'topic', entity: 'Topic', id: topic.id, section_hint: 'bullets', title: topic.title }
+        );
+      }
+
+      // Learning objectives
+      if (topic.learning_objectives?.length > 0) {
+        addSection(
+          `=== VÝUKOVÉ CÍLE: ${topic.title} ===\n\n${topic.learning_objectives.map(o => `- ${o}`).join('\n')}`,
+          { type: 'topic', entity: 'Topic', id: topic.id, section_hint: 'learning_objectives', title: topic.title }
+        );
+      }
+    } catch (e) {
+      console.log('Topic context unavailable:', e.message);
+    }
+  }
+
+  // 3. Question - PRIORITA 3
   if (entityContext.question) {
     const question = entityContext.question;
     
@@ -511,7 +641,31 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb) {
     }
   }
 
-  // 3. Související témata ze stejného okruhu - PRIORITA 3 (max 2)
+  // 4. UserProgress (pro copilot_chat) - PRIORITA 4
+  if (mode === 'copilot_chat') {
+    try {
+      const recentProgress = await base44.asServiceRole.entities.UserProgress.filter(
+        { user_id: base44.auth.me().id },
+        '-last_reviewed_at',
+        5
+      );
+      
+      if (recentProgress && recentProgress.length > 0) {
+        const progressText = recentProgress.map(p => 
+          `- ${p.question_id}: ${p.status} (ease: ${p.ease_factor}, repetitions: ${p.repetitions})`
+        ).join('\n');
+        
+        addSection(
+          `=== POSLEDNÍ AKTIVITA UŽIVATELE ===\n\n${progressText}`,
+          { type: 'user_progress', entity: 'UserProgress', section_hint: 'recent_activity' }
+        );
+      }
+    } catch (e) {
+      console.error('Failed to fetch user progress:', e);
+    }
+  }
+
+  // 5. Související témata ze stejného okruhu - PRIORITA 5 (max 2)
   if (entityContext.question?.okruh_id && currentLength < MAX_RAG_TOKENS * 4 * 0.7) {
     try {
       const relatedTopics = await base44.asServiceRole.entities.Topic.filter(
@@ -541,7 +695,7 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb) {
     }
   }
 
-  // 4. Externí zdroje - PRIORITA 4 (pouze pokud allowWeb === true)
+  // 6. Externí zdroje - PRIORITA 6 (pouze pokud allowWeb === true)
   if (allowWeb && currentLength < MAX_RAG_TOKENS * 4 * 0.9) {
     context.rag_text += `\n\n=== POZNÁMKA ===\nMůžeš použít web search pro aktuální informace, ALE:
 - Odděl interní část vs externí aktuality
@@ -672,11 +826,12 @@ Deno.serve(async (req) => {
     // Validace přístupu podle role
     validateModeAccess(mode, user.role);
 
-    // Kontrola EXAM vs CHAT režimu
+    // Kontrola EXAM vs CHAT vs TOOL režimu
     const isExamMode = EXAM_MODES.includes(mode);
     const isChatMode = CHAT_MODES.includes(mode);
+    const isToolMode = TOOL_MODES.includes(mode);
 
-    if (!isExamMode && !isChatMode) {
+    if (!isExamMode && !isChatMode && !isToolMode) {
       return Response.json({ error: 'Unknown mode type' }, { status: 400 });
     }
 
@@ -744,11 +899,38 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Sestavení finálního promptu
-    const systemPromptBase = (systemPromptOverride || '').trim() || MEDVERSE_EDU_CORE_PROMPT;
-    const systemPrompt = systemPromptBase + "\n\n" + MODE_PROMPTS[mode];
+    // Sestavení finálního promptu podle role asistenta
+    let systemPrompt = '';
+
+    if (systemPromptOverride && systemPromptOverride.trim()) {
+      systemPrompt = systemPromptOverride.trim();
+    } else {
+      systemPrompt = BASE_MEDVERSE_INSTRUCTION;
+      
+      // Přidání role-specific appendix
+      if (mode === 'copilot_chat') {
+        systemPrompt += ASSISTANT_ROLE_APPENDICES.hippo_sidebar;
+      } else if (mode === 'floating_copilot_chat') {
+        systemPrompt += ASSISTANT_ROLE_APPENDICES.floating_copilot;
+      } else if (TOOL_MODES.includes(mode)) {
+        systemPrompt += ASSISTANT_ROLE_APPENDICES.clinical_expert;
+      }
+    }
+    
+    systemPrompt += "\n\n" + MODE_PROMPTS[mode];
     
     let fullPrompt = systemPrompt + "\n\n";
+    
+    // KONTEXT AKTUÁLNÍ OBRAZOVKY UŽIVATELE - nejvyšší priorita
+    if (entityContext.current_page_context || entityContext.pageContext) {
+      const pageCtx = entityContext.current_page_context || entityContext.pageContext;
+      fullPrompt += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+KONTEXT AKTUÁLNÍ OBRAZOVKY UŽIVATELE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${pageCtx}
+
+`;
+    }
     
     if (ragContext.rag_text) {
       fullPrompt += "=== INTERNÍ ZDROJE (POVINNÉ K POUŽITÍ) ===\n" + ragContext.rag_text + "\n\n";
@@ -761,11 +943,17 @@ Deno.serve(async (req) => {
     // Určení JSON schématu
     const outputSchema = OUTPUT_SCHEMAS[mode] || null;
 
-    // Volání LLM
+    // Dynamická temperature podle AI_STRICT_MODE
+    const temperature = AI_STRICT_MODE ? 0.1 : 0.2;
+
+    // Volání Google Gemini 1.5 Pro přes Base44 Core integration
     const llmResponse = await base44.integrations.Core.InvokeLLM({
       prompt: fullPrompt,
       add_context_from_internet: effectiveAllowWeb,
-      response_json_schema: outputSchema
+      response_json_schema: outputSchema,
+      model: 'gemini-1.5-pro',
+      temperature: temperature, // 0.1 v STRICT_MODE pro maximální faktickou přesnost
+      maxTokens: 8192
     });
 
     // Normalizace výstupu

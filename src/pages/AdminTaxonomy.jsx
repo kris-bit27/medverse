@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardTitle, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -56,7 +56,8 @@ import {
   Sparkles,
   CheckSquare,
   Square,
-  X
+  X,
+  Shield
 } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import QuestionImporter from '@/components/admin/QuestionImporter';
@@ -82,8 +83,8 @@ export default function AdminTaxonomy() {
   const [selectedTopics, setSelectedTopics] = useState([]);
   const [filterDiscipline, setFilterDiscipline] = useState('all');
   const [filterOkruh, setFilterOkruh] = useState('all');
-  const [filterStatus, setFilterStatus] = useState('all');
   const [filterTopicStatus, setFilterTopicStatus] = useState('all');
+  const [hidePublished, setHidePublished] = useState(false);
   const queryClient = useQueryClient();
   const okruhForEditingTopic = editingTopic ? okruhy.find(o => o.id === editingTopic.okruh_id) : null;
   const disciplineForEditingTopic = okruhForEditingTopic
@@ -285,10 +286,12 @@ export default function AdminTaxonomy() {
     if (searchQuery && !t.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     if (filterOkruh !== 'all' && t.okruh_id !== filterOkruh) return false;
     if (filterTopicStatus !== 'all' && t.status !== filterTopicStatus) return false;
-    if (filterStatus === 'published' && t.status !== 'published') return false;
-    if (filterStatus === 'unpublished' && t.status === 'published') return false;
-    if (filterStatus === 'reviewed' && !t.is_reviewed) return false;
-    if (filterStatus === 'unreviewed' && t.is_reviewed) return false;
+    if (hidePublished && t.status === 'published') return false;
+    
+    // Filter by discipline (through okruh)
+    const okruhForTopic = okruhy.find(o => o.id === t.okruh_id);
+    if (filterDiscipline !== 'all' && okruhForTopic?.clinical_discipline_id !== filterDiscipline) return false;
+    
     return true;
   });
 
@@ -345,7 +348,7 @@ export default function AdminTaxonomy() {
                 Přidat
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-w-xl">
               <DialogHeader>
                 <DialogTitle>{editingDiscipline ? 'Upravit obor' : 'Nový obor'}</DialogTitle>
               </DialogHeader>
@@ -486,8 +489,8 @@ export default function AdminTaxonomy() {
               </div>
             </DialogContent>
           </Dialog>
-        </CardHeader>
-        <CardContent>
+          </CardHeader>
+          <CardContent>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {disciplines.map((discipline) => {
               const disciplineOkruhy = okruhy.filter(o => o.clinical_discipline_id === discipline.id);
@@ -532,9 +535,9 @@ export default function AdminTaxonomy() {
         </CardContent>
       </Card>
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-2 gap-6 items-start">
         {/* Okruhy */}
-        <Card>
+        <Card className="h-full">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <FolderTree className="w-5 h-5" />
@@ -658,7 +661,7 @@ export default function AdminTaxonomy() {
         </Card>
 
         {/* Topics */}
-        <Card>
+        <Card className="h-full">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <FileText className="w-5 h-5" />
@@ -725,35 +728,66 @@ export default function AdminTaxonomy() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
               <div className="space-y-1">
-                <Label className="text-xs">Okruh</Label>
-                <Select value={filterOkruh} onValueChange={setFilterOkruh}>
+                <Label className="text-xs">Klinický obor</Label>
+                <Select value={filterDiscipline} onValueChange={setFilterDiscipline}>
                   <SelectTrigger className="h-9">
-                    <SelectValue placeholder="Všechny okruhy" />
+                    <SelectValue placeholder="Všechny obory" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Všechny okruhy</SelectItem>
-                    {okruhy.map(o => (
-                      <SelectItem key={o.id} value={o.id}>{o.title}</SelectItem>
+                    <SelectItem value="all">Všechny obory</SelectItem>
+                    {disciplines.map(d => (
+                      <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              <div className="space-y-1">
-                <Label className="text-xs">Status</Label>
-                <Select value={filterTopicStatus} onValueChange={setFilterTopicStatus}>
-                  <SelectTrigger className="h-9">
-                    <SelectValue placeholder="Všechny statusy" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Všechny</SelectItem>
-                    <SelectItem value="draft">Draft</SelectItem>
-                    <SelectItem value="in_review">In Review</SelectItem>
-                    <SelectItem value="published">Published</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1">
+                  <Label className="text-xs">Okruh</Label>
+                  <Select value={filterOkruh} onValueChange={setFilterOkruh}>
+                    <SelectTrigger className="h-9">
+                      <SelectValue placeholder="Všechny okruhy" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Všechny okruhy</SelectItem>
+                      {filteredOkruhy.map(o => (
+                        <SelectItem key={o.id} value={o.id}>{o.title}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-1">
+                  <Label className="text-xs">Status</Label>
+                  <Select value={filterTopicStatus} onValueChange={setFilterTopicStatus}>
+                    <SelectTrigger className="h-9">
+                      <SelectValue placeholder="Všechny statusy" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Všechny</SelectItem>
+                      <SelectItem value="draft">Draft</SelectItem>
+                      <SelectItem value="in_review">In Review</SelectItem>
+                      <SelectItem value="published">Published</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="hide-published"
+                  checked={hidePublished}
+                  onCheckedChange={setHidePublished}
+                />
+                <Label
+                  htmlFor="hide-published"
+                  className="text-sm font-medium leading-none cursor-pointer"
+                >
+                  Skrýt publikovaná témata
+                </Label>
               </div>
             </div>
 
@@ -831,7 +865,7 @@ export default function AdminTaxonomy() {
             <div className="space-y-2 max-h-[500px] overflow-y-auto">
               {filteredTopics.length === 0 && topics.length > 0 ? (
                 <p className="text-center py-8 text-slate-500">
-                  {searchQuery || filterOkruh !== 'all' || filterStatus !== 'all' 
+                  {searchQuery || filterOkruh !== 'all' || filterTopicStatus !== 'all' || filterDiscipline !== 'all' || hidePublished
                     ? 'Žádná témata neodpovídají filtrům' 
                     : 'Žádná témata'}
                 </p>
@@ -855,34 +889,25 @@ export default function AdminTaxonomy() {
                                 className="flex items-center justify-between p-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg"
                               >
                                 <div className="flex items-center gap-2 flex-1">
-                                  <Checkbox
-                                   checked={selectedTopics.includes(topic.id)}
-                                   onCheckedChange={() => toggleSelectTopic(topic.id)}
-                                  />
-                                  <span className="text-sm text-slate-900 dark:text-white">{topic.title}</span>
-                                  <Badge variant="secondary" className="text-xs">{questionCount}</Badge>
-                                  {topic.status && (
-                                  <Badge className={
-                                  topic.status === 'published' ? 'bg-green-100 text-green-700' :
-                                  topic.status === 'in_review' ? 'bg-amber-100 text-amber-700' :
-                                  'bg-slate-100 text-slate-700'
-                                  }>
-                                  {topic.status}
-                                  </Badge>
-                                  )}
-                            {topic.is_reviewed && (
-                              <Badge className="text-xs bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                                <CheckCircle className="w-3 h-3 mr-1" />
-                                Zkontrolováno
-                              </Badge>
-                            )}
-                            {topic.status === 'published' && (
-                              <Badge className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-                                <Eye className="w-3 h-3 mr-1" />
-                                Publikováno
-                              </Badge>
-                            )}
-                          </div>
+                                 <Checkbox
+                                  checked={selectedTopics.includes(topic.id)}
+                                  onCheckedChange={() => toggleSelectTopic(topic.id)}
+                                 />
+                                 {topic.is_reviewed && (
+                                   <Shield className="w-4 h-4 text-teal-600 dark:text-teal-400" title="Revidováno odborníkem" />
+                                 )}
+                                 <span className="text-sm text-slate-900 dark:text-white">{topic.title}</span>
+                                 <Badge variant="secondary" className="text-xs">{questionCount}</Badge>
+                                 {topic.status && (
+                                 <Badge className={
+                                 topic.status === 'published' ? 'bg-green-100 text-green-700' :
+                                 topic.status === 'in_review' ? 'bg-amber-100 text-amber-700' :
+                                 'bg-slate-100 text-slate-700'
+                                 }>
+                                 {topic.status}
+                                 </Badge>
+                                 )}
+                                </div>
                           <div className="flex items-center gap-1">
                             <Button 
                               variant="ghost" 
@@ -960,20 +985,11 @@ export default function AdminTaxonomy() {
                                     checked={selectedTopics.includes(topic.id)}
                                     onCheckedChange={() => toggleSelectTopic(topic.id)}
                                   />
+                                  {topic.is_reviewed && (
+                                    <Shield className="w-4 h-4 text-teal-600 dark:text-teal-400" title="Revidováno odborníkem" />
+                                  )}
                                   <span className="text-sm text-slate-900 dark:text-white">{topic.title}</span>
                                   <Badge variant="secondary" className="text-xs">{questionCount}</Badge>
-                                  {topic.is_reviewed && (
-                                    <Badge className="text-xs bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                                      <CheckCircle className="w-3 h-3 mr-1" />
-                                      Zkontrolováno
-                                    </Badge>
-                                  )}
-                                  {topic.status === 'published' && (
-                                    <Badge className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-                                      <Eye className="w-3 h-3 mr-1" />
-                                      Publikováno
-                                    </Badge>
-                                  )}
                                 </div>
                                 <div className="flex items-center gap-1">
                                   <Button 

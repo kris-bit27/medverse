@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Send, Loader2, Plus, MessageSquare, X, Bot } from 'lucide-react';
+import { Send, Loader2, Plus, MessageSquare, X, Bot, AlertCircle } from 'lucide-react';
 import ChatMessage from './ChatMessage';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 
 export default function FloatingCopilot() {
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [conversations, setConversations] = useState([]);
   const [currentConversation, setCurrentConversation] = useState(null);
@@ -41,6 +44,7 @@ export default function FloatingCopilot() {
       }
     } catch (error) {
       console.error('Error loading conversations:', error);
+      toast.error('Nepodařilo se načíst konverzace');
     }
   };
 
@@ -58,11 +62,14 @@ export default function FloatingCopilot() {
       await loadConversations();
     } catch (error) {
       console.error('Error creating conversation:', error);
+      toast.error('Nepodařilo se vytvořit novou konverzaci');
     }
     setIsLoading(false);
   };
 
   const selectConversation = async (convId) => {
+    if (!convId) return;
+    
     setIsLoading(true);
     try {
       const conv = await base44.agents.getConversation(convId);
@@ -70,6 +77,9 @@ export default function FloatingCopilot() {
       setMessages(conv.messages || []);
     } catch (error) {
       console.error('Error selecting conversation:', error);
+      // Silently fail if conversation doesn't exist anymore
+      setCurrentConversation(null);
+      setMessages([]);
     }
     setIsLoading(false);
   };
@@ -101,7 +111,18 @@ export default function FloatingCopilot() {
       setIsLoading(false);
     }
 
-    const userMessage = { role: 'user', content: messageContent };
+    // Sestavení pageContext - bez topicId aby nevyvolalo chyby s neexistujícími Topics
+    const pageContext = {
+      pathname: location.pathname,
+      url: location.pathname,
+      title: document.title
+    };
+
+    const userMessage = { 
+      role: 'user', 
+      content: messageContent,
+      pageContext 
+    };
     setMessages(prev => [...prev, userMessage]);
     setIsStreaming(true);
 
@@ -116,12 +137,50 @@ export default function FloatingCopilot() {
       await base44.agents.addMessage(convToUse, userMessage);
     } catch (error) {
       console.error('Error sending message:', error);
+      toast.error('Nepodařilo se odeslat zprávu');
+      setIsStreaming(false);
+      unsubscribe();
+      return;
     }
     
     setTimeout(() => {
       unsubscribe();
       setIsStreaming(false);
     }, 30000);
+  };
+
+  const extractTopicIdFromUrl = (pathname) => {
+    // Extrahuje topicId z URL typu /topic/123 nebo /TopicDetail?id=123
+    const match = pathname.match(/\/topic\/([^/]+)/);
+    if (match) return match[1];
+    
+    const params = new URLSearchParams(window.location.search);
+    return params.get('id') || params.get('topicId') || null;
+  };
+
+  const getContextualGreeting = () => {
+    const path = window.location.pathname;
+    const title = document.title;
+    
+    if (path.includes('TopicDetail') || path.includes('/topic/')) {
+      const topicMatch = title.match(/^([^|]+)/);
+      const topicName = topicMatch ? topicMatch[1].trim() : 'toto téma';
+      return `Vidím, že studuješ ${topicName}, chceš s něčím pomoci?`;
+    }
+    
+    if (path.includes('Atestace') || path.includes('OkruhDetail')) {
+      return 'Vidím, že procházíš atestační okruhy. Na co se chceš zeptat?';
+    }
+    
+    if (path.includes('QuestionDetail')) {
+      return 'Řešíš konkrétní otázku? Můžu ti pomoci ji pochopit.';
+    }
+    
+    if (path.includes('Logbook')) {
+      return 'Doplňuješ logbook? Rád ti pomůžu s kategorizací nebo popisem.';
+    }
+    
+    return 'Začněte konverzaci';
   };
 
   const handleKeyDown = (e) => {
@@ -185,7 +244,7 @@ export default function FloatingCopilot() {
                   <MessageSquare className="w-8 h-8 text-teal-600" />
                 </div>
                 <p className="font-semibold text-slate-900 dark:text-white mb-2">
-                  Začněte konverzaci
+                  {getContextualGreeting()}
                 </p>
                 <p className="text-sm text-slate-500 dark:text-slate-400 max-w-[280px]">
                   Zeptejte se Hippa na pomoc s porozuměním medicíně

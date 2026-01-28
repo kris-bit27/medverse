@@ -33,57 +33,15 @@ export default function AITaxonomyGenerator({ disciplines, onComplete }) {
       const discipline = disciplines.find(d => d.id === selectedDiscipline);
       
       // Build prompt for AI
-      const prompt = `Jsi expert na medicínské vzdělávání a vytváříš strukturovanou taxonomii pro atestační zkoušky v oboru ${discipline.name}.
+      const prompt = `Jsi specialista na medicínské kurikulum. Tvým úkolem je vytvořit KOMPLETNÍ seznam okruhů a témat pro atestační obor ${discipline.name}.
 
-${sourceUrl ? `Použij informace z tohoto zdroje: ${sourceUrl}` : 'Použij oficiální požadavky MZČR pro atestační zkoušky.'}
+${sourceUrl ? `Pokud je k dispozici zdroj (${sourceUrl}), extrahuj z něj VŠECHNY atestační otázky a kapitoly.` : ''}
 
-Vytvoř komplexní strukturu pro tento obor:
+NESMÍŠ nic vynechat. Pokud dokument obsahuje 50 témat, vypiš všech 50.
 
-1. **Okruhy** (3-6 hlavních tematických celků) - např. "Základní diagnostika", "Terapeutické postupy", "Urgentní stavy"
-2. **Témata** (pro každý okruh 5-10 konkrétních témat)
-3. **Otázky** (pro každé téma 3-5 atestačních otázek s odpověďmi)
+Generuj POUZE názvy okruhů a názvy témat. Negeneruj žádné otázky ani odpovědi.`;
 
-DŮLEŽITÉ:
-- Otázky musí být v souladu s požadavky MZČR pro atestace
-- Odpovědi musí být strukturované (Definice, Diagnostika, Léčba, Komplikace)
-- Obtížnost 1-5 (1=základní, 5=pokročilé)
-- Vše v češtině
-
-Vrať JSON ve formátu:
-{
-  "okruhy": [
-    {
-      "title": "název okruhu",
-      "description": "popis okruhu",
-      "order": 1,
-      "topics": [
-        {
-          "title": "název tématu",
-          "order": 1,
-          "learning_objectives": ["cíl 1", "cíl 2"],
-          "questions": [
-            {
-              "title": "stručný název otázky",
-              "question_text": "Podrobný text otázky",
-              "answer_rich": "Detailní odpověď v markdown",
-              "answer_structured": {
-                "definice": "...",
-                "diagnostika": "...",
-                "lecba": "...",
-                "komplikace": "...",
-                "pearls": "..."
-              },
-              "difficulty": 3,
-              "visibility": "members_only"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}`;
-
-      // Generate structure using InvokeLLM (fallback if OpenAI fails)
+      // Generate structure using InvokeLLM
       const jsonSchema = {
         type: "object",
         properties: {
@@ -101,47 +59,26 @@ Vrať JSON ve formátu:
                     type: "object",
                     properties: {
                       title: { type: "string" },
-                      order: { type: "number" },
-                      learning_objectives: {
-                        type: "array",
-                        items: { type: "string" }
-                      },
-                      questions: {
-                        type: "array",
-                        items: {
-                          type: "object",
-                          properties: {
-                            title: { type: "string" },
-                            question_text: { type: "string" },
-                            answer_rich: { type: "string" },
-                            answer_structured: {
-                              type: "object",
-                              properties: {
-                                definice: { type: "string" },
-                                diagnostika: { type: "string" },
-                                lecba: { type: "string" },
-                                komplikace: { type: "string" },
-                                pearls: { type: "string" }
-                              }
-                            },
-                            difficulty: { type: "number" },
-                            visibility: { type: "string" }
-                          }
-                        }
-                      }
-                    }
+                      order: { type: "number" }
+                    },
+                    required: ["title", "order"]
                   }
                 }
-              }
+              },
+              required: ["title", "description", "order", "topics"]
             }
           }
-        }
+        },
+        required: ["okruhy"]
       };
 
       const response = await base44.integrations.Core.InvokeLLM({
-        prompt: prompt,
+        prompt: sourceUrl ? `${prompt}\n\nPrimární zdroj dat (použij jako hlavní referenci): ${sourceUrl}` : prompt,
         add_context_from_internet: !!sourceUrl,
-        response_json_schema: jsonSchema
+        response_json_schema: jsonSchema,
+        model: 'gemini-1.5-pro',
+        temperature: 0.1,
+        maxTokens: 8000
       });
 
       console.log('AI Response:', response);
@@ -156,57 +93,38 @@ Vrať JSON ve formátu:
       // Create all entities
       let createdOkruhy = 0;
       let createdTopics = 0;
-      let createdQuestions = 0;
 
       for (const okruhData of generatedData.okruhy) {
         // Create Okruh
         const okruh = await base44.entities.Okruh.create({
           title: okruhData.title,
           description: okruhData.description,
-          order: okruhData.order,
           clinical_discipline_id: selectedDiscipline
         });
         createdOkruhy++;
 
-        for (const topicData of okruhData.topics) {
-          // Create Topic
-          const topic = await base44.entities.Topic.create({
+        // Create Topics in bulk
+        if (okruhData.topics && okruhData.topics.length > 0) {
+          const topicsToCreate = okruhData.topics.map(topicData => ({
             title: topicData.title,
             okruh_id: okruh.id,
-            order: topicData.order,
-            learning_objectives: topicData.learning_objectives,
-            is_published: false,
-            is_reviewed: false
-          });
-          createdTopics++;
-
-          // Create Questions
-          const questionsToCreate = topicData.questions.map(q => ({
-            title: q.title,
-            question_text: q.question_text,
-            answer_rich: q.answer_rich,
-            answer_structured: q.answer_structured,
-            difficulty: q.difficulty,
-            visibility: q.visibility || 'members_only',
-            okruh_id: okruh.id,
-            topic_id: topic.id
+            status: 'draft',
+            is_reviewed: false,
+            generation_source: 'Gemini 1.5 Pro Taxonomy'
           }));
 
-          if (questionsToCreate.length > 0) {
-            await base44.entities.Question.bulkCreate(questionsToCreate);
-            createdQuestions += questionsToCreate.length;
-          }
+          await base44.entities.Topic.bulkCreate(topicsToCreate);
+          createdTopics += topicsToCreate.length;
         }
       }
 
       setResult({
         success: true,
         okruhy: createdOkruhy,
-        topics: createdTopics,
-        questions: createdQuestions
+        topics: createdTopics
       });
 
-      toast.success(`Vytvořeno: ${createdOkruhy} okruhů, ${createdTopics} témat, ${createdQuestions} otázek`);
+      toast.success(`Vytvořeno: ${createdOkruhy} okruhů, ${createdTopics} témat`);
       
       if (onComplete) {
         onComplete();
@@ -228,8 +146,8 @@ Vrať JSON ve formátu:
       <Alert>
         <Sparkles className="w-4 h-4" />
         <AlertDescription>
-          AI vygeneruje komplexní strukturu okruhů, témat a otázek na základě oficiálních požadavků MZČR.
-          Proces může trvat 1-2 minuty.
+          AI vygeneruje kompletní osnovu okruhů a témat na základě oficiálních požadavků MZČR.
+          Proces může trvat 30-60 sekund.
         </AlertDescription>
       </Alert>
 
@@ -266,12 +184,12 @@ Vrať JSON ve formátu:
           {isGenerating ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Generujem strukturu...
+              Generujem osnovu...
             </>
           ) : (
             <>
               <Sparkles className="w-4 h-4 mr-2" />
-              Vygenerovat okruhy, témata a otázky
+              Vygenerovat osnovu okruhů a témat
             </>
           )}
         </Button>
@@ -287,7 +205,6 @@ Vrať JSON ve formátu:
                 <ul className="list-disc list-inside space-y-1 text-sm">
                   <li>{result.okruhy} okruhů</li>
                   <li>{result.topics} témat</li>
-                  <li>{result.questions} otázek</li>
                 </ul>
               </AlertDescription>
             </>

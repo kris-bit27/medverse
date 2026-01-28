@@ -1,9 +1,4 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import OpenAI from 'npm:openai@4.77.3';
-
-const openai = new OpenAI({
-    apiKey: Deno.env.get("OPENAI_API_KEY"),
-});
 
 Deno.serve(async (req) => {
     try {
@@ -20,10 +15,42 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Discipline name is required' }, { status: 400 });
         }
 
-        // Build prompt
-        let prompt = `Vytvoř kompletní strukturu okruhů a témat pro klinickou disciplínu: ${disciplineName}
+        // Try to fetch source content if URL provided
+        let sourceContent = '';
+        if (sourceUrl) {
+            try {
+                const fetchResponse = await fetch(sourceUrl);
+                if (fetchResponse.ok) {
+                    const contentType = fetchResponse.headers.get('content-type');
+                    // If it's text/plain or text/html, extract content
+                    if (contentType?.includes('text/plain') || contentType?.includes('text/html')) {
+                        sourceContent = await fetchResponse.text();
+                    }
+                }
+            } catch (error) {
+                console.log('Could not fetch source URL, will rely on Gemini search:', error);
+            }
+        }
 
-Struktura by měla pokrývat všechny klíčové oblasti oboru podle doporučení MZČR (Ministerstvo zdravotnictví České republiky).
+        // Build prompt
+        let prompt = `Vytvoř KOMPLETNÍ strukturu okruhů a témat pro klinickou disciplínu: ${disciplineName}
+
+${sourceContent ? `
+=== ZDROJOVÁ DATA ===
+${sourceContent.substring(0, 50000)}
+=== KONEC ZDROJOVÝCH DAT ===
+
+Důkladně analyzuj výše uvedená zdrojová data. Jedná se o oficiální atestační materiály. Přepiš VŠE do níže uvedené JSON struktury.
+` : ''}
+
+${!sourceContent && sourceUrl ? `
+INSTRUKCE PRO VYHLEDÁVÁNÍ:
+Použij své schopnosti vyhledávání a znalosti oficiálních kurikul MZČR (Věstník MZČR) pro daný obor. 
+URL zdroje: ${sourceUrl}
+Nesmíš vynechat žádnou klíčovou oblast uvedenou v legislativě nebo oficiálních atestačních požadavcích.
+` : ''}
+
+Struktura by měla pokrývat VŠECHNY klíčové oblasti oboru podle doporučení MZČR (Ministerstvo zdravotnictví České republiky).
 
 Pro každý okruh vygeneruj 3-5 hlavních témat a pro každé téma 2-3 konkrétní otázky s odpověďmi.
 
@@ -33,89 +60,75 @@ Odpovědi by měly obsahovat:
 - Léčbu
 - Případné komplikace
 
-${sourceUrl ? `\n\nVyužij jako hlavní zdroj informací: ${sourceUrl}` : ''}
-
 Vrať data ve formátu JSON podle následujícího schématu.`;
 
-        // Call GPT-4o for taxonomy generation
-        const completion = await openai.chat.completions.create({
-            model: "gpt-4o",
-            messages: [
-                {
-                    role: "system",
-                    content: "Jsi expert na přípravu lékařů k atestacím. Vytváříš strukturovaný vzdělávací obsah dle českých zdravotnických standardů."
-                },
-                {
-                    role: "user",
-                    content: prompt
-                }
-            ],
-            response_format: {
-                type: "json_schema",
-                json_schema: {
-                    name: "taxonomy_structure",
-                    strict: true,
-                    schema: {
-                        type: "object",
-                        properties: {
-                            okruhy: {
-                                type: "array",
-                                items: {
-                                    type: "object",
-                                    properties: {
-                                        title: { type: "string" },
-                                        description: { type: "string" },
-                                        icon: { type: "string" },
-                                        topics: {
-                                            type: "array",
-                                            items: {
-                                                type: "object",
-                                                properties: {
-                                                    title: { type: "string" },
-                                                    tags: {
-                                                        type: "array",
-                                                        items: { type: "string" }
-                                                    },
-                                                    questions: {
-                                                        type: "array",
-                                                        items: {
-                                                            type: "object",
-                                                            properties: {
-                                                                title: { type: "string" },
-                                                                question_text: { type: "string" },
-                                                                answer_rich: { type: "string" },
-                                                                difficulty: { type: "number" }
-                                                            },
-                                                            required: ["title", "question_text", "answer_rich", "difficulty"],
-                                                            additionalProperties: false
-                                                        }
-                                                    }
-                                                },
-                                                required: ["title", "tags", "questions"],
-                                                additionalProperties: false
-                                            }
-                                        }
-                                    },
-                                    required: ["title", "description", "icon", "topics"],
-                                    additionalProperties: false
-                                }
-                            }
-                        },
-                        required: ["okruhy"],
-                        additionalProperties: false
-                    }
-                }
-            },
+        // Připrav finální prompt s instrukcemi
+        const finalPrompt = `Jsi elitní atestační komisař a expert na přípravu lékařů k atestacím. Vytváříš strukturovaný vzdělávací obsah dle českých zdravotnických standardů.
+
+${prompt}
+
+KRITICKÉ: Odpověz POUZE validním JSONem. NEZAČÍNEJ odpověď žádným textem jako "Zde je vaše struktura..." nebo podobně. Vrať přímo JSON objekt.`;
+
+        // Call Google Gemini 1.5 Pro for taxonomy generation (větší kontext a kapacita)
+        const llmResponse = await base44.integrations.Core.InvokeLLM({
+            prompt: finalPrompt,
+            add_context_from_internet: sourceUrl ? true : false,
+            model: 'gemini-1.5-pro',
             temperature: 0.7,
+            maxTokens: 8192,
+            response_json_schema: {
+                type: "object",
+                properties: {
+                    okruhy: {
+                        type: "array",
+                        items: {
+                            type: "object",
+                            properties: {
+                                title: { type: "string" },
+                                description: { type: "string" },
+                                icon: { type: "string" },
+                                topics: {
+                                    type: "array",
+                                    items: {
+                                        type: "object",
+                                        properties: {
+                                            title: { type: "string" },
+                                            tags: {
+                                                type: "array",
+                                                items: { type: "string" }
+                                            },
+                                            questions: {
+                                                type: "array",
+                                                items: {
+                                                    type: "object",
+                                                    properties: {
+                                                        title: { type: "string" },
+                                                        question_text: { type: "string" },
+                                                        answer_rich: { type: "string" },
+                                                        difficulty: { type: "number" }
+                                                    },
+                                                    required: ["title", "question_text", "answer_rich", "difficulty"]
+                                                }
+                                            }
+                                        },
+                                        required: ["title", "tags", "questions"]
+                                    }
+                                }
+                            },
+                            required: ["title", "description", "icon", "topics"]
+                        }
+                    }
+                },
+                required: ["okruhy"]
+            }
         });
 
-        const generatedData = JSON.parse(completion.choices[0].message.content);
+        const generatedData = llmResponse;
 
         return Response.json({ 
             success: true, 
             data: generatedData,
-            model: "gpt-4o",
-            tokens: completion.usage
+            model: "gemini-1.5-pro"
         });
 
     } catch (error) {

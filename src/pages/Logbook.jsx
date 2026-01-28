@@ -18,7 +18,8 @@ import {
   MapPin,
   User,
   CheckCircle2,
-  Clock
+  Clock,
+  AlertCircle
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { cs } from 'date-fns/locale';
@@ -26,6 +27,9 @@ import LoadingSpinner from '@/components/common/LoadingSpinner';
 import LogbookEntryForm from '@/components/logbook/LogbookEntryForm';
 import LogbookStats from '@/components/logbook/LogbookStats';
 import jsPDF from 'jspdf';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import EmptyState from '@/components/common/EmptyState';
+import { toast } from 'sonner';
 
 const entryTypeConfig = {
   procedure: { label: 'Výkon', icon: Scissors, color: 'bg-blue-100 text-blue-800' },
@@ -54,20 +58,26 @@ export default function Logbook() {
     queryFn: () => base44.auth.me()
   });
 
-  const { data: entries = [], isLoading } = useQuery({
+  const { data: entries = [], isLoading, isError: entriesError, error } = useQuery({
     queryKey: ['logbookEntries', user?.id],
     queryFn: () => base44.entities.LogbookEntry.filter({ user_id: user.id }, '-date'),
     enabled: !!user?.id
   });
 
-  const { data: disciplines = [] } = useQuery({
+  const { data: disciplines = [], isError: disciplinesError } = useQuery({
     queryKey: ['clinicalDisciplines'],
     queryFn: () => base44.entities.ClinicalDiscipline.list()
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.LogbookEntry.delete(id),
-    onSuccess: () => queryClient.invalidateQueries(['logbookEntries'])
+    onSuccess: () => {
+      queryClient.invalidateQueries(['logbookEntries']);
+      toast.success('Záznam byl smazán');
+    },
+    onError: () => {
+      toast.error('Nepodařilo se smazat záznam');
+    }
   });
 
   const filteredEntries = activeTab === 'all' 
@@ -137,9 +147,28 @@ export default function Logbook() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <LoadingSpinner size="lg" />
+        <LoadingSpinner size="lg" text="Načítám logbook..." />
       </div>
     );
+  }
+
+  if (entriesError || disciplinesError) {
+    return (
+      <div className="p-6 max-w-2xl mx-auto">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Nepodařilo se načíst data. Zkuste to prosím znovu.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
+
+
+  if (disciplinesError) {
+    toast.error('Nepodařilo se načíst klinické obory');
   }
 
   return (
@@ -195,18 +224,20 @@ export default function Logbook() {
         </CardHeader>
         <CardContent className="pt-6">
           {filteredEntries.length === 0 ? (
-            <div className="text-center py-12 text-slate-500">
-              <BookOpen className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-              <p>Zatím nemáte žádné záznamy</p>
-              <Button 
-                variant="outline" 
-                className="mt-4"
-                onClick={() => setShowForm(true)}
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Přidat první záznam
-              </Button>
-            </div>
+            <EmptyState
+              icon={BookOpen}
+              title={activeTab === 'all' ? 'Zatím nemáte žádné záznamy' : `Žádné záznamy typu ${entryTypeConfig[activeTab]?.label}`}
+              description={activeTab === 'all' 
+                ? 'Začněte zaznamenávat své výkony a postupujte k atestaci' 
+                : 'Přidejte nový záznam pro sledování pokroku'
+              }
+              action={
+                <Button onClick={() => setShowForm(true)} className="bg-teal-600 hover:bg-teal-700">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Přidat první záznam
+                </Button>
+              }
+            />
           ) : (
             <div className="space-y-3">
               {filteredEntries.map(entry => {

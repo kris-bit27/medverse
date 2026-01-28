@@ -15,9 +15,11 @@ import {
   CheckCircle2,
   Sparkles,
   Brain,
-  StickyNote
+  StickyNote,
+  AlertCircle
 } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import DifficultyIndicator from '@/components/ui/DifficultyIndicator';
 import StatusBadge from '@/components/ui/StatusBadge';
 import VisibilityBadge from '@/components/common/VisibilityBadge';
@@ -42,13 +44,14 @@ export default function QuestionDetail() {
     queryFn: () => base44.auth.me()
   });
 
-  const { data: question, isLoading } = useQuery({
+  const { data: question, isLoading, error: questionError } = useQuery({
     queryKey: ['question', questionId],
     queryFn: async () => {
       const questions = await base44.entities.Question.filter({ id: questionId });
       return questions[0];
     },
-    enabled: !!questionId
+    enabled: !!questionId,
+    retry: 2
   });
 
   const { data: okruh } = useQuery({
@@ -189,15 +192,33 @@ export default function QuestionDetail() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <LoadingSpinner size="lg" />
+        <LoadingSpinner size="lg" text="Načítám otázku..." />
+      </div>
+    );
+  }
+
+  if (questionError) {
+    return (
+      <div className="p-6 max-w-2xl mx-auto">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Nepodařilo se načíst otázku. Zkuste to prosím znovu.
+          </AlertDescription>
+        </Alert>
       </div>
     );
   }
 
   if (!question) {
     return (
-      <div className="p-6 text-center">
-        <p className="text-slate-500">Otázka nenalezena</p>
+      <div className="p-6 max-w-2xl mx-auto">
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Otázka nenalezena
+          </AlertDescription>
+        </Alert>
       </div>
     );
   }
