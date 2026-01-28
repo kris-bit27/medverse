@@ -140,6 +140,11 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
   const handleAIGenerate = async (mode) => {
     setIsGenerating(true);
     try {
+      if ((mode === 'topic_generate_high_yield' || mode === 'topic_generate_deep_dive') && !content.full_text_content) {
+        toast.error('Nejprve vygeneruj nebo vlož plný studijní text.');
+        return;
+      }
+
       const templateVars = {
         specialty: context?.specialty || '',
         okruh: context?.okruh || '',
@@ -168,6 +173,9 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
       });
 
       const result = response.data || response;
+      if (result?.error) {
+        throw new Error(result.error);
+      }
 
       // Aplikuj výsledek podle módu
       if (mode === 'topic_generate_fulltext_v2') {
@@ -473,7 +481,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
               size="sm"
               variant="outline"
               onClick={() => handleAIGenerate('topic_generate_high_yield')}
-              disabled={isGenerating || !content.full_text_content}
+              disabled={isGenerating}
               title="Generovat z plného textu"
             >
               {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <ArrowDown className="w-3 h-3 mr-1" />}
@@ -494,7 +502,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
               size="sm"
               variant="outline"
               onClick={() => handleAIGenerate('topic_generate_deep_dive')}
-              disabled={isGenerating || !content.full_text_content}
+              disabled={isGenerating}
             >
               {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Sparkles className="w-3 h-3 mr-1" />}
               Generovat AI
