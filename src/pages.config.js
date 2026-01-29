@@ -54,6 +54,7 @@ import AdminArticles from './pages/AdminArticles';
 import AdminAudit from './pages/AdminAudit';
 import AdminQuestionEdit from './pages/AdminQuestionEdit';
 import AdminQuestions from './pages/AdminQuestions';
+import AdminTaxonomy from './pages/AdminTaxonomy';
 import AdminToolEdit from './pages/AdminToolEdit';
 import AdminTools from './pages/AdminTools';
 import AdminUsers from './pages/AdminUsers';
@@ -86,7 +87,6 @@ import TestSession from './pages/TestSession';
 import ToolDetail from './pages/ToolDetail';
 import Tools from './pages/Tools';
 import TopicDetail from './pages/TopicDetail';
-import AdminTaxonomy from './pages/AdminTaxonomy';
 import __Layout from './Layout.jsx';
 
 
@@ -98,6 +98,7 @@ export const PAGES = {
     "AdminAudit": AdminAudit,
     "AdminQuestionEdit": AdminQuestionEdit,
     "AdminQuestions": AdminQuestions,
+    "AdminTaxonomy": AdminTaxonomy,
     "AdminToolEdit": AdminToolEdit,
     "AdminTools": AdminTools,
     "AdminUsers": AdminUsers,
@@ -130,7 +131,6 @@ export const PAGES = {
     "ToolDetail": ToolDetail,
     "Tools": Tools,
     "TopicDetail": TopicDetail,
-    "AdminTaxonomy": AdminTaxonomy,
 }
 
 export const pagesConfig = {
