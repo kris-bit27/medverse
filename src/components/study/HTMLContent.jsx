@@ -1,7 +1,10 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
 
 export default function HTMLContent({ content }) {
   if (!content) return null;
+
+  const looksLikeHtml = /<\/?[a-z][\s\S]*>/i.test(content);
 
   const sanitizeHtml = (rawHtml) => {
     const parser = new DOMParser();
@@ -41,8 +44,16 @@ export default function HTMLContent({ content }) {
     return doc.body.innerHTML;
   };
 
+  if (!looksLikeHtml) {
+    return (
+      <div className="tiptap-rendered-content max-w-4xl mx-auto">
+        <ReactMarkdown>{content}</ReactMarkdown>
+      </div>
+    );
+  }
+
   // Clean HTML: remove classes, empty paragraphs, and excessive breaks
-  let cleanHTML = sanitizeHtml(content)
+  const cleanHTML = sanitizeHtml(content)
     // Remove empty paragraphs
     .replace(/<p><\/p>/gi, '')
     .replace(/<p>\s*<\/p>/gi, '')
@@ -50,7 +61,7 @@ export default function HTMLContent({ content }) {
     .replace(/(<br\s*\/?>\s*){2,}/gi, '<br />');
 
   return (
-    <div 
+    <div
       className="tiptap-rendered-content max-w-4xl mx-auto"
       dangerouslySetInnerHTML={{ __html: cleanHTML }}
     />
