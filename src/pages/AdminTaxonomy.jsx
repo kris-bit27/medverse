@@ -1065,7 +1065,9 @@ export default function AdminTaxonomy() {
                                    <Shield className="w-4 h-4 text-teal-600 dark:text-teal-400" title="Revidováno odborníkem" />
                                  )}
                                  <span className="text-sm text-slate-900 dark:text-white">{topic.title}</span>
-                                 <Badge variant="secondary" className="text-xs">{questionCount}</Badge>
+                                 {questionCount > 0 && (
+                                   <Badge variant="secondary" className="text-xs">{questionCount}</Badge>
+                                 )}
                                  {topic.status && (
                                  <Badge className={
                                  topic.status === 'published' ? 'bg-green-100 text-green-700' :
@@ -1172,7 +1174,9 @@ export default function AdminTaxonomy() {
                                     <Shield className="w-4 h-4 text-teal-600 dark:text-teal-400" title="Revidováno odborníkem" />
                                   )}
                                   <span className="text-sm text-slate-900 dark:text-white">{topic.title}</span>
-                                  <Badge variant="secondary" className="text-xs">{questionCount}</Badge>
+                                  {questionCount > 0 && (
+                                    <Badge variant="secondary" className="text-xs">{questionCount}</Badge>
+                                  )}
                                 </div>
                                 <div className="flex items-center gap-1">
                                   <Button
