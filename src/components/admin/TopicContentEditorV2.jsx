@@ -6,7 +6,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import TopicContentReviewPanel from './TopicContentReviewPanel';
 import TipTapEditor from './TipTapEditor';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
@@ -108,7 +107,6 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
   const [isSaving, setIsSaving] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [newObjective, setNewObjective] = useState('');
-  const [reviewResult, setReviewResult] = useState(null);
   const [lastGenerated, setLastGenerated] = useState(null);
   const [useRichEditor, setUseRichEditor] = useState(true);
   const lastUpdatedRaw = topic?.updated_date || topic?.updated_at || topic?.modified_date || topic?.created_date || null;
@@ -216,53 +214,6 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
     }
   };
 
-  const handleAIReview = async () => {
-    setIsGenerating(true);
-    setReviewResult(null);
-    try {
-      const hasContent = content.full_text_content || content.bullet_points_summary || content.deep_dive_content;
-      if (!hasContent) {
-        toast.error('Nejprve vytvořte nějaký obsah pro hodnocení');
-        setIsGenerating(false);
-        return;
-      }
-
-      // Krok 1: Kritické hodnocení
-      const response = await base44.functions.invoke('invokeEduLLM', {
-        mode: 'content_review_critic',
-        entityContext: {
-          topic: { ...topic, ...content },
-          entityType: 'topic',
-          entityId: topic.id
-        },
-        userPrompt: `Zhodnoť kvalitu studijního materiálu pro téma "${topic.title}". Materiál:\n\n${content.full_text_content || ''}\n\n${content.bullet_points_summary || ''}`,
-        allowWeb: true,
-        systemPromptOverride: ADMIN_CONTENT_SYSTEM_PROMPT
-      });
-
-      const result = response.data || response;
-      const review = result.structuredData || result;
-      setReviewResult(review);
-      setLastGenerated(result);
-
-      // Ulož skóre do topic
-      await base44.entities.Topic.update(topic.id, {
-        last_review_score: review.score,
-        last_review_summary: JSON.stringify({
-          strengths: review.strengths,
-          weaknesses: review.weaknesses,
-          missing_topics: review.missing_topics
-        })
-      });
-
-      toast.success(`Hodnocení dokončeno: ${review.score}/10`);
-    } catch (error) {
-      console.error('AI review error:', error);
-      toast.error('Chyba při hodnocení: ' + error.message);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
 
   const addObjective = () => {
     if (newObjective.trim()) {
@@ -333,57 +284,6 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         {getStatusBadge(content.status)}
       </div>
 
-      {/* AI Review */}
-      <div className="flex gap-2">
-        <Button
-          variant="outline"
-          onClick={handleAIReview}
-          disabled={isGenerating}
-          className="flex-1"
-        >
-          {isGenerating ? (
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-          ) : (
-            <CheckCircle className="w-4 h-4 mr-2" />
-          )}
-          Hodnotit materiál AI
-        </Button>
-      </div>
-
-      {/* Review result */}
-      {reviewResult && (
-        <Alert className={reviewResult.score >= 7 ? 'bg-green-50 border-green-200' : 'bg-amber-50 border-amber-200'}>
-          <AlertDescription>
-            <div className="space-y-2">
-              <div className="font-semibold">Hodnocení: {reviewResult.score}/10</div>
-              {reviewResult.strengths?.length > 0 && (
-                <div>
-                  <div className="text-xs font-semibold text-green-700">Silné stránky:</div>
-                  <ul className="text-xs list-disc list-inside">
-                    {reviewResult.strengths.map((s, i) => <li key={i}>{s}</li>)}
-                  </ul>
-                </div>
-              )}
-              {reviewResult.weaknesses?.length > 0 && (
-                <div>
-                  <div className="text-xs font-semibold text-amber-700">Slabiny:</div>
-                  <ul className="text-xs list-disc list-inside">
-                    {reviewResult.weaknesses.map((w, i) => <li key={i}>{w}</li>)}
-                  </ul>
-                </div>
-              )}
-              {reviewResult.missing_topics?.length > 0 && (
-                <div>
-                  <div className="text-xs font-semibold text-slate-700">Chybějící témata:</div>
-                  <ul className="text-xs list-disc list-inside">
-                    {reviewResult.missing_topics.map((t, i) => <li key={i}>{t}</li>)}
-                  </ul>
-                </div>
-              )}
-            </div>
-          </AlertDescription>
-        </Alert>
-      )}
 
       {/* Learning objectives */}
       <div className="space-y-3">
@@ -542,18 +442,6 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
             </div>
           )}
         </div>
-      )}
-
-      {/* Hippo Review Panel - zobrazí se při LOW confidence nebo missing topics */}
-      {lastGenerated && (
-        <TopicContentReviewPanel 
-          topic={topic}
-          aiResponse={lastGenerated}
-          onContentImproved={(improved) => {
-            setLastGenerated(improved);
-            toast.success('Obsah vylepšen – zkopírujte ho do editoru');
-          }}
-        />
       )}
 
       <Button

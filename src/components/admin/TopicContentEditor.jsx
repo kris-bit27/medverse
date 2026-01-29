@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2, Sparkles, Save, BookOpen, List, Microscope, ArrowDown, CheckCircle } from 'lucide-react';
+import { Loader2, Sparkles, Save, BookOpen, List, Microscope, ArrowDown } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function TopicContentEditor({ topic, onSave }) {
@@ -119,91 +119,6 @@ ${fullTextSnippet}`;
     }
   };
 
-  const handleAIReview = async () => {
-    setIsGenerating(true);
-    try {
-      const hasContent = content.full_text_content || content.bullet_points_summary || content.deep_dive_content;
-      if (!hasContent) {
-        toast.error('Nejprve vytvořte nějaký obsah pro hodnocení');
-        setIsGenerating(false);
-        return;
-      }
-
-      const MAX_REVIEW_CHARS = 4000;
-      const fullTextReview = (content.full_text_content || '').slice(0, MAX_REVIEW_CHARS);
-      const bulletsReview = (content.bullet_points_summary || '').slice(0, MAX_REVIEW_CHARS);
-      const deepDiveReview = (content.deep_dive_content || '').slice(0, MAX_REVIEW_CHARS);
-
-      const prompt = `Proveď odborné hodnocení následujícího studijního materiálu pro téma "${topic.title}" určeného pro přípravu na lékařskou atestaci.
-
-${fullTextReview ? `PLNÝ TEXT:\n${fullTextReview}\n\n` : ''}
-${bulletsReview ? `SHRNUTÍ V ODRÁŽKÁCH:\n${bulletsReview}\n\n` : ''}
-${deepDiveReview ? `DEEP DIVE:\n${deepDiveReview}\n\n` : ''}
-
-Zhodnoť:
-1. Úplnost a správnost informací
-2. Strukturu a přehlednost
-3. Vhodnost pro atestační přípravu
-4. Chybějící klíčové informace
-5. Návrhy na vylepšení
-
-Vrať konkrétní doporučení pro každou sekci.`;
-
-      const response = await base44.integrations.Core.InvokeLLM({
-        prompt,
-        add_context_from_internet: true,
-        model: 'gemini-1.5-pro',
-        maxTokens: 1024,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            overall_rating: { type: "number" },
-            strengths: {
-              type: "array",
-              items: { type: "string" }
-            },
-            weaknesses: {
-              type: "array",
-              items: { type: "string" }
-            },
-            missing_topics: {
-              type: "array",
-              items: { type: "string" }
-            },
-            improvement_suggestions: {
-              type: "array",
-              items: { type: "string" }
-            }
-          }
-        }
-      });
-
-      // Show review in a dialog or alert
-      const reviewText = `
-📊 HODNOCENÍ: ${response.overall_rating}/10
-
-✅ SILNÉ STRÁNKY:
-${response.strengths.map(s => `• ${s}`).join('\n')}
-
-⚠️ SLABINY:
-${response.weaknesses.map(w => `• ${w}`).join('\n')}
-
-📚 CHYBĚJÍCÍ TÉMATA:
-${response.missing_topics.map(t => `• ${t}`).join('\n')}
-
-💡 NÁVRHY NA VYLEPŠENÍ:
-${response.improvement_suggestions.map(i => `• ${i}`).join('\n')}
-      `.trim();
-
-      alert(reviewText);
-      toast.success('Hodnocení dokončeno');
-    } catch (error) {
-      console.error('AI review error:', error);
-      toast.error('Chyba při hodnocení');
-    } finally {
-      setIsGenerating(false);
-    }
-  };
 
   const addObjective = () => {
     if (newObjective.trim()) {
@@ -229,22 +144,6 @@ ${response.improvement_suggestions.map(i => `• ${i}`).join('\n')}
           Vytvořte studijní obsah pro téma <strong>{topic.title}</strong>. AI může generovat obsah na základě medicínské literatury.
         </AlertDescription>
       </Alert>
-
-      <div className="flex gap-2">
-        <Button
-          variant="outline"
-          onClick={handleAIReview}
-          disabled={isGenerating}
-          className="flex-1"
-        >
-          {isGenerating ? (
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-          ) : (
-            <CheckCircle className="w-4 h-4 mr-2" />
-          )}
-          Hodnotit materiál AI
-        </Button>
-      </div>
 
       {/* Learning objectives */}
       <div className="space-y-3">
