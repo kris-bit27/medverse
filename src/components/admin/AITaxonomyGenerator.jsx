@@ -20,6 +20,15 @@ export default function AITaxonomyGenerator({ disciplines, onComplete }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [result, setResult] = useState(null);
 
+  const isProbablyUrl = (value) => {
+    try {
+      const parsed = new URL(value);
+      return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch {
+      return false;
+    }
+  };
+
   const handleGenerate = async () => {
     if (!selectedDiscipline) {
       toast.error('Vyberte klinický obor');
@@ -31,15 +40,23 @@ export default function AITaxonomyGenerator({ disciplines, onComplete }) {
 
     try {
       const discipline = disciplines.find(d => d.id === selectedDiscipline);
-      
+      const sourceIsUrl = sourceUrl && isProbablyUrl(sourceUrl);
+      const sourceSnippet = sourceIsUrl ? '' : (sourceUrl || '').slice(0, 12000);
+
       // Build prompt for AI
       const prompt = `Jsi specialista na medicínské kurikulum. Tvým úkolem je vytvořit KOMPLETNÍ seznam okruhů a témat pro atestační obor ${discipline.name}.
 
-${sourceUrl ? `Pokud je k dispozici zdroj (${sourceUrl}), extrahuj z něj VŠECHNY atestační otázky a kapitoly.` : ''}
-
 NESMÍŠ nic vynechat. Pokud dokument obsahuje 50 témat, vypiš všech 50.
 
-Generuj POUZE názvy okruhů a názvy témat. Negeneruj žádné otázky ani odpovědi.`;
+Generuj POUZE názvy okruhů a názvy témat. Negeneruj žádné otázky ani odpovědi.
+
+VRAŤ POUZE VALIDNÍ JSON (bez komentářů, bez Markdownu).`;
+
+      const promptWithSource = sourceIsUrl
+        ? `${prompt}\n\nPrimární zdroj: ${sourceUrl}`
+        : sourceSnippet
+          ? `${prompt}\n\n=== ZDROJOVÁ DATA ===\n${sourceSnippet}\n=== KONEC ZDROJŮ ===`
+          : prompt;
 
       // Generate structure using InvokeLLM
       const jsonSchema = {
@@ -70,14 +87,22 @@ Generuj POUZE názvy okruhů a názvy témat. Negeneruj žádné otázky ani odp
         required: ["okruhy"]
       };
 
-      const response = await base44.integrations.Core.InvokeLLM({
-        prompt: sourceUrl ? `${prompt}\n\nPrimární zdroj dat (použij jako hlavní referenci): ${sourceUrl}` : prompt,
-        add_context_from_internet: !!sourceUrl,
+      const invoke = (promptText, allowWeb) => base44.integrations.Core.InvokeLLM({
+        prompt: promptText,
+        add_context_from_internet: allowWeb,
         response_json_schema: jsonSchema,
         model: 'gemini-1.5-pro',
-        temperature: 0.1,
+        temperature: 0.0,
         maxTokens: 4096
       });
+
+      let response;
+      try {
+        response = await invoke(promptWithSource, sourceIsUrl);
+      } catch (error) {
+        // Retry once with shorter prompt and no web search to improve JSON compliance
+        response = await invoke(prompt, false);
+      }
 
       console.log('AI Response:', response);
       
