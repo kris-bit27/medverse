@@ -366,21 +366,6 @@ export default function AdminTaxonomy() {
     }
   };
 
-  const handleClearTopicOrder = async () => {
-    if (!confirm('Opravdu vymazat pořadí (order) u všech témat?')) return;
-    setBulkActionLoading(true);
-    try {
-      const allTopics = await base44.entities.Topic.list();
-      await Promise.all(allTopics.map(t => base44.entities.Topic.update(t.id, { order: null })));
-      toast.success(`Pořadí vymazáno u ${allTopics.length} témat`);
-      queryClient.invalidateQueries(['topics']);
-    } catch (error) {
-      console.error('Clear order failed:', error);
-      toast.error('Vymazání pořadí selhalo');
-    } finally {
-      setBulkActionLoading(false);
-    }
-  };
 
   const toggleSelectAll = () => {
     if (selectedTopics.length === filteredTopics.length) {
@@ -448,14 +433,6 @@ export default function AdminTaxonomy() {
           Taxonomie
         </h1>
         <div className="flex gap-2">
-          <Button
-            onClick={handleClearTopicOrder}
-            variant="outline"
-            disabled={bulkActionLoading}
-          >
-            {bulkActionLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-            Vymazat pořadí témat
-          </Button>
           <Button onClick={() => setAiGeneratorOpen(true)} className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
             <Sparkles className="w-4 h-4 mr-2" />
             AI generátor
