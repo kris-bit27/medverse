@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
@@ -29,6 +29,7 @@ import {
 import { cn } from '@/lib/utils';
 
 export default function TipTapEditor({ content, onChange, placeholder = 'Začněte psát...' }) {
+  const lastContentRef = useRef(content || '');
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -97,6 +98,17 @@ export default function TipTapEditor({ content, onChange, placeholder = 'Začně
   if (!editor) {
     return null;
   }
+
+  useEffect(() => {
+    const nextContent = content || '';
+    if (nextContent === lastContentRef.current) return;
+    lastContentRef.current = nextContent;
+    try {
+      editor.commands.setContent(nextContent, false);
+    } catch {
+      // Ignore invalid content updates
+    }
+  }, [content, editor]);
 
   const addLink = () => {
     const url = window.prompt('URL odkazu:');
