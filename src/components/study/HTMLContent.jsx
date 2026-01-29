@@ -46,7 +46,7 @@ export default function HTMLContent({ content }) {
 
   if (!looksLikeHtml) {
     return (
-      <div className="prose prose-slate dark:prose-invert max-w-none">
+      <div className="tiptap-rendered-content study-content max-w-4xl mx-auto">
         <ReactMarkdown>{content}</ReactMarkdown>
       </div>
     );
@@ -62,7 +62,7 @@ export default function HTMLContent({ content }) {
 
   return (
     <div
-      className="prose prose-slate dark:prose-invert max-w-none"
+      className="tiptap-rendered-content study-content max-w-4xl mx-auto"
       dangerouslySetInnerHTML={{ __html: cleanHTML }}
     />
   );
