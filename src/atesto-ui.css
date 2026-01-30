@@ -46,9 +46,9 @@ body[data-theme="light"] {
   --mn-surface: 0 0% 100%;
   --mn-surface-2: 210 18% 95%;
   --mn-elevated: 210 24% 98%;
-  --mn-border: 220 16% 86%;
-  --mn-text: 222 30% 12%;
-  --mn-muted: 220 10% 45%;
+  --mn-border: 220 14% 82%;
+  --mn-text: 222 32% 14%;
+  --mn-muted: 220 12% 36%;
   --mn-accent: 176 56% 38%;
   --mn-accent-2: 198 80% 46%;
   --mn-success: 142 60% 40%;
