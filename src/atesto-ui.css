@@ -1,0 +1,190 @@
+/* MedNexus UI tokens + primitives */
+:root {
+  /* Core tokens (default = dark) */
+  --mn-bg: 220 20% 8%;
+  --mn-surface: 220 22% 10%;
+  --mn-elevated: 220 20% 12%;
+  --mn-border: 220 16% 20%;
+  --mn-text: 210 40% 98%;
+  --mn-muted: 215 20% 65%;
+  --mn-primary: 176 56% 45%;
+  --mn-primary-2: 198 80% 52%;
+  --mn-success: 142 60% 45%;
+  --mn-warn: 38 92% 55%;
+  --mn-danger: 0 72% 55%;
+  --mn-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+  --mn-radius: 14px;
+  --mn-focus: 176 56% 45%;
+
+  /* Map to Tailwind tokens */
+  --background: var(--mn-bg);
+  --foreground: var(--mn-text);
+  --card: var(--mn-surface);
+  --card-foreground: var(--mn-text);
+  --popover: var(--mn-elevated);
+  --popover-foreground: var(--mn-text);
+  --primary: var(--mn-primary);
+  --primary-foreground: 210 40% 98%;
+  --secondary: 220 16% 18%;
+  --secondary-foreground: var(--mn-text);
+  --muted: 220 14% 16%;
+  --muted-foreground: var(--mn-muted);
+  --accent: 220 14% 16%;
+  --accent-foreground: var(--mn-text);
+  --destructive: var(--mn-danger);
+  --destructive-foreground: 210 40% 98%;
+  --border: var(--mn-border);
+  --input: var(--mn-border);
+  --ring: var(--mn-focus);
+}
+
+body[data-theme="light"] {
+  --mn-bg: 0 0% 98%;
+  --mn-surface: 0 0% 100%;
+  --mn-elevated: 210 40% 99%;
+  --mn-border: 220 16% 86%;
+  --mn-text: 222 30% 12%;
+  --mn-muted: 220 10% 45%;
+  --mn-primary: 176 56% 38%;
+  --mn-primary-2: 198 80% 46%;
+  --mn-success: 142 60% 40%;
+  --mn-warn: 38 92% 50%;
+  --mn-danger: 0 72% 50%;
+  --mn-shadow: 0 12px 20px rgba(15, 23, 42, 0.08);
+  --mn-radius: 14px;
+  --mn-focus: 176 56% 38%;
+}
+
+body[data-theme="dark"] {
+  --mn-bg: 220 20% 8%;
+  --mn-surface: 220 22% 10%;
+  --mn-elevated: 220 20% 12%;
+  --mn-border: 220 16% 20%;
+  --mn-text: 210 40% 98%;
+  --mn-muted: 215 20% 65%;
+  --mn-primary: 176 56% 45%;
+  --mn-primary-2: 198 80% 52%;
+  --mn-success: 142 60% 45%;
+  --mn-warn: 38 92% 55%;
+  --mn-danger: 0 72% 55%;
+  --mn-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+  --mn-radius: 14px;
+  --mn-focus: 176 56% 45%;
+}
+
+/* Shell + layout primitives */
+.mn-shell {
+  background: hsl(var(--mn-bg));
+  color: hsl(var(--mn-text));
+}
+
+.mn-sidebar {
+  background: hsl(var(--mn-surface));
+  border-right: 1px solid hsl(var(--mn-border));
+}
+
+.mn-topbar {
+  background: hsl(var(--mn-elevated) / 0.92);
+  border-bottom: 1px solid hsl(var(--mn-border));
+  backdrop-filter: blur(10px);
+}
+
+.mn-main {
+  background: hsl(var(--mn-bg));
+}
+
+/* Cards, buttons, inputs, selects */
+.atesto-card {
+  background: hsl(var(--mn-surface));
+  border: 1px solid hsl(var(--mn-border));
+  border-radius: var(--mn-radius);
+  box-shadow: var(--mn-shadow);
+}
+
+.atesto-card-inner {
+  padding: 1.5rem;
+}
+
+.atesto-btn {
+  border-radius: calc(var(--mn-radius) - 4px);
+}
+
+.atesto-btn-ghost {
+  border: 1px solid transparent;
+}
+
+.atesto-btn-ghost:hover {
+  background: hsl(var(--mn-elevated));
+  border-color: hsl(var(--mn-border));
+}
+
+.atesto-badge {
+  border-radius: 999px;
+}
+
+.atesto-input,
+.atesto-select {
+  background: hsl(var(--mn-elevated));
+  border-color: hsl(var(--mn-border));
+}
+
+.atesto-input:focus,
+.atesto-select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(var(--mn-focus) / 0.25);
+}
+
+.atesto-progressbar {
+  background: hsl(var(--mn-primary) / 0.16);
+}
+
+/* Sidebar active state */
+.mn-sidebar .is-active {
+  background: hsl(var(--mn-primary) / 0.12);
+  color: hsl(var(--mn-primary));
+  box-shadow: inset 0 0 0 1px hsl(var(--mn-primary) / 0.2);
+}
+
+/* Study content readability */
+.tiptap-rendered-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.tiptap-rendered-content h1,
+.tiptap-rendered-content h2,
+.tiptap-rendered-content h3 {
+  color: hsl(var(--mn-text));
+}
+
+.tiptap-rendered-content p {
+  color: hsl(var(--mn-text));
+}
+
+.tiptap-rendered-content table {
+  border: 1px solid hsl(var(--mn-border));
+}
+
+.tiptap-rendered-content th,
+.tiptap-rendered-content td {
+  border-color: hsl(var(--mn-border));
+}
+
+.callout {
+  border-left: 4px solid hsl(var(--mn-primary));
+  background: hsl(var(--mn-elevated));
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+}
+
+.callout--info {
+  border-left-color: hsl(var(--mn-primary-2));
+}
+
+.callout--warn {
+  border-left-color: hsl(var(--mn-warn));
+}
+
+blockquote {
+  border-left-color: hsl(var(--mn-primary));
+}

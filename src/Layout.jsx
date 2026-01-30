@@ -58,7 +58,7 @@ const navItems = [
 
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
   const isPublicPage = publicPages.includes(currentPageName);
@@ -71,28 +71,20 @@ export default function Layout({ children, currentPageName }) {
   });
 
   useEffect(() => {
-    const saved = localStorage.getItem('medverse-theme');
-    if (saved === 'dark') {
-      setDarkMode(true);
-      document.documentElement.classList.add('dark');
-    } else if (saved === 'auto') {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setDarkMode(prefersDark);
-      if (prefersDark) {
-        document.documentElement.classList.add('dark');
-      }
-    }
+    const saved = localStorage.getItem('mn:theme') || localStorage.getItem('medverse-theme');
+    const theme = saved === 'light' ? 'light' : 'dark';
+    setDarkMode(theme === 'dark');
+    document.body.dataset.theme = theme;
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    localStorage.setItem('mn:theme', theme);
   }, []);
 
   const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    if (!darkMode) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('medverse-theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('medverse-theme', 'light');
-    }
+    const nextTheme = darkMode ? 'light' : 'dark';
+    setDarkMode(nextTheme === 'dark');
+    document.body.dataset.theme = nextTheme;
+    document.documentElement.classList.toggle('dark', nextTheme === 'dark');
+    localStorage.setItem('mn:theme', nextTheme);
   };
 
   const handleSearch = (e) => {
@@ -114,7 +106,7 @@ export default function Layout({ children, currentPageName }) {
   const hasAdminAccess = canAccessAdmin(user);
 
   return (
-    <div className={cn("min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors")}>
+    <div className={cn("mn-shell min-h-screen transition-colors")}>
       {/* Mobile header */}
       <header className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-50 flex items-center px-4">
         <Button
@@ -146,7 +138,7 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Sidebar */}
       <aside className={cn(
-        "fixed top-0 left-0 h-full w-72 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 z-50 transition-transform duration-300",
+        "mn-sidebar fixed top-0 left-0 h-full w-72 z-50 transition-transform duration-300",
         "lg:translate-x-0",
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       )}>
@@ -204,10 +196,8 @@ export default function Layout({ children, currentPageName }) {
                   to={createPageUrl(item.page)}
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
-                    isActive 
-                      ? "bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400" 
-                      : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    "mn-sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
+                    isActive ? "is-active" : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                   )}
                 >
                   <Icon className={cn("w-5 h-5", isActive && "text-teal-600 dark:text-teal-400")} />
@@ -228,9 +218,9 @@ export default function Layout({ children, currentPageName }) {
                   to={createPageUrl('Admin')}
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
+                    "mn-sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
                     currentPageName === 'Admin' || currentPageName?.startsWith('Admin')
-                      ? "bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400"
+                      ? "is-active"
                       : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                   )}
                 >
@@ -270,9 +260,9 @@ export default function Layout({ children, currentPageName }) {
       </aside>
 
       {/* Main content */}
-      <div className="lg:pl-72">
+      <div className="mn-main lg:pl-72">
         {/* Top bar */}
-        <header className="sticky top-0 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 z-40 hidden lg:flex items-center justify-between px-6">
+        <header className="mn-topbar sticky top-0 h-16 z-40 hidden lg:flex items-center justify-between px-6">
           <form onSubmit={handleSearch} className="flex-1 max-w-xl">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
@@ -280,7 +270,7 @@ export default function Layout({ children, currentPageName }) {
                 placeholder="Hledat otázky, články, nástroje..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-slate-100 dark:bg-slate-800 border-0 focus-visible:ring-teal-500"
+                className="pl-10 atesto-input focus-visible:ring-teal-500"
               />
             </div>
           </form>
@@ -290,14 +280,14 @@ export default function Layout({ children, currentPageName }) {
               variant="ghost"
               size="icon"
               onClick={toggleDarkMode}
-              className="text-slate-600 dark:text-slate-400"
+              className="atesto-btn atesto-btn-ghost text-slate-600 dark:text-slate-400"
             >
               {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="gap-2">
+                <Button variant="ghost" className="atesto-btn atesto-btn-ghost gap-2">
                   <Avatar className="w-8 h-8">
                     <AvatarFallback className="bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300 text-sm">
                       {user?.full_name?.charAt(0) || 'U'}
