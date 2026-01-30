@@ -185,7 +185,7 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
   const hasNewTemplate = topic.overview_md || topic.principles_md || topic.relations_md;
 
   return (
-    <div className="p-6 lg:p-8 max-w-5xl mx-auto">
+    <div className="mn-reading p-6 lg:p-8 max-w-5xl mx-auto">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-6">
         <Link to={createPageUrl('Atestace')} className="hover:text-teal-600 transition-colors">
@@ -351,7 +351,7 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
         </div>
       ) : hasContent ? (
         <Tabs value={activeView} onValueChange={setActiveView} className="mb-8">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
+          <TabsList className="mn-segmented grid w-full grid-cols-3 mb-6">
             <TabsTrigger value="full" className="flex items-center gap-2">
               <BookOpen className="w-4 h-4" />
               Plný text
