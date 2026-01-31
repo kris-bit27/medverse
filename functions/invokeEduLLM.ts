@@ -284,14 +284,9 @@ Strukturovaně. Bez povídání.`,
 - Každou sekci začni jasným nadpisem druhé úrovně (##)
 - Pokud popisuješ algoritmus (např. 'Co dělat u OPSI'), použij číslovaný seznam`,
   topic_generate_fulltext_v2: `Řiď se přesně zadáním uživatele.`,
-  topic_generate_template: `${ATTESTATION_GRADE_PROMPT}\n\nGeneruješ obsah pro všechny sekce EDU template tématu na ATESTAČNÍ ÚROVNI. Zaměř se na praktické znalosti, právní rámec a sporné situace. NIKDY negeneruj léčebné postupy pro pacienty. Výstup: JSON s 8 sekcemi markdown (overview_md, principles_md, relations_md, clinical_thinking_md, common_pitfalls_md, mental_model_md, scenarios_md, key_takeaways_md).\n\nFORMÁTOVÁNÍ:
-- Nepoužívej dlouhé odstavce (max 3-4 věty)
-- Klíčové diagnózy, léky a dávkování piš vždy tučně
-- Používej tabulky (Markdown tables) pro srovnání nebo klasifikace
-- Každou sekci začni jasným nadpisem druhé úrovně (##)
-- Pokud popisuješ algoritmus (např. 'Co dělat u OPSI'), použij číslovaný seznam`,
-  topic_summarize: `Vytvoř shrnutí v odrážkách z poskytnutého plného textu. Zachyť všechny klíčové body, definice, souvislosti.`,
-  topic_deep_dive: `${ATTESTATION_GRADE_PROMPT}\n\nVytvoř rozšířený obsah zahrnující hlubší souvislosti, nejnovější výzkum, pokročilé koncepty a edge cases. Zaměř se na právní aspekty a sporné situace v praxi.`,
+  topic_generate_template: `${ATTESTATION_GRADE_PROMPT}\n\nGeneruješ obsah pro všechny sekce EDU template tématu na ATESTAČNÍ ÚROVNI. Zaměř se na praktické znalosti, právní rámec a sporné situace. NIKDY negeneruj léčebné postupy pro pacienty. Výstup: JSON s 8 sekcemi MARKDOWN (overview_md, principles_md, relations_md, clinical_thinking_md, common_pitfalls_md, mental_model_md, scenarios_md, key_takeaways_md).\n\nSTRUKTURA KAŽDÉ SEKCE (POVINNĚ):\n- Začni nadpisem druhé úrovně (## Název sekce)\n- Odstavce max 3–4 věty\n- Na konci sekce vždy přidej krátký blok \"### Key points\" s 3–5 odrážkami\n- Pokud je to relevantní, vlož min. 1 Markdown tabulku (klasifikace/srovnání)\n\nFORMÁTOVÁNÍ:\n- Nepoužívej dlouhé odstavce (max 3-4 věty)\n- Klíčové diagnózy, léky a dávkování piš vždy tučně\n- Používej tabulky (Markdown tables) pro srovnání nebo klasifikace\n- Každou sekci začni jasným nadpisem druhé úrovně (##)\n- Pokud popisuješ algoritmus (např. 'Co dělat u OPSI'), použij číslovaný seznam\n- Výstup výhradně v Markdown (žádné HTML)`,
+  topic_summarize: `Vytvoř HIGH-YIELD shrnutí POUZE z poskytnutého plného textu. ZAKÁZÁNO přidávat nové informace. Formát: pouze odrážky. Každá odrážka musí vycházet z textu.`,
+  topic_deep_dive: `${ATTESTATION_GRADE_PROMPT}\n\nVytvoř rozšířený obsah jako DOPLNĚK k plnému textu. ZAKÁZÁNO opakovat nebo shrnovat plný text. Zaměř se na nuance, kontroverze, trade-offs, komplikace, pitfalls. Externí citace POUZE pokud allowWeb=true.`,
   topic_generate_high_yield: `Řiď se přesně zadáním uživatele.`,
   topic_generate_deep_dive: `Řiď se přesně zadáním uživatele.`,
   topic_fill_missing: `Doplň pouze pole, která jsou prázdná. Nepiš nic navíc.`,
@@ -1073,6 +1068,12 @@ ${pageCtx}
     if (MIN_MEDIUM_MODES.has(mode) && result.confidence.level === 'low') {
       result.confidence.level = 'medium';
       result.confidence.reason = 'Formatting-only mode';
+    }
+
+    // Post-check: HTML returned where Markdown is expected
+    if (typeof result.text === 'string' && (result.text.includes('<p') || result.text.includes('<h2') || result.text.includes('</'))) {
+      result.confidence.level = 'low';
+      result.confidence.reason = 'Model returned HTML; expected Markdown';
     }
 
     // Logování do AIInteractionLog - 100% AUDIT

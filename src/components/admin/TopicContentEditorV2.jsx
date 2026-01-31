@@ -95,6 +95,39 @@ const fillTemplate = (template, vars) =>
     template
   );
 
+const buildTemplateMarkdown = (structuredData, title) => {
+  if (!structuredData) return '';
+  const sections = [
+    { key: 'overview_md', title: 'Přehled tématu' },
+    { key: 'principles_md', title: 'Základní principy' },
+    { key: 'relations_md', title: 'Souvislosti' },
+    { key: 'clinical_thinking_md', title: 'Klinické uvažování' },
+    { key: 'common_pitfalls_md', title: 'Časté chyby' },
+    { key: 'mental_model_md', title: 'Mentální model' },
+    { key: 'scenarios_md', title: 'Scénáře' },
+    { key: 'key_takeaways_md', title: 'Klíčové body' }
+  ];
+
+  const toc = sections
+    .filter((s) => structuredData[s.key])
+    .map((s, idx) => `${idx + 1}. ${s.title}`)
+    .join('\n');
+
+  const body = sections
+    .map((s) => structuredData[s.key] ? structuredData[s.key].trim() : '')
+    .filter(Boolean)
+    .join('\n\n---\n\n');
+
+  return [
+    `# ${title || 'Studijní text'}`,
+    '',
+    '## Obsah',
+    toc || '-',
+    '',
+    body
+  ].join('\n');
+};
+
 export default function TopicContentEditorV2({ topic, context, onSave }) {
   const [content, setContent] = useState({
     status: topic?.status || 'draft',
@@ -152,9 +185,9 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
       };
 
       const promptMap = {
-        topic_generate_fulltext: fillTemplate(FULLTEXT_TEMPLATE, templateVars),
-        topic_summarize: fillTemplate(HIGH_YIELD_TEMPLATE, templateVars),
-        topic_deep_dive: fillTemplate(DEEP_DIVE_TEMPLATE, templateVars),
+        topic_generate_template: fillTemplate(FULLTEXT_TEMPLATE, templateVars),
+        topic_summarize: `INPUT TEXT (EXTRACT-ONLY):\n\n${content.full_text_content || ''}`,
+        topic_deep_dive: `REFERENCE (do not repeat):\n\n${content.full_text_content || ''}`,
         topic_reformat: `Přeformátuj tento text pro optimální studium. NEPŘIDÁVEJ nový obsah, pouze zlepši strukturu a čitelnost.\n\n${content.full_text_content || ''}`
       };
 
@@ -170,7 +203,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         systemPromptOverride: ADMIN_CONTENT_SYSTEM_PROMPT,
         maxRagChars: 20000,
         maxSectionChars: 8000,
-        skipRag: true
+        skipRag: mode !== 'topic_deep_dive'
       });
 
       const result = response.data || response;
@@ -179,10 +212,11 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
       }
 
       // Aplikuj výsledek podle módu
-      if (mode === 'topic_generate_fulltext') {
+      if (mode === 'topic_generate_template') {
+        const compiled = buildTemplateMarkdown(result.structuredData, topic.title);
         setContent(prev => ({ 
           ...prev, 
-          full_text_content: result.text || result.structuredData?.answer_md || '',
+          full_text_content: compiled || result.text || '',
           source_pack: result.citations || prev.source_pack
         }));
       } else if (mode === 'topic_summarize') {
@@ -353,7 +387,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => handleAIGenerate('topic_generate_fulltext')}
+                onClick={() => handleAIGenerate('topic_generate_template')}
                 disabled={isGenerating}
               >
                 {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Sparkles className="w-3 h-3 mr-1" />}
