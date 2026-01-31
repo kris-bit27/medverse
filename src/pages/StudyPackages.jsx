@@ -39,6 +39,7 @@ export default function StudyPackages() {
   const [aiTitle, setAiTitle] = useState('');
   const [aiFocus, setAiFocus] = useState('');
   const [aiFile, setAiFile] = useState(null);
+  const [processMode, setProcessMode] = useState('FULLTEXT');
   const [selectedPackId, setSelectedPackId] = useState(null);
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [topicTitle, setTopicTitle] = useState('');
@@ -117,7 +118,10 @@ export default function StudyPackages() {
 
   const processMutation = useMutation({
     mutationFn: async () => {
-      return base44.functions.invoke('processStudyPack', { packId: selectedPackId });
+      return base44.functions.invoke('processStudyPack', {
+        packId: selectedPackId,
+        mode: processMode
+      });
     },
     onSuccess: () => {
       toast.success('Zpracování spuštěno');
@@ -488,6 +492,17 @@ export default function StudyPackages() {
                         'Spustit zpracování'
                       )}
                     </Button>
+                    <Tabs value={processMode} onValueChange={setProcessMode} className="ml-2">
+                      <TabsList>
+                        <TabsTrigger value="FULLTEXT">Plný text</TabsTrigger>
+                        <TabsTrigger value="HIGH_YIELD">High-yield</TabsTrigger>
+                      </TabsList>
+                    </Tabs>
+                    {processMode === 'HIGH_YIELD' && (
+                      <div className="text-xs text-slate-500">
+                        High-yield se generuje z plného textu (může trvat déle).
+                      </div>
+                    )}
                     {isAdmin(user) && (
                       <Button
                         variant="outline"

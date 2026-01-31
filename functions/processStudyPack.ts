@@ -171,6 +171,39 @@ ${chunkList}
 `;
 };
 
+const buildHighYieldFromFullPrompt = (
+  title: string,
+  fullMarkdown: string,
+  chunks: { id: string; content: string }[],
+  focus: string
+) => {
+  const chunkList = chunks.map((c) => `CHUNK ${c.id}\n${c.content}`).join('\n\n---\n\n');
+  return `
+Vytvoř HIGH-YIELD shrnutí z následujícího studijního textu. Použij pouze informace obsažené ve FULL TEXTU.
+
+Téma: ${title}
+${focus ? `\nFokus: ${focus}\nPoužij pouze relevantní informace k tomuto fokusu.` : ''}
+
+FULL TEXT:
+${fullMarkdown}
+
+CHUNKY (pro citace):
+${chunkList}
+
+VRAŤ POUZE JSON:
+{
+  "title": "string",
+  "bullets": [
+    {
+      "text": "bullet",
+      "chunk_ids": ["id1","id2"],
+      "quote_snippets": ["krátký úryvek"]
+    }
+  ]
+}
+`;
+};
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -180,10 +213,11 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { packId } = await req.json();
+    const { packId, mode } = await req.json();
     if (!packId) {
       return Response.json({ error: 'packId is required' }, { status: 400 });
     }
+    const targetMode = mode === 'HIGH_YIELD' ? 'HIGH_YIELD' : 'FULLTEXT';
 
     if (processingQueue.has(packId)) {
       return Response.json({ queued: true, status: 'already_queued' });
@@ -276,65 +310,69 @@ Deno.serve(async (req) => {
           quoteSnippets: s.quote_snippets
         }));
 
-        const highPrompt = buildPrompt(pack.title, relevantChunks, 'HIGH_YIELD', focus);
-        const highResponse = await base44.integrations.Core.InvokeLLM({
-          prompt: highPrompt,
-          add_context_from_internet: false,
-          model: 'gemini-1.5-pro',
-          temperature: 0.1,
-          maxTokens: 2048,
-          response_json_schema: {
-            type: 'object',
-            properties: {
-              title: { type: 'string' },
-              bullets: {
-                type: 'array',
-                items: {
-                  type: 'object',
-                  properties: {
-                    text: { type: 'string' },
-                    chunk_ids: { type: 'array', items: { type: 'string' } },
-                    quote_snippets: { type: 'array', items: { type: 'string' } }
-                  },
-                  required: ['text', 'chunk_ids', 'quote_snippets']
-                }
-              }
-            },
-            required: ['title', 'bullets']
-          }
-        });
-
-        const highMarkdown = [
-          `# ${highResponse.title || pack.title}`,
-          ...(highResponse.bullets || []).map((b) => `- ${b.text}`)
-        ].join('\n');
-
-        const highHtml = sanitizeHtml(marked.parse(highMarkdown));
-        const highCitations = (highResponse.bullets || []).map((b, idx) => ({
-          sectionTitle: `Bullet ${idx + 1}`,
-          chunkIds: b.chunk_ids,
-          quoteSnippets: b.quote_snippets
-        }));
-
-        const existingOutputs = await base44.asServiceRole.entities.StudyPackOutput.filter({ pack_id: packId });
-        await Promise.all(existingOutputs.map((o) => base44.asServiceRole.entities.StudyPackOutput.delete(o.id)));
-
-        await base44.asServiceRole.entities.StudyPackOutput.bulkCreate([
+        const outputs = [
           {
             pack_id: packId,
             mode: 'FULLTEXT',
             content_html: fullHtml,
             citations_json: fullCitations,
             model: 'gemini-1.5-pro'
-          },
-          {
+          }
+        ];
+
+        if (targetMode === 'HIGH_YIELD') {
+          const highPrompt = buildHighYieldFromFullPrompt(pack.title, fullMarkdown, relevantChunks, focus);
+          const highResponse = await base44.integrations.Core.InvokeLLM({
+            prompt: highPrompt,
+            add_context_from_internet: false,
+            model: 'gemini-1.5-pro',
+            temperature: 0.1,
+            maxTokens: 2048,
+            response_json_schema: {
+              type: 'object',
+              properties: {
+                title: { type: 'string' },
+                bullets: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      text: { type: 'string' },
+                      chunk_ids: { type: 'array', items: { type: 'string' } },
+                      quote_snippets: { type: 'array', items: { type: 'string' } }
+                    },
+                    required: ['text', 'chunk_ids', 'quote_snippets']
+                  }
+                }
+              },
+              required: ['title', 'bullets']
+            }
+          });
+
+          const highMarkdown = [
+            `# ${highResponse.title || pack.title}`,
+            ...(highResponse.bullets || []).map((b) => `- ${b.text}`)
+          ].join('\n');
+
+          const highHtml = sanitizeHtml(marked.parse(highMarkdown));
+          const highCitations = (highResponse.bullets || []).map((b, idx) => ({
+            sectionTitle: `Bullet ${idx + 1}`,
+            chunkIds: b.chunk_ids,
+            quoteSnippets: b.quote_snippets
+          }));
+
+          outputs.push({
             pack_id: packId,
             mode: 'HIGH_YIELD',
             content_html: highHtml,
             citations_json: highCitations,
             model: 'gemini-1.5-pro'
-          }
-        ]);
+          });
+        }
+
+        const existingOutputs = await base44.asServiceRole.entities.StudyPackOutput.filter({ pack_id: packId });
+        await Promise.all(existingOutputs.map((o) => base44.asServiceRole.entities.StudyPackOutput.delete(o.id)));
+        await base44.asServiceRole.entities.StudyPackOutput.bulkCreate(outputs);
 
         await base44.asServiceRole.entities.StudyPack.update(packId, { status: 'READY' });
       } catch (error) {
