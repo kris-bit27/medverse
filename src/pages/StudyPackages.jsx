@@ -37,6 +37,7 @@ import { isAdmin } from '@/components/utils/permissions';
 export default function StudyPackages() {
   const [searchQuery, setSearchQuery] = useState('');
   const [aiTitle, setAiTitle] = useState('');
+  const [aiFocus, setAiFocus] = useState('');
   const [aiFile, setAiFile] = useState(null);
   const [selectedPackId, setSelectedPackId] = useState(null);
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
@@ -146,7 +147,8 @@ export default function StudyPackages() {
       const pack = await base44.entities.StudyPack.create({
         user_id: user.id,
         title: aiTitle.trim(),
-        status: 'UPLOADED'
+        status: 'UPLOADED',
+        topic_focus: aiFocus.trim() || null
       });
       await base44.entities.StudyPackFile.create({
         pack_id: pack.id,
@@ -160,6 +162,7 @@ export default function StudyPackages() {
     onSuccess: (pack) => {
       toast.success('Soubor nahrán');
       setAiTitle('');
+      setAiFocus('');
       setAiFile(null);
       setSelectedPackId(pack.id);
       refetchAiPacks();
@@ -391,6 +394,17 @@ export default function StudyPackages() {
                   onChange={(e) => setAiTitle(e.target.value)}
                   placeholder="Např. Aorta – přehled"
                 />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Co přesně zpracovat (fokus)</label>
+                <Input
+                  value={aiFocus}
+                  onChange={(e) => setAiFocus(e.target.value)}
+                  placeholder="Např. Akutní appendicitida"
+                />
+                <div className="text-xs text-slate-500">
+                  AI vyfiltruje relevantní části z dokumentu.
+                </div>
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Soubor (PDF, TXT, MD)</label>

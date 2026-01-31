@@ -51,6 +51,36 @@ const chunkText = (text: string) => {
   return chunks.slice(0, MAX_CHUNKS);
 };
 
+const normalizeTokens = (text: string) => {
+  return text
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s]+/gu, ' ')
+    .split(/\s+/)
+    .filter((t) => t.length >= 3);
+};
+
+const scoreChunk = (chunk: string, focus: string) => {
+  if (!focus) return 0;
+  const focusTokens = new Set(normalizeTokens(focus));
+  if (focusTokens.size === 0) return 0;
+  let score = 0;
+  const chunkTokens = normalizeTokens(chunk);
+  for (const token of chunkTokens) {
+    if (focusTokens.has(token)) score += 1;
+  }
+  return score;
+};
+
+const selectRelevantChunks = (chunks: { id: string; content: string }[], focus: string) => {
+  if (!focus) return chunks;
+  const scored = chunks
+    .map((c) => ({ ...c, score: scoreChunk(c.content, focus) }))
+    .filter((c) => c.score > 0)
+    .sort((a, b) => b.score - a.score);
+  const top = scored.slice(0, Math.min(60, scored.length));
+  return top.length > 0 ? top : chunks;
+};
+
 const extractTextFromFile = async (fileUrl: string, mimeType: string) => {
   const res = await fetch(fileUrl);
   if (!res.ok) {
@@ -76,13 +106,19 @@ const extractTextFromFile = async (fileUrl: string, mimeType: string) => {
   return textDecoder.decode(arrayBuffer);
 };
 
-const buildPrompt = (title: string, chunks: { id: string; content: string }[], mode: 'FULLTEXT' | 'HIGH_YIELD') => {
+const buildPrompt = (
+  title: string,
+  chunks: { id: string; content: string }[],
+  mode: 'FULLTEXT' | 'HIGH_YIELD',
+  focus: string
+) => {
   const chunkList = chunks.map((c) => `CHUNK ${c.id}\n${c.content}`).join('\n\n---\n\n');
   if (mode === 'FULLTEXT') {
     return `
 Jsi specialista na medicínské kurikulum. Tvým úkolem je vytvořit KOMPLETNÍ studijní text z poskytnutých chunků.
 
 Téma: ${title}
+${focus ? `\nFokus: ${focus}\nVyfiltruj a použij pouze relevantní informace k tomuto fokusu.` : ''}
 
 PRAVIDLA:
 - Piš v češtině, odborně, strukturovaně.
@@ -111,6 +147,7 @@ ${chunkList}
 Z následujícího studijního textu (chunky) vytvoř HIGH-YIELD shrnutí.
 
 Téma: ${title}
+${focus ? `\nFokus: ${focus}\nPoužij pouze relevantní informace k tomuto fokusu.` : ''}
 
 PRAVIDLA:
 - Pouze odrážky (max 12).
@@ -195,8 +232,10 @@ Deno.serve(async (req) => {
         const createdChunks = await base44.asServiceRole.entities.StudyPackChunk.bulkCreate(chunkRecords);
 
         const chunkMap = createdChunks.map((c) => ({ id: c.id, content: c.content }));
+        const focus = (pack.topic_focus || '').trim();
+        const relevantChunks = selectRelevantChunks(chunkMap, focus);
 
-        const fullPrompt = buildPrompt(pack.title, chunkMap, 'FULLTEXT');
+        const fullPrompt = buildPrompt(pack.title, relevantChunks, 'FULLTEXT', focus);
         const fullResponse = await base44.integrations.Core.InvokeLLM({
           prompt: fullPrompt,
           add_context_from_internet: false,
@@ -237,7 +276,7 @@ Deno.serve(async (req) => {
           quoteSnippets: s.quote_snippets
         }));
 
-        const highPrompt = buildPrompt(pack.title, chunkMap, 'HIGH_YIELD');
+        const highPrompt = buildPrompt(pack.title, relevantChunks, 'HIGH_YIELD', focus);
         const highResponse = await base44.integrations.Core.InvokeLLM({
           prompt: highPrompt,
           add_context_from_internet: false,
