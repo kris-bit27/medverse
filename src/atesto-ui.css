@@ -98,7 +98,7 @@ body[data-theme="light"] .rdp .day {
 
 body[data-theme="light"] .rdp .rdp-day,
 body[data-theme="light"] .rdp .rdp-day_button {
-  color: hsl(var(--mn-text));
+  color: hsl(var(--mn-text)) !important;
 }
 
 body[data-theme="light"] .rdp .head_cell {
@@ -107,7 +107,7 @@ body[data-theme="light"] .rdp .head_cell {
 }
 
 body[data-theme="light"] .rdp .caption_label {
-  color: hsl(var(--mn-text));
+  color: hsl(var(--mn-text)) !important;
 }
 
 body[data-theme="light"] .rdp .day-outside,
@@ -118,8 +118,17 @@ body[data-theme="light"] .rdp .day-disabled {
 
 body[data-theme="light"] .rdp .rdp-day_outside,
 body[data-theme="light"] .rdp .rdp-day_disabled {
-  color: hsl(var(--mn-muted));
+  color: hsl(var(--mn-muted)) !important;
   opacity: 0.5;
+}
+
+body[data-theme="light"] .rdp .rdp-button {
+  color: hsl(var(--mn-text)) !important;
+}
+
+body[data-theme="light"] .rdp .rdp-day_outside .rdp-button,
+body[data-theme="light"] .rdp .rdp-day_disabled .rdp-button {
+  color: hsl(var(--mn-muted)) !important;
 }
 
 body[data-theme="light"] .rdp .day_selected {
