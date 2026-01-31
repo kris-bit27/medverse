@@ -61,6 +61,17 @@ body[data-theme="light"] {
   --mn-focus: 176 56% 38%;
 }
 
+/* Light mode readability overrides for common utility text colors */
+body[data-theme="light"] .text-slate-300,
+body[data-theme="light"] .text-slate-400,
+body[data-theme="light"] .text-slate-500 {
+  color: hsl(var(--mn-muted)) !important;
+}
+
+body[data-theme="light"] .text-slate-600 {
+  color: hsl(var(--mn-text)) !important;
+}
+
 body[data-theme="dark"] {
   --mn-bg: 222 22% 7%;
   --mn-surface: 222 20% 10%;
