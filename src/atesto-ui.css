@@ -93,6 +93,22 @@ body[data-theme="light"] .badge-secondary:hover {
 /* Calendar readability */
 body[data-theme="light"] .rdp .day {
   color: hsl(var(--mn-text));
+  opacity: 1;
+}
+
+body[data-theme="light"] .rdp .head_cell {
+  color: hsl(var(--mn-muted));
+  font-weight: 600;
+}
+
+body[data-theme="light"] .rdp .day-outside,
+body[data-theme="light"] .rdp .day-disabled {
+  color: hsl(var(--mn-muted));
+  opacity: 0.6;
+}
+
+body[data-theme="light"] .rdp .day_selected {
+  color: hsl(var(--mn-text));
 }
 
 body[data-theme="light"] .rdp .day-outside,
