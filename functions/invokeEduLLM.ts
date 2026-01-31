@@ -131,6 +131,7 @@ const CHAT_MODES = ['copilot_chat', 'floating_copilot_chat'];
 // TOOL režimy - klinické nástroje (DDx, Treatment Planning)
 const TOOL_MODES = ['differential_diagnosis_ai', 'treatment_planner_ai'];
 const ALLOW_WEB_MODES = new Set(['topic_deep_dive', 'topic_generate_deep_dive', 'topic_legal_deepen']);
+const MIN_MEDIUM_MODES = new Set(['topic_reformat']);
 
 const MAX_TOKENS_BY_MODE = {
   topic_generate_fulltext: 4096,
@@ -678,22 +679,23 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb, options = 
   if (mode === 'copilot_chat') {
     try {
       const currentUser = await base44.auth.me().catch(() => null);
-      if (!currentUser?.id) return context;
-      const recentProgress = await base44.asServiceRole.entities.UserProgress.filter(
-        { user_id: currentUser.id },
-        '-last_reviewed_at',
-        5
-      );
-      
-      if (recentProgress && recentProgress.length > 0) {
-        const progressText = recentProgress.map(p => 
-          `- ${p.question_id}: ${p.status} (ease: ${p.ease_factor}, repetitions: ${p.repetitions})`
-        ).join('\n');
-        
-        addSection(
-          `=== POSLEDNÍ AKTIVITA UŽIVATELE ===\n\n${progressText}`,
-          { type: 'user_progress', entity: 'UserProgress', section_hint: 'recent_activity' }
+      if (currentUser?.id) {
+        const recentProgress = await base44.asServiceRole.entities.UserProgress.filter(
+          { user_id: currentUser.id },
+          '-last_reviewed_at',
+          5
         );
+        
+        if (recentProgress && recentProgress.length > 0) {
+          const progressText = recentProgress.map(p => 
+            `- ${p.question_id}: ${p.status} (ease: ${p.ease_factor}, repetitions: ${p.repetitions})`
+          ).join('\n');
+          
+          addSection(
+            `=== POSLEDNÍ AKTIVITA UŽIVATELE ===\n\n${progressText}`,
+            { type: 'user_progress', entity: 'UserProgress', section_hint: 'recent_activity' }
+          );
+        }
       }
     } catch (e) {
       console.error('Failed to fetch user progress:', e);
@@ -772,8 +774,8 @@ function computeContentHash(entityContext) {
   return `ch_${Math.abs(hash).toString(36)}`;
 }
 
-function generateCacheKey(mode, entityId, contentHash, userPromptHash, systemPromptHash) {
-  const input = `${mode}:${entityId || 'none'}:${contentHash}:${AI_VERSION_TAG}:${userPromptHash}:${systemPromptHash || 'none'}`;
+function generateCacheKey(mode, entityId, contentHash, userPromptHash, systemPromptHash, optionsHash, pageContextHash) {
+  const input = `${mode}:${entityId || 'none'}:${contentHash}:${AI_VERSION_TAG}:${userPromptHash}:${systemPromptHash || 'none'}:${optionsHash || 'none'}:${pageContextHash || 'none'}`;
   
   let hash = 0;
   for (let i = 0; i < input.length; i++) {
@@ -814,6 +816,34 @@ async function checkCache(base44, cacheKey, mode, entityContext) {
     console.error('Cache check failed:', e);
     return null;
   }
+}
+
+function computeOptionsHash(options) {
+  const input = JSON.stringify({
+    skipRag: !!options.skipRag,
+    maxRagChars: options.maxRagChars || null,
+    maxSectionChars: options.maxSectionChars || null,
+    allowWeb: !!options.allowWeb
+  });
+  let hash = 0;
+  for (let i = 0; i < input.length; i++) {
+    const char = input.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return `oh_${Math.abs(hash).toString(36)}`;
+}
+
+function computePageContextHash(entityContext) {
+  const pageCtx = entityContext?.current_page_context || entityContext?.pageContext || '';
+  if (!pageCtx) return 'none';
+  let hash = 0;
+  for (let i = 0; i < pageCtx.length; i++) {
+    const char = pageCtx.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return `pc_${Math.abs(hash).toString(36)}`;
 }
 
 /**
@@ -885,13 +915,6 @@ Deno.serve(async (req) => {
     // V EXAM režimu je zakázán web search (kromě deep_dive)
     const effectiveAllowWeb = isExamMode && !ALLOW_WEB_MODES.has(mode) ? false : allowWeb;
 
-    // Sestavení RAG kontextu - POVINNÉ pro všechna AI volání
-    const ragContext = await buildRAGContext(base44, mode, entityContext, effectiveAllowWeb, {
-      maxRagChars,
-      maxSectionChars,
-      skipRag
-    });
-
     // Content hash pro cache invalidaci
     const contentHash = computeContentHash(entityContext);
     
@@ -913,8 +936,24 @@ Deno.serve(async (req) => {
     }
     systemPromptHash = Math.abs(systemPromptHash).toString(36);
 
+    const optionsHash = computeOptionsHash({
+      skipRag,
+      maxRagChars,
+      maxSectionChars,
+      allowWeb: effectiveAllowWeb
+    });
+    const pageContextHash = computePageContextHash(entityContext);
+
     // Cache key
-    const cacheKey = generateCacheKey(mode, entityContext.entityId, contentHash, userPromptHash, systemPromptHash);
+    const cacheKey = generateCacheKey(
+      mode,
+      entityContext.entityId,
+      contentHash,
+      userPromptHash,
+      systemPromptHash,
+      optionsHash,
+      (mode === 'floating_copilot_chat' || entityContext.current_page_context || entityContext.pageContext) ? pageContextHash : 'none'
+    );
 
     // Pokus o cache hit
     const cachedResult = await checkCache(base44, cacheKey, mode, entityContext);
@@ -934,7 +973,7 @@ Deno.serve(async (req) => {
         cache_key: cacheKey,
         content_hash: contentHash,
         is_cache_hit: true,
-        rag_sources_json: { sources: ragContext.rag_sources },
+        rag_sources_json: { sources: [] },
         structured_data_json: cachedResult.structuredData,
         success: true,
         duration_ms: Date.now() - startTime
@@ -949,6 +988,13 @@ Deno.serve(async (req) => {
         cache: { hit: true, key: cacheKey }
       });
     }
+
+    // Sestavení RAG kontextu - POVINNÉ pro všechna AI volání
+    const ragContext = await buildRAGContext(base44, mode, entityContext, effectiveAllowWeb, {
+      maxRagChars,
+      maxSectionChars,
+      skipRag
+    });
 
     // Sestavení finálního promptu podle role asistenta
     let systemPrompt = '';
@@ -995,7 +1041,7 @@ ${pageCtx}
     if (fullPrompt.length > MAX_PROMPT_CHARS) {
       fullPrompt = systemPrompt + "\n\n" +
         "=== UPOZORNĚNÍ ===\nInterní zdroje byly zkráceny kvůli limitu délky promptu.\n\n" +
-        "=== UŽIVATELSKÝ DOTAZ ===\n" + userPrompt;
+        "=== UŽIVATELSKÝ DOTAZ ===\n" + safeUserPrompt;
     }
 
     // Určení JSON schématu
@@ -1019,10 +1065,14 @@ ${pageCtx}
 
     // Validace confidence - pokud není RAG kontext, MUSÍ být LOW
     if (!ragContext.rag_text || ragContext.rag_sources.length === 0) {
-      if (result.confidence.level === 'high') {
-        result.confidence.level = 'low';
-        result.confidence.reason = 'Chybí interní zdroje - nelze zaručit vysokou přesnost.';
-      }
+      result.confidence.level = 'low';
+      result.confidence.reason = 'Chybí interní zdroje - nelze zaručit vysokou přesnost.';
+    }
+
+    // Minimum medium confidence for formatting-only modes
+    if (MIN_MEDIUM_MODES.has(mode) && result.confidence.level === 'low') {
+      result.confidence.level = 'medium';
+      result.confidence.reason = 'Formatting-only mode';
     }
 
     // Logování do AIInteractionLog - 100% AUDIT
