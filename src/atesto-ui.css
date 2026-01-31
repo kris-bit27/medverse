@@ -91,6 +91,40 @@ body[data-theme="light"] .badge-secondary:hover {
 }
 
 /* Calendar readability */
+.planner-calendar .rdp {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.planner-calendar {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.planner-calendar .rdp table {
+  width: 100%;
+}
+
+.planner-calendar .rdp .rdp-day,
+.planner-calendar .rdp .rdp-day_button,
+.planner-calendar .rdp .day {
+  width: clamp(28px, 3vw, 36px);
+  height: clamp(28px, 3vw, 36px);
+}
+
+.planner-calendar .rdp .head_cell {
+  width: clamp(28px, 3vw, 36px);
+}
+
+.planner-calendar .rdp .nav_button {
+  flex: 0 0 auto;
+}
+
+.planner-calendar .rdp .caption {
+  padding-inline: 32px;
+}
+
 body[data-theme="light"] .rdp .day {
   color: hsl(var(--mn-text));
   opacity: 1;

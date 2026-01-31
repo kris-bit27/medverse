@@ -34,7 +34,7 @@ export default function PlannerCalendar({ tasks, selectedDate, onSelectDate }) {
   const selectedDateTasks = getTasksForDate(selectedDate);
 
   return (
-    <div className="space-y-4">
+    <div className="planner-calendar space-y-4">
       <Calendar
         mode="single"
         selected={selectedDate}
@@ -42,7 +42,7 @@ export default function PlannerCalendar({ tasks, selectedDate, onSelectDate }) {
         locale={cs}
         modifiers={modifiers}
         modifiersStyles={modifiersStyles}
-        className="rounded-lg border"
+        className="w-full rounded-lg border"
       />
 
       {selectedDateTasks.length > 0 && (
