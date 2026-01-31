@@ -28,11 +28,11 @@
   --popover-foreground: var(--mn-text);
   --primary: var(--mn-accent);
   --primary-foreground: 210 40% 98%;
-  --secondary: 220 16% 18%;
+  --secondary: var(--mn-surface-2);
   --secondary-foreground: var(--mn-text);
-  --muted: 220 14% 16%;
+  --muted: var(--mn-surface-2);
   --muted-foreground: var(--mn-muted);
-  --accent: 220 14% 16%;
+  --accent: var(--mn-surface-2);
   --accent-foreground: var(--mn-text);
   --destructive: var(--mn-danger);
   --destructive-foreground: 210 40% 98%;
@@ -89,6 +89,29 @@ body[data-theme="light"] .atesto-btn.bg-background:hover {
 /* Card titles legibility */
 .atesto-card-title {
   color: hsl(var(--mn-text));
+}
+
+/* Tabs segmented control (global) */
+.atesto-tabs-list {
+  background: hsl(var(--mn-surface-2));
+  border: 1px solid hsl(var(--mn-border));
+  border-radius: 999px;
+  padding: 4px;
+  gap: 6px;
+}
+
+.atesto-tab {
+  color: hsl(var(--mn-muted));
+}
+
+.atesto-tab[data-state="active"] {
+  background: hsl(var(--mn-surface));
+  color: hsl(var(--mn-text));
+  box-shadow: inset 0 0 0 1px hsl(var(--mn-border));
+}
+
+.atesto-tab[data-state="inactive"]:hover {
+  background: hsl(var(--mn-elevated) / 0.6);
 }
 
 body[data-theme="dark"] {
