@@ -296,7 +296,7 @@ export default function Logbook() {
                           )}
                         </div>
                       </div>
-                      <div className="flex flex-wrap gap-2 mt-2">
+                      <div className="logbook-badges flex flex-wrap gap-2 mt-2">
                         <Badge className={typeConfig.color}>{typeConfig.label}</Badge>
                         {entry.role && (
                           <Badge variant="outline">{roleLabels[entry.role]}</Badge>

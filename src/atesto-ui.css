@@ -72,6 +72,35 @@ body[data-theme="light"] .text-slate-600 {
   color: hsl(var(--mn-text)) !important;
 }
 
+body[data-theme="light"] .badge-outline,
+body[data-theme="light"] .badge-secondary {
+  background: hsl(var(--mn-surface-2));
+  color: hsl(var(--mn-text));
+  border-color: hsl(var(--mn-border));
+}
+
+body[data-theme="light"] .badge-secondary:hover {
+  background: hsl(var(--mn-surface));
+}
+
+/* Logbook badge normalization */
+.logbook-badges .atesto-badge {
+  background: hsl(var(--mn-surface-2));
+  color: hsl(var(--mn-text));
+  border: 1px solid hsl(var(--mn-border));
+}
+
+/* Calendar readability */
+body[data-theme="light"] .rdp .day {
+  color: hsl(var(--mn-text));
+}
+
+body[data-theme="light"] .rdp .day-outside,
+body[data-theme="light"] .rdp .day-disabled,
+body[data-theme="light"] .rdp .text-muted-foreground {
+  color: hsl(var(--mn-muted));
+}
+
 /* Light mode: soften outline buttons (avoid dark blocks) */
 body[data-theme="light"] .atesto-btn.border,
 body[data-theme="light"] .atesto-btn.bg-background {
