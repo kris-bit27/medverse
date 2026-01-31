@@ -72,6 +72,25 @@ body[data-theme="light"] .text-slate-600 {
   color: hsl(var(--mn-text)) !important;
 }
 
+/* Light mode: soften outline buttons (avoid dark blocks) */
+body[data-theme="light"] .atesto-btn.border,
+body[data-theme="light"] .atesto-btn.bg-background {
+  background: hsl(var(--mn-surface));
+  color: hsl(var(--mn-text));
+  border-color: hsl(var(--mn-border));
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+body[data-theme="light"] .atesto-btn.border:hover,
+body[data-theme="light"] .atesto-btn.bg-background:hover {
+  background: hsl(var(--mn-surface-2));
+}
+
+/* Card titles legibility */
+.atesto-card-title {
+  color: hsl(var(--mn-text));
+}
+
 body[data-theme="dark"] {
   --mn-bg: 222 22% 7%;
   --mn-surface: 222 20% 10%;
