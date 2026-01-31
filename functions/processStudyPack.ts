@@ -97,9 +97,18 @@ const extractTextFromFile = async (fileUrl: string, mimeType: string) => {
   }
 
   if (lowerType.includes('pdf')) {
-    const pdfParse = await import('https://esm.sh/pdf-parse@1.1.1');
-    const result = await pdfParse.default(new Uint8Array(arrayBuffer));
-    return result.text || '';
+    const pdfjs = await import('https://esm.sh/pdfjs-dist@4.4.168/legacy/build/pdf.mjs');
+    const loadingTask = pdfjs.getDocument({ data: new Uint8Array(arrayBuffer) });
+    const pdf = await loadingTask.promise;
+    let text = '';
+    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum += 1) {
+      const page = await pdf.getPage(pageNum);
+      const content = await page.getTextContent();
+      const pageText = content.items.map((item) => item.str || '').join(' ');
+      text += pageText + '\n';
+      if (text.length > MAX_TEXT_CHARS) break;
+    }
+    return text;
   }
 
   // Fallback: try to decode as text
