@@ -96,15 +96,30 @@ body[data-theme="light"] .rdp .day {
   opacity: 1;
 }
 
+body[data-theme="light"] .rdp .rdp-day,
+body[data-theme="light"] .rdp .rdp-day_button {
+  color: hsl(var(--mn-text));
+}
+
 body[data-theme="light"] .rdp .head_cell {
   color: hsl(var(--mn-muted));
   font-weight: 600;
+}
+
+body[data-theme="light"] .rdp .caption_label {
+  color: hsl(var(--mn-text));
 }
 
 body[data-theme="light"] .rdp .day-outside,
 body[data-theme="light"] .rdp .day-disabled {
   color: hsl(var(--mn-muted));
   opacity: 0.6;
+}
+
+body[data-theme="light"] .rdp .rdp-day_outside,
+body[data-theme="light"] .rdp .rdp-day_disabled {
+  color: hsl(var(--mn-muted));
+  opacity: 0.5;
 }
 
 body[data-theme="light"] .rdp .day_selected {
