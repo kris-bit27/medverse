@@ -131,6 +131,19 @@ body[data-theme="light"] .rdp .rdp-day_disabled .rdp-button {
   color: hsl(var(--mn-muted)) !important;
 }
 
+body[data-theme="light"] .rdp {
+  color: hsl(var(--mn-text)) !important;
+}
+
+body[data-theme="light"] .rdp button {
+  color: hsl(var(--mn-text)) !important;
+}
+
+body[data-theme="light"] .rdp [aria-disabled="true"] {
+  color: hsl(var(--mn-muted)) !important;
+  opacity: 0.5;
+}
+
 body[data-theme="light"] .rdp .day_selected {
   color: hsl(var(--mn-text));
 }
