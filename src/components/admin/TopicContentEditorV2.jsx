@@ -20,6 +20,7 @@ import { Loader2, Sparkles, Save, BookOpen, List, Microscope, ArrowDown, CheckCi
 import { toast } from 'sonner';
 import { AI_MODELS } from '../utils/aiConfig';
 import { ADMIN_CONTENT_SYSTEM_PROMPT } from './aiSystemPrompt';
+import { appParams } from '@/lib/app-params';
 
 const FULLTEXT_TEMPLATE = `FULLTEXT
 TASK:
@@ -342,6 +343,15 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         <AlertDescription className="text-sm text-teal-700 dark:text-teal-300 space-y-1">
           <div>
             Upravujete téma <strong>{topic.title}</strong> | AI verze: {AI_MODELS.VERSION_TAG}
+          </div>
+          <div className="text-xs text-teal-700/80 dark:text-teal-300/80">
+            functions_version: {appParams.functionsVersion || 'N/A'}
+          </div>
+          <div className="text-xs text-teal-700/80 dark:text-teal-300/80">
+            app_id: {appParams.appId || 'N/A'} • app_base_url: {appParams.appBaseUrl || 'N/A'}
+          </div>
+          <div className="text-xs text-teal-700/80 dark:text-teal-300/80 break-all">
+            from_url: {appParams.fromUrl || 'N/A'} • token: {appParams.token || 'N/A'}
           </div>
           {contextSummary && (
             <div className="text-xs text-teal-700/80 dark:text-teal-300/80">
