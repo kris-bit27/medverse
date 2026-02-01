@@ -211,7 +211,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         topic_reformat: `Přeformátuj tento text pro optimální studium. NEPŘIDÁVEJ nový obsah, pouze zlepši strukturu a čitelnost.\n\n${content.full_text_content || ''}`
       };
 
-      const response = await base44.functions.invoke('invokeClaudeEduLLM', {
+      const response = await base44.functions.invoke('invokeEduLLM', {
         mode: mode,
         entityContext: {
           topic: topic,
