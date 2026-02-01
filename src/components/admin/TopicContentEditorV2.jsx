@@ -191,7 +191,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
   const handleAIGenerate = async (mode) => {
     setIsGenerating(true);
     try {
-      if ((mode === 'topic_summarize' || mode === 'topic_deep_dive') && !content.full_text_content) {
+      if ((mode === 'topic_generate_high_yield' || mode === 'topic_generate_deep_dive') && !content.full_text_content) {
         toast.error('Nejprve vygeneruj nebo vlož plný studijní text.');
         return;
       }
@@ -205,9 +205,9 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
       };
 
       const promptMap = {
-        topic_generate_template: fillTemplate(FULLTEXT_TEMPLATE, templateVars),
-        topic_summarize: `INPUT TEXT (EXTRACT-ONLY):\n\n${content.full_text_content || ''}`,
-        topic_deep_dive: `REFERENCE (do not repeat):\n\n${content.full_text_content || ''}`,
+        topic_generate_fulltext_v2: fillTemplate(FULLTEXT_TEMPLATE, templateVars),
+        topic_generate_high_yield: `INPUT TEXT (EXTRACT-ONLY):\n\n${content.full_text_content || ''}`,
+        topic_generate_deep_dive: `REFERENCE (do not repeat):\n\n${content.full_text_content || ''}`,
         topic_reformat: `Přeformátuj tento text pro optimální studium. NEPŘIDÁVEJ nový obsah, pouze zlepši strukturu a čitelnost.\n\n${content.full_text_content || ''}`
       };
 
@@ -219,11 +219,11 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
           entityId: topic.id
         },
         userPrompt: promptMap[mode] || `Vytvoř obsah pro téma: ${topic.title}`,
-        allowWeb: mode === 'topic_deep_dive',
+        allowWeb: mode === 'topic_generate_deep_dive',
         systemPromptOverride: ADMIN_CONTENT_SYSTEM_PROMPT,
         maxRagChars: 20000,
         maxSectionChars: 8000,
-        skipRag: mode !== 'topic_deep_dive'
+        skipRag: mode !== 'topic_generate_deep_dive'
       });
 
       const result = response.data || response;
@@ -262,22 +262,22 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
       };
 
       // Aplikuj výsledek podle módu
-      if (mode === 'topic_generate_template') {
+      if (mode === 'topic_generate_fulltext_v2') {
         const compiled = buildTemplateMarkdown(result.structuredData, topic.title);
         setContent(prev => ({ 
           ...prev, 
-          full_text_content: compiled || result.text || '',
+          full_text_content: result.full_text || compiled || result.text || '',
           source_pack: result.citations || mergedSourcePack
         }));
-      } else if (mode === 'topic_summarize') {
+      } else if (mode === 'topic_generate_high_yield') {
         setContent(prev => ({ 
           ...prev, 
-          bullet_points_summary: result.text || ''
+          bullet_points_summary: result.high_yield || result.text || ''
         }));
-      } else if (mode === 'topic_deep_dive') {
+      } else if (mode === 'topic_generate_deep_dive') {
         setContent(prev => ({ 
           ...prev, 
-          deep_dive_content: result.text || '',
+          deep_dive_content: result.deep_dive || result.text || '',
           source_pack: result.citations || mergedSourcePack
         }));
       } else if (mode === 'topic_reformat') {
@@ -515,11 +515,11 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => handleAIGenerate('topic_generate_template')}
+                onClick={() => handleAIGenerate('topic_generate_fulltext_v2')}
                 disabled={isGenerating}
               >
                 {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Sparkles className="w-3 h-3 mr-1" />}
-                Generovat AI
+                Generovat Fulltext
               </Button>
             </div>
           </div>
@@ -545,12 +545,12 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
             <Button
               size="sm"
               variant="outline"
-              onClick={() => handleAIGenerate('topic_summarize')}
-              disabled={isGenerating}
+              onClick={() => handleAIGenerate('topic_generate_high_yield')}
+              disabled={isGenerating || !content.full_text_content}
               title="Generovat z plného textu"
             >
               {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <ArrowDown className="w-3 h-3 mr-1" />}
-              Generovat AI
+              Generovat High-Yield
             </Button>
           </div>
           <TipTapEditor
@@ -566,11 +566,11 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
             <Button
               size="sm"
               variant="outline"
-              onClick={() => handleAIGenerate('topic_deep_dive')}
-              disabled={isGenerating}
+              onClick={() => handleAIGenerate('topic_generate_deep_dive')}
+              disabled={isGenerating || !content.full_text_content}
             >
               {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Sparkles className="w-3 h-3 mr-1" />}
-              Generovat AI
+              Generovat Deep Dive
             </Button>
           </div>
           <TipTapEditor
