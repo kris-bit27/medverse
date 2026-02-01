@@ -141,6 +141,8 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [newObjective, setNewObjective] = useState('');
   const [lastGenerated, setLastGenerated] = useState(null);
+  const [generationWarnings, setGenerationWarnings] = useState([]);
+  const [generationConfidence, setGenerationConfidence] = useState(null);
   const [useRichEditor, setUseRichEditor] = useState(true);
   const lastUpdatedRaw = topic?.updated_date || topic?.updated_at || topic?.modified_date || topic?.created_date || null;
   const lastUpdatedLabel = lastUpdatedRaw ? `Poslední změna: ${new Date(lastUpdatedRaw).toLocaleString('cs-CZ')}` : '';
@@ -191,7 +193,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         topic_reformat: `Přeformátuj tento text pro optimální studium. NEPŘIDÁVEJ nový obsah, pouze zlepši strukturu a čitelnost.\n\n${content.full_text_content || ''}`
       };
 
-      const response = await base44.functions.invoke('invokeEduLLM', {
+      const response = await base44.functions.invoke('invokeClaudeEduLLM', {
         mode: mode,
         entityContext: {
           topic: topic,
@@ -211,13 +213,27 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         throw new Error(result.error);
       }
 
+      const confidenceValue = typeof result?.confidence === 'number' ? result.confidence : null;
+      const warnings = Array.isArray(result?.warnings) ? result.warnings : [];
+      setGenerationConfidence(confidenceValue);
+      setGenerationWarnings(warnings);
+
+      const sources = Array.isArray(result?.sources) ? result.sources : [];
+      const mergedSourcePack = {
+        internal_refs: content.source_pack?.internal_refs || [],
+        external_refs: [
+          ...(content.source_pack?.external_refs || []),
+          ...sources.map((title) => ({ title }))
+        ]
+      };
+
       // Aplikuj výsledek podle módu
       if (mode === 'topic_generate_template') {
         const compiled = buildTemplateMarkdown(result.structuredData, topic.title);
         setContent(prev => ({ 
           ...prev, 
           full_text_content: compiled || result.text || '',
-          source_pack: result.citations || prev.source_pack
+          source_pack: result.citations || mergedSourcePack
         }));
       } else if (mode === 'topic_summarize') {
         setContent(prev => ({ 
@@ -228,18 +244,22 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         setContent(prev => ({ 
           ...prev, 
           deep_dive_content: result.text || '',
-          source_pack: result.citations || prev.source_pack
+          source_pack: result.citations || mergedSourcePack
         }));
       } else if (mode === 'topic_reformat') {
         setContent(prev => ({ 
           ...prev, 
           full_text_content: result.text || '',
-          source_pack: result.citations || prev.source_pack
+          source_pack: result.citations || mergedSourcePack
         }));
       }
 
       setLastGenerated(result);
-      toast.success('Obsah vygenerován');
+      const modelName = result?.metadata?.usedModel || result?.metadata?.model || 'Claude Sonnet 4';
+      const costTotal = result?.metadata?.cost?.total;
+      const sourceCount = sources.length;
+      const confidencePct = confidenceValue !== null ? Math.round(confidenceValue * 100) : null;
+      toast.success(`Obsah vygenerován • Model: ${modelName}${confidencePct !== null ? ` • Confidence: ${confidencePct}%` : ''}${typeof costTotal === 'number' ? ` • Cost: $${costTotal.toFixed(4)}` : ''} • Zdroje: ${sourceCount}`);
     } catch (error) {
       console.error('AI generation error:', error);
       toast.error('Chyba při generování: ' + error.message);
@@ -300,6 +320,9 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
             </div>
           )}
         </AlertDescription>
+        <Badge variant="outline" className="ml-2">
+          AI: {lastGenerated?.metadata?.model || 'Claude Sonnet 4'}
+        </Badge>
       </Alert>
 
       {/* Status selector */}
@@ -452,6 +475,20 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
           />
         </TabsContent>
       </Tabs>
+
+      {generationWarnings?.length > 0 && (
+        <Alert variant="warning" className="mt-4">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>
+            <div className="font-semibold mb-2">Vyžaduje ověření:</div>
+            <ul className="list-disc list-inside space-y-1">
+              {generationWarnings.map((w, i) => (
+                <li key={i} className="text-sm">{w}</li>
+              ))}
+            </ul>
+          </AlertDescription>
+        </Alert>
+      )}
 
       {/* Sources */}
       {content.source_pack && (content.source_pack.internal_refs?.length > 0 || content.source_pack.external_refs?.length > 0) && (
