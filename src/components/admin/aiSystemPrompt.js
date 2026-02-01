@@ -20,4 +20,10 @@ CONTENT RULES:
 
 LANGUAGE:
 - Czech
-- Professional, clear, academic`;
+- Professional, clear, academic
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+AI VERSION: Claude Sonnet 4 (medverse_claude_sonnet_4_v1)
+WEB SEARCH: Enabled for fact verification
+FALLBACK: Gemini 1.5 Pro (automatic on Claude error)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
