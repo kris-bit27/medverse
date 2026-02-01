@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/select';
 import { Loader2, Sparkles, Save, BookOpen, List, Microscope, ArrowDown, CheckCircle, Shield, Eye, AlertTriangle, FileText } from 'lucide-react';
 import { toast } from 'sonner';
-import { AI_VERSION_TAG } from '../utils/aiConfig';
+import { AI_MODELS } from '../utils/aiConfig';
 import { ADMIN_CONTENT_SYSTEM_PROMPT } from './aiSystemPrompt';
 
 const FULLTEXT_TEMPLATE = `FULLTEXT
@@ -158,7 +158,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
       await base44.entities.Topic.update(topic.id, {
         ...content,
         updated_by_ai: true,
-        ai_version_tag: AI_VERSION_TAG
+        ai_version_tag: AI_MODELS.VERSION_TAG
       });
       toast.success('Obsah uložen');
       onSave?.();
@@ -307,7 +307,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
       <Alert className="bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800">
         <AlertDescription className="text-sm text-teal-700 dark:text-teal-300 space-y-1">
           <div>
-            Upravujete téma <strong>{topic.title}</strong> | AI verze: {AI_VERSION_TAG}
+            Upravujete téma <strong>{topic.title}</strong> | AI verze: {AI_MODELS.VERSION_TAG}
           </div>
           {contextSummary && (
             <div className="text-xs text-teal-700/80 dark:text-teal-300/80">

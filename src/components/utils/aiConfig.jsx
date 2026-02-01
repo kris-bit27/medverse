@@ -1,5 +1,18 @@
 // AI Version Tag - centrální konstanta pro verzování AI systému
-export const AI_VERSION_TAG = "edu_v1";
+export const AI_VERSION_TAG = "medverse_claude_sonnet_4_v1";
+
+export const AI_MODELS = {
+  PRIMARY: 'claude-sonnet-4-20250514',
+  FALLBACK: 'gemini-1.5-pro-002',
+  VERSION_TAG: "medverse_claude_sonnet_4_v1"
+};
+
+export const AI_FEATURES = {
+  WEB_SEARCH: true,
+  CONFIDENCE_SCORING: true,
+  SOURCE_CITATION: true,
+  FACT_CHECKING: true
+};
 
 // Hlavní systémový prompt pro všechny režimy
 export const MEDVERSE_EDU_CORE_PROMPT = `Jsi AI asistent pro lékařskou edukaci v systému MedVerse EDU.

@@ -29,7 +29,7 @@ import {
   AlertTriangle
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { AI_VERSION_TAG } from '../utils/aiConfig';
+import { AI_MODELS } from '../utils/aiConfig';
 
 export default function TopicTemplateEditor({ topic, onSave }) {
   const [content, setContent] = useState({
@@ -67,7 +67,7 @@ export default function TopicTemplateEditor({ topic, onSave }) {
       await base44.entities.Topic.update(topic.id, {
         ...content,
         updated_by_ai: true,
-        ai_version_tag: AI_VERSION_TAG
+        ai_version_tag: AI_MODELS.VERSION_TAG
       });
       toast.success('Obsah uložen');
       onSave?.();
