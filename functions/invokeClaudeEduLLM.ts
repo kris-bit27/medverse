@@ -201,14 +201,60 @@ Deno.serve(async (req) => {
       ? [{ type: 'web_search_20250305' }]
       : [];
 
-    const response = await anthropic.messages.create({
-      model: MODEL_ID,
-      temperature: DEFAULT_TEMP,
-      max_tokens: MAX_TOKENS,
-      system: modeConfig.systemPrompt,
-      messages: [{ role: 'user', content: finalUserPrompt }],
-      tools
-    });
+    let response;
+    try {
+      response = await anthropic.messages.create({
+        model: MODEL_ID,
+        temperature: DEFAULT_TEMP,
+        max_tokens: MAX_TOKENS,
+        system: modeConfig.systemPrompt,
+        messages: [{ role: 'user', content: finalUserPrompt }],
+        tools
+      });
+    } catch (claudeError) {
+      console.error('[CLAUDE-AI] Error:', claudeError);
+      console.log('[CLAUDE-AI] Falling back to Gemini...');
+
+      try {
+        const module = await import('./invokeEduLLM.ts');
+        const invokeEduLLM = module.default;
+        if (typeof invokeEduLLM === 'function') {
+          const geminiResponse = await invokeEduLLM(req);
+          const responseData = await geminiResponse.json();
+          return new Response(
+            JSON.stringify({
+              ...responseData,
+              metadata: {
+                ...(responseData.metadata || {}),
+                fallback: true,
+                fallbackReason: claudeError.message,
+                originalModel: CLAUDE_VERSION_TAG,
+                usedModel: 'medverse_gemini_1.5_pro_v3'
+              }
+            }),
+            { headers: { 'Content-Type': 'application/json' } }
+          );
+        }
+      } catch (importError) {
+        console.error('[CLAUDE-AI] Fallback import failed:', importError);
+      }
+
+      const fallback = await base44.functions.invoke('invokeEduLLM', payload);
+      const responseData = fallback?.data || fallback;
+      return new Response(
+        JSON.stringify({
+          ...responseData,
+          metadata: {
+            ...(responseData?.metadata || {}),
+            fallback: true,
+            fallbackReason: claudeError.message,
+            originalModel: CLAUDE_VERSION_TAG,
+            usedModel: 'medverse_gemini_1.5_pro_v3'
+          }
+        }),
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+    }
 
     const textBlocks = response.content
       .filter((b) => b.type === 'text')
