@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -357,6 +358,77 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         </Select>
         {getStatusBadge(content.status)}
       </div>
+
+      {/* AI Metadata & Review Panel */}
+      {(content.ai_generated_at || lastGenerated) && (
+        <Card className="p-4 bg-blue-50 dark:bg-blue-950/20">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold text-sm">AI Generation Metadata</h3>
+              {lastGenerated?.metadata?.fallback && (
+                <Badge variant="warning">
+                  Fallback: Gemini použit
+                </Badge>
+              )}
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+              <div>
+                <Label className="text-xs text-muted-foreground">Model</Label>
+                <div className="font-medium">
+                  {lastGenerated?.metadata?.model || content.ai_model || 'N/A'}
+                </div>
+              </div>
+
+              <div>
+                <Label className="text-xs text-muted-foreground">Confidence</Label>
+                <div className="font-medium">
+                  {lastGenerated?.confidence
+                    ? `${(lastGenerated.confidence * 100).toFixed(0)}%`
+                    : 'N/A'}
+                </div>
+              </div>
+
+              <div>
+                <Label className="text-xs text-muted-foreground">Náklady</Label>
+                <div className="font-medium">
+                  ${lastGenerated?.metadata?.cost?.total || content.ai_cost || '0.00'}
+                </div>
+              </div>
+
+              <div>
+                <Label className="text-xs text-muted-foreground">Zdroje</Label>
+                <div className="font-medium">
+                  {lastGenerated?.sources?.length || content.source_pack?.external_refs?.length || 0}
+                </div>
+              </div>
+            </div>
+
+            {lastGenerated?.warnings?.length > 0 && (
+              <Alert variant="destructive">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription>
+                  <div className="font-semibold">Vyžaduje ověření odborníkem:</div>
+                  <ul className="list-disc list-inside mt-2 space-y-1">
+                    {lastGenerated.warnings.map((w, i) => (
+                      <li key={i} className="text-sm">{w}</li>
+                    ))}
+                  </ul>
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {content.status === 'published' && (
+              <Alert>
+                <Shield className="h-4 w-4" />
+                <AlertDescription>
+                  ⚠️ Publikovaný obsah - vygenerovaný AI by měl být schválen odborníkem
+                </AlertDescription>
+              </Alert>
+            )}
+          </div>
+        </Card>
+      )}
 
 
       {/* Learning objectives */}
