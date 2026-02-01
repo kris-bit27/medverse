@@ -155,16 +155,33 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await base44.entities.Topic.update(topic.id, {
-        ...content,
-        updated_by_ai: true,
-        ai_version_tag: AI_MODELS.VERSION_TAG
-      });
-      toast.success('Obsah uložen');
-      onSave?.();
+      const updateData = {
+        status: content.status,
+        full_text_content: content.full_text_content,
+        bullet_points_summary: content.bullet_points_summary,
+        deep_dive_content: content.deep_dive_content,
+        learning_objectives: content.learning_objectives,
+        source_pack: content.source_pack,
+
+        // NOVÁ AI METADATA
+        ai_model: lastGenerated?.metadata?.model || 'claude-sonnet-4',
+        ai_confidence: lastGenerated?.confidence || null,
+        ai_warnings: lastGenerated?.warnings || [],
+        ai_generated_at: lastGenerated?.metadata?.generatedAt || null,
+        ai_cost: lastGenerated?.metadata?.cost?.total
+          ? parseFloat(lastGenerated.metadata.cost.total)
+          : null,
+
+        // Review status
+        review_status: content.status === 'published' ? 'approved' : 'pending'
+      };
+
+      await base44.entities.Topic.update(topic.id, updateData);
+      toast.success('Téma uloženo');
+      if (onSave) onSave();
     } catch (error) {
       console.error('Save error:', error);
-      toast.error('Chyba při ukládání');
+      toast.error('Chyba při ukládání: ' + error.message);
     } finally {
       setIsSaving(false);
     }
