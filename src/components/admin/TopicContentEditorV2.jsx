@@ -245,6 +245,22 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         ]
       };
 
+      // Struktura metadata pro uložení
+      const aiMetadata = {
+        confidence: confidenceValue,
+        warnings: warnings,
+        metadata: {
+          model: result?.metadata?.model || result?.model || 'gemini-2.0-flash',
+          usedModel: result?.metadata?.usedModel || result?.model || 'gemini-2.0-flash',
+          generatedAt: new Date().toISOString(),
+          fallback: result?.metadata?.fallback || false,
+          cost: {
+            total: result?.metadata?.cost?.total || result?.cost?.total || 0
+          }
+        },
+        sources: sources
+      };
+
       // Aplikuj výsledek podle módu
       if (mode === 'topic_generate_template') {
         const compiled = buildTemplateMarkdown(result.structuredData, topic.title);
@@ -272,7 +288,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         }));
       }
 
-      setLastGenerated(result);
+      setLastGenerated(aiMetadata);
       const modelName = result?.metadata?.usedModel || result?.metadata?.model || 'Claude Sonnet 4';
       const costTotal = result?.metadata?.cost?.total;
       const sourceCount = sources.length;
