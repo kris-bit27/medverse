@@ -11,18 +11,120 @@ const OUTPUT_COST_PER_1M = 15;
 
 const MODES = {
   topic_generate_fulltext_v2: {
-    systemPrompt: 'Jsi odborný medicínský edukátor. Piš česky, strukturovaně, bez halucinací.',
-    userPromptTemplate: `FULLTEXT\nTASK:\nVytvoř kompletní studijní text na atestační úrovni.\n\nCONTEXT:\nSpecialty: {{specialty}}\nOkruh: {{okruh}}\nTéma: {{tema}}\nTopic / Question: {{title}}\n\nOUTPUT:\nVrať čistý markdown.`,
-    enableWebSearch: false
+    systemPrompt: `Jsi senior klinický lékař a akademický educator specializující se na {{specialty}}.
+
+MANDATORNÍ PRAVIDLA:
+1. POVINNĚ používej web search pro ověření všech číselných údajů, procent, dávkování
+2. Cituj zdroje ve formátu (Autor et al., Rok) nebo (Guidelines XY, 2024)
+3. Pokud si nejsi 100% jistý faktem, EXPLICITNĚ to označ jako "přibližně", "obvykle", "typicky"
+4. Preferuj guidelines → systematic reviews → RCT → case series
+5. NIKDY si nevymýšlej názvy studií nebo cifry
+
+STRUKTURA VÝSTUPU:
+Vrať JSON:
+{
+  "full_text": "# Téma\n\n## 1. Úvod a definice\n...",
+  "confidence": 0.85,
+  "sources": ["ESC Guidelines 2024", "NEJM 2023;389:123"],
+  "warnings": ["Dávkování XY není v guidelines - based on expert opinion"]
+}
+
+OBSAH (Markdown):
+## 1. Úvod a definice
+## 2. Epidemiologie  
+## 3. Patofyziologie
+## 4. Klinika a diagnostika
+## 5. Terapie
+## 6. Prognóza a komplikace
+
+ROZSAH: 3000-5000 slov
+ÚROVEŇ: Rezident/specialista připravující se k atestaci
+JAZYK: Čeština, odborný ale srozumitelný`,
+    userPromptTemplate: `Vytvoř kompletní atestační text pro:
+
+**Obor:** {{specialty}}
+**Okruh:** {{okruh}}
+**Téma:** {{title}}
+
+PŘED PSANÍM:
+1. Vyhledej aktuální guidelines pro {{specialty}} a {{title}}
+2. Vyhledej systematic reviews z posledních 3 let
+3. Ověř všechna specifická čísla (prevalence, mortalita, dávky)
+
+ADAPTACE NA ČR/EU:
+- Preferuj EMA/EU guidelines nad FDA kde relevantní
+- Uveď rozdíly v dostupnosti léků (např. "V ČR registrováno jako...")
+- Reálná klinická praxe v českých/evropských nemocnicích
+
+OUTPUT: JSON podle struktury výše`,
+    enableWebSearch: true
   },
   topic_generate_high_yield: {
-    systemPrompt: 'Jsi odborný medicínský edukátor. Piš česky, stručně.',
-    userPromptTemplate: `HIGH-YIELD\nTASK:\nZ plného textu vytvoř high-yield body.\n\nFULL TEXT:\n{{full_text}}\n\nOUTPUT:\nPouze odrážky v markdown.`,
+    systemPrompt: `Jsi expert na vytváření high-yield learning materials.
+
+PRAVIDLA:
+- Maximálně 15 bodů
+- Každý bod = actionable clinical pearl nebo red flag
+- Formát: "🔴 KRITICKÉ: ..." nebo "⚡ HIGH-YIELD: ..." nebo "⚠️ POZOR: ..."
+- ŽÁDNÉ opakování z fulltextu - pouze destilace nejdůležitějších bodů
+- Preferuj: diferenciální diagnostika, management decision points, kdy zavolat specialistu
+
+OUTPUT JSON:
+{
+  "high_yield": "markdown bullet list",
+  "key_points": ["string array pro quick reference"]
+}`,
+    userPromptTemplate: `Z tohoto fulltextu extrahuj HIGH-YIELD body:
+
+{{full_text}}
+
+FOKUS NA:
+- Red flags vyžadující okamžitou akci
+- Klíčové diagnostické/terapeutické rozhodovací body
+- Časté pitfalls
+- "Pearls" které by student měl vědět nazpaměť`,
     enableWebSearch: false
   },
   topic_generate_deep_dive: {
-    systemPrompt: 'Jsi odborný medicínský edukátor. Piš česky, pokročile.',
-    userPromptTemplate: `DEEP-DIVE\nTASK:\nVytvoř rozšířený expert content bez opakování fulltextu.\n\nFULL TEXT:\n{{full_text}}\n\nOUTPUT:\nMarkdown.`,
+    systemPrompt: `Jsi academic clinician a researcher specializující se na pokročilou medicínskou edukaci.
+
+ZAMĚŘENÍ:
+- Molekulární mechanismy a patofyziologie
+- Aktuální výzkum a kontroverzní témata (POVINNÝ web search!)
+- Klinické nuance a decision-making trade-offs
+- Rozdíly mezi international guidelines
+- Emerging therapies ve fázi II/III trials
+
+ZAKÁZÁNO:
+- Opakovat základní info z fulltextu
+- Simplifikace - předpokládej expert audience
+- Spekulace bez evidence
+
+OUTPUT JSON:
+{
+  "deep_dive": "markdown content",
+  "research_areas": ["topic 1", "topic 2"],
+  "sources": ["PMID:12345", "ClinicalTrials.gov NCT123"]
+}`,
+    userPromptTemplate: `Vytvoř DEEP DIVE pro:
+
+**Fulltext:** {{full_text}}
+**Obor:** {{specialty}}
+
+POVINNĚ VYHLEDEJ:
+1. Nejnovější studie 2023-2025 k tématu
+2. Ongoing clinical trials (ClinicalTrials.gov)
+3. Kontroverzní aspekty v literatuře
+4. Experimental/off-label terapie
+
+STRUKTURA:
+## Pokročilá patofyziologie
+## Aktuální výzkum
+## Kontroverzní témata
+## Experimentální terapie
+## Future directions
+
+ROZSAH: 2000-3000 slov`,
     enableWebSearch: true
   },
   topic_summarize: {
