@@ -353,6 +353,11 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
           <div className="text-xs text-teal-700/80 dark:text-teal-300/80 break-all">
             from_url: {appParams.fromUrl || 'N/A'} • token: {appParams.token || 'N/A'}
           </div>
+          {appParams.functionsVersion === 'preview' && (
+            <div className="text-xs text-amber-700 dark:text-amber-300">
+              ⚠️ functions_version=preview — ověř, že je v Base44 nasazená funkce invokeClaudeEduLLM pro preview.
+            </div>
+          )}
           {contextSummary && (
             <div className="text-xs text-teal-700/80 dark:text-teal-300/80">
               {contextSummary}
