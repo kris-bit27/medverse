@@ -350,6 +350,19 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
           <div className="text-xs text-teal-700/80 dark:text-teal-300/80">
             app_id: {appParams.appId || 'N/A'} • app_base_url: {appParams.appBaseUrl || 'N/A'}
           </div>
+          <div className="flex flex-wrap items-center gap-2 text-xs text-teal-700/80 dark:text-teal-300/80">
+            <Button
+              size="xs"
+              variant="outline"
+              onClick={() => {
+                localStorage.setItem('base44_functions_version', 'prod');
+                window.location.reload();
+              }}
+            >
+              Switch to prod functions
+            </Button>
+            <span>Dočasně použije production endpointy pro generování.</span>
+          </div>
           {appParams.functionsVersion === 'preview' && (
             <div className="text-xs text-amber-700 dark:text-amber-300">
               ⚠️ functions_version=preview — ověř, že je v Base44 nasazená funkce invokeClaudeEduLLM pro preview.
