@@ -356,7 +356,9 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
               variant="outline"
               onClick={() => {
                 localStorage.setItem('base44_functions_version', 'prod');
-                window.location.reload();
+                const url = new URL(window.location.href);
+                url.searchParams.set('functions_version', 'prod');
+                window.location.href = url.toString();
               }}
             >
               Switch to prod functions
