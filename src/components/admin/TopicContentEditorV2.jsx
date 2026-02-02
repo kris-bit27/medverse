@@ -16,11 +16,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Loader2, Sparkles, Save, BookOpen, List, Microscope, ArrowDown, CheckCircle, Shield, Eye, AlertTriangle, FileText } from 'lucide-react';
+import { Loader2, Sparkles, Save, BookOpen, List, Microscope, ArrowDown, CheckCircle, Shield, Eye, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import { AI_MODELS } from '../utils/aiConfig';
 import { ADMIN_CONTENT_SYSTEM_PROMPT } from './aiSystemPrompt';
-import { appParams } from '@/lib/app-params';
 
 const FULLTEXT_TEMPLATE = `FULLTEXT
 TASK:
@@ -192,7 +191,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
   const handleAIGenerate = async (mode) => {
     setIsGenerating(true);
     try {
-      if ((mode === 'topic_generate_high_yield' || mode === 'topic_generate_deep_dive') && !content.full_text_content) {
+      if ((mode === 'high_yield' || mode === 'deep_dive') && !content.full_text_content) {
         toast.error('Nejprve vygeneruj nebo vlož plný studijní text.');
         return;
       }
@@ -206,10 +205,9 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
       };
 
       const promptMap = {
-        topic_generate_fulltext_v2: fillTemplate(FULLTEXT_TEMPLATE, templateVars),
-        topic_generate_high_yield: `INPUT TEXT (EXTRACT-ONLY):\n\n${content.full_text_content || ''}`,
-        topic_generate_deep_dive: `REFERENCE (do not repeat):\n\n${content.full_text_content || ''}`,
-        topic_reformat: `Přeformátuj tento text pro optimální studium. NEPŘIDÁVEJ nový obsah, pouze zlepši strukturu a čitelnost.\n\n${content.full_text_content || ''}`
+        fulltext: fillTemplate(FULLTEXT_TEMPLATE, templateVars),
+        high_yield: `INPUT TEXT (EXTRACT-ONLY):\n\n${content.full_text_content || ''}`,
+        deep_dive: `REFERENCE (do not repeat):\n\n${content.full_text_content || ''}`
       };
 
       const response = await base44.functions.invoke('invokeClaudeEduLLM', {
@@ -220,11 +218,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
           entityId: topic.id
         },
         userPrompt: promptMap[mode] || `Vytvoř obsah pro téma: ${topic.title}`,
-        allowWeb: mode === 'topic_generate_deep_dive',
-        systemPromptOverride: ADMIN_CONTENT_SYSTEM_PROMPT,
-        maxRagChars: 20000,
-        maxSectionChars: 8000,
-        skipRag: mode !== 'topic_generate_deep_dive'
+        systemPromptOverride: ADMIN_CONTENT_SYSTEM_PROMPT
       });
 
       const result = response.data || response;
@@ -263,28 +257,22 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
       };
 
       // Aplikuj výsledek podle módu
-      if (mode === 'topic_generate_fulltext_v2') {
+      if (mode === 'fulltext') {
         const compiled = buildTemplateMarkdown(result.structuredData, topic.title);
         setContent(prev => ({ 
           ...prev, 
           full_text_content: result.full_text || compiled || result.text || '',
           source_pack: result.citations || mergedSourcePack
         }));
-      } else if (mode === 'topic_generate_high_yield') {
+      } else if (mode === 'high_yield') {
         setContent(prev => ({ 
           ...prev, 
           bullet_points_summary: result.high_yield || result.text || ''
         }));
-      } else if (mode === 'topic_generate_deep_dive') {
+      } else if (mode === 'deep_dive') {
         setContent(prev => ({ 
           ...prev, 
           deep_dive_content: result.deep_dive || result.text || '',
-          source_pack: result.citations || mergedSourcePack
-        }));
-      } else if (mode === 'topic_reformat') {
-        setContent(prev => ({ 
-          ...prev, 
-          full_text_content: result.text || '',
           source_pack: result.citations || mergedSourcePack
         }));
       }
@@ -344,32 +332,6 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
           <div>
             Upravujete téma <strong>{topic.title}</strong> | AI verze: {AI_MODELS.VERSION_TAG}
           </div>
-          <div className="text-xs text-teal-700/80 dark:text-teal-300/80">
-            functions_version: {appParams.functionsVersion || 'N/A'}
-          </div>
-          <div className="text-xs text-teal-700/80 dark:text-teal-300/80">
-            app_id: {appParams.appId || 'N/A'} • app_base_url: {appParams.appBaseUrl || 'N/A'}
-          </div>
-          <div className="flex flex-wrap items-center gap-2 text-xs text-teal-700/80 dark:text-teal-300/80">
-            <Button
-              size="xs"
-              variant="outline"
-              onClick={() => {
-                localStorage.setItem('base44_functions_version', 'prod');
-                const url = new URL(window.location.href);
-                url.searchParams.set('functions_version', 'prod');
-                window.location.href = url.toString();
-              }}
-            >
-              Switch to prod functions
-            </Button>
-            <span>Dočasně použije production endpointy pro generování.</span>
-          </div>
-          {appParams.functionsVersion === 'preview' && (
-            <div className="text-xs text-amber-700 dark:text-amber-300">
-              ⚠️ functions_version=preview — ověř, že je v Base44 nasazená funkce invokeClaudeEduLLM pro preview.
-            </div>
-          )}
           {contextSummary && (
             <div className="text-xs text-teal-700/80 dark:text-teal-300/80">
               {contextSummary}
@@ -532,17 +494,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => handleAIGenerate('topic_reformat')}
-                disabled={isGenerating || !content.full_text_content}
-                title="Přeformátuj existující text pro lepší studium"
-              >
-                {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <FileText className="w-3 h-3 mr-1" />}
-                Přeformátovat
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => handleAIGenerate('topic_generate_fulltext_v2')}
+                onClick={() => handleAIGenerate('fulltext')}
                 disabled={isGenerating}
               >
                 {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Sparkles className="w-3 h-3 mr-1" />}
@@ -572,7 +524,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
             <Button
               size="sm"
               variant="outline"
-              onClick={() => handleAIGenerate('topic_generate_high_yield')}
+              onClick={() => handleAIGenerate('high_yield')}
               disabled={isGenerating || !content.full_text_content}
               title="Generovat z plného textu"
             >
@@ -593,7 +545,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
             <Button
               size="sm"
               variant="outline"
-              onClick={() => handleAIGenerate('topic_generate_deep_dive')}
+              onClick={() => handleAIGenerate('deep_dive')}
               disabled={isGenerating || !content.full_text_content}
             >
               {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Sparkles className="w-3 h-3 mr-1" />}

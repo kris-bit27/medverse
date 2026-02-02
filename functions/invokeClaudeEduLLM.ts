@@ -28,7 +28,7 @@ function checkRateLimit(userId: string) {
 }
 
 const MODES = {
-  topic_generate_fulltext_v2: {
+  fulltext: {
     systemPrompt: `Jsi senior klinický lékař a akademický educator specializující se na {{specialty}}.
 
 MANDATORNÍ PRAVIDLA:
@@ -77,7 +77,7 @@ ADAPTACE NA ČR/EU:
 OUTPUT: JSON podle struktury výše`,
     enableWebSearch: true
   },
-  topic_generate_high_yield: {
+  high_yield: {
     systemPrompt: `Jsi expert na vytváření high-yield learning materials.
 
 PRAVIDLA:
@@ -103,7 +103,7 @@ FOKUS NA:
 - "Pearls" které by student měl vědět nazpaměť`,
     enableWebSearch: false
   },
-  topic_generate_deep_dive: {
+  deep_dive: {
     systemPrompt: `Jsi academic clinician a researcher specializující se na pokročilou medicínskou edukaci.
 
 ZAMĚŘENÍ:
@@ -145,16 +145,6 @@ STRUKTURA:
 ROZSAH: 2000-3000 slov`,
     enableWebSearch: true
   },
-  topic_summarize: {
-    systemPrompt: 'Jsi odborný medicínský edukátor. Piš česky, extrakt pouze z textu.',
-    userPromptTemplate: `SHRNUTÍ\nTASK:\nExtrahuj pouze klíčové body z plného textu.\n\nFULL TEXT:\n{{full_text}}\n\nOUTPUT:\nPouze odrážky v markdown.`,
-    enableWebSearch: false
-  },
-  topic_reformat: {
-    systemPrompt: 'Jsi editor studijního textu. Nepřidávej nové informace.',
-    userPromptTemplate: `REFORMAT\nTASK:\nPřeformátuj text do přehledného markdownu. Neztrácej informace.\n\nTEXT:\n{{full_text}}\n\nOUTPUT:\nMarkdown.`,
-    enableWebSearch: false
-  }
 };
 
 function fillTemplate(template: string, vars: Record<string, string>) {
@@ -233,60 +223,14 @@ Deno.serve(async (req) => {
       ? [{ type: 'web_search_20250305' }]
       : [];
 
-    let response;
-    try {
-      response = await anthropic.messages.create({
-        model: MODEL_ID,
-        temperature: DEFAULT_TEMP,
-        max_tokens: MAX_TOKENS,
-        system: modeConfig.systemPrompt,
-        messages: [{ role: 'user', content: finalUserPrompt }],
-        tools
-      });
-    } catch (claudeError) {
-      console.error('[CLAUDE-AI] Error:', claudeError);
-      console.log('[CLAUDE-AI] Falling back to Gemini...');
-
-      try {
-        const module = await import('./invokeEduLLM.ts');
-        const invokeEduLLM = module.default;
-        if (typeof invokeEduLLM === 'function') {
-          const geminiResponse = await invokeEduLLM(req);
-          const responseData = await geminiResponse.json();
-          return new Response(
-            JSON.stringify({
-              ...responseData,
-              metadata: {
-                ...(responseData.metadata || {}),
-                fallback: true,
-                fallbackReason: claudeError.message,
-                originalModel: CLAUDE_VERSION_TAG,
-                usedModel: 'medverse_gemini_1.5_pro_v3'
-              }
-            }),
-            { headers: { 'Content-Type': 'application/json' } }
-          );
-        }
-      } catch (importError) {
-        console.error('[CLAUDE-AI] Fallback import failed:', importError);
-      }
-
-      const fallback = await base44.functions.invoke('invokeEduLLM', payload);
-      const responseData = fallback?.data || fallback;
-      return new Response(
-        JSON.stringify({
-          ...responseData,
-          metadata: {
-            ...(responseData?.metadata || {}),
-            fallback: true,
-            fallbackReason: claudeError.message,
-            originalModel: CLAUDE_VERSION_TAG,
-            usedModel: 'medverse_gemini_1.5_pro_v3'
-          }
-        }),
-        { headers: { 'Content-Type': 'application/json' } }
-      );
-    }
+    const response = await anthropic.messages.create({
+      model: MODEL_ID,
+      temperature: DEFAULT_TEMP,
+      max_tokens: MAX_TOKENS,
+      system: modeConfig.systemPrompt,
+      messages: [{ role: 'user', content: finalUserPrompt }],
+      tools
+    });
 
     const textBlocks = response.content
       .filter((b) => b.type === 'text')
@@ -299,9 +243,9 @@ Deno.serve(async (req) => {
 
     return Response.json({
       text: textBlocks || undefined,
-      full_text: mode === 'topic_generate_fulltext_v2' ? textBlocks || undefined : undefined,
-      high_yield: mode === 'topic_generate_high_yield' || mode === 'topic_summarize' ? textBlocks || undefined : undefined,
-      deep_dive: mode === 'topic_generate_deep_dive' ? textBlocks || undefined : undefined,
+      full_text: mode === 'fulltext' ? textBlocks || undefined : undefined,
+      high_yield: mode === 'high_yield' ? textBlocks || undefined : undefined,
+      deep_dive: mode === 'deep_dive' ? textBlocks || undefined : undefined,
       confidence: 0.6,
       sources: response.content.filter((b) => b.type === 'tool_result').map(() => 'web_search'),
       warnings: [],
@@ -314,25 +258,18 @@ Deno.serve(async (req) => {
     });
   } catch (error) {
     console.error('[CLAUDE-AI]', error);
-    try {
-      const base44 = createClientFromRequest(req);
-      const fallback = await base44.functions.invoke('invokeEduLLM', payload);
-      return Response.json(fallback?.data || fallback);
-    } catch (fallbackError) {
-      console.error('[CLAUDE-AI] fallback failed', fallbackError);
-      return Response.json({
-        error: error.message,
-        aiVersion: CLAUDE_VERSION_TAG,
-        confidence: 0,
-        warnings: ['Claude generation failed and fallback failed'],
-        metadata: {
-          model: MODEL_ID,
-          tokensUsed: {},
-          cost: { input: 0, output: 0, total: 0 },
-          generatedAt: new Date().toISOString()
-        }
-      }, { status: 500 });
-    }
+    return Response.json({
+      error: error.message,
+      aiVersion: CLAUDE_VERSION_TAG,
+      confidence: 0,
+      warnings: ['Claude generation failed'],
+      metadata: {
+        model: MODEL_ID,
+        tokensUsed: {},
+        cost: { input: 0, output: 0, total: 0 },
+        generatedAt: new Date().toISOString()
+      }
+    }, { status: 500 });
   } finally {
     const elapsed = Date.now() - startTime;
     if (elapsed > 20000) {
