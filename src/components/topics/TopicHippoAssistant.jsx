@@ -100,7 +100,7 @@ export default function TopicHippoAssistant({ topic, user }) {
         allowWeb: interactionMode === 'deepen'
       });
 
-      if (!response.data.success) {
+      if (response?.data?.error) {
         throw new Error(response.data.error || 'Hippo interaction failed');
       }
 

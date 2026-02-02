@@ -895,6 +895,10 @@ Deno.serve(async (req) => {
       }, { status: 400 });
     }
 
+    if (systemPromptOverride && !['admin', 'editor'].includes(user.role)) {
+      return Response.json({ error: 'System prompt override is not allowed' }, { status: 403 });
+    }
+
     // Validace přístupu podle role
     validateModeAccess(mode, user.role);
 
