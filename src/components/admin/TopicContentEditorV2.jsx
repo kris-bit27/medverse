@@ -191,100 +191,104 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
   const handleAIGenerate = async (mode) => {
     setIsGenerating(true);
     try {
-      if ((mode === 'high_yield' || mode === 'deep_dive') && !content.full_text_content) {
-        toast.error('Nejprve vygeneruj nebo vlož plný studijní text.');
+      // Validace pro high-yield a deep-dive
+      if ((mode === 'topic_generate_high_yield' || mode === 'topic_generate_deep_dive') && !content.full_text_content) {
+        toast.error('Nejprve vygeneruj fulltext');
+        setIsGenerating(false);
         return;
       }
 
-      const templateVars = {
+      // Context pro Claude
+      const claudeContext = {
         specialty: context?.specialty || '',
         okruh: context?.okruh || '',
-        tema: context?.tema || topic.title || '',
         title: topic.title || '',
         full_text: content.full_text_content || ''
       };
 
-      const promptMap = {
-        fulltext: fillTemplate(FULLTEXT_TEMPLATE, templateVars),
-        high_yield: `INPUT TEXT (EXTRACT-ONLY):\n\n${content.full_text_content || ''}`,
-        deep_dive: `REFERENCE (do not repeat):\n\n${content.full_text_content || ''}`
-      };
+      console.log('[Claude] Generuji mód:', mode);
+      console.log('[Claude] Context:', claudeContext);
 
       const response = await base44.functions.invoke('invokeClaudeEduLLM', {
         mode: mode,
-        entityContext: {
-          topic: topic,
-          entityType: 'topic',
-          entityId: topic.id
-        },
-        userPrompt: promptMap[mode] || `Vytvoř obsah pro téma: ${topic.title}`,
-        systemPromptOverride: ADMIN_CONTENT_SYSTEM_PROMPT
+        context: claudeContext,
+        maxTokens: 4096
       });
 
+      console.log('[Claude] Response:', response);
+
       const result = response.data || response;
+      
       if (result?.error) {
         throw new Error(result.error);
       }
 
-      const confidenceValue = typeof result?.confidence === 'number' ? result.confidence : null;
-      const warnings = Array.isArray(result?.warnings) ? result.warnings : [];
-      setGenerationConfidence(confidenceValue);
-      setGenerationWarnings(warnings);
-
-      const sources = Array.isArray(result?.sources) ? result.sources : [];
-      const mergedSourcePack = {
-        internal_refs: content.source_pack?.internal_refs || [],
-        external_refs: [
-          ...(content.source_pack?.external_refs || []),
-          ...sources.map((title) => ({ title }))
-        ]
-      };
-
-      // Struktura metadata pro uložení
+      // Extrakce metadata
       const aiMetadata = {
-        confidence: confidenceValue,
-        warnings: warnings,
+        confidence: result?.confidence || null,
+        warnings: result?.warnings || [],
+        sources: result?.sources || [],
         metadata: {
-          model: result?.metadata?.model || result?.model || 'gemini-2.0-flash',
-          usedModel: result?.metadata?.usedModel || result?.model || 'gemini-2.0-flash',
-          generatedAt: new Date().toISOString(),
-          fallback: result?.metadata?.fallback || false,
-          cost: {
-            total: result?.metadata?.cost?.total || result?.cost?.total || 0
-          }
-        },
-        sources: sources
+          model: result?.metadata?.model || 'claude-sonnet-4',
+          generatedAt: result?.metadata?.generatedAt || new Date().toISOString(),
+          cost: result?.metadata?.cost || { total: '0' },
+          fallback: result?.metadata?.fallback || false
+        }
       };
 
-      // Aplikuj výsledek podle módu
-      if (mode === 'fulltext') {
-        const compiled = buildTemplateMarkdown(result.structuredData, topic.title);
+      setLastGenerated(aiMetadata);
+      setGenerationConfidence(aiMetadata.confidence);
+      setGenerationWarnings(aiMetadata.warnings);
+
+      // Aplikuj podle módu
+      if (mode === 'topic_generate_fulltext_v2') {
         setContent(prev => ({ 
           ...prev, 
-          full_text_content: result.full_text || compiled || result.text || '',
-          source_pack: result.citations || mergedSourcePack
+          full_text_content: result.full_text || result.text || '',
+          source_pack: {
+            internal_refs: prev.source_pack?.internal_refs || [],
+            external_refs: [
+              ...(prev.source_pack?.external_refs || []),
+              ...(result.sources || []).map(s => ({ title: s }))
+            ]
+          }
         }));
-      } else if (mode === 'high_yield') {
+        toast.success(`Fulltext vygenerován (${aiMetadata.metadata.model})`);
+        
+      } else if (mode === 'topic_generate_high_yield') {
         setContent(prev => ({ 
           ...prev, 
           bullet_points_summary: result.high_yield || result.text || ''
         }));
-      } else if (mode === 'deep_dive') {
+        toast.success('High-yield vygenerován');
+        
+      } else if (mode === 'topic_generate_deep_dive') {
         setContent(prev => ({ 
           ...prev, 
           deep_dive_content: result.deep_dive || result.text || '',
-          source_pack: result.citations || mergedSourcePack
+          source_pack: {
+            internal_refs: prev.source_pack?.internal_refs || [],
+            external_refs: [
+              ...(prev.source_pack?.external_refs || []),
+              ...(result.sources || []).map(s => ({ title: s }))
+            ]
+          }
         }));
+        toast.success('Deep dive vygenerován');
       }
 
-      setLastGenerated(aiMetadata);
-      const modelName = result?.metadata?.usedModel || result?.metadata?.model || 'Claude Sonnet 4';
-      const costTotal = result?.metadata?.cost?.total;
-      const sourceCount = sources.length;
-      const confidencePct = confidenceValue !== null ? Math.round(confidenceValue * 100) : null;
-      toast.success(`Obsah vygenerován • Model: ${modelName}${confidencePct !== null ? ` • Confidence: ${confidencePct}%` : ''}${typeof costTotal === 'number' ? ` • Cost: $${costTotal.toFixed(4)}` : ''} • Zdroje: ${sourceCount}`);
+      // Zobraz warnings pokud existují
+      if (aiMetadata.warnings.length > 0) {
+        toast.warning(`Varování: ${aiMetadata.warnings.join(', ')}`);
+      }
+
+      // Zobraz cost
+      if (aiMetadata.metadata.cost?.total) {
+        console.log(`[Claude] Náklady: $${aiMetadata.metadata.cost.total}`);
+      }
+
     } catch (error) {
-      console.error('AI generation error:', error);
+      console.error('[Claude] Error:', error);
       toast.error('Chyba při generování: ' + error.message);
     } finally {
       setIsGenerating(false);
@@ -494,7 +498,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => handleAIGenerate('fulltext')}
+                onClick={() => handleAIGenerate('topic_generate_fulltext_v2')}
                 disabled={isGenerating}
               >
                 {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Sparkles className="w-3 h-3 mr-1" />}
@@ -524,7 +528,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
             <Button
               size="sm"
               variant="outline"
-              onClick={() => handleAIGenerate('high_yield')}
+              onClick={() => handleAIGenerate('topic_generate_high_yield')}
               disabled={isGenerating || !content.full_text_content}
               title="Generovat z plného textu"
             >
@@ -545,7 +549,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
             <Button
               size="sm"
               variant="outline"
-              onClick={() => handleAIGenerate('deep_dive')}
+              onClick={() => handleAIGenerate('topic_generate_deep_dive')}
               disabled={isGenerating || !content.full_text_content}
             >
               {isGenerating ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Sparkles className="w-3 h-3 mr-1" />}
