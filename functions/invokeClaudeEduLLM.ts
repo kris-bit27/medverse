@@ -27,6 +27,17 @@ function checkRateLimit(userId: string) {
   return { allowed: true, retryAfterMs: 0 };
 }
 
+// Mapování front-end módů na interní módy
+const MODE_MAPPING: Record<string, string> = {
+  topic_generate_fulltext_v2: 'fulltext',
+  topic_generate_high_yield: 'high_yield',
+  topic_generate_deep_dive: 'deep_dive',
+  // Backwards compatibility
+  fulltext: 'fulltext',
+  high_yield: 'high_yield',
+  deep_dive: 'deep_dive'
+};
+
 const MODES = {
   fulltext: {
     systemPrompt: `Jsi senior klinický lékař a akademický educator specializující se na {{specialty}}.
@@ -185,33 +196,52 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Anthropic API key missing' }, { status: 500 });
     }
 
-    const rate = checkRateLimit(user.id);
+    payload = await req.json();
+    const {
+      mode,
+      context = {},
+      entityContext = {},
+      userPrompt,
+      maxTokens = MAX_TOKENS,
+      userId
+    } = payload || {};
+
+    const internalMode = MODE_MAPPING[mode] || mode;
+    console.log(`[Claude] Received mode: ${mode}, mapped to: ${internalMode}`);
+
+    if (!internalMode || !MODES[internalMode]) {
+      return Response.json(
+        { error: `Neznámý mód: ${mode}. Podporované: ${Object.keys(MODE_MAPPING).join(', ')}` },
+        { status: 400 }
+      );
+    }
+
+    const rate = checkRateLimit(userId || user.id);
     if (!rate.allowed) {
       return Response.json(
-        { error: 'Rate limit exceeded', retryAfterMs: rate.retryAfterMs },
+        { error: 'Rate limit exceeded', retryAfter: Math.ceil(rate.retryAfterMs / 1000) },
         { status: 429, headers: { 'Retry-After': String(Math.ceil(rate.retryAfterMs / 1000)) } }
       );
     }
 
-    payload = await req.json();
-    const {
-      mode,
-      entityContext = {},
-      userPrompt
-    } = payload || {};
-
-    if (!mode || !MODES[mode]) {
-      return Response.json({ error: 'Invalid mode', validModes: Object.keys(MODES) }, { status: 400 });
-    }
-
-    const modeConfig = MODES[mode];
-    const templateVars = {
-      specialty: entityContext?.specialty || '',
-      okruh: entityContext?.okruh || '',
-      tema: entityContext?.tema || '',
-      title: entityContext?.title || entityContext?.topic?.title || '',
-      full_text: entityContext?.full_text || entityContext?.full_text_content || ''
+    const modeConfig = MODES[internalMode];
+    const effectiveContext = {
+      specialty: context?.specialty ?? entityContext?.specialty ?? '',
+      okruh: context?.okruh ?? entityContext?.okruh ?? '',
+      title: context?.title ?? entityContext?.title ?? entityContext?.topic?.title ?? '',
+      full_text: context?.full_text ?? entityContext?.full_text ?? entityContext?.full_text_content ?? ''
     };
+    const templateVars = {
+      specialty: effectiveContext.specialty || 'Medicína',
+      okruh: effectiveContext.okruh || '',
+      tema: entityContext?.tema || '',
+      title: effectiveContext.title || '',
+      full_text: effectiveContext.full_text || ''
+    };
+
+    const finalSystemPrompt = fillTemplate(modeConfig.systemPrompt, {
+      specialty: effectiveContext.specialty || 'Medicína'
+    });
 
     const finalUserPrompt = userPrompt && typeof userPrompt === 'string'
       ? userPrompt
@@ -226,8 +256,8 @@ Deno.serve(async (req) => {
     const response = await anthropic.messages.create({
       model: MODEL_ID,
       temperature: DEFAULT_TEMP,
-      max_tokens: MAX_TOKENS,
-      system: modeConfig.systemPrompt,
+      max_tokens: maxTokens,
+      system: finalSystemPrompt,
       messages: [{ role: 'user', content: finalUserPrompt }],
       tools
     });
@@ -243,9 +273,9 @@ Deno.serve(async (req) => {
 
     return Response.json({
       text: textBlocks || undefined,
-      full_text: mode === 'fulltext' ? textBlocks || undefined : undefined,
-      high_yield: mode === 'high_yield' ? textBlocks || undefined : undefined,
-      deep_dive: mode === 'deep_dive' ? textBlocks || undefined : undefined,
+      full_text: internalMode === 'fulltext' ? textBlocks || undefined : undefined,
+      high_yield: internalMode === 'high_yield' ? textBlocks || undefined : undefined,
+      deep_dive: internalMode === 'deep_dive' ? textBlocks || undefined : undefined,
       confidence: 0.6,
       sources: response.content.filter((b) => b.type === 'tool_result').map(() => 'web_search'),
       warnings: [],
