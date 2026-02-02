@@ -14,9 +14,23 @@ export default function AICopilotChat({ agentName = 'copilot', initialContext = 
   const [isLoading, setIsLoading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const scrollRef = useRef(null);
+  const unsubscribeRef = useRef(null);
+  const timeoutRef = useRef(null);
 
   useEffect(() => {
     loadConversations();
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -26,30 +40,44 @@ export default function AICopilotChat({ agentName = 'copilot', initialContext = 
   }, [messages]);
 
   const loadConversations = async () => {
-    const convs = await base44.agents.listConversations({ agent_name: agentName });
-    setConversations(convs || []);
+    try {
+      const convs = await base44.agents.listConversations({ agent_name: agentName });
+      setConversations(convs || []);
+    } catch (error) {
+      console.error('Error loading conversations:', error);
+    }
   };
 
   const createNewConversation = async () => {
     setIsLoading(true);
-    const conv = await base44.agents.createConversation({
-      agent_name: agentName,
-      metadata: {
-        name: `Konverzace ${new Date().toLocaleDateString('cs-CZ')}`,
-        context: initialContext
-      }
-    });
-    setCurrentConversation(conv);
-    setMessages([]);
-    await loadConversations();
+    try {
+      const conv = await base44.agents.createConversation({
+        agent_name: agentName,
+        metadata: {
+          name: `Konverzace ${new Date().toLocaleDateString('cs-CZ')}`,
+          context: initialContext
+        }
+      });
+      setCurrentConversation(conv);
+      setMessages([]);
+      await loadConversations();
+    } catch (error) {
+      console.error('Error creating conversation:', error);
+    }
     setIsLoading(false);
   };
 
   const selectConversation = async (convId) => {
     setIsLoading(true);
-    const conv = await base44.agents.getConversation(convId);
-    setCurrentConversation(conv);
-    setMessages(conv.messages || []);
+    try {
+      const conv = await base44.agents.getConversation(convId);
+      setCurrentConversation(conv);
+      setMessages(conv.messages || []);
+    } catch (error) {
+      console.error('Error selecting conversation:', error);
+      setCurrentConversation(null);
+      setMessages([]);
+    }
     setIsLoading(false);
   };
 
@@ -62,32 +90,55 @@ export default function AICopilotChat({ agentName = 'copilot', initialContext = 
     let conversation = currentConversation;
     
     if (!conversation) {
-      conversation = await base44.agents.createConversation({
-        agent_name: agentName,
-        metadata: {
-          name: `Konverzace ${new Date().toLocaleDateString('cs-CZ')}`,
-          context: initialContext
-        }
-      });
-      setCurrentConversation(conversation);
-      await loadConversations();
+      try {
+        conversation = await base44.agents.createConversation({
+          agent_name: agentName,
+          metadata: {
+            name: `Konverzace ${new Date().toLocaleDateString('cs-CZ')}`,
+            context: initialContext
+          }
+        });
+        setCurrentConversation(conversation);
+        await loadConversations();
+      } catch (error) {
+        console.error('Error creating conversation:', error);
+        return;
+      }
     }
 
     const userMessage = { role: 'user', content: messageContent };
     setMessages(prev => [...prev, userMessage]);
     setIsStreaming(true);
 
-    const unsubscribe = base44.agents.subscribeToConversation(
-      conversation.id,
-      (data) => {
-        setMessages(data.messages || []);
-      }
-    );
+    if (unsubscribeRef.current) {
+      unsubscribeRef.current();
+      unsubscribeRef.current = null;
+    }
+    const unsubscribe = base44.agents.subscribeToConversation(conversation.id, (data) => {
+      setMessages(data.messages || []);
+    });
+    unsubscribeRef.current = unsubscribe;
 
-    await base44.agents.addMessage(conversation, userMessage);
+    try {
+      await base44.agents.addMessage(conversation, userMessage);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setIsStreaming(false);
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
+      }
+      return;
+    }
     
-    setTimeout(() => {
-      unsubscribe();
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
+      }
       setIsStreaming(false);
     }, 30000);
   };

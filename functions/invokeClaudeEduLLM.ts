@@ -9,6 +9,24 @@ const MAX_TOKENS = 4096;
 const INPUT_COST_PER_1M = 3;
 const OUTPUT_COST_PER_1M = 15;
 
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX_REQUESTS = 10;
+const rateLimitBuckets = new Map<string, { count: number; resetAt: number }>();
+
+function checkRateLimit(userId: string) {
+  const now = Date.now();
+  const bucket = rateLimitBuckets.get(userId);
+  if (!bucket || now >= bucket.resetAt) {
+    rateLimitBuckets.set(userId, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return { allowed: true, retryAfterMs: 0 };
+  }
+  if (bucket.count >= RATE_LIMIT_MAX_REQUESTS) {
+    return { allowed: false, retryAfterMs: Math.max(0, bucket.resetAt - now) };
+  }
+  bucket.count += 1;
+  return { allowed: true, retryAfterMs: 0 };
+}
+
 const MODES = {
   topic_generate_fulltext_v2: {
     systemPrompt: `Jsi senior klinický lékař a akademický educator specializující se na {{specialty}}.
@@ -172,6 +190,19 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Forbidden' }, { status: 403 });
     }
 
+    const apiKey = Deno.env.get('ANTHROPIC_API_KEY') || '';
+    if (!apiKey) {
+      return Response.json({ error: 'Anthropic API key missing' }, { status: 500 });
+    }
+
+    const rate = checkRateLimit(user.id);
+    if (!rate.allowed) {
+      return Response.json(
+        { error: 'Rate limit exceeded', retryAfterMs: rate.retryAfterMs },
+        { status: 429, headers: { 'Retry-After': String(Math.ceil(rate.retryAfterMs / 1000)) } }
+      );
+    }
+
     payload = await req.json();
     const {
       mode,
@@ -196,9 +227,7 @@ Deno.serve(async (req) => {
       ? userPrompt
       : fillTemplate(modeConfig.userPromptTemplate, templateVars);
 
-    const anthropic = new Anthropic({
-      apiKey: Deno.env.get('ANTHROPIC_API_KEY') || ''
-    });
+    const anthropic = new Anthropic({ apiKey });
 
     const tools = modeConfig.enableWebSearch
       ? [{ type: 'web_search_20250305' }]

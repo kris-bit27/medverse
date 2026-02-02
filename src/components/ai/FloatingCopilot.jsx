@@ -20,6 +20,8 @@ export default function FloatingCopilot() {
   const [isLoading, setIsLoading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const scrollRef = useRef(null);
+  const unsubscribeRef = useRef(null);
+  const timeoutRef = useRef(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -32,6 +34,18 @@ export default function FloatingCopilot() {
       scrollRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
   }, [messages]);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
+      }
+    };
+  }, []);
 
   const loadConversations = async () => {
     try {
@@ -126,12 +140,14 @@ export default function FloatingCopilot() {
     setMessages(prev => [...prev, userMessage]);
     setIsStreaming(true);
 
-    const unsubscribe = base44.agents.subscribeToConversation(
-      convToUse.id,
-      (data) => {
-        setMessages(data.messages || []);
-      }
-    );
+    if (unsubscribeRef.current) {
+      unsubscribeRef.current();
+      unsubscribeRef.current = null;
+    }
+    const unsubscribe = base44.agents.subscribeToConversation(convToUse.id, (data) => {
+      setMessages(data.messages || []);
+    });
+    unsubscribeRef.current = unsubscribe;
 
     try {
       await base44.agents.addMessage(convToUse, userMessage);
@@ -139,12 +155,21 @@ export default function FloatingCopilot() {
       console.error('Error sending message:', error);
       toast.error('Nepodařilo se odeslat zprávu');
       setIsStreaming(false);
-      unsubscribe();
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
+      }
       return;
     }
     
-    setTimeout(() => {
-      unsubscribe();
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
+      }
       setIsStreaming(false);
     }, 30000);
   };

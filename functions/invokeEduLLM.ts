@@ -554,7 +554,7 @@ const OUTPUT_SCHEMAS = {
  * - Nikdy nemíchat kontext nahodile
  * - Logický pořadník: Topic → Question → Související témata → Externí zdroje
  */
-async function buildRAGContext(base44, mode, entityContext, allowWeb, options = {}) {
+async function buildRAGContext(base44, user, mode, entityContext, allowWeb, options = {}) {
   const context = {
     rag_text: '',
     rag_sources: []
@@ -591,8 +591,10 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb, options = 
     return true;
   };
 
+  const isPrivileged = ['admin', 'editor'].includes(user?.role || '');
+
   // 1. SourceDocument (pokud existuje k tématu) - NEJVYŠŠÍ PRIORITA
-  if (entityContext.topic?.id) {
+  if (entityContext.topic?.id && isPrivileged) {
     try {
       const sourceDocs = await base44.asServiceRole.entities.SourceDocument?.filter(
         { topic_id: entityContext.topic.id },
@@ -620,9 +622,10 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb, options = 
   if (entityContext.topic) {
     try {
       const topic = entityContext.topic;
+      const canReadTopic = topic.status === 'published' || isPrivileged;
       
       // Topic full text
-      if (topic.full_text_content && topic.status === 'published') {
+      if (topic.full_text_content && canReadTopic) {
         addSection(
           `=== TOPIC: ${topic.title} (PRIMÁRNÍ ZDROJ) ===\n\n${topic.full_text_content}`,
           { type: 'topic', entity: 'Topic', id: topic.id, section_hint: 'full_text', title: topic.title }
@@ -630,7 +633,7 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb, options = 
       }
 
       // Topic bullets
-      if (topic.bullet_points_summary && topic.status === 'published') {
+      if (topic.bullet_points_summary && canReadTopic) {
         addSection(
           `=== SHRNUTÍ: ${topic.title} ===\n\n${topic.bullet_points_summary}`,
           { type: 'topic', entity: 'Topic', id: topic.id, section_hint: 'bullets', title: topic.title }
@@ -638,7 +641,7 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb, options = 
       }
 
       // Learning objectives
-      if (topic.learning_objectives?.length > 0) {
+      if (topic.learning_objectives?.length > 0 && canReadTopic) {
         addSection(
           `=== VÝUKOVÉ CÍLE: ${topic.title} ===\n\n${topic.learning_objectives.map(o => `- ${o}`).join('\n')}`,
           { type: 'topic', entity: 'Topic', id: topic.id, section_hint: 'learning_objectives', title: topic.title }
@@ -652,9 +655,10 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb, options = 
   // 3. Question - PRIORITA 3
   if (entityContext.question) {
     const question = entityContext.question;
+    const canReadQuestion = question.status === 'published' || isPrivileged;
     
     // Question text
-    if (question.question_text) {
+    if (question.question_text && canReadQuestion) {
       addSection(
         `=== OTÁZKA: ${question.title} ===\n\n${question.question_text}`,
         { type: 'question', entity: 'Question', id: question.id, section_hint: 'question_text', title: question.title }
@@ -662,7 +666,7 @@ async function buildRAGContext(base44, mode, entityContext, allowWeb, options = 
     }
 
     // Published answer
-    if (question.answer_rich && question.status === 'published') {
+    if (question.answer_rich && canReadQuestion) {
       addSection(
         `=== EXISTUJÍCÍ ODPOVĚĎ (published) ===\n\n${question.answer_rich}`,
         { type: 'question', entity: 'Question', id: question.id, section_hint: 'answer_rich', title: question.title }
@@ -989,7 +993,7 @@ Deno.serve(async (req) => {
     }
 
     // Sestavení RAG kontextu - POVINNÉ pro všechna AI volání
-    const ragContext = await buildRAGContext(base44, mode, entityContext, effectiveAllowWeb, {
+    const ragContext = await buildRAGContext(base44, user, mode, entityContext, effectiveAllowWeb, {
       maxRagChars,
       maxSectionChars,
       skipRag
