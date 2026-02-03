@@ -191,6 +191,16 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
   const handleAIGenerate = async (mode) => {
     setIsGenerating(true);
     try {
+      // Mapování Claude módů na Gemini módy
+      const modeMapping = {
+        topic_generate_fulltext_v2: 'topic_generate_template',
+        topic_generate_high_yield: 'topic_summarize',
+        topic_generate_deep_dive: 'topic_deep_dive'
+      };
+
+      const geminiMode = modeMapping[mode] || mode;
+      console.log('[Gemini] Original mode:', mode, '→ Gemini mode:', geminiMode);
+
       // Validace pro high-yield a deep-dive
       if ((mode === 'topic_generate_high_yield' || mode === 'topic_generate_deep_dive') && !content.full_text_content) {
         toast.error('Nejprve vygeneruj fulltext');
@@ -198,24 +208,38 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         return;
       }
 
-      // Context pro Claude
+      // Context pro Gemini
       const claudeContext = {
         specialty: context?.specialty || '',
         okruh: context?.okruh || '',
+        tema: topic?.tema || topic?.title || '',
         title: topic.title || '',
         full_text: content.full_text_content || ''
       };
 
-      console.log('[Claude] Generuji mód:', mode);
-      console.log('[Claude] Context:', claudeContext);
+      const promptTemplates = {
+        topic_generate_fulltext_v2: FULLTEXT_TEMPLATE,
+        topic_generate_high_yield: HIGH_YIELD_TEMPLATE,
+        topic_generate_deep_dive: DEEP_DIVE_TEMPLATE
+      };
 
-      const response = await base44.functions.invoke('invokeClaudeEduLLM', {
-        mode: mode,
-        context: claudeContext,
-        maxTokens: 4096
+      const userPrompt = fillTemplate(promptTemplates[mode] || FULLTEXT_TEMPLATE, claudeContext);
+
+      console.log('[Gemini] Generuji mód:', mode);
+      console.log('[Gemini] Context:', claudeContext);
+
+      const response = await base44.functions.invoke('invokeEduLLM', {
+        mode: geminiMode,
+        entityContext: {
+          topic: topic,
+          entityType: 'topic',
+          entityId: topic.id
+        },
+        userPrompt,
+        systemPromptOverride: ADMIN_CONTENT_SYSTEM_PROMPT
       });
 
-      console.log('[Claude] Response:', response);
+      console.log('[Gemini] Response:', response);
 
       const result = response.data || response;
       
@@ -482,6 +506,12 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         </TabsList>
 
         <TabsContent value="full" className="space-y-3">
+          {/* Dočasný fallback notice */}
+          <Alert className="bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200">
+            <AlertDescription className="text-sm">
+              ⚠️ Dočasně používáme Gemini AI (Claude deployment pending)
+            </AlertDescription>
+          </Alert>
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
               <Label>Plný studijní text</Label>
