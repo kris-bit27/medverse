@@ -16,12 +16,19 @@ const base44Client = createClient({
 
 const mapSupabaseUser = (user) => {
   if (!user) return null;
+  const rawDisciplines = user.user_metadata?.clinical_disciplines || user.app_metadata?.clinical_disciplines;
+  const clinical_disciplines = Array.isArray(rawDisciplines)
+    ? rawDisciplines
+    : rawDisciplines
+      ? [rawDisciplines].flat().filter(Boolean)
+      : [];
   return {
     id: user.id,
     email: user.email,
     full_name: user.user_metadata?.full_name || user.user_metadata?.name || '',
     role: user.app_metadata?.role || user.user_metadata?.role || 'student',
     settings: user.user_metadata?.settings || null,
+    clinical_disciplines,
     ...user.user_metadata,
     _supabase: user
   };

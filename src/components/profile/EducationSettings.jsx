@@ -24,21 +24,31 @@ const educationLevels = [
 ];
 
 export default function EducationSettings({ user }) {
+  const normalizeArray = (value) => {
+    if (Array.isArray(value)) return value;
+    if (Array.isArray(value?.data)) return value.data;
+    if (Array.isArray(value?.items)) return value.items;
+    if (value === null || value === undefined) return [];
+    return [value].flat().filter(Boolean);
+  };
   const queryClient = useQueryClient();
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [educationLevel, setEducationLevel] = useState(user?.education_level || '');
-  const [selectedDisciplines, setSelectedDisciplines] = useState(user?.clinical_disciplines || []);
+  const [selectedDisciplines, setSelectedDisciplines] = useState(
+    normalizeArray(user?.clinical_disciplines)
+  );
 
-  const { data: disciplines = [] } = useQuery({
+  const { data: disciplinesRaw } = useQuery({
     queryKey: ['clinicalDisciplines'],
     queryFn: () => base44.entities.ClinicalDiscipline.list()
   });
+  const disciplines = normalizeArray(disciplinesRaw);
 
   useEffect(() => {
     if (user) {
       setEducationLevel(user.education_level || '');
-      setSelectedDisciplines(user.clinical_disciplines || []);
+      setSelectedDisciplines(normalizeArray(user.clinical_disciplines));
     }
   }, [user]);
 
