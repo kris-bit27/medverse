@@ -17,7 +17,8 @@ const PROVIDER_META = [
 const getRedirectTo = () => {
   const params = new URLSearchParams(window.location.search);
   const target = params.get('redirectTo') || '/Dashboard';
-  return `${window.location.origin}/auth/callback?redirectTo=${encodeURIComponent(target)}`;
+  const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
+  return `${siteUrl}/auth/callback?redirectTo=${encodeURIComponent(target)}`;
 };
 
 const getEnabledProviders = () => {
