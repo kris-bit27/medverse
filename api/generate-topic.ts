@@ -1,11 +1,11 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { getCached, setCache } from '../src/lib/cache';
+import { getCached, setCache } from './cache';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY
 });
 
-export default async function handler(req, res) {
+export default async function handler(req: any, res: any) {
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -22,69 +22,63 @@ export default async function handler(req, res) {
   try {
     const { mode, context } = req.body;
 
-    console.log('[Claude API] Mode:', mode);
-    console.log('[Claude API] Context:', context);
+    console.log('[API] Mode:', mode);
+    console.log('[API] Context:', context);
 
-    // === NOVÉ: CHECK CACHE ===
+    // Check cache
     console.log('[API] Checking cache...');
     const cached = await getCached(mode, context);
-
+    
     if (cached) {
-      console.log('[API] Returning cached response');
+      console.log('[API] ✅ Cache HIT!');
       return res.status(200).json({
         ...cached.response,
         _cache: cached.metadata
       });
     }
-
-    console.log('[API] Cache miss, calling Claude...');
-    // === END CACHE CHECK ===
-
-    // System prompt podle módu
-    const systemPrompts = {
+    
+    console.log('[API] ❌ Cache MISS - Calling Claude...');
+    
+    // System prompts
+    const systemPrompts: Record<string, string> = {
       'topic_generate_fulltext_v2': `Jsi senior klinický lékař specializující se na ${context.specialty || 'medicínu'}.
 
 PRAVIDLA:
-- Používej web search pro ověření faktů
-- Cituj zdroje: (Autor, Rok) nebo (Guidelines XY, 2024)
-- Pokud nejsi jistý, označ jako "přibližně", "typicky"
-- Vrať JSON formát
+- Cituj zdroje: (Autor, Rok)
+- Pokud nejsi jistý, označ jako "přibližně"
+- Vrať JSON: {"full_text": "markdown 3000-5000 slov", "confidence": 0.85, "sources": [], "warnings": []}
 
 STRUKTURA:
-{
-  "full_text": "markdown text 3000-5000 slov",
-  "confidence": 0.85,
-  "sources": ["zdroj1", "zdroj2"],
-  "warnings": ["varování pokud něco není 100% ověřeno"]
-}`,
+# Téma
+## 1. Úvod a definice
+## 2. Epidemiologie  
+## 3. Patofyziologie
+## 4. Diagnostika
+## 5. Terapie
+## 6. Prognóza`,
       
-      'topic_generate_high_yield': `Vytvoř HIGH-YIELD shrnutí (max 15 bodů).
+      'topic_generate_high_yield': `HIGH-YIELD shrnutí (max 15 bodů).
 Formát: 🔴 KRITICKÉ / ⚡ HIGH-YIELD / ⚠️ POZOR
-Vrať JSON: {"high_yield": "markdown", "key_points": []}`,
+JSON: {"high_yield": "markdown", "key_points": []}`,
       
-      'topic_generate_deep_dive': `Vytvoř DEEP DIVE s pokročilými znalostmi.
-Zaměř se na: molekulární mechanismy, kontroverze, aktuální výzkum.
-Povinně vyhledej nejnovější studie.
-Vrať JSON: {"deep_dive": "markdown", "research_areas": []}`
+      'topic_generate_deep_dive': `DEEP DIVE s pokročilými znalostmi.
+Molekulární mechanismy, kontroverze, výzkum.
+JSON: {"deep_dive": "markdown", "research_areas": []}`
     };
 
-    const systemPrompt = systemPrompts[mode] || systemPrompts['topic_generate_fulltext_v2'];
-
-    // User prompt
-    const userPrompts = {
+    const userPrompts: Record<string, string> = {
       'topic_generate_fulltext_v2': `Vytvoř fulltext pro:
 Obor: ${context.specialty}
 Okruh: ${context.okruh}
-Téma: ${context.title}
-
-Struktura: Úvod → Epidemiologie → Patofyziologie → Diagnostika → Terapie → Prognóza`,
+Téma: ${context.title}`,
       
-      'topic_generate_high_yield': `Extrahuj HIGH-YIELD body z: ${context.full_text?.substring(0, 500)}...`,
+      'topic_generate_high_yield': `Extrahuj HIGH-YIELD z: ${context.full_text?.substring(0, 500)}...`,
       
-      'topic_generate_deep_dive': `Vytvoř deep dive pro: ${context.title}
-Fulltext reference: ${context.full_text?.substring(0, 500)}...`
+      'topic_generate_deep_dive': `Deep dive: ${context.title}
+Ref: ${context.full_text?.substring(0, 500)}...`
     };
 
+    const systemPrompt = systemPrompts[mode] || systemPrompts['topic_generate_fulltext_v2'];
     const userPrompt = userPrompts[mode] || userPrompts['topic_generate_fulltext_v2'];
 
     // Claude API call
@@ -93,10 +87,6 @@ Fulltext reference: ${context.full_text?.substring(0, 500)}...`
       max_tokens: 4096,
       temperature: 0.3,
       system: systemPrompt,
-      tools: mode.includes('deep_dive') ? [{
-        type: 'web_search_20250305',
-        name: 'web_search'
-      }] : undefined,
       messages: [{
         role: 'user',
         content: userPrompt
@@ -111,7 +101,7 @@ Fulltext reference: ${context.full_text?.substring(0, 500)}...`
       }
     }
 
-    // Try parse JSON
+    // Parse JSON
     let result;
     try {
       const clean = textContent.replace(/```json\n?|\n?```/g, '');
@@ -138,20 +128,18 @@ Fulltext reference: ${context.full_text?.substring(0, 500)}...`
       }
     };
 
-    // === NOVÉ: SAVE TO CACHE ===
+    // Save to cache
     console.log('[API] Saving to cache...');
-    await setCache(mode, context, output, {
-      ttl: 7 * 24 * 60 * 60 // 7 days
-    });
-    // === END SAVE CACHE ===
+    await setCache(mode, context, output);
+    console.log('[API] ✅ Done');
 
     return res.status(200).json(output);
 
-  } catch (error) {
-    console.error('[Claude API] Error:', error);
+  } catch (error: any) {
+    console.error('[API] Error:', error);
     return res.status(500).json({ 
       error: error.message,
-      details: error.toString()
+      stack: error.stack
     });
   }
 }
