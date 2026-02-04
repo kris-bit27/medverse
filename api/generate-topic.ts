@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { getCached, setCache } from './cache';
+import { getCached, setCache } from './cache.js';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY
