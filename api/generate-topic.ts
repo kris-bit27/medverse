@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { getCached, setCache } from '../src/lib/cache';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY
@@ -23,6 +24,21 @@ export default async function handler(req, res) {
 
     console.log('[Claude API] Mode:', mode);
     console.log('[Claude API] Context:', context);
+
+    // === NOVÉ: CHECK CACHE ===
+    console.log('[API] Checking cache...');
+    const cached = await getCached(mode, context);
+
+    if (cached) {
+      console.log('[API] Returning cached response');
+      return res.status(200).json({
+        ...cached.response,
+        _cache: cached.metadata
+      });
+    }
+
+    console.log('[API] Cache miss, calling Claude...');
+    // === END CACHE CHECK ===
 
     // System prompt podle módu
     const systemPrompts = {
@@ -121,6 +137,13 @@ Fulltext reference: ${context.full_text?.substring(0, 500)}...`
         generatedAt: new Date().toISOString()
       }
     };
+
+    // === NOVÉ: SAVE TO CACHE ===
+    console.log('[API] Saving to cache...');
+    await setCache(mode, context, output, {
+      ttl: 7 * 24 * 60 * 60 // 7 days
+    });
+    // === END SAVE CACHE ===
 
     return res.status(200).json(output);
 
