@@ -25,6 +25,13 @@ import { format, isToday, isTomorrow, isPast, startOfDay } from 'date-fns';
 import { cs } from 'date-fns/locale';
 
 export default function StudyPlanner() {
+  const asArray = (value) => {
+    if (Array.isArray(value)) return value;
+    if (Array.isArray(value?.data)) return value.data;
+    if (Array.isArray(value?.items)) return value.items;
+    return [];
+  };
+
   const queryClient = useQueryClient();
   const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -33,33 +40,37 @@ export default function StudyPlanner() {
     queryFn: () => base44.auth.me()
   });
 
-  const { data: myPlans = [], isLoading: loadingMyPlans } = useQuery({
+  const { data: myPlansRaw, isLoading: loadingMyPlans } = useQuery({
     queryKey: ['myStudyPlans', user?.id],
     queryFn: () => base44.entities.StudyPlan.filter({ user_id: user.id }),
     enabled: !!user
   });
+  const myPlans = asArray(myPlansRaw);
 
-  const { data: sharedPlans = [], isLoading: loadingSharedPlans } = useQuery({
+  const { data: sharedPlansRaw, isLoading: loadingSharedPlans } = useQuery({
     queryKey: ['sharedStudyPlans', user?.id],
     queryFn: async () => {
       const all = await base44.entities.StudyPlan.list();
-      return all.filter(p => 
+      const allPlans = asArray(all);
+      return allPlans.filter(p => 
         p.collaborators?.some(c => c.user_id === user.id) && 
         p.user_id !== user.id
       );
     },
     enabled: !!user
   });
+  const sharedPlans = asArray(sharedPlansRaw);
 
   const plans = [...myPlans, ...sharedPlans];
 
   const activePlan = plans.find(p => p.is_active);
 
-  const { data: allTasks = [], isLoading: loadingTasks } = useQuery({
+  const { data: allTasksRaw, isLoading: loadingTasks } = useQuery({
     queryKey: ['studyTasks', user?.id],
     queryFn: () => base44.entities.StudyTask.filter({ user_id: user.id }),
     enabled: !!user
   });
+  const allTasks = asArray(allTasksRaw);
 
   const todayTasks = allTasks.filter(t => 
     isToday(new Date(t.scheduled_date)) && !t.is_completed

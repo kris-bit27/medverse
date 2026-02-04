@@ -48,6 +48,13 @@ const roleLabels = {
 };
 
 export default function Logbook() {
+  const asArray = (value) => {
+    if (Array.isArray(value)) return value;
+    if (Array.isArray(value?.data)) return value.data;
+    if (Array.isArray(value?.items)) return value.items;
+    return [];
+  };
+
   const [showForm, setShowForm] = useState(false);
   const [editingEntry, setEditingEntry] = useState(null);
   const [activeTab, setActiveTab] = useState('all');
@@ -58,16 +65,18 @@ export default function Logbook() {
     queryFn: () => base44.auth.me()
   });
 
-  const { data: entries = [], isLoading, isError: entriesError, error } = useQuery({
+  const { data: entriesRaw, isLoading, isError: entriesError, error } = useQuery({
     queryKey: ['logbookEntries', user?.id],
     queryFn: () => base44.entities.LogbookEntry.filter({ user_id: user.id }, '-date'),
     enabled: !!user?.id
   });
+  const entries = asArray(entriesRaw);
 
-  const { data: disciplines = [], isError: disciplinesError } = useQuery({
+  const { data: disciplinesRaw, isError: disciplinesError } = useQuery({
     queryKey: ['clinicalDisciplines'],
     queryFn: () => base44.entities.ClinicalDiscipline.list()
   });
+  const disciplines = asArray(disciplinesRaw);
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.LogbookEntry.delete(id),

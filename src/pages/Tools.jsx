@@ -26,6 +26,13 @@ import DifferentialDiagnosisAI from '@/components/tools/DifferentialDiagnosisAI'
 import TreatmentPlannerAI from '@/components/tools/TreatmentPlannerAI';
 
 export default function Tools() {
+  const asArray = (value) => {
+    if (Array.isArray(value)) return value;
+    if (Array.isArray(value?.data)) return value.data;
+    if (Array.isArray(value?.items)) return value.items;
+    return [];
+  };
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('all');
 
@@ -34,15 +41,17 @@ export default function Tools() {
     queryFn: () => base44.auth.me()
   });
 
-  const { data: tools = [], isLoading } = useQuery({
+  const { data: toolsRaw, isLoading } = useQuery({
     queryKey: ['tools'],
     queryFn: () => base44.entities.Tool.list('-created_date')
   });
+  const tools = useMemo(() => asArray(toolsRaw), [toolsRaw]);
 
-  const { data: topics = [] } = useQuery({
+  const { data: topicsRaw } = useQuery({
     queryKey: ['topics'],
     queryFn: () => base44.entities.Topic.list()
   });
+  const topics = useMemo(() => asArray(topicsRaw), [topicsRaw]);
 
   // Filter tools
   const filteredTools = useMemo(() => {
@@ -280,12 +289,19 @@ export default function Tools() {
 }
 
 function SavedCases() {
+  const asArray = (value) => {
+    if (Array.isArray(value)) return value;
+    if (Array.isArray(value?.data)) return value.data;
+    if (Array.isArray(value?.items)) return value.items;
+    return [];
+  };
+
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => base44.auth.me()
   });
 
-  const { data: cases = [], isLoading } = useQuery({
+  const { data: casesRaw, isLoading } = useQuery({
     queryKey: ['savedCases', user?.id],
     queryFn: () => base44.entities.CaseLog.filter({ 
       user_id: user?.id,
@@ -293,6 +309,7 @@ function SavedCases() {
     }, '-created_date'),
     enabled: !!user?.id
   });
+  const cases = useMemo(() => asArray(casesRaw), [casesRaw]);
 
   if (isLoading) {
     return <LoadingSpinner />;

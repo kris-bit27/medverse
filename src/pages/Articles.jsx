@@ -22,6 +22,13 @@ import VisibilityBadge from '@/components/common/VisibilityBadge';
 import { canAccessContent } from '@/components/utils/permissions';
 
 export default function Articles() {
+  const asArray = (value) => {
+    if (Array.isArray(value)) return value;
+    if (Array.isArray(value?.data)) return value.data;
+    if (Array.isArray(value?.items)) return value.items;
+    return [];
+  };
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('all');
 
@@ -30,15 +37,17 @@ export default function Articles() {
     queryFn: () => base44.auth.me()
   });
 
-  const { data: articles = [], isLoading } = useQuery({
+  const { data: articlesRaw, isLoading } = useQuery({
     queryKey: ['articles'],
     queryFn: () => base44.entities.Article.list('-created_date')
   });
+  const articles = useMemo(() => asArray(articlesRaw), [articlesRaw]);
 
-  const { data: topics = [] } = useQuery({
+  const { data: topicsRaw } = useQuery({
     queryKey: ['topics'],
     queryFn: () => base44.entities.Topic.list()
   });
+  const topics = useMemo(() => asArray(topicsRaw), [topicsRaw]);
 
   // Filter articles
   const filteredArticles = useMemo(() => {

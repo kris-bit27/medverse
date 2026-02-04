@@ -35,6 +35,13 @@ import { toast } from 'sonner';
 import { isAdmin } from '@/components/utils/permissions';
 
 export default function StudyPackages() {
+  const asArray = (value) => {
+    if (Array.isArray(value)) return value;
+    if (Array.isArray(value?.data)) return value.data;
+    if (Array.isArray(value?.items)) return value.items;
+    return [];
+  };
+
   const [searchQuery, setSearchQuery] = useState('');
   const [aiTitle, setAiTitle] = useState('');
   const [aiFocus, setAiFocus] = useState('');
@@ -50,17 +57,19 @@ export default function StudyPackages() {
     queryFn: () => base44.auth.me()
   });
 
-  const { data: myPackages = [], isLoading: loadingMy } = useQuery({
+  const { data: myPackagesRaw, isLoading: loadingMy } = useQuery({
     queryKey: ['myStudyPackages', user?.id],
     queryFn: () => base44.entities.StudyPackage.filter({ created_by: user.email }),
     enabled: !!user
   });
+  const myPackages = asArray(myPackagesRaw);
 
-  const { data: sharedPackages = [], isLoading: loadingShared } = useQuery({
+  const { data: sharedPackagesRaw, isLoading: loadingShared } = useQuery({
     queryKey: ['sharedStudyPackages', user?.id],
     queryFn: async () => {
       const all = await base44.entities.StudyPackage.list();
-      return all.filter(p => 
+      const allPackages = asArray(all);
+      return allPackages.filter(p => 
         (p.shared_with?.includes(user.id) || 
          p.collaborators?.some(c => c.user_id === user.id)) && 
         p.created_by !== user.email
@@ -68,40 +77,46 @@ export default function StudyPackages() {
     },
     enabled: !!user
   });
+  const sharedPackages = asArray(sharedPackagesRaw);
 
-  const { data: publicPackages = [], isLoading: loadingPublic } = useQuery({
+  const { data: publicPackagesRaw, isLoading: loadingPublic } = useQuery({
     queryKey: ['publicStudyPackages'],
     queryFn: () => base44.entities.StudyPackage.filter({ is_public: true })
   });
+  const publicPackages = asArray(publicPackagesRaw);
 
-  const { data: disciplines = [] } = useQuery({
+  const { data: disciplinesRaw } = useQuery({
     queryKey: ['clinicalDisciplines'],
     queryFn: () => base44.entities.ClinicalDiscipline.list()
   });
+  const disciplines = asArray(disciplinesRaw);
 
-  const { data: okruhy = [] } = useQuery({
+  const { data: okruhyRaw } = useQuery({
     queryKey: ['okruhy'],
     queryFn: () => base44.entities.Okruh.list('title'),
     enabled: !!user && isAdmin(user)
   });
+  const okruhy = asArray(okruhyRaw);
 
-  const { data: aiPacks = [], refetch: refetchAiPacks } = useQuery({
+  const { data: aiPacksRaw, refetch: refetchAiPacks } = useQuery({
     queryKey: ['aiStudyPacks', user?.id],
     queryFn: async () => {
       const all = await base44.entities.StudyPack.filter({ user_id: user.id }, '-created_date');
-      return all || [];
+      return asArray(all);
     },
     enabled: !!user
   });
+  const aiPacks = asArray(aiPacksRaw);
 
   const { data: aiPackDetail, refetch: refetchAiPackDetail } = useQuery({
     queryKey: ['aiStudyPack', selectedPackId],
     queryFn: async () => {
-      const pack = await base44.entities.StudyPack.filter({ id: selectedPackId }).then(r => r[0]);
+      const packList = await base44.entities.StudyPack.filter({ id: selectedPackId });
+      const pack = asArray(packList)[0];
       if (!pack) return { pack: null, outputs: [], files: [] };
-      const outputs = await base44.entities.StudyPackOutput.filter({ pack_id: selectedPackId });
-      const files = await base44.entities.StudyPackFile.filter({ pack_id: selectedPackId });
-      return { pack, outputs, files };
+      const outputsRaw = await base44.entities.StudyPackOutput.filter({ pack_id: selectedPackId });
+      const filesRaw = await base44.entities.StudyPackFile.filter({ pack_id: selectedPackId });
+      return { pack, outputs: asArray(outputsRaw), files: asArray(filesRaw) };
     },
     enabled: !!selectedPackId,
     refetchInterval: (data) => {

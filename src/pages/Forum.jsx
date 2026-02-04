@@ -15,6 +15,13 @@ import { formatDistanceToNow } from 'date-fns';
 import { cs } from 'date-fns/locale';
 
 export default function Forum() {
+  const asArray = (value) => {
+    if (Array.isArray(value)) return value;
+    if (Array.isArray(value?.data)) return value.data;
+    if (Array.isArray(value?.items)) return value.items;
+    return [];
+  };
+
   const [searchQuery, setSearchQuery] = useState('');
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
@@ -24,15 +31,17 @@ export default function Forum() {
     queryFn: () => base44.auth.me()
   });
 
-  const { data: threads = [], isLoading } = useQuery({
+  const { data: threadsRaw, isLoading } = useQuery({
     queryKey: ['forumThreads'],
     queryFn: () => base44.entities.ForumThread.list('-created_date', 100)
   });
+  const threads = asArray(threadsRaw);
 
-  const { data: disciplines = [] } = useQuery({
+  const { data: disciplinesRaw } = useQuery({
     queryKey: ['disciplines'],
     queryFn: () => base44.entities.ClinicalDiscipline.list()
   });
+  const disciplines = asArray(disciplinesRaw);
 
   const filteredThreads = threads.filter(thread => {
     const matchesSearch = thread.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
