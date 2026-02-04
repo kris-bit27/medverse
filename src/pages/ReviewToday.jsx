@@ -25,6 +25,13 @@ import AnswerSection from '@/components/questions/AnswerSection';
 import { getDueQuestions, calculateNextReview, RATINGS } from '@/components/utils/srs';
 
 export default function ReviewToday() {
+  const asArray = (value) => {
+    if (Array.isArray(value)) return value;
+    if (Array.isArray(value?.data)) return value.data;
+    if (Array.isArray(value?.items)) return value.items;
+    return [];
+  };
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [completedCount, setCompletedCount] = useState(0);
@@ -35,16 +42,18 @@ export default function ReviewToday() {
     queryFn: () => base44.auth.me()
   });
 
-  const { data: questions = [] } = useQuery({
+  const { data: questionsRaw } = useQuery({
     queryKey: ['questions'],
     queryFn: () => base44.entities.Question.list()
   });
+  const questions = useMemo(() => asArray(questionsRaw), [questionsRaw]);
 
-  const { data: progress = [], isLoading } = useQuery({
+  const { data: progressRaw, isLoading } = useQuery({
     queryKey: ['userProgress', user?.id],
     queryFn: () => base44.entities.UserProgress.filter({ user_id: user.id }),
     enabled: !!user?.id
   });
+  const progress = useMemo(() => asArray(progressRaw), [progressRaw]);
 
   // Calculate due questions
   const dueQueue = useMemo(() => {
