@@ -25,6 +25,13 @@ const okruhIcons = {
 };
 
 export default function Atestace() {
+  const asArray = (value) => {
+    if (Array.isArray(value)) return value;
+    if (Array.isArray(value?.data)) return value.data;
+    if (Array.isArray(value?.items)) return value.items;
+    return [];
+  };
+
   const [selectedDiscipline, setSelectedDiscipline] = useState('all');
 
   const { data: user } = useQuery({
@@ -32,15 +39,17 @@ export default function Atestace() {
     queryFn: () => base44.auth.me()
   });
 
-  const { data: disciplines = [] } = useQuery({
+  const { data: disciplinesRaw } = useQuery({
     queryKey: ['clinicalDisciplines'],
     queryFn: () => base44.entities.ClinicalDiscipline.list()
   });
+  const disciplines = useMemo(() => asArray(disciplinesRaw), [disciplinesRaw]);
 
-  const { data: allOkruhy = [], isLoading } = useQuery({
+  const { data: allOkruhyRaw, isLoading } = useQuery({
     queryKey: ['okruhy'],
     queryFn: () => base44.entities.Okruh.list('order')
   });
+  const allOkruhy = useMemo(() => asArray(allOkruhyRaw), [allOkruhyRaw]);
 
   // Filter okruhy by selected discipline
   const okruhy = useMemo(() => {
@@ -48,21 +57,24 @@ export default function Atestace() {
     return allOkruhy.filter(o => o.clinical_discipline_id === selectedDiscipline);
   }, [allOkruhy, selectedDiscipline]);
 
-  const { data: topics = [] } = useQuery({
+  const { data: topicsRaw } = useQuery({
     queryKey: ['topics'],
     queryFn: () => base44.entities.Topic.list()
   });
+  const topics = useMemo(() => asArray(topicsRaw), [topicsRaw]);
 
-  const { data: questions = [] } = useQuery({
+  const { data: questionsRaw } = useQuery({
     queryKey: ['questions'],
     queryFn: () => base44.entities.Question.list()
   });
+  const questions = useMemo(() => asArray(questionsRaw), [questionsRaw]);
 
-  const { data: progress = [] } = useQuery({
+  const { data: progressRaw } = useQuery({
     queryKey: ['userProgress', user?.id],
     queryFn: () => base44.entities.UserProgress.filter({ user_id: user.id }),
     enabled: !!user?.id
   });
+  const progress = useMemo(() => asArray(progressRaw), [progressRaw]);
 
   // Calculate stats per okruh
   const okruhStats = okruhy.map(okruh => {
