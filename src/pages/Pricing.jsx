@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { motion } from 'framer-motion';
@@ -73,12 +72,12 @@ export default function Pricing() {
             </div>
 
             <div className="flex items-center gap-3">
-              <Button variant="ghost" onClick={() => base44.auth.redirectToLogin(createPageUrl('Dashboard'))}>
+              <Button variant="ghost" onClick={() => { window.location.href = `/login?redirectTo=${encodeURIComponent(createPageUrl('Dashboard'))}`; }}>
                 Přihlásit
               </Button>
               <Button 
                 className="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700"
-                onClick={() => base44.auth.redirectToLogin(createPageUrl('Dashboard'))}
+                onClick={() => { window.location.href = `/login?redirectTo=${encodeURIComponent(createPageUrl('Dashboard'))}`; }}
               >
                 Začít
               </Button>
@@ -169,7 +168,7 @@ export default function Pricing() {
                         : ''
                     }`}
                     variant={plan.highlighted ? 'default' : 'outline'}
-                    onClick={() => base44.auth.redirectToLogin(createPageUrl('Dashboard'))}
+                    onClick={() => { window.location.href = `/login?redirectTo=${encodeURIComponent(createPageUrl('Dashboard'))}`; }}
                   >
                     {plan.cta}
                     <ArrowRight className="w-4 h-4 ml-2" />

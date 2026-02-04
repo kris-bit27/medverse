@@ -1,10 +1,11 @@
 import { createClient } from '@base44/sdk';
 import { appParams } from '@/lib/app-params';
+import { supabase } from '@/lib/supabase';
 
 const { appId, token, functionsVersion, appBaseUrl } = appParams;
 
 //Create a client with authentication required
-export const base44 = createClient({
+const base44Client = createClient({
   appId,
   token,
   functionsVersion,
@@ -12,3 +13,49 @@ export const base44 = createClient({
   requiresAuth: false,
   appBaseUrl
 });
+
+const mapSupabaseUser = (user) => {
+  if (!user) return null;
+  return {
+    id: user.id,
+    email: user.email,
+    full_name: user.user_metadata?.full_name || user.user_metadata?.name || '',
+    role: user.app_metadata?.role || user.user_metadata?.role || 'student',
+    settings: user.user_metadata?.settings || null,
+    ...user.user_metadata,
+    _supabase: user
+  };
+};
+
+base44Client.auth = {
+  me: async () => {
+    const { data, error } = await supabase.auth.getUser();
+    if (error || !data?.user) {
+      const err = error || new Error('Not authenticated');
+      err.status = 401;
+      throw err;
+    }
+    return mapSupabaseUser(data.user);
+  },
+  updateMe: async (updates = {}) => {
+    const { data, error } = await supabase.auth.updateUser({
+      data: updates
+    });
+    if (error) {
+      throw error;
+    }
+    return mapSupabaseUser(data.user);
+  },
+  logout: async (redirectTo) => {
+    await supabase.auth.signOut();
+    if (redirectTo) {
+      window.location.href = redirectTo;
+    }
+  },
+  redirectToLogin: (returnTo) => {
+    const target = returnTo || window.location.href;
+    window.location.href = `/login?redirectTo=${encodeURIComponent(target)}`;
+  }
+};
+
+export const base44 = base44Client;

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { motion } from 'framer-motion';
@@ -95,12 +94,12 @@ export default function Landing() {
             </div>
 
             <div className="flex items-center gap-3">
-              <Button variant="ghost" onClick={() => base44.auth.redirectToLogin(createPageUrl('Dashboard'))}>
+              <Button variant="ghost" onClick={() => { window.location.href = `/login?redirectTo=${encodeURIComponent(createPageUrl('Dashboard'))}`; }}>
                 Přihlásit
               </Button>
               <Button 
                 className="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 shadow-lg shadow-teal-500/25"
-                onClick={() => base44.auth.redirectToLogin(createPageUrl('Dashboard'))}
+                onClick={() => { window.location.href = `/login?redirectTo=${encodeURIComponent(createPageUrl('Dashboard'))}`; }}
               >
                 Začít zdarma
               </Button>
@@ -134,7 +133,7 @@ export default function Landing() {
               <Button 
                 size="lg"
                 className="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 shadow-xl shadow-teal-500/25 h-14 px-8 text-lg"
-                onClick={() => base44.auth.redirectToLogin(createPageUrl('Dashboard'))}
+                onClick={() => { window.location.href = `/login?redirectTo=${encodeURIComponent(createPageUrl('Dashboard'))}`; }}
               >
                 Začít zdarma
                 <ArrowRight className="w-5 h-5 ml-2" />
@@ -232,7 +231,7 @@ export default function Landing() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   whileHover={{ scale: 1.02, y: -5 }}
-                  onClick={() => base44.auth.redirectToLogin(createPageUrl('Dashboard'))}
+                  onClick={() => { window.location.href = `/login?redirectTo=${encodeURIComponent(createPageUrl('Dashboard'))}`; }}
                 >
                   <Card className="p-8 border-2 border-teal-200 dark:border-teal-800 shadow-xl hover:shadow-2xl transition-all duration-300 group relative overflow-hidden cursor-pointer">
                     <div className={`absolute inset-0 bg-gradient-to-br ${product.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
@@ -286,7 +285,7 @@ export default function Landing() {
               <Button 
                 size="lg"
                 className="bg-white text-teal-700 hover:bg-teal-50 shadow-xl h-14 px-8 text-lg mb-3"
-                onClick={() => base44.auth.redirectToLogin(createPageUrl('Dashboard'))}
+                onClick={() => { window.location.href = `/login?redirectTo=${encodeURIComponent(createPageUrl('Dashboard'))}`; }}
               >
                 Začít zdarma
                 <ArrowRight className="w-5 h-5 ml-2" />
