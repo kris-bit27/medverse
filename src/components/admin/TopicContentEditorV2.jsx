@@ -417,12 +417,6 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         </TabsList>
 
         <TabsContent value="full" className="space-y-3">
-          {/* Dočasný fallback notice */}
-          <Alert className="bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200">
-            <AlertDescription className="text-sm">
-              ⚠️ Dočasně používáme Gemini AI (Claude deployment pending)
-            </AlertDescription>
-          </Alert>
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
               <Label>Plný studijní text</Label>
