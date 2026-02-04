@@ -25,20 +25,29 @@ import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { getDueQuestions, calculateProgressStats } from '@/components/utils/srs';
 
 export default function Dashboard() {
+  const asArray = (value) => {
+    if (Array.isArray(value)) return value;
+    if (Array.isArray(value?.data)) return value.data;
+    if (Array.isArray(value?.items)) return value.items;
+    return [];
+  };
+
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => base44.auth.me()
   });
 
-  const { data: disciplines = [] } = useQuery({
+  const { data: disciplinesRaw } = useQuery({
     queryKey: ['clinicalDisciplines'],
     queryFn: () => base44.entities.ClinicalDiscipline.list()
   });
+  const disciplines = useMemo(() => asArray(disciplinesRaw), [disciplinesRaw]);
 
-  const { data: allOkruhy = [] } = useQuery({
+  const { data: allOkruhyRaw } = useQuery({
     queryKey: ['okruhy'],
     queryFn: () => base44.entities.Okruh.list('order')
   });
+  const allOkruhy = useMemo(() => asArray(allOkruhyRaw), [allOkruhyRaw]);
 
   // Filter okruhy based on user's selected disciplines
   const okruhy = useMemo(() => {
@@ -48,32 +57,37 @@ export default function Dashboard() {
     );
   }, [allOkruhy, user]);
 
-  const { data: questions = [] } = useQuery({
+  const { data: questionsRaw } = useQuery({
     queryKey: ['questions'],
     queryFn: () => base44.entities.Question.list()
   });
+  const questions = useMemo(() => asArray(questionsRaw), [questionsRaw]);
 
-  const { data: progress = [], isLoading: progressLoading } = useQuery({
+  const { data: progressRaw, isLoading: progressLoading } = useQuery({
     queryKey: ['userProgress', user?.id],
     queryFn: () => base44.entities.UserProgress.filter({ user_id: user.id }),
     enabled: !!user?.id
   });
+  const progress = useMemo(() => asArray(progressRaw), [progressRaw]);
 
-  const { data: bookmarks = [] } = useQuery({
+  const { data: bookmarksRaw } = useQuery({
     queryKey: ['bookmarks', user?.id],
     queryFn: () => base44.entities.Bookmark.filter({ user_id: user.id }, '-created_date', 10),
     enabled: !!user?.id
   });
+  const bookmarks = useMemo(() => asArray(bookmarksRaw), [bookmarksRaw]);
 
-  const { data: articles = [] } = useQuery({
+  const { data: articlesRaw } = useQuery({
     queryKey: ['articles'],
     queryFn: () => base44.entities.Article.list()
   });
+  const articles = useMemo(() => asArray(articlesRaw), [articlesRaw]);
 
-  const { data: tools = [] } = useQuery({
+  const { data: toolsRaw } = useQuery({
     queryKey: ['tools'],
     queryFn: () => base44.entities.Tool.list()
   });
+  const tools = useMemo(() => asArray(toolsRaw), [toolsRaw]);
 
   // Calculate stats
   const stats = useMemo(() => {
