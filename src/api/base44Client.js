@@ -27,6 +27,30 @@ const mapSupabaseUser = (user) => {
   };
 };
 
+const normalizeArray = (value) => {
+  if (Array.isArray(value)) return value;
+  if (Array.isArray(value?.data)) return value.data;
+  if (Array.isArray(value?.items)) return value.items;
+  return [];
+};
+
+const wrapListLike = (fn) => async (...args) => {
+  const result = await fn(...args);
+  return normalizeArray(result);
+};
+
+if (base44Client?.entities) {
+  Object.values(base44Client.entities).forEach((entity) => {
+    if (!entity) return;
+    if (typeof entity.list === 'function') {
+      entity.list = wrapListLike(entity.list.bind(entity));
+    }
+    if (typeof entity.filter === 'function') {
+      entity.filter = wrapListLike(entity.filter.bind(entity));
+    }
+  });
+}
+
 base44Client.auth = {
   me: async () => {
     const { data, error } = await supabase.auth.getUser();
