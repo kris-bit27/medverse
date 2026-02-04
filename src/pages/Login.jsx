@@ -17,7 +17,10 @@ const PROVIDER_META = [
 const getRedirectTo = () => {
   const params = new URLSearchParams(window.location.search);
   const target = params.get('redirectTo') || '/Dashboard';
-  const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
+  const preferredSiteUrl = import.meta.env.VITE_SITE_URL;
+  const siteUrl = import.meta.env.PROD && preferredSiteUrl
+    ? preferredSiteUrl
+    : window.location.origin;
   return `${siteUrl}/auth/callback?redirectTo=${encodeURIComponent(target)}`;
 };
 
