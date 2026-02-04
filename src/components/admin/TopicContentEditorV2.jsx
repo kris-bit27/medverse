@@ -19,82 +19,6 @@ import {
 import { Loader2, Sparkles, Save, BookOpen, List, Microscope, ArrowDown, CheckCircle, Shield, Eye, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import { AI_MODELS } from '../utils/aiConfig';
-import { ADMIN_CONTENT_SYSTEM_PROMPT } from './aiSystemPrompt';
-
-const FULLTEXT_TEMPLATE = `FULLTEXT
-TASK:
-Generate a comprehensive, structured educational text on the given topic.
-
-REQUIREMENTS:
-- Depth: advanced medical education (residents / specialists)
-- Structure with clear headings and subheadings
-- Explain pathophysiology, diagnostics, treatment principles, and clinical decision-making
-- Include current standard-of-care approaches
-- Adapt recommendations to Czech/European practice where relevant
-
-OPTIONAL (only if appropriate):
-- Tables for classification or comparison
-- Simple algorithms for decision-making
-- References to guideline-level concepts (without citations list)
-
-DO NOT:
-- Oversimplify
-- Write exam-focused bullet dumps
-- Assume beginner-level knowledge
-
-CONTEXT:
-Specialty: {{specialty}}
-Okruh: {{okruh}}
-Téma: {{tema}}
-Topic / Question: {{title}}
-
-OUTPUT:
-Return the full educational text.`;
-
-const HIGH_YIELD_TEMPLATE = `HIGH-YIELD
-TASK:
-Extract the most clinically important HIGH-YIELD points from the full text.
-
-RULES:
-- Bullet points only
-- Focus on decision-making, red flags, key principles
-- No repetition of full explanations
-- No new information beyond the full text
-
-FULL TEXT:
-{{full_text}}
-
-OUTPUT:
-Return a concise high-yield bullet list.`;
-
-const DEEP_DIVE_TEMPLATE = `DEEP-DIVE
-TASK:
-Create an advanced deep-dive expansion of the topic.
-
-INCLUDE:
-- Clinical nuances and controversies
-- Decision-making trade-offs
-- Common pitfalls and mistakes
-- Complications and their management
-- Differences between international and Czech/European practice
-- Emerging trends (if relevant)
-
-RULES:
-- Do NOT repeat or summarize the full text
-- Add expert reasoning and context
-- Use tables or diagrams ONLY if they clarify complex decisions
-
-FULL TEXT:
-{{full_text}}
-
-OUTPUT:
-Return the deep-dive expert content.`;
-
-const fillTemplate = (template, vars) =>
-  Object.entries(vars).reduce(
-    (acc, [key, value]) => acc.replaceAll(`{{${key}}}`, value || ''),
-    template
-  );
 
 const buildTemplateMarkdown = (structuredData, title) => {
   if (!structuredData) return '';
@@ -191,16 +115,6 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
   const handleAIGenerate = async (mode) => {
     setIsGenerating(true);
     try {
-      // Mapování Claude módů na Gemini módy
-      const modeMapping = {
-        topic_generate_fulltext_v2: 'topic_generate_template',
-        topic_generate_high_yield: 'topic_summarize',
-        topic_generate_deep_dive: 'topic_deep_dive'
-      };
-
-      const geminiMode = modeMapping[mode] || mode;
-      console.log('[Gemini] Original mode:', mode, '→ Gemini mode:', geminiMode);
-
       // Validace pro high-yield a deep-dive
       if ((mode === 'topic_generate_high_yield' || mode === 'topic_generate_deep_dive') && !content.full_text_content) {
         toast.error('Nejprve vygeneruj fulltext');
@@ -208,41 +122,38 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         return;
       }
 
-      // Context pro Gemini
       const claudeContext = {
         specialty: context?.specialty || '',
         okruh: context?.okruh || '',
-        tema: topic?.tema || topic?.title || '',
         title: topic.title || '',
         full_text: content.full_text_content || ''
       };
 
-      const promptTemplates = {
-        topic_generate_fulltext_v2: FULLTEXT_TEMPLATE,
-        topic_generate_high_yield: HIGH_YIELD_TEMPLATE,
-        topic_generate_deep_dive: DEEP_DIVE_TEMPLATE
-      };
+      console.log('[Claude] Generuji mód:', mode);
+      console.log('[Claude] Context:', claudeContext);
 
-      const userPrompt = fillTemplate(promptTemplates[mode] || FULLTEXT_TEMPLATE, claudeContext);
-
-      console.log('[Gemini] Generuji mód:', mode);
-      console.log('[Gemini] Context:', claudeContext);
-
-      const response = await base44.functions.invoke('invokeEduLLM', {
-        mode: geminiMode,
-        entityContext: {
-          topic: topic,
-          entityType: 'topic',
-          entityId: topic.id
+      const response = await fetch('/api/generate-topic', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
         },
-        userPrompt,
-        systemPromptOverride: ADMIN_CONTENT_SYSTEM_PROMPT
+        body: JSON.stringify({
+          mode: mode,
+          context: {
+            specialty: context?.specialty || '',
+            okruh: context?.okruh || '',
+            title: topic.title || '',
+            full_text: content.full_text_content || ''
+          }
+        })
       });
 
-      console.log('[Gemini] Response:', response);
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status}`);
+      }
 
-      const result = response.data || response;
-      
+      const result = await response.json();
+
       if (result?.error) {
         throw new Error(result.error);
       }
