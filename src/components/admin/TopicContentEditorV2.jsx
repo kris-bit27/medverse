@@ -163,6 +163,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         confidence: result?.confidence || null,
         warnings: result?.warnings || [],
         sources: result?.sources || [],
+        _cache: result?._cache || null,
         metadata: {
           model: result?.metadata?.model || 'claude-sonnet-4',
           generatedAt: result?.metadata?.generatedAt || new Date().toISOString(),
@@ -188,14 +189,14 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
             ]
           }
         }));
-        toast.success(`Fulltext vygenerován (${aiMetadata.metadata.model})`);
+        // toast handled below
         
       } else if (mode === 'topic_generate_high_yield') {
         setContent(prev => ({ 
           ...prev, 
           bullet_points_summary: result.high_yield || result.text || ''
         }));
-        toast.success('High-yield vygenerován');
+        // toast handled below
         
       } else if (mode === 'topic_generate_deep_dive') {
         setContent(prev => ({ 
@@ -209,7 +210,16 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
             ]
           }
         }));
-        toast.success('Deep dive vygenerován');
+        // toast handled below
+      }
+
+      const isCached = result?._cache?.cached;
+      if (isCached) {
+        toast.success(`⚡ Content loaded from cache (${Math.floor(result._cache.cacheAge / 60)} min old)`);
+      } else {
+        const modelName = result.metadata?.model?.includes('haiku') ? 'Haiku' : 'Sonnet';
+        const icon = result.metadata?.model?.includes('haiku') ? '🚀' : '✨';
+        toast.success(`${icon} Generated with ${modelName} (cost: $${result.metadata?.cost?.total || '0'})`);
       }
 
       // Zobraz warnings pokud existují
@@ -308,7 +318,34 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         <Card className="p-4 bg-blue-50 dark:bg-blue-950/20">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-sm">AI Generation Metadata</h3>
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold text-sm">AI Generation Metadata</h3>
+                <div className="flex gap-2">
+                  {lastGenerated?._cache?.cached && (
+                    <Badge variant="secondary">
+                      ⚡ From Cache
+                    </Badge>
+                  )}
+                  {lastGenerated?.metadata?.model && (
+                    <Badge
+                      variant={
+                        lastGenerated.metadata.model.includes('haiku')
+                          ? 'outline'
+                          : 'default'
+                      }
+                      className={
+                        lastGenerated.metadata.model.includes('haiku')
+                          ? 'bg-green-50 text-green-700 border-green-200'
+                          : 'bg-blue-50 text-blue-700 border-blue-200'
+                      }
+                    >
+                      {lastGenerated.metadata.model.includes('haiku')
+                        ? '🚀 Haiku'
+                        : '🧠 Sonnet'}
+                    </Badge>
+                  )}
+                </div>
+              </div>
               {lastGenerated?.metadata?.fallback && (
                 <Badge variant="warning">
                   Fallback: Gemini použit
