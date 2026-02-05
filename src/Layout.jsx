@@ -5,8 +5,8 @@ import { useQuery } from '@tanstack/react-query';
 import { createPageUrl } from './utils';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { SearchTopics } from '@/components/SearchTopics';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -59,7 +59,6 @@ const navItems = [
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
 
   const isPublicPage = publicPages.includes(currentPageName);
 
@@ -85,13 +84,6 @@ export default function Layout({ children, currentPageName }) {
     document.body.dataset.theme = nextTheme;
     document.documentElement.classList.toggle('dark', nextTheme === 'dark');
     localStorage.setItem('mn:theme', nextTheme);
-  };
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      window.location.href = createPageUrl('Search') + `?q=${encodeURIComponent(searchQuery)}`;
-    }
   };
 
   const handleLogout = () => {
@@ -262,18 +254,10 @@ export default function Layout({ children, currentPageName }) {
       {/* Main content */}
       <div className="mn-main lg:pl-72">
         {/* Top bar */}
-        <header className="mn-topbar sticky top-0 h-16 z-40 hidden lg:flex items-center justify-between px-6">
-          <form onSubmit={handleSearch} className="flex-1 max-w-xl">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-              <Input
-                placeholder="Hledat otázky, články, nástroje..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 atesto-input focus-visible:ring-teal-500"
-              />
-            </div>
-          </form>
+        <header className="mn-topbar sticky top-0 h-16 z-40 hidden lg:flex items-center justify-between gap-4 px-6">
+          <div className="flex-1 max-w-xl">
+            <SearchTopics />
+          </div>
 
           <div className="flex items-center gap-2">
             <Button
