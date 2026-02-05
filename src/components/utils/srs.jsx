@@ -12,6 +12,13 @@ export const STATUS = {
   MASTERED: 'mastered'
 };
 
+const asArray = (value) => {
+  if (Array.isArray(value)) return value;
+  if (Array.isArray(value?.data)) return value.data;
+  if (Array.isArray(value?.items)) return value.items;
+  return [];
+};
+
 // Calculate next review date based on rating
 export function calculateNextReview(progress, rating) {
   const now = new Date();
@@ -63,9 +70,10 @@ export function calculateNextReview(progress, rating) {
 // Get questions due for review today
 export function getDueQuestions(progressList, dailyGoal = 15) {
   const now = new Date();
+  const safeProgress = asArray(progressList);
   
   // Get questions that are due or new
-  const due = progressList.filter(p => {
+  const due = safeProgress.filter(p => {
     if (p.status === STATUS.NEW) return true;
     if (!p.next_review_at) return true;
     return new Date(p.next_review_at) <= now;
@@ -85,13 +93,14 @@ export function getDueQuestions(progressList, dailyGoal = 15) {
 
 // Calculate overall progress stats
 export function calculateProgressStats(progressList) {
-  const total = progressList.length;
+  const safeProgress = asArray(progressList);
+  const total = safeProgress.length;
   if (total === 0) return { new: 0, learning: 0, mastered: 0, total: 0, percentage: 0 };
   
   const stats = {
-    new: progressList.filter(p => p.status === STATUS.NEW || !p.status).length,
-    learning: progressList.filter(p => p.status === STATUS.LEARNING).length,
-    mastered: progressList.filter(p => p.status === STATUS.MASTERED).length,
+    new: safeProgress.filter(p => p.status === STATUS.NEW || !p.status).length,
+    learning: safeProgress.filter(p => p.status === STATUS.LEARNING).length,
+    mastered: safeProgress.filter(p => p.status === STATUS.MASTERED).length,
     total
   };
   
