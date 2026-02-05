@@ -52,6 +52,7 @@ import Admin from './pages/Admin';
 import AdminArticleEdit from './pages/AdminArticleEdit';
 import AdminArticles from './pages/AdminArticles';
 import AdminAudit from './pages/AdminAudit';
+import AdminAnalytics from './pages/AdminAnalytics';
 import AdminQuestionEdit from './pages/AdminQuestionEdit';
 import AdminQuestions from './pages/AdminQuestions';
 import AdminTaxonomy from './pages/AdminTaxonomy';
@@ -96,6 +97,7 @@ export const PAGES = {
     "AdminArticleEdit": AdminArticleEdit,
     "AdminArticles": AdminArticles,
     "AdminAudit": AdminAudit,
+    "AdminAnalytics": AdminAnalytics,
     "AdminQuestionEdit": AdminQuestionEdit,
     "AdminQuestions": AdminQuestions,
     "AdminTaxonomy": AdminTaxonomy,

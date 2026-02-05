@@ -9,6 +9,7 @@ import {
   GraduationCap,
   BookOpen,
   Stethoscope,
+  BarChart3,
   Users,
   FolderTree,
   FileText,
@@ -108,6 +109,14 @@ export default function Admin() {
       icon: FolderTree,
       href: createPageUrl('AdminTaxonomy'),
       color: 'from-amber-500 to-orange-600'
+    },
+    {
+      title: 'Analytics',
+      description: 'Cache & AI náklady',
+      count: null,
+      icon: BarChart3,
+      href: createPageUrl('AdminAnalytics'),
+      color: 'from-emerald-500 to-teal-600'
     }
   ];
 
@@ -154,9 +163,11 @@ export default function Admin() {
                         <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">
                           {card.description}
                         </p>
-                        <p className="text-2xl font-bold text-slate-900 dark:text-white">
-                          {card.count}
-                        </p>
+                        {card.count !== null && (
+                          <p className="text-2xl font-bold text-slate-900 dark:text-white">
+                            {card.count}
+                          </p>
+                        )}
                       </div>
                     </div>
                   </CardContent>
