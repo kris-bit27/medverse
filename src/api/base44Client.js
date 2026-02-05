@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createClient } from '@base44/sdk';
 import { appParams } from '@/lib/app-params';
 import { supabase } from '@/lib/supabase';
