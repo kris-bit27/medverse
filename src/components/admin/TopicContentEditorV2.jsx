@@ -20,6 +20,7 @@ import {
 import { Loader2, Sparkles, Save, BookOpen, List, Microscope, ArrowDown, CheckCircle, Shield, Eye, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import { AI_MODELS } from '../utils/aiConfig';
+import { VersionHistory } from './VersionHistory';
 
 const buildTemplateMarkdown = (structuredData, title) => {
   if (!structuredData) return '';
@@ -77,6 +78,26 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
     context?.okruh ? `Okruh: ${context.okruh}` : null,
     topic?.title ? `Téma: ${topic.title}` : null
   ].filter(Boolean).join(' • ');
+
+  const fetchTopicContent = async () => {
+    try {
+      const fresh = await base44.entities.Topic.get(topic.id);
+      setContent({
+        status: fresh?.status || 'draft',
+        full_text_content: fresh?.full_text_content || '',
+        bullet_points_summary: fresh?.bullet_points_summary || '',
+        deep_dive_content: fresh?.deep_dive_content || '',
+        learning_objectives: fresh?.learning_objectives || [],
+        source_pack: fresh?.source_pack || { internal_refs: [], external_refs: [] }
+      });
+      setLastGenerated(null);
+      setGenerationWarnings([]);
+      setGenerationConfidence(null);
+    } catch (error) {
+      console.error('Failed to reload topic:', error);
+      toast.error('Nepodařilo se načíst verzi tématu');
+    }
+  };
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -596,14 +617,24 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         </div>
       )}
 
-      <Button
-        onClick={handleSave}
-        disabled={isSaving}
-        className="w-full"
-      >
-        {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-        Uložit obsah
-      </Button>
+      <div className="flex flex-wrap items-center gap-2">
+        <Button
+          onClick={handleSave}
+          disabled={isSaving}
+          className="flex-1"
+        >
+          {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+          Uložit obsah
+        </Button>
+
+        <VersionHistory
+          topicId={topic.id}
+          onRestore={() => {
+            fetchTopicContent();
+            if (onSave) onSave();
+          }}
+        />
+      </div>
     </div>
   );
 }
