@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -87,6 +88,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         deep_dive_content: content.deep_dive_content,
         learning_objectives: content.learning_objectives,
         source_pack: content.source_pack,
+        updated_at: new Date().toISOString(),
 
         // NOVÁ AI METADATA
         ai_model: lastGenerated?.metadata?.model || 'claude-sonnet-4',
@@ -102,6 +104,16 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
       };
 
       await base44.entities.Topic.update(topic.id, updateData);
+
+      const { error: versionError } = await supabase.rpc('create_topic_version', {
+        p_topic_id: topic.id,
+        p_change_reason: 'Manual save'
+      });
+
+      if (versionError) {
+        console.error('Version creation failed:', versionError);
+      }
+
       toast.success('Téma uloženo');
       if (onSave) onSave();
     } catch (error) {
@@ -211,6 +223,15 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
           }
         }));
         // toast handled below
+      }
+
+      const { error: versionError } = await supabase.rpc('create_topic_version', {
+        p_topic_id: topic.id,
+        p_change_reason: `AI generation: ${mode}`
+      });
+
+      if (versionError) {
+        console.error('Version creation failed:', versionError);
       }
 
       const isCached = result?._cache?.cached;
