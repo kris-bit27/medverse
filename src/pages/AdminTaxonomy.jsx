@@ -417,7 +417,8 @@ export default function AdminTaxonomy() {
   }
 
   return (
-    <div className="p-6 lg:p-8 max-w-6xl mx-auto">
+    <div className="bg-white dark:bg-slate-900">
+      <div className="p-6 lg:p-8 max-w-6xl mx-auto">
       {/* Header */}
       <div className="flex items-center gap-4 mb-6">
         <Button variant="ghost" asChild>
@@ -1296,6 +1297,7 @@ export default function AdminTaxonomy() {
           />
         </DialogContent>
       </Dialog>
+      </div>
     </div>
   );
 }
