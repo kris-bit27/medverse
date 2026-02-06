@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { marked } from 'marked';
 import { webcrypto } from 'node:crypto';
-import { supabaseAdmin } from './_supabaseAdmin';
+import { supabaseAdmin } from './_supabaseAdmin.js';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY
