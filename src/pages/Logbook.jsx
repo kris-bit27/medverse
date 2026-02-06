@@ -65,16 +65,23 @@ export default function Logbook() {
     queryFn: () => base44.auth.me()
   });
 
-  const { data: entriesRaw, isLoading, isError: entriesError, error } = useQuery({
+  const { data: entriesRaw, isLoading, isError: entriesError } = useQuery({
     queryKey: ['logbookEntries', user?.id],
     queryFn: () => base44.entities.LogbookEntry.filter({ user_id: user.id }, '-date'),
     enabled: !!user?.id
   });
   const entries = asArray(entriesRaw);
 
-  const { data: disciplinesRaw, isError: disciplinesError } = useQuery({
+  const { data: disciplinesRaw = [] } = useQuery({
     queryKey: ['clinicalDisciplines'],
-    queryFn: () => base44.entities.ClinicalDiscipline.list()
+    queryFn: async () => {
+      try {
+        return await base44.entities.ClinicalDiscipline.list();
+      } catch (e) {
+        console.warn('Clinical disciplines unavailable, continuing without them.', e);
+        return [];
+      }
+    }
   });
   const disciplines = asArray(disciplinesRaw);
 
@@ -161,7 +168,7 @@ export default function Logbook() {
     );
   }
 
-  if (entriesError || disciplinesError) {
+  if (entriesError) {
     return (
       <div className="p-6 max-w-2xl mx-auto">
         <Alert variant="destructive">
@@ -172,12 +179,6 @@ export default function Logbook() {
         </Alert>
       </div>
     );
-  }
-
-
-
-  if (disciplinesError) {
-    toast.error('Nepodařilo se načíst klinické obory');
   }
 
   return (
