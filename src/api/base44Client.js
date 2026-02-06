@@ -1,19 +1,12 @@
 // @ts-nocheck
-import { createClient } from '@base44/sdk';
-import { appParams } from '@/lib/app-params';
 import { supabase } from '@/lib/supabase';
 
-const { appId, token, functionsVersion, appBaseUrl } = appParams;
-
-//Create a client with authentication required
-const base44Client = createClient({
-  appId,
-  token,
-  functionsVersion,
-  serverUrl: '',
-  requiresAuth: false,
-  appBaseUrl
-});
+const normalizeArray = (value) => {
+  if (Array.isArray(value)) return value;
+  if (Array.isArray(value?.data)) return value.data;
+  if (Array.isArray(value?.items)) return value.items;
+  return [];
+};
 
 const mapSupabaseUser = (user) => {
   if (!user) return null;
@@ -21,8 +14,8 @@ const mapSupabaseUser = (user) => {
   const clinical_disciplines = Array.isArray(rawDisciplines)
     ? rawDisciplines
     : rawDisciplines
-      ? [rawDisciplines].flat().filter(Boolean)
-      : [];
+    ? [rawDisciplines].flat().filter(Boolean)
+    : [];
   return {
     id: user.id,
     email: user.email,
@@ -35,16 +28,6 @@ const mapSupabaseUser = (user) => {
   };
 };
 
-const normalizeArray = (value) => {
-  if (Array.isArray(value)) return value;
-  if (Array.isArray(value?.data)) return value.data;
-  if (Array.isArray(value?.items)) return value.items;
-  return [];
-};
-
-const DATA_BACKEND = import.meta.env.VITE_DATA_BACKEND || 'supabase';
-const USE_SUPABASE = DATA_BACKEND !== 'base44';
-
 const ENTITY_TABLES = {
   Question: 'questions',
   Okruh: 'okruhy',
@@ -52,7 +35,9 @@ const ENTITY_TABLES = {
   ClinicalDiscipline: 'clinical_disciplines',
   Article: 'articles',
   Tool: 'tools',
+  User: 'users',
   UserProgress: 'user_progress',
+  UserNote: 'user_notes',
   Bookmark: 'bookmarks',
   StudyPlan: 'study_plans',
   StudyTask: 'study_tasks',
@@ -60,9 +45,12 @@ const ENTITY_TABLES = {
   StudyPack: 'study_packs',
   StudyPackOutput: 'study_pack_outputs',
   StudyPackFile: 'study_pack_files',
+  StudyPackChunk: 'study_pack_chunks',
   ForumThread: 'forum_threads',
+  ForumPost: 'forum_posts',
   LogbookEntry: 'logbook_entries',
-  CaseLog: 'case_logs'
+  CaseLog: 'case_logs',
+  AuditLog: 'audit_logs'
 };
 
 const toSnakeCase = (value) =>
@@ -96,7 +84,6 @@ const applyFilters = (query, filters = {}) => {
 };
 
 const supabaseList = async (entityName, { order, limit } = {}) => {
-  if (!USE_SUPABASE) return null;
   const table = getTableName(entityName);
   let query = supabase.from(table).select('*');
   const orderConfig = parseOrder(order);
@@ -112,7 +99,6 @@ const supabaseList = async (entityName, { order, limit } = {}) => {
 };
 
 const supabaseFilter = async (entityName, filters, { order, limit } = {}) => {
-  if (!USE_SUPABASE) return null;
   const table = getTableName(entityName);
   let query = supabase.from(table).select('*');
   query = applyFilters(query, filters);
@@ -128,16 +114,28 @@ const supabaseFilter = async (entityName, filters, { order, limit } = {}) => {
   return normalizeArray(data);
 };
 
+const supabaseGet = async (entityName, id) => {
+  const table = getTableName(entityName);
+  const { data, error } = await supabase.from(table).select('*').eq('id', id).single();
+  if (error) throw error;
+  return data;
+};
+
 const supabaseCreate = async (entityName, payload) => {
-  if (!USE_SUPABASE) return null;
   const table = getTableName(entityName);
   const { data, error } = await supabase.from(table).insert(payload).select().single();
   if (error) throw error;
   return data;
 };
 
+const supabaseBulkCreate = async (entityName, payloads) => {
+  const table = getTableName(entityName);
+  const { data, error } = await supabase.from(table).insert(payloads).select();
+  if (error) throw error;
+  return normalizeArray(data);
+};
+
 const supabaseUpdate = async (entityName, id, payload) => {
-  if (!USE_SUPABASE) return null;
   const table = getTableName(entityName);
   const { data, error } = await supabase.from(table).update(payload).eq('id', id).select().single();
   if (error) throw error;
@@ -145,112 +143,231 @@ const supabaseUpdate = async (entityName, id, payload) => {
 };
 
 const supabaseDelete = async (entityName, id) => {
-  if (!USE_SUPABASE) return null;
   const table = getTableName(entityName);
   const { error } = await supabase.from(table).delete().eq('id', id);
   if (error) throw error;
   return true;
 };
 
-const withFallback = async (primaryFn, fallbackFn, label) => {
-  try {
-    const result = await primaryFn();
-    if (result !== null && result !== undefined) return result;
-  } catch (error) {
-    console.warn(`[Data] ${label} failed, falling back to Base44`, error);
-  }
-  if (fallbackFn) {
-    try {
-      return await fallbackFn();
-    } catch (error) {
-      console.warn(`[Data] Base44 ${label} failed`, error);
-      return [];
-    }
-  }
-  return [];
-};
+const createEntityClient = (entityName) => ({
+  list: (order, limit) => supabaseList(entityName, { order, limit }),
+  filter: (filters, order, limit) => supabaseFilter(entityName, filters, { order, limit }),
+  get: (id) => supabaseGet(entityName, id),
+  create: (payload) => supabaseCreate(entityName, payload),
+  bulkCreate: (payloads) => supabaseBulkCreate(entityName, payloads),
+  update: (id, payload) => supabaseUpdate(entityName, id, payload),
+  delete: (id) => supabaseDelete(entityName, id)
+});
 
-if (base44Client?.entities) {
-  Object.entries(base44Client.entities).forEach(([entityName, entity]) => {
-    if (!entity) return;
-    if (typeof entity.list === 'function') {
-      const base44List = entity.list.bind(entity);
-      entity.list = async (...args) => {
-        const [order, limit] = args;
-        return withFallback(
-          () => supabaseList(entityName, { order, limit }),
-          () => base44List(...args),
-          `${entityName}.list`
-        );
-      };
+const entities = new Proxy({}, {
+  get(target, prop) {
+    if (typeof prop !== 'string') return target[prop];
+    if (!target[prop]) {
+      target[prop] = createEntityClient(prop);
     }
-    if (typeof entity.filter === 'function') {
-      const base44Filter = entity.filter.bind(entity);
-      entity.filter = async (...args) => {
-        const [filters, order, limit] = args;
-        return withFallback(
-          () => supabaseFilter(entityName, filters, { order, limit }),
-          () => base44Filter(...args),
-          `${entityName}.filter`
-        );
-      };
-    }
-    if (typeof entity.create === 'function') {
-      const base44Create = entity.create.bind(entity);
-      entity.create = async (payload) => withFallback(
-        () => supabaseCreate(entityName, payload),
-        () => base44Create(payload),
-        `${entityName}.create`
-      );
-    }
-    if (typeof entity.update === 'function') {
-      const base44Update = entity.update.bind(entity);
-      entity.update = async (id, payload) => withFallback(
-        () => supabaseUpdate(entityName, id, payload),
-        () => base44Update(id, payload),
-        `${entityName}.update`
-      );
-    }
-    if (typeof entity.delete === 'function') {
-      const base44Delete = entity.delete.bind(entity);
-      entity.delete = async (id) => withFallback(
-        () => supabaseDelete(entityName, id),
-        () => base44Delete(id),
-        `${entityName}.delete`
-      );
-    }
+    return target[prop];
+  }
+});
+
+const callApi = async (name, payload) => {
+  const res = await fetch(`/api/${name}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload || {})
   });
-}
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || `API ${name} failed (${res.status})`);
+  }
+  return res.json();
+};
 
-base44Client.auth = {
-  me: async () => {
-    const { data, error } = await supabase.auth.getUser();
-    if (error || !data?.user) {
-      const err = error || new Error('Not authenticated');
-      err.status = 401;
-      throw err;
-    }
-    return mapSupabaseUser(data.user);
-  },
-  updateMe: async (updates = {}) => {
-    const { data, error } = await supabase.auth.updateUser({
-      data: updates
-    });
-    if (error) {
-      throw error;
-    }
-    return mapSupabaseUser(data.user);
-  },
-  logout: async (redirectTo) => {
-    await supabase.auth.signOut();
-    if (redirectTo) {
-      window.location.href = redirectTo;
-    }
-  },
-  redirectToLogin: (returnTo) => {
-    const target = returnTo || window.location.href;
-    window.location.href = `/login?redirectTo=${encodeURIComponent(target)}`;
+const uploadFileToSupabase = async ({ file }) => {
+  if (!file) throw new Error('Missing file');
+  const bucket = import.meta.env.VITE_SUPABASE_STORAGE_BUCKET || 'uploads';
+  const { data: authData } = await supabase.auth.getUser();
+  const userId = authData?.user?.id || 'anon';
+  const ext = file.name.includes('.') ? file.name.split('.').pop() : 'bin';
+  const path = `${userId}/${Date.now()}-${Math.random().toString(16).slice(2)}.${ext}`;
+
+  const { error } = await supabase.storage
+    .from(bucket)
+    .upload(path, file, { contentType: file.type || 'application/octet-stream' });
+
+  if (error) throw error;
+
+  const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+  if (!data?.publicUrl) {
+    throw new Error('Upload succeeded but public URL is missing. Check bucket public access.');
+  }
+
+  return { file_url: data.publicUrl, path, bucket };
+};
+
+const AGENTS_STORAGE_KEY = 'mv_agents_conversations_v1';
+const agentListeners = new Map();
+
+const loadAgentStore = () => {
+  try {
+    const raw = localStorage.getItem(AGENTS_STORAGE_KEY);
+    if (!raw) return { conversations: [] };
+    const parsed = JSON.parse(raw);
+    return parsed && Array.isArray(parsed.conversations) ? parsed : { conversations: [] };
+  } catch {
+    return { conversations: [] };
   }
 };
 
-export const base44 = base44Client;
+const saveAgentStore = (store) => {
+  localStorage.setItem(AGENTS_STORAGE_KEY, JSON.stringify(store));
+};
+
+const notifyAgentListeners = (conv) => {
+  const listeners = agentListeners.get(conv.id);
+  if (!listeners) return;
+  listeners.forEach((cb) => cb({ ...conv }));
+};
+
+const upsertConversation = (conv) => {
+  const store = loadAgentStore();
+  const idx = store.conversations.findIndex((c) => c.id === conv.id);
+  if (idx >= 0) {
+    store.conversations[idx] = conv;
+  } else {
+    store.conversations.unshift(conv);
+  }
+  saveAgentStore(store);
+  notifyAgentListeners(conv);
+  return conv;
+};
+
+const getConversationById = (id) => {
+  const store = loadAgentStore();
+  return store.conversations.find((c) => c.id === id) || null;
+};
+
+const agents = {
+  listConversations: async ({ agent_name } = {}) => {
+    const store = loadAgentStore();
+    const list = agent_name
+      ? store.conversations.filter((c) => c.agent_name === agent_name)
+      : store.conversations;
+    return [...list].sort((a, b) => (b.updated_at || 0) - (a.updated_at || 0));
+  },
+  createConversation: async ({ agent_name, metadata } = {}) => {
+    const conv = {
+      id: crypto.randomUUID(),
+      agent_name: agent_name || 'copilot',
+      metadata: metadata || {},
+      messages: [],
+      created_at: Date.now(),
+      updated_at: Date.now()
+    };
+    return upsertConversation(conv);
+  },
+  getConversation: async (id) => {
+    const conv = getConversationById(id);
+    if (!conv) throw new Error('Conversation not found');
+    return conv;
+  },
+  subscribeToConversation: (id, callback) => {
+    if (!agentListeners.has(id)) agentListeners.set(id, new Set());
+    agentListeners.get(id).add(callback);
+    const current = getConversationById(id);
+    if (current) callback({ ...current });
+    return () => {
+      const set = agentListeners.get(id);
+      if (!set) return;
+      set.delete(callback);
+      if (set.size === 0) agentListeners.delete(id);
+    };
+  },
+  addMessage: async (conversation, message) => {
+    const conv = getConversationById(conversation.id);
+    if (!conv) throw new Error('Conversation not found');
+    const now = Date.now();
+    conv.messages = [...(conv.messages || []), message];
+    conv.updated_at = now;
+    upsertConversation(conv);
+
+    const mode = message?.pageContext ? 'floating_copilot_chat' : 'copilot_chat';
+    let assistantText = '';
+    let confidence = { level: 'low', reason: 'Neznámá' };
+    let citations = { internal: [], external: [] };
+
+    try {
+      const response = await callApi('invokeEduLLM', {
+        mode,
+        userPrompt: message.content,
+        pageContext: message.pageContext || null
+      });
+      assistantText = response.text || response.answer_md || response.high_yield || response.deep_dive || response.full_text || '';
+      confidence = response.confidence || confidence;
+      citations = response.citations || citations;
+    } catch (error) {
+      assistantText = `⚠️ Chyba při generování odpovědi: ${error.message}`;
+    }
+
+    const assistantMessage = {
+      role: 'assistant',
+      content: assistantText,
+      meta: { confidence, citations }
+    };
+
+    conv.messages = [...(conv.messages || []), assistantMessage];
+    conv.updated_at = Date.now();
+    upsertConversation(conv);
+    return assistantMessage;
+  }
+};
+
+const base44 = {
+  entities,
+  auth: {
+    me: async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (error || !data?.user) {
+        const err = error || new Error('Not authenticated');
+        err.status = 401;
+        throw err;
+      }
+      return mapSupabaseUser(data.user);
+    },
+    updateMe: async (updates = {}) => {
+      const { data, error } = await supabase.auth.updateUser({
+        data: updates
+      });
+      if (error) {
+        throw error;
+      }
+      return mapSupabaseUser(data.user);
+    },
+    logout: async (redirectTo) => {
+      await supabase.auth.signOut();
+      if (redirectTo) {
+        window.location.href = redirectTo;
+      }
+    },
+    redirectToLogin: (returnTo) => {
+      const target = returnTo || window.location.href;
+      window.location.href = `/login?redirectTo=${encodeURIComponent(target)}`;
+    }
+  },
+  functions: {
+    invoke: (name, payload) => callApi(name, payload)
+  },
+  integrations: {
+    Core: {
+      InvokeLLM: (payload) => callApi('invokeLLM', payload),
+      UploadFile: (payload) => uploadFileToSupabase(payload)
+    }
+  },
+  appLogs: {
+    logUserInApp: async () => {
+      return true;
+    }
+  },
+  agents
+};
+
+export { base44 };
