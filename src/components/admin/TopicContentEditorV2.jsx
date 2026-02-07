@@ -8,7 +8,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import TipTapEditor from './TipTapEditor';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
@@ -70,7 +69,6 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
   const [lastGenerated, setLastGenerated] = useState(null);
   const [generationWarnings, setGenerationWarnings] = useState([]);
   const [generationConfidence, setGenerationConfidence] = useState(null);
-  const [useRichEditor, setUseRichEditor] = useState(true);
   const lastUpdatedRaw = topic?.updated_date || topic?.updated_at || topic?.modified_date || topic?.created_date || null;
   const lastUpdatedLabel = lastUpdatedRaw ? `Poslední změna: ${new Date(lastUpdatedRaw).toLocaleString('cs-CZ')}` : '';
   const contextSummary = [
@@ -536,14 +534,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
               <Label>Plný studijní text</Label>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => setUseRichEditor(!useRichEditor)}
-                className="text-xs"
-              >
-                {useRichEditor ? 'Markdown' : 'Rich editor'}
-              </Button>
+              <span className="text-xs text-muted-foreground">Markdown</span>
             </div>
             <div className="flex gap-2">
               <Button
@@ -557,20 +548,12 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
               </Button>
             </div>
           </div>
-          {useRichEditor ? (
-            <TipTapEditor
-              content={content.full_text_content}
-              onChange={(html) => setContent(prev => ({ ...prev, full_text_content: html }))}
-              placeholder="Začněte psát studijní text..."
-            />
-          ) : (
-            <Textarea
-              value={content.full_text_content}
-              onChange={(e) => setContent(prev => ({ ...prev, full_text_content: e.target.value }))}
-              className="font-mono text-sm h-[400px]"
-              placeholder="Plný text učebnice (markdown/HTML)..."
-            />
-          )}
+          <Textarea
+            value={content.full_text_content}
+            onChange={(e) => setContent(prev => ({ ...prev, full_text_content: e.target.value }))}
+            className="font-mono text-sm h-[400px]"
+            placeholder="Plný text učebnice (markdown)..."
+          />
         </TabsContent>
 
         <TabsContent value="bullets" className="space-y-3">
@@ -587,9 +570,10 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
               Generovat High-Yield
             </Button>
           </div>
-          <TipTapEditor
-            content={content.bullet_points_summary}
-            onChange={(html) => setContent(prev => ({ ...prev, bullet_points_summary: html }))}
+          <Textarea
+            value={content.bullet_points_summary}
+            onChange={(e) => setContent(prev => ({ ...prev, bullet_points_summary: e.target.value }))}
+            className="font-mono text-sm h-[260px]"
             placeholder="- Hlavní bod 1..."
           />
         </TabsContent>
@@ -607,9 +591,10 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
               Generovat Deep Dive
             </Button>
           </div>
-          <TipTapEditor
-            content={content.deep_dive_content}
-            onChange={(html) => setContent(prev => ({ ...prev, deep_dive_content: html }))}
+          <Textarea
+            value={content.deep_dive_content}
+            onChange={(e) => setContent(prev => ({ ...prev, deep_dive_content: e.target.value }))}
+            className="font-mono text-sm h-[260px]"
             placeholder="Rozšířený obsah pro pokročilé studium..."
           />
         </TabsContent>

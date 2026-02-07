@@ -4,7 +4,39 @@ import ReactMarkdown from 'react-markdown';
 export default function HTMLContent({ content }) {
   if (!content) return null;
 
-  const looksLikeHtml = /<\/?[a-z][\s\S]*>/i.test(content);
+  const normalizeText = (value) => {
+    if (!value || typeof value !== 'string') return value;
+    return value.replace(/\\n/g, '\n').replace(/\\t/g, '\t');
+  };
+
+  const tryParseJsonString = (value) => {
+    if (typeof value !== 'string') return null;
+    const cleaned = value.replace(/```json\n?|\n?```/g, '').trim();
+    if (!cleaned.startsWith('{') || !cleaned.includes('"')) return null;
+    try {
+      return JSON.parse(cleaned);
+    } catch {
+      const first = cleaned.indexOf('{');
+      const last = cleaned.lastIndexOf('}');
+      if (first !== -1 && last !== -1 && last > first) {
+        try {
+          return JSON.parse(cleaned.slice(first, last + 1));
+        } catch {
+          return null;
+        }
+      }
+      return null;
+    }
+  };
+
+  let resolvedContent = content;
+  const parsed = tryParseJsonString(content);
+  if (parsed?.full_text || parsed?.high_yield || parsed?.deep_dive) {
+    resolvedContent = parsed.full_text || parsed.high_yield || parsed.deep_dive;
+  }
+  resolvedContent = normalizeText(resolvedContent) || '';
+
+  const looksLikeHtml = /<\/?[a-z][\s\S]*>/i.test(resolvedContent);
 
   const sanitizeHtml = (rawHtml) => {
     const parser = new DOMParser();
@@ -47,13 +79,13 @@ export default function HTMLContent({ content }) {
   if (!looksLikeHtml) {
     return (
       <div className="tiptap-rendered-content max-w-4xl mx-auto">
-        <ReactMarkdown>{content}</ReactMarkdown>
+        <ReactMarkdown>{resolvedContent}</ReactMarkdown>
       </div>
     );
   }
 
   // Clean HTML: remove classes, empty paragraphs, and excessive breaks
-  const cleanHTML = sanitizeHtml(content)
+  const cleanHTML = sanitizeHtml(resolvedContent)
     // Remove empty paragraphs
     .replace(/<p><\/p>/gi, '')
     .replace(/<p>\s*<\/p>/gi, '')
