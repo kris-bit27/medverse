@@ -15,6 +15,9 @@ import {
   Info
 } from 'lucide-react';
 
+// TODO: Replace mock review with real OpenAI/Edge Function when rate limits resolved
+// Current: Using randomized mock data for development
+// See: https://platform.openai.com/settings/organization/billing to upgrade tier
 
 export const ContentReview = ({ content, specialty, mode, onReviewComplete }) => {
   const [review, setReview] = useState(null);
@@ -24,7 +27,7 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
     setLoading(true);
     
     try {
-      console.log('[Review] Calling Edge Function...');
+      console.log('[Review] Running MOCK review (OpenAI rate limited)');
       console.log('[Review] Content length:', content?.length);
 
       if (!content || content.length < 100) {
@@ -33,37 +36,81 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
         return;
       }
 
-      // Call Supabase Edge Function (backend)
-      const { data, error } = await supabase.functions.invoke('review-content', {
-        body: {
-          content: content,
-          specialty: specialty,
-          mode: mode
-        }
-      });
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
-      console.log('[Review] Response:', data);
-      console.log('[Review] Error:', error);
-
-      if (error) {
-        console.error('[Review] Supabase error:', error);
-        throw new Error(error.message || 'Edge Function failed');
-      }
-
-      if (!data) {
-        throw new Error('No data returned from review');
-      }
-
-      setReview(data);
+      // Generate randomized mock review
+      const isApproved = Math.random() > 0.4; // 60% chance approved
+      const hasHighIssue = Math.random() > 0.7;
+      const hasMediumIssue = Math.random() > 0.5;
       
-      if (data.approved) {
-        toast.success('✅ Content approved by AI review!');
+      const mockIssues = [];
+      
+      if (hasHighIssue) {
+        mockIssues.push({
+          severity: 'high',
+          category: 'dosage',
+          line: 'Dávka 500mg denně',
+          description: 'Příliš vysoká dávka pro běžného pacienta',
+          suggestion: 'Změnit na 325mg podle guidelines'
+        });
+      }
+      
+      if (hasMediumIssue) {
+        mockIssues.push({
+          severity: 'medium',
+          category: 'missing_info',
+          description: 'Chybí sekce o kontraindikacích',
+          suggestion: 'Přidat seznam kontraindikací'
+        });
+      }
+      
+      if (Math.random() > 0.6) {
+        mockIssues.push({
+          severity: 'low',
+          category: 'formatting',
+          description: 'Některé sekce by mohly být lépe strukturované',
+          suggestion: 'Použít podnadpisy pro lepší čitelnost'
+        });
+      }
+
+      const mockReview = {
+        approved: isApproved,
+        confidence: 0.70 + Math.random() * 0.25,
+        safety_score: 75 + Math.floor(Math.random() * 20),
+        completeness_score: 70 + Math.floor(Math.random() * 25),
+        issues: mockIssues,
+        strengths: [
+          'Dobře strukturovaný text',
+          'Správné použití medicínské terminologie',
+          'Relevantní klinické informace'
+        ].slice(0, Math.floor(Math.random() * 2) + 1),
+        missing_sections: isApproved ? [] : [
+          'Prognóza',
+          'Diferenciální diagnostika'
+        ].slice(0, Math.floor(Math.random() * 2)),
+        metadata: {
+          model: 'mock-gpt-4o',
+          provider: 'mock',
+          cost: {
+            input: '0.0000',
+            output: '0.0000',
+            total: '0.0000'
+          },
+          reviewedAt: new Date().toISOString()
+        }
+      };
+
+      setReview(mockReview);
+
+      if (mockReview.approved) {
+        toast.success('✅ Content approved (MOCK review)');
       } else {
-        toast.warning(`⚠️ ${data.issues?.length || 0} issues found`);
+        toast.warning(`⚠️ ${mockReview.issues.length} issues found (MOCK review)`);
       }
 
       if (onReviewComplete) {
-        onReviewComplete(data);
+        onReviewComplete(mockReview);
       }
 
     } catch (error) {
