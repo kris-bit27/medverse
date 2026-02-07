@@ -459,20 +459,20 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
                   )}
                   {lastGenerated?.metadata?.model && (
                     <Badge
-                      variant={
-                        lastGenerated.metadata.model.includes('haiku')
-                          ? 'outline'
-                          : 'default'
-                      }
+                      variant="outline"
                       className={
-                        lastGenerated.metadata.model.includes('haiku')
-                          ? 'bg-green-50 text-green-700 border-green-200'
-                          : 'bg-blue-50 text-blue-700 border-blue-200'
+                        lastGenerated.metadata.provider === 'google'
+                          ? 'bg-purple-50 text-purple-700 border-purple-200'
+                          : lastGenerated.metadata.model.includes('haiku')
+                            ? 'bg-green-50 text-green-700 border-green-200'
+                            : 'bg-blue-50 text-blue-700 border-blue-200'
                       }
                     >
-                      {lastGenerated.metadata.model.includes('haiku')
-                        ? '🚀 Haiku'
-                        : '🧠 Sonnet'}
+                      {lastGenerated.metadata.provider === 'google'
+                        ? '⚡ Gemini'
+                        : lastGenerated.metadata.model.includes('haiku')
+                          ? '🚀 Haiku'
+                          : '🧠 Sonnet'}
                     </Badge>
                   )}
                 </div>
