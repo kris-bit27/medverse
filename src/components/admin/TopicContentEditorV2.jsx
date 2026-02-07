@@ -54,12 +54,48 @@ const buildTemplateMarkdown = (structuredData, title) => {
   ].join('\n');
 };
 
+const cleanAiWrappedText = (value) => {
+  if (!value || typeof value !== 'string') return value || '';
+
+  const normalize = (v) => v.replace(/\\n/g, '\n').replace(/\\t/g, '\t');
+  const cleaned = value.replace(/```json\n?/g, '').replace(/\n?```/g, '').trim();
+
+  const tryParse = () => {
+    try {
+      return JSON.parse(cleaned);
+    } catch {
+      const first = cleaned.indexOf('{');
+      const last = cleaned.lastIndexOf('}');
+      if (first !== -1 && last !== -1 && last > first) {
+        try {
+          return JSON.parse(cleaned.slice(first, last + 1));
+        } catch {
+          return null;
+        }
+      }
+      return null;
+    }
+  };
+
+  const parsed = tryParse();
+  if (parsed?.full_text || parsed?.high_yield || parsed?.deep_dive) {
+    return normalize(parsed.full_text || parsed.high_yield || parsed.deep_dive || '');
+  }
+
+  const match = cleaned.match(/"(full_text|high_yield|deep_dive)"\s*:\s*"([\s\S]*?)"\s*(,|\})/);
+  if (match?.[2]) {
+    return normalize(match[2].replace(/\\"/g, '"'));
+  }
+
+  return normalize(value);
+};
+
 export default function TopicContentEditorV2({ topic, context, onSave }) {
   const [content, setContent] = useState({
     status: topic?.status || 'draft',
-    full_text_content: topic?.full_text_content || '',
-    bullet_points_summary: topic?.bullet_points_summary || '',
-    deep_dive_content: topic?.deep_dive_content || '',
+    full_text_content: cleanAiWrappedText(topic?.full_text_content),
+    bullet_points_summary: cleanAiWrappedText(topic?.bullet_points_summary),
+    deep_dive_content: cleanAiWrappedText(topic?.deep_dive_content),
     learning_objectives: topic?.learning_objectives || [],
     source_pack: topic?.source_pack || { internal_refs: [], external_refs: [] }
   });
@@ -82,9 +118,9 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
       const fresh = await base44.entities.Topic.get(topic.id);
       setContent({
         status: fresh?.status || 'draft',
-        full_text_content: fresh?.full_text_content || '',
-        bullet_points_summary: fresh?.bullet_points_summary || '',
-        deep_dive_content: fresh?.deep_dive_content || '',
+        full_text_content: cleanAiWrappedText(fresh?.full_text_content),
+        bullet_points_summary: cleanAiWrappedText(fresh?.bullet_points_summary),
+        deep_dive_content: cleanAiWrappedText(fresh?.deep_dive_content),
         learning_objectives: fresh?.learning_objectives || [],
         source_pack: fresh?.source_pack || { internal_refs: [], external_refs: [] }
       });
