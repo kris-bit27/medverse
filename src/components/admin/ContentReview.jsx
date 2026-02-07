@@ -22,47 +22,6 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
   const runReview = async () => {
     setLoading(true);
     
-    // ← DOČASNÉ: Mock response pro testování UI
-    setTimeout(() => {
-      setReview({
-        approved: false,
-        confidence: 0.75,
-        safety_score: 85,
-        completeness_score: 70,
-        issues: [
-          {
-            severity: 'high',
-            category: 'dosage',
-            line: 'Dávka 500mg denně',
-            description: 'Příliš vysoká dávka pro běžného pacienta',
-            suggestion: 'Změnit na 325mg podle guidelines'
-          },
-          {
-            severity: 'medium',
-            category: 'missing_info',
-            description: 'Chybí sekce o kontraindikacích',
-            suggestion: 'Přidat seznam kontraindikací'
-          }
-        ],
-        strengths: [
-          'Dobře strukturovaný text',
-          'Správné citace'
-        ],
-        missing_sections: [
-          'Prognóza',
-          'Diferenciální diagnostika'
-        ],
-        metadata: {
-          model: 'gpt-4o',
-          cost: { total: '0.0123' }
-        }
-      });
-      toast.success('✅ Mock review completed!');
-      setLoading(false);
-    }, 2000);
-    
-    return; // ← Ukončí funkci (pro test)
-
     try {
       console.log('[Review] Starting direct OpenAI call...');
       console.log('[Review] Content length:', content?.length);
