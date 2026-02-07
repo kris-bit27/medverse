@@ -769,17 +769,27 @@ export default function AdminTaxonomy() {
                         toast.error('Vyplňte název okruhu');
                         return;
                       }
-                      if (!okruhForm.clinical_discipline_id) {
-                        toast.error('Vyberte klinický obor');
-                        return;
-                      }
-                      saveOkruhMutation.mutate({
-                        title,
-                        slug: slugify(title),
-                        description: okruhForm.description.trim() || null,
-                        clinical_discipline_id: okruhForm.clinical_discipline_id
-                      });
-                    }}
+                    if (!okruhForm.clinical_discipline_id) {
+                      toast.error('Vyberte klinický obor');
+                      return;
+                    }
+                    const okruhSlug = slugify(title);
+                    const duplicateOkruh = okruhy.find((o) =>
+                      o.clinical_discipline_id === okruhForm.clinical_discipline_id &&
+                      (o.slug || slugify(o.title)) === okruhSlug &&
+                      (!editingOkruh || o.id !== editingOkruh.id)
+                    );
+                    if (duplicateOkruh) {
+                      toast.error('Okruh s tímto názvem už v oboru existuje');
+                      return;
+                    }
+                    saveOkruhMutation.mutate({
+                      title,
+                      slug: okruhSlug,
+                      description: okruhForm.description.trim() || null,
+                      clinical_discipline_id: okruhForm.clinical_discipline_id
+                    });
+                  }}
                     disabled={
                       saveOkruhMutation.isPending ||
                       !okruhForm.title.trim() ||

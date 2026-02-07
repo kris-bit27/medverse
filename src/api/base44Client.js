@@ -110,12 +110,19 @@ const mapFiltersToDb = (entityName, filters) => {
   return mapToDbFields(entityName, filters);
 };
 
+const mapOrderColumn = (entityName, column) => {
+  const config = getEntityConfig(entityName);
+  if (config?.fieldMap && config.fieldMap[column]) {
+    return config.fieldMap[column];
+  }
+  return column;
+};
+
 const parseOrder = (order, entityName) => {
   if (!order || typeof order !== 'string') return null;
   const desc = order.startsWith('-');
   const rawColumn = desc ? order.slice(1) : order;
-  const mapped = mapToDbFields(entityName, { [rawColumn]: rawColumn });
-  const column = mapped?.[rawColumn] || Object.values(mapped || {})[0] || rawColumn;
+  const column = mapOrderColumn(entityName, rawColumn);
   return { column, ascending: !desc };
 };
 
