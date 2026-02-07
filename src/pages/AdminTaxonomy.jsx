@@ -91,6 +91,17 @@ export default function AdminTaxonomy() {
   const [bulkMoveOkruhId, setBulkMoveOkruhId] = useState('all');
   const queryClient = useQueryClient();
   const searchLower = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
+  const slugify = (value) => {
+    if (!value) return '';
+    return value
+      .toString()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .replace(/--+/g, '-');
+  };
   const getErrorMessage = (error, fallback) => {
     if (!error) return fallback;
     if (typeof error === 'string') return error;
@@ -637,6 +648,7 @@ export default function AdminTaxonomy() {
                     }
                     saveDisciplineMutation.mutate({
                       name,
+                      slug: slugify(name),
                       description: disciplineForm.description.trim() || null,
                       icon: disciplineForm.icon || null
                     });
@@ -763,6 +775,7 @@ export default function AdminTaxonomy() {
                       }
                       saveOkruhMutation.mutate({
                         title,
+                        slug: slugify(title),
                         description: okruhForm.description.trim() || null,
                         clinical_discipline_id: okruhForm.clinical_discipline_id
                       });
@@ -899,6 +912,7 @@ export default function AdminTaxonomy() {
                       const okruh = okruhy.find((o) => o.id === topicForm.okruh_id);
                       saveTopicMutation.mutate({
                         title,
+                        slug: slugify(title),
                         okruh_id: topicForm.okruh_id,
                         ...(okruh?.clinical_discipline_id ? { obor_id: okruh.clinical_discipline_id } : {})
                       });
