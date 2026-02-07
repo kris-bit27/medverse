@@ -288,6 +288,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         _cache: result?._cache || null,
         metadata: {
           model: result?.metadata?.model || 'claude-sonnet-4',
+          provider: result?.metadata?.provider || (result?.metadata?.model?.includes('gemini') ? 'google' : 'anthropic'),
           generatedAt: result?.metadata?.generatedAt || new Date().toISOString(),
           cost: result?.metadata?.cost || { total: '0' },
           fallback: result?.metadata?.fallback || false
@@ -348,8 +349,10 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
       if (isCached) {
         toast.success(`⚡ Content loaded from cache (${Math.floor(result._cache.cacheAge / 60)} min old)`);
       } else {
-        const modelName = result.metadata?.model?.includes('haiku') ? 'Haiku' : 'Sonnet';
-        const icon = result.metadata?.model?.includes('haiku') ? '🚀' : '✨';
+        const isGemini = result.metadata?.provider === 'google' || result.metadata?.model?.includes('gemini');
+        const isHaiku = result.metadata?.model?.includes('haiku');
+        const modelName = isGemini ? 'Gemini' : isHaiku ? 'Haiku' : 'Sonnet';
+        const icon = isGemini ? '⚡' : isHaiku ? '🚀' : '✨';
         toast.success(`${icon} Generated with ${modelName} (cost: $${result.metadata?.cost?.total || '0'})`);
       }
 

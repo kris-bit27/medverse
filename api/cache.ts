@@ -40,8 +40,17 @@ function sortObject(obj: any): any {
 }
 
 export function generateCacheKey(mode: string, context: any): string {
+  const geminiModel =
+    process.env.GEMINI_HIGH_YIELD_MODEL ||
+    process.env.GEMINI_MODEL ||
+    'gemini-1.5-flash';
+  const modelHint =
+    mode === 'topic_generate_high_yield'
+      ? `google:${geminiModel}`
+      : 'anthropic:claude-sonnet-4';
   const normalized = JSON.stringify({
     mode,
+    modelHint,
     context: sortObject(context)
   });
   

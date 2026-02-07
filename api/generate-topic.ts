@@ -1,6 +1,16 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { getCached, setCache } from './cache.js';
 
+const GEMINI_MODELS = {
+  high_yield: process.env.GEMINI_HIGH_YIELD_MODEL || process.env.GEMINI_MODEL || 'gemini-1.5-flash'
+};
+
+const getGeminiApiKey = () =>
+  process.env.GEMINI_API_KEY ||
+  process.env.GOOGLE_API_KEY ||
+  process.env.GOOGLE_GENAI_API_KEY ||
+  '';
+
 function getAnthropicClient() {
   const apiKey =
     process.env.ANTHROPIC_API_KEY || process.env.VITE_ANTHROPIC_API_KEY;
@@ -88,27 +98,6 @@ Ref: ${context.full_text?.substring(0, 500)}...`
     const systemPrompt = systemPrompts[mode] || systemPrompts['topic_generate_fulltext_v2'];
     const userPrompt = userPrompts[mode] || userPrompts['topic_generate_fulltext_v2'];
 
-    // Claude API call
-    const anthropic = getAnthropicClient();
-    const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 4096,
-      temperature: 0.3,
-      system: systemPrompt,
-      messages: [{
-        role: 'user',
-        content: userPrompt
-      }]
-    });
-
-    // Extract text
-    let textContent = '';
-    for (const block of response.content) {
-      if (block.type === 'text') {
-        textContent += block.text;
-      }
-    }
-
     const normalizeText = (value?: string | null) => {
       if (!value || typeof value !== 'string') return value;
       return value.replace(/\\n/g, '\n').replace(/\\t/g, '\t');
@@ -132,33 +121,108 @@ Ref: ${context.full_text?.substring(0, 500)}...`
       }
     };
 
-    // Parse JSON
-    let result = tryParseJson(textContent);
-    if (!result) {
-      result = { text: textContent };
-    }
+    const shouldUseGemini = mode === 'topic_generate_high_yield';
+    const geminiKey = shouldUseGemini ? getGeminiApiKey() : '';
+    let textContent = '';
+    let output = null;
 
-    if (result?.full_text) result.full_text = normalizeText(result.full_text);
-    if (result?.high_yield) result.high_yield = normalizeText(result.high_yield);
-    if (result?.deep_dive) result.deep_dive = normalizeText(result.deep_dive);
+    if (shouldUseGemini && geminiKey) {
+      const geminiModel = GEMINI_MODELS.high_yield;
+      const geminiRes = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            systemInstruction: { role: 'system', parts: [{ text: systemPrompt }] },
+            contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
+            generationConfig: {
+              temperature: 0.3,
+              maxOutputTokens: 1024
+            }
+          })
+        }
+      );
 
-    // Add metadata
-    const output = {
-      ...result,
-      metadata: {
-        model: 'claude-sonnet-4',
-        tokensUsed: response.usage,
-        cost: {
-          input: ((response.usage.input_tokens / 1_000_000) * 3).toFixed(4),
-          output: ((response.usage.output_tokens / 1_000_000) * 15).toFixed(4),
-          total: (
-            (response.usage.input_tokens / 1_000_000) * 3 +
-            (response.usage.output_tokens / 1_000_000) * 15
-          ).toFixed(4)
-        },
-        generatedAt: new Date().toISOString()
+      if (!geminiRes.ok) {
+        const errText = await geminiRes.text();
+        throw new Error(errText || `Gemini API failed (${geminiRes.status})`);
       }
-    };
+
+      const geminiJson = await geminiRes.json();
+      const parts = geminiJson?.candidates?.[0]?.content?.parts || [];
+      textContent = parts.map((p: any) => p?.text || '').join('');
+
+      let result = tryParseJson(textContent);
+      if (!result) {
+        result = { text: textContent };
+      }
+
+      if (result?.full_text) result.full_text = normalizeText(result.full_text);
+      if (result?.high_yield) result.high_yield = normalizeText(result.high_yield);
+      if (result?.deep_dive) result.deep_dive = normalizeText(result.deep_dive);
+
+      output = {
+        ...result,
+        metadata: {
+          provider: 'google',
+          model: geminiModel,
+          tokensUsed: geminiJson?.usageMetadata || null,
+          cost: { total: '0' },
+          generatedAt: new Date().toISOString()
+        }
+      };
+    } else {
+      // Claude API call
+      const anthropic = getAnthropicClient();
+      const response = await anthropic.messages.create({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4096,
+        temperature: 0.3,
+        system: systemPrompt,
+        messages: [{
+          role: 'user',
+          content: userPrompt
+        }]
+      });
+
+      // Extract text
+      for (const block of response.content) {
+        if (block.type === 'text') {
+          textContent += block.text;
+        }
+      }
+
+      // Parse JSON
+      let result = tryParseJson(textContent);
+      if (!result) {
+        result = { text: textContent };
+      }
+
+      if (result?.full_text) result.full_text = normalizeText(result.full_text);
+      if (result?.high_yield) result.high_yield = normalizeText(result.high_yield);
+      if (result?.deep_dive) result.deep_dive = normalizeText(result.deep_dive);
+
+      // Add metadata
+      output = {
+        ...result,
+        metadata: {
+          provider: 'anthropic',
+          model: 'claude-sonnet-4',
+          tokensUsed: response.usage,
+          cost: {
+            input: ((response.usage.input_tokens / 1_000_000) * 3).toFixed(4),
+            output: ((response.usage.output_tokens / 1_000_000) * 15).toFixed(4),
+            total: (
+              (response.usage.input_tokens / 1_000_000) * 3 +
+              (response.usage.output_tokens / 1_000_000) * 15
+            ).toFixed(4)
+          },
+          generatedAt: new Date().toISOString(),
+          fallback: shouldUseGemini && !geminiKey
+        }
+      };
+    }
 
     // Save to cache
     console.log('[API] Saving to cache...');
