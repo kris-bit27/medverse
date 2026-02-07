@@ -22,6 +22,47 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
   const runReview = async () => {
     setLoading(true);
     
+    // ← DOČASNÉ: Mock response pro testování UI
+    setTimeout(() => {
+      setReview({
+        approved: false,
+        confidence: 0.75,
+        safety_score: 85,
+        completeness_score: 70,
+        issues: [
+          {
+            severity: 'high',
+            category: 'dosage',
+            line: 'Dávka 500mg denně',
+            description: 'Příliš vysoká dávka pro běžného pacienta',
+            suggestion: 'Změnit na 325mg podle guidelines'
+          },
+          {
+            severity: 'medium',
+            category: 'missing_info',
+            description: 'Chybí sekce o kontraindikacích',
+            suggestion: 'Přidat seznam kontraindikací'
+          }
+        ],
+        strengths: [
+          'Dobře strukturovaný text',
+          'Správné citace'
+        ],
+        missing_sections: [
+          'Prognóza',
+          'Diferenciální diagnostika'
+        ],
+        metadata: {
+          model: 'gpt-4o',
+          cost: { total: '0.0123' }
+        }
+      });
+      toast.success('✅ Mock review completed!');
+      setLoading(false);
+    }, 2000);
+    
+    return; // ← Ukončí funkci (pro test)
+
     try {
       console.log('[Review] Starting direct OpenAI call...');
       console.log('[Review] Content length:', content?.length);
@@ -149,8 +190,36 @@ Vrať JSON v tomto přesném formátu:
       }
 
     } catch (error) {
-      console.error('[Review] Error:', error);
-      toast.error(`Review failed: ${error.message}`);
+      console.error('[Review] Full error object:', error);
+      console.error('[Review] Error message:', error.message);
+      console.error('[Review] Error stack:', error.stack);
+      
+      // Show detailed error to user
+      if (error.message?.includes('API key')) {
+        toast.error('OpenAI API key is not configured. Check .env.local');
+      } else if (error.message?.includes('429')) {
+        toast.error('Rate limit exceeded. Try again in a moment.');
+      } else if (error.message?.includes('401')) {
+        toast.error('Invalid API key. Check your OpenAI key in .env.local');
+      } else {
+        toast.error(`Review failed: ${error.message || 'Unknown error'}`);
+      }
+      
+      // Set dummy review for testing UI
+      setReview({
+        approved: false,
+        confidence: 0,
+        safety_score: 0,
+        completeness_score: 0,
+        issues: [{
+          severity: 'high',
+          category: 'error',
+          description: `Review failed: ${error.message}`,
+          suggestion: 'Check console for details'
+        }],
+        strengths: [],
+        missing_sections: []
+      });
     } finally {
       setLoading(false);
     }
@@ -198,16 +267,31 @@ Vrať JSON v tomto přesném formátu:
             onClick={runReview}
             disabled={loading || !content}
             size="sm"
+            className={loading ? 'opacity-50' : ''}
           >
             {loading ? (
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              <>
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                Reviewing...
+              </>
             ) : (
-              '🔍 '
+              <>
+                🔍 Run Review
+              </>
             )}
-            Run Review
           </Button>
         </div>
       </CardHeader>
+
+      {loading && (
+        <div className="mt-4 flex items-center justify-center p-8 bg-blue-50 rounded">
+          <Loader2 className="h-8 w-8 animate-spin text-blue-600 mr-3" />
+          <div>
+            <p className="font-medium">Running AI Review...</p>
+            <p className="text-sm text-muted-foreground">This may take 5-10 seconds</p>
+          </div>
+        </div>
+      )}
 
       {review && (
         <CardContent className="space-y-4">
