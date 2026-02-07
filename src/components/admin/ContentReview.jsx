@@ -22,6 +22,11 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
   const runReview = async () => {
     setLoading(true);
     try {
+      console.log('[Review] Starting review...');
+      console.log('[Review] Content length:', content?.length);
+      console.log('[Review] Specialty:', specialty);
+      console.log('[Review] Mode:', mode);
+
       const { data, error } = await supabase.functions.invoke('review-content', {
         body: {
           content: content,
@@ -30,7 +35,17 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
         }
       });
 
-      if (error) throw error;
+      console.log('[Review] Response:', data);
+      console.log('[Review] Error:', error);
+
+      if (error) {
+        console.error('[Review] Supabase error:', error);
+        throw error;
+      }
+
+      if (!data) {
+        throw new Error('No data returned from review');
+      }
 
       setReview(data);
 
@@ -45,8 +60,8 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
       }
 
     } catch (error) {
-      console.error('Review error:', error);
-      toast.error('Failed to run review');
+      console.error('[Review] Full error:', error);
+      toast.error(`Failed to run review: ${error.message || 'Unknown error'}`);
     } finally {
       setLoading(false);
     }
