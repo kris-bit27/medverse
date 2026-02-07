@@ -52,7 +52,7 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
     }
   };
 
-  const getSeverityIcon = (severity: string) => {
+  const getSeverityIcon = (severity) => {
     switch (severity) {
       case 'high': return <XCircle className="h-4 w-4 text-red-500" />;
       case 'medium': return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
@@ -61,8 +61,8 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
     }
   };
 
-  const getSeverityBadge = (severity: string) => {
-    const variants: Record<string, string> = {
+  const getSeverityBadge = (severity) => {
+    const variants = {
       high: 'destructive',
       medium: 'warning',
       low: 'secondary'
@@ -135,7 +135,7 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
           {review.issues && review.issues.length > 0 && (
             <div className="space-y-2">
               <h4 className="font-semibold text-sm">Issues Found ({review.issues.length})</h4>
-              {review.issues.map((issue: any, i: number) => (
+              {review.issues.map((issue, i) => (
                 <Alert
                   key={i}
                   variant={issue.severity === 'high' ? 'destructive' : 'default'}
@@ -181,7 +181,7 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
                 Strengths
               </h4>
               <ul className="space-y-1">
-                {review.strengths.map((strength: string, i: number) => (
+                {review.strengths.map((strength, i) => (
                   <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
                     <CheckCircle className="h-3 w-3 text-green-600 mt-1 flex-shrink-0" />
                     {strength}
@@ -199,7 +199,7 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
                 Missing Sections
               </h4>
               <ul className="space-y-1">
-                {review.missing_sections.map((section: string, i: number) => (
+                {review.missing_sections.map((section, i) => (
                   <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
                     <AlertTriangle className="h-3 w-3 text-orange-600 mt-1 flex-shrink-0" />
                     {section}
