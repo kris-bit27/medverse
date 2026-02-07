@@ -32,22 +32,28 @@ export default function HTMLContent({ content }) {
   const extractFromWrappedJson = (value) => {
     if (typeof value !== 'string') return null;
     const cleaned = value.replace(/```json\n?/g, '').replace(/\n?```/g, '').trim();
-    if (!cleaned.includes('"full_text"') && !cleaned.includes('"high_yield"') && !cleaned.includes('"deep_dive"')) {
-      return null;
-    }
-    const tryField = (field) => {
-      const match = cleaned.match(
-        new RegExp(`"${field}"\\s*:\\s*"([\\s\\S]*?)"\\s*(,|\\})`)
-      );
-      if (!match) return null;
-      return match[1].replace(/\\"/g, '"');
-    };
-    return (
-      tryField('full_text') ||
-      tryField('high_yield') ||
-      tryField('deep_dive') ||
-      null
-    );
+    const key = cleaned.includes('"full_text"')
+      ? 'full_text'
+      : cleaned.includes('"high_yield"')
+        ? 'high_yield'
+        : cleaned.includes('"deep_dive"')
+          ? 'deep_dive'
+          : null;
+    if (!key) return null;
+
+    const keyIndex = cleaned.indexOf(`"${key}"`);
+    if (keyIndex === -1) return null;
+    const afterKey = cleaned.slice(keyIndex);
+    const colonIndex = afterKey.indexOf(':');
+    if (colonIndex === -1) return null;
+
+    let raw = afterKey.slice(colonIndex + 1).trim();
+    if (raw.startsWith('"')) raw = raw.slice(1);
+    const lastQuote = raw.lastIndexOf('"');
+    if (lastQuote !== -1) raw = raw.slice(0, lastQuote);
+
+    raw = raw.replace(/\s*[,}]*\s*$/, '');
+    return raw.replace(/\\"/g, '"');
   };
 
   let resolvedContent = content;

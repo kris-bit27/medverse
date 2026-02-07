@@ -82,9 +82,27 @@ const cleanAiWrappedText = (value) => {
     return normalize(parsed.full_text || parsed.high_yield || parsed.deep_dive || '');
   }
 
-  const match = cleaned.match(/"(full_text|high_yield|deep_dive)"\s*:\s*"([\s\S]*?)"\s*(,|\})/);
-  if (match?.[2]) {
-    return normalize(match[2].replace(/\\"/g, '"'));
+  const key = cleaned.includes('"full_text"')
+    ? 'full_text'
+    : cleaned.includes('"high_yield"')
+      ? 'high_yield'
+      : cleaned.includes('"deep_dive"')
+        ? 'deep_dive'
+        : null;
+  if (key) {
+    const keyIndex = cleaned.indexOf(`"${key}"`);
+    if (keyIndex !== -1) {
+      const afterKey = cleaned.slice(keyIndex);
+      const colonIndex = afterKey.indexOf(':');
+      if (colonIndex !== -1) {
+        let raw = afterKey.slice(colonIndex + 1).trim();
+        if (raw.startsWith('"')) raw = raw.slice(1);
+        const lastQuote = raw.lastIndexOf('"');
+        if (lastQuote !== -1) raw = raw.slice(0, lastQuote);
+        raw = raw.replace(/\s*[,}]*\s*$/, '');
+        if (raw) return normalize(raw.replace(/\\"/g, '"'));
+      }
+    }
   }
 
   return normalize(value);
