@@ -59,12 +59,64 @@ const toSnakeCase = (value) =>
     .replace(/-/g, '_')
     .toLowerCase();
 
-const getTableName = (entityName) => ENTITY_TABLES[entityName] || toSnakeCase(entityName);
+const ENTITY_CONFIG = {
+  ClinicalDiscipline: {
+    table: 'obory',
+    fieldMap: {
+      order: 'order_index'
+    }
+  },
+  Okruh: {
+    table: 'okruhy',
+    fieldMap: {
+      title: 'name',
+      clinical_discipline_id: 'obor_id',
+      order: 'order_index'
+    },
+    fromDb: (row) => ({
+      ...row,
+      title: row.title ?? row.name ?? '',
+      clinical_discipline_id: row.clinical_discipline_id ?? row.obor_id ?? null
+    })
+  }
+};
 
-const parseOrder = (order) => {
+const getEntityConfig = (entityName) => ENTITY_CONFIG[entityName] || null;
+
+const getTableName = (entityName) =>
+  getEntityConfig(entityName)?.table || ENTITY_TABLES[entityName] || toSnakeCase(entityName);
+
+const mapToDbFields = (entityName, payload) => {
+  const config = getEntityConfig(entityName);
+  if (!config?.fieldMap || !payload || typeof payload !== 'object') return payload;
+  const out = { ...payload };
+  Object.entries(config.fieldMap).forEach(([from, to]) => {
+    if (from in out) {
+      if (!(to in out)) out[to] = out[from];
+      delete out[from];
+    }
+  });
+  return out;
+};
+
+const mapFromDbFields = (entityName, row) => {
+  const config = getEntityConfig(entityName);
+  if (!config?.fromDb || !row) return row;
+  return config.fromDb(row);
+};
+
+const mapFiltersToDb = (entityName, filters) => {
+  if (!filters || typeof filters !== 'object') return filters;
+  return mapToDbFields(entityName, filters);
+};
+
+const parseOrder = (order, entityName) => {
   if (!order || typeof order !== 'string') return null;
   const desc = order.startsWith('-');
-  return { column: desc ? order.slice(1) : order, ascending: !desc };
+  const rawColumn = desc ? order.slice(1) : order;
+  const mapped = mapToDbFields(entityName, { [rawColumn]: rawColumn });
+  const column = mapped?.[rawColumn] || Object.values(mapped || {})[0] || rawColumn;
+  return { column, ascending: !desc };
 };
 
 const applyFilters = (query, filters = {}) => {
@@ -86,7 +138,7 @@ const applyFilters = (query, filters = {}) => {
 const supabaseList = async (entityName, { order, limit } = {}) => {
   const table = getTableName(entityName);
   let query = supabase.from(table).select('*');
-  const orderConfig = parseOrder(order);
+  const orderConfig = parseOrder(order, entityName);
   if (orderConfig) {
     query = query.order(orderConfig.column, { ascending: orderConfig.ascending });
   }
@@ -95,14 +147,14 @@ const supabaseList = async (entityName, { order, limit } = {}) => {
   }
   const { data, error } = await query;
   if (error) throw error;
-  return normalizeArray(data);
+  return normalizeArray(data).map((row) => mapFromDbFields(entityName, row));
 };
 
 const supabaseFilter = async (entityName, filters, { order, limit } = {}) => {
   const table = getTableName(entityName);
   let query = supabase.from(table).select('*');
-  query = applyFilters(query, filters);
-  const orderConfig = parseOrder(order);
+  query = applyFilters(query, mapFiltersToDb(entityName, filters));
+  const orderConfig = parseOrder(order, entityName);
   if (orderConfig) {
     query = query.order(orderConfig.column, { ascending: orderConfig.ascending });
   }
@@ -111,35 +163,43 @@ const supabaseFilter = async (entityName, filters, { order, limit } = {}) => {
   }
   const { data, error } = await query;
   if (error) throw error;
-  return normalizeArray(data);
+  return normalizeArray(data).map((row) => mapFromDbFields(entityName, row));
 };
 
 const supabaseGet = async (entityName, id) => {
   const table = getTableName(entityName);
   const { data, error } = await supabase.from(table).select('*').eq('id', id).single();
   if (error) throw error;
-  return data;
+  return mapFromDbFields(entityName, data);
 };
 
 const supabaseCreate = async (entityName, payload) => {
   const table = getTableName(entityName);
-  const { data, error } = await supabase.from(table).insert(payload).select().single();
+  const { data, error } = await supabase.from(table).insert(mapToDbFields(entityName, payload)).select().single();
   if (error) throw error;
-  return data;
+  return mapFromDbFields(entityName, data);
 };
 
 const supabaseBulkCreate = async (entityName, payloads) => {
   const table = getTableName(entityName);
-  const { data, error } = await supabase.from(table).insert(payloads).select();
+  const mappedPayloads = Array.isArray(payloads)
+    ? payloads.map((payload) => mapToDbFields(entityName, payload))
+    : payloads;
+  const { data, error } = await supabase.from(table).insert(mappedPayloads).select();
   if (error) throw error;
-  return normalizeArray(data);
+  return normalizeArray(data).map((row) => mapFromDbFields(entityName, row));
 };
 
 const supabaseUpdate = async (entityName, id, payload) => {
   const table = getTableName(entityName);
-  const { data, error } = await supabase.from(table).update(payload).eq('id', id).select().single();
+  const { data, error } = await supabase
+    .from(table)
+    .update(mapToDbFields(entityName, payload))
+    .eq('id', id)
+    .select()
+    .single();
   if (error) throw error;
-  return data;
+  return mapFromDbFields(entityName, data);
 };
 
 const supabaseDelete = async (entityName, id) => {

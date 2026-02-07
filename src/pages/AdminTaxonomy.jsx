@@ -91,6 +91,11 @@ export default function AdminTaxonomy() {
   const [bulkMoveOkruhId, setBulkMoveOkruhId] = useState('all');
   const queryClient = useQueryClient();
   const searchLower = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
+  const getErrorMessage = (error, fallback) => {
+    if (!error) return fallback;
+    if (typeof error === 'string') return error;
+    return error.message || error.error_description || fallback;
+  };
 
   const { data: disciplines = [] } = useQuery({
     queryKey: ['clinicalDisciplines'],
@@ -164,12 +169,21 @@ export default function AdminTaxonomy() {
       setEditingDiscipline(null);
       setDisciplineForm({ name: '', description: '', icon: '' });
       queryClient.invalidateQueries(['okruhy']);
+      toast.success('Obor uložen');
+    },
+    onError: (error) => {
+      console.error('Save discipline failed:', error);
+      toast.error(getErrorMessage(error, 'Uložení oboru se nepodařilo'));
     }
   });
 
   const deleteDisciplineMutation = useMutation({
     mutationFn: (id) => base44.entities.ClinicalDiscipline.delete(id),
-    onSuccess: () => queryClient.invalidateQueries(['clinicalDisciplines'])
+    onSuccess: () => queryClient.invalidateQueries(['clinicalDisciplines']),
+    onError: (error) => {
+      console.error('Delete discipline failed:', error);
+      toast.error(getErrorMessage(error, 'Smazání oboru se nepodařilo'));
+    }
   });
 
   const saveOkruhMutation = useMutation({
@@ -184,12 +198,21 @@ export default function AdminTaxonomy() {
       setOkruhDialogOpen(false);
       setEditingOkruh(null);
       setOkruhForm({ title: '', description: '', clinical_discipline_id: '' });
+      toast.success('Okruh uložen');
+    },
+    onError: (error) => {
+      console.error('Save okruh failed:', error);
+      toast.error(getErrorMessage(error, 'Uložení okruhu se nepodařilo'));
     }
   });
 
   const deleteOkruhMutation = useMutation({
     mutationFn: (id) => base44.entities.Okruh.delete(id),
-    onSuccess: () => queryClient.invalidateQueries(['okruhy'])
+    onSuccess: () => queryClient.invalidateQueries(['okruhy']),
+    onError: (error) => {
+      console.error('Delete okruh failed:', error);
+      toast.error(getErrorMessage(error, 'Smazání okruhu se nepodařilo'));
+    }
   });
 
   const saveTopicMutation = useMutation({
@@ -204,17 +227,30 @@ export default function AdminTaxonomy() {
       setTopicDialogOpen(false);
       setEditingTopic(null);
       setTopicForm({ title: '', okruh_id: '' });
+      toast.success('Téma uloženo');
+    },
+    onError: (error) => {
+      console.error('Save topic failed:', error);
+      toast.error(getErrorMessage(error, 'Uložení tématu se nepodařilo'));
     }
   });
 
   const deleteTopicMutation = useMutation({
     mutationFn: (id) => base44.entities.Topic.delete(id),
-    onSuccess: () => queryClient.invalidateQueries(['topics'])
+    onSuccess: () => queryClient.invalidateQueries(['topics']),
+    onError: (error) => {
+      console.error('Delete topic failed:', error);
+      toast.error(getErrorMessage(error, 'Smazání tématu se nepodařilo'));
+    }
   });
 
   const updateTopicStatusMutation = useMutation({
     mutationFn: async ({ id, data }) => base44.entities.Topic.update(id, data),
-    onSuccess: () => queryClient.invalidateQueries(['topics'])
+    onSuccess: () => queryClient.invalidateQueries(['topics']),
+    onError: (error) => {
+      console.error('Update topic failed:', error);
+      toast.error(getErrorMessage(error, 'Aktualizace tématu se nepodařila'));
+    }
   });
 
   const openEditDiscipline = (discipline) => {
@@ -593,8 +629,19 @@ export default function AdminTaxonomy() {
                   </Select>
                 </div>
                 <Button 
-                  onClick={() => saveDisciplineMutation.mutate(disciplineForm)}
-                  disabled={saveDisciplineMutation.isPending}
+                  onClick={() => {
+                    const name = disciplineForm.name.trim();
+                    if (!name) {
+                      toast.error('Vyplňte název oboru');
+                      return;
+                    }
+                    saveDisciplineMutation.mutate({
+                      name,
+                      description: disciplineForm.description.trim() || null,
+                      icon: disciplineForm.icon || null
+                    });
+                  }}
+                  disabled={saveDisciplineMutation.isPending || !disciplineForm.name.trim()}
                   className="w-full"
                 >
                   {saveDisciplineMutation.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
@@ -704,8 +751,27 @@ export default function AdminTaxonomy() {
                     />
                   </div>
                   <Button 
-                    onClick={() => saveOkruhMutation.mutate(okruhForm)}
-                    disabled={saveOkruhMutation.isPending || !okruhForm.title}
+                    onClick={() => {
+                      const title = okruhForm.title.trim();
+                      if (!title) {
+                        toast.error('Vyplňte název okruhu');
+                        return;
+                      }
+                      if (!okruhForm.clinical_discipline_id) {
+                        toast.error('Vyberte klinický obor');
+                        return;
+                      }
+                      saveOkruhMutation.mutate({
+                        title,
+                        description: okruhForm.description.trim() || null,
+                        clinical_discipline_id: okruhForm.clinical_discipline_id
+                      });
+                    }}
+                    disabled={
+                      saveOkruhMutation.isPending ||
+                      !okruhForm.title.trim() ||
+                      !okruhForm.clinical_discipline_id
+                    }
                     className="w-full"
                   >
                     {saveOkruhMutation.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
@@ -820,8 +886,24 @@ export default function AdminTaxonomy() {
                     </Select>
                   </div>
                   <Button 
-                    onClick={() => saveTopicMutation.mutate(topicForm)}
-                    disabled={saveTopicMutation.isPending || !topicForm.title || !topicForm.okruh_id}
+                    onClick={() => {
+                      const title = topicForm.title.trim();
+                      if (!title) {
+                        toast.error('Vyplňte název tématu');
+                        return;
+                      }
+                      if (!topicForm.okruh_id) {
+                        toast.error('Vyberte okruh');
+                        return;
+                      }
+                      const okruh = okruhy.find((o) => o.id === topicForm.okruh_id);
+                      saveTopicMutation.mutate({
+                        title,
+                        okruh_id: topicForm.okruh_id,
+                        ...(okruh?.clinical_discipline_id ? { obor_id: okruh.clinical_discipline_id } : {})
+                      });
+                    }}
+                    disabled={saveTopicMutation.isPending || !topicForm.title.trim() || !topicForm.okruh_id}
                     className="w-full"
                   >
                     {saveTopicMutation.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
