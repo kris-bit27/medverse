@@ -2,10 +2,20 @@
 import { createHash } from 'crypto';
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  process.env.VITE_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+const supabaseKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.SUPABASE_SERVICE_ROLE ||
+  process.env.VITE_SUPABASE_ANON_KEY;
+
+const supabase =
+  supabaseUrl && supabaseKey
+    ? createClient(supabaseUrl, supabaseKey)
+    : null;
+
+if (!supabase) {
+  console.warn('[Cache] Disabled: missing SUPABASE_URL/SUPABASE_SERVICE_ROLE_KEY');
+}
 
 export interface CachedResponse {
   response: any;
@@ -43,6 +53,7 @@ export async function getCached(
   context: any
 ): Promise<CachedResponse | null> {
   try {
+    if (!supabase) return null;
     const cacheKey = generateCacheKey(mode, context);
     
     console.log('[Cache] Looking up:', cacheKey.substring(0, 16) + '...');
@@ -105,6 +116,7 @@ export async function setCache(
   ttl: number = 7 * 24 * 60 * 60
 ): Promise<void> {
   try {
+    if (!supabase) return;
     const cacheKey = generateCacheKey(mode, context);
     
     console.log('[Cache] Saving:', cacheKey.substring(0, 16) + '...');

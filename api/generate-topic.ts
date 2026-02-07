@@ -1,9 +1,16 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { getCached, setCache } from './cache.js';
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY
-});
+function getAnthropicClient() {
+  const apiKey =
+    process.env.ANTHROPIC_API_KEY || process.env.VITE_ANTHROPIC_API_KEY;
+
+  if (!apiKey) {
+    throw new Error('Missing ANTHROPIC_API_KEY');
+  }
+
+  return new Anthropic({ apiKey });
+}
 
 export default async function handler(req: any, res: any) {
   // CORS headers
@@ -82,6 +89,7 @@ Ref: ${context.full_text?.substring(0, 500)}...`
     const userPrompt = userPrompts[mode] || userPrompts['topic_generate_fulltext_v2'];
 
     // Claude API call
+    const anthropic = getAnthropicClient();
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 4096,
@@ -101,14 +109,38 @@ Ref: ${context.full_text?.substring(0, 500)}...`
       }
     }
 
+    const normalizeText = (value?: string | null) => {
+      if (!value || typeof value !== 'string') return value;
+      return value.replace(/\\n/g, '\n').replace(/\\t/g, '\t');
+    };
+
+    const tryParseJson = (raw: string) => {
+      const cleaned = raw.replace(/```json\n?|\n?```/g, '').trim();
+      try {
+        return JSON.parse(cleaned);
+      } catch {
+        const first = cleaned.indexOf('{');
+        const last = cleaned.lastIndexOf('}');
+        if (first !== -1 && last !== -1 && last > first) {
+          try {
+            return JSON.parse(cleaned.slice(first, last + 1));
+          } catch {
+            return null;
+          }
+        }
+        return null;
+      }
+    };
+
     // Parse JSON
-    let result;
-    try {
-      const clean = textContent.replace(/```json\n?|\n?```/g, '');
-      result = JSON.parse(clean);
-    } catch {
+    let result = tryParseJson(textContent);
+    if (!result) {
       result = { text: textContent };
     }
+
+    if (result?.full_text) result.full_text = normalizeText(result.full_text);
+    if (result?.high_yield) result.high_yield = normalizeText(result.high_yield);
+    if (result?.deep_dive) result.deep_dive = normalizeText(result.deep_dive);
 
     // Add metadata
     const output = {
@@ -137,9 +169,8 @@ Ref: ${context.full_text?.substring(0, 500)}...`
 
   } catch (error: any) {
     console.error('[API] Error:', error);
-    return res.status(500).json({ 
-      error: error.message,
-      stack: error.stack
+    return res.status(500).json({
+      error: error?.message || 'Unknown server error'
     });
   }
 }

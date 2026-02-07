@@ -181,14 +181,51 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`API Error: ${response.status}`);
+      const responseText = await response.text();
+      let result = null;
+      try {
+        result = responseText ? JSON.parse(responseText) : {};
+      } catch {
+        result = { error: responseText };
       }
 
-      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result?.error || `API Error: ${response.status}`);
+      }
 
       if (result?.error) {
         throw new Error(result.error);
+      }
+
+      const normalizeText = (value) =>
+        typeof value === 'string' ? value.replace(/\\n/g, '\n').replace(/\\t/g, '\t') : value;
+
+      const tryParseJsonString = (value) => {
+        if (typeof value !== 'string') return null;
+        const cleaned = value.replace(/```json\n?|\n?```/g, '').trim();
+        if (!cleaned.startsWith('{') || !cleaned.includes('"')) return null;
+        try {
+          return JSON.parse(cleaned);
+        } catch {
+          const first = cleaned.indexOf('{');
+          const last = cleaned.lastIndexOf('}');
+          if (first !== -1 && last !== -1 && last > first) {
+            try {
+              return JSON.parse(cleaned.slice(first, last + 1));
+            } catch {
+              return null;
+            }
+          }
+          return null;
+        }
+      };
+
+      if (typeof result?.full_text === 'string') {
+        const parsed = tryParseJsonString(result.full_text);
+        if (parsed) result = parsed;
+      } else if (typeof result?.text === 'string') {
+        const parsed = tryParseJsonString(result.text);
+        if (parsed) result = parsed;
       }
 
       // Extrakce metadata
@@ -213,7 +250,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
       if (mode === 'topic_generate_fulltext_v2') {
         setContent(prev => ({ 
           ...prev, 
-          full_text_content: result.full_text || result.text || '',
+          full_text_content: normalizeText(result.full_text || result.text || ''),
           source_pack: {
             internal_refs: prev.source_pack?.internal_refs || [],
             external_refs: [
@@ -227,14 +264,14 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
       } else if (mode === 'topic_generate_high_yield') {
         setContent(prev => ({ 
           ...prev, 
-          bullet_points_summary: result.high_yield || result.text || ''
+          bullet_points_summary: normalizeText(result.high_yield || result.text || '')
         }));
         // toast handled below
         
       } else if (mode === 'topic_generate_deep_dive') {
         setContent(prev => ({ 
           ...prev, 
-          deep_dive_content: result.deep_dive || result.text || '',
+          deep_dive_content: normalizeText(result.deep_dive || result.text || ''),
           source_pack: {
             internal_refs: prev.source_pack?.internal_refs || [],
             external_refs: [
