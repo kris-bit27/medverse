@@ -21,47 +21,136 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
 
   const runReview = async () => {
     setLoading(true);
+    
     try {
-      console.log('[Review] Starting review...');
+      console.log('[Review] Starting direct OpenAI call...');
       console.log('[Review] Content length:', content?.length);
-      console.log('[Review] Specialty:', specialty);
-      console.log('[Review] Mode:', mode);
 
-      const { data, error } = await supabase.functions.invoke('review-content', {
-        body: {
-          content: content,
-          specialty: specialty,
-          mode: mode
-        }
+      if (!content || content.length < 100) {
+        toast.error('Content too short for review');
+        setLoading(false);
+        return;
+      }
+
+      // Direct OpenAI API call (temporary solution)
+      const openaiKey = import.meta.env.VITE_OPENAI_API_KEY;
+      
+      if (!openaiKey) {
+        toast.error('OpenAI API key not configured');
+        setLoading(false);
+        return;
+      }
+
+      const systemPrompt = `Jsi senior medicínský reviewer pro obor ${specialty || 'medicínu'}.
+
+ÚKOL: Zkontroluj tento AI-generovaný medicínský text na:
+1. FAKTICKÁ PŘESNOST - dávkování, diagnózy, protokoly
+2. SAFETY - nebezpečné informace, kontraindikace
+3. COMPLETENESS - chybí důležité sekce?
+4. GUIDELINES COMPLIANCE - odpovídá současným guidelines?
+
+Vrať JSON v tomto přesném formátu:
+{
+  "approved": true nebo false,
+  "confidence": číslo 0-1,
+  "safety_score": číslo 0-100,
+  "completeness_score": číslo 0-100,
+  "issues": [
+    {
+      "severity": "high" nebo "medium" nebo "low",
+      "category": "dosage" nebo "contraindication" nebo "missing_info",
+      "line": "citace textu",
+      "description": "popis problému",
+      "suggestion": "jak to opravit"
+    }
+  ],
+  "strengths": ["seznam silných stránek"],
+  "missing_sections": ["seznam chybějících sekcí"]
+}`;
+
+      console.log('[Review] Calling OpenAI...');
+
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${openaiKey}`
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o',
+          messages: [
+            {
+              role: 'system',
+              content: systemPrompt
+            },
+            {
+              role: 'user',
+              content: `OBSAH K REVIEW (zkráceno na prvních 3000 znaků pro rychlost):\n\n${content.substring(0, 3000)}`
+            }
+          ],
+          response_format: { type: 'json_object' },
+          temperature: 0.2,
+          max_tokens: 2000
+        })
       });
 
-      console.log('[Review] Response:', data);
-      console.log('[Review] Error:', error);
-
-      if (error) {
-        console.error('[Review] Supabase error:', error);
-        throw error;
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('[Review] OpenAI error:', errorText);
+        throw new Error(`OpenAI API error: ${response.status}`);
       }
 
-      if (!data) {
-        throw new Error('No data returned from review');
+      const data = await response.json();
+      console.log('[Review] OpenAI response:', data);
+
+      const reviewText = data.choices[0].message.content;
+      console.log('[Review] Review text:', reviewText);
+
+      // Parse JSON
+      let reviewData;
+      try {
+        reviewData = JSON.parse(reviewText);
+      } catch (e) {
+        console.error('[Review] Failed to parse JSON:', e);
+        throw new Error('Failed to parse review response');
       }
 
-      setReview(data);
+      console.log('[Review] Parsed review:', reviewData);
 
-      if (data.approved) {
+      // Add metadata
+      const fullReview = {
+        ...reviewData,
+        metadata: {
+          model: 'gpt-4o',
+          provider: 'openai',
+          tokensUsed: data.usage,
+          cost: {
+            input: ((data.usage.prompt_tokens / 1_000_000) * 2.50).toFixed(4),
+            output: ((data.usage.completion_tokens / 1_000_000) * 10).toFixed(4),
+            total: (
+              (data.usage.prompt_tokens / 1_000_000) * 2.50 +
+              (data.usage.completion_tokens / 1_000_000) * 10
+            ).toFixed(4)
+          },
+          reviewedAt: new Date().toISOString()
+        }
+      };
+
+      setReview(fullReview);
+
+      if (fullReview.approved) {
         toast.success('✅ Content approved by AI review!');
       } else {
-        toast.warning(`⚠️ ${data.issues?.length || 0} issues found`);
+        toast.warning(`⚠️ ${fullReview.issues?.length || 0} issues found`);
       }
 
       if (onReviewComplete) {
-        onReviewComplete(data);
+        onReviewComplete(fullReview);
       }
 
     } catch (error) {
-      console.error('[Review] Full error:', error);
-      toast.error(`Failed to run review: ${error.message || 'Unknown error'}`);
+      console.error('[Review] Error:', error);
+      toast.error(`Review failed: ${error.message}`);
     } finally {
       setLoading(false);
     }
