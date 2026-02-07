@@ -29,6 +29,7 @@ import TopicHippoAssistant from '@/components/topics/TopicHippoAssistant';
 import HTMLContent from '@/components/study/HTMLContent';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import EmptyState from '@/components/common/EmptyState';
+import { FloatingCopilot } from '@/components/FloatingCopilot';
 
 export default function TopicDetail() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -488,6 +489,11 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
           </div>
         </div>
       )}
+
+      <FloatingCopilot
+        topicContent={topic.full_text_content || topic.bullet_points_summary || ''}
+        topicTitle={topic.title || ''}
+      />
     </div>
   );
 }
