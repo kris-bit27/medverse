@@ -344,8 +344,8 @@ Vrať JSON v tomto přesném formátu:
                       </AlertDescription>
 
                       {issue.line && (
-                        <div className="text-xs bg-white p-2 rounded border mb-2">
-                          <span className="text-muted-foreground">Context:</span> "{issue.line}"
+                        <div className="text-xs bg-white text-slate-900 p-2 rounded border mb-2">
+                          <span className="text-slate-600">Context:</span> "{issue.line}"
                         </div>
                       )}
 
