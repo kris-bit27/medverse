@@ -20,6 +20,7 @@ import { Loader2, Sparkles, Save, BookOpen, List, Microscope, ArrowDown, CheckCi
 import { toast } from 'sonner';
 import { AI_MODELS } from '../utils/aiConfig';
 import { VersionHistory } from './VersionHistory';
+import { ContentReview } from './ContentReview';
 
 const buildTemplateMarkdown = (structuredData, title) => {
   if (!structuredData) return '';
@@ -545,6 +546,19 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         </Card>
       )}
 
+      {content.full_text_content && (
+        <div className="mt-4">
+          <ContentReview
+            content={content.full_text_content}
+            specialty={topic.obor?.name || ''}
+            mode="topic_generate_fulltext_v2"
+            onReviewComplete={(reviewData) => {
+              console.log('Review completed:', reviewData);
+              // Můžeš uložit review do state nebo DB
+            }}
+          />
+        </div>
+      )}
 
       {/* Learning objectives */}
       <div className="space-y-3">
