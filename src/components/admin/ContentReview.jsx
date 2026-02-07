@@ -297,21 +297,21 @@ Vrať JSON v tomto přesném formátu:
         <CardContent className="space-y-4">
           {/* Scores */}
           <div className="grid grid-cols-3 gap-3">
-            <div className="text-center p-3 bg-gray-50 rounded">
+            <div className="text-center p-3 bg-gray-50 text-slate-900 rounded">
               <div className="text-2xl font-bold">
                 {(review.confidence * 100).toFixed(0)}%
               </div>
               <div className="text-xs text-muted-foreground">Confidence</div>
             </div>
 
-            <div className="text-center p-3 bg-gray-50 rounded">
+            <div className="text-center p-3 bg-gray-50 text-slate-900 rounded">
               <div className="text-2xl font-bold">
                 {review.safety_score || 'N/A'}
               </div>
               <div className="text-xs text-muted-foreground">Safety</div>
             </div>
 
-            <div className="text-center p-3 bg-gray-50 rounded">
+            <div className="text-center p-3 bg-gray-50 text-slate-900 rounded">
               <div className="text-2xl font-bold">
                 {review.completeness_score || 'N/A'}
               </div>
