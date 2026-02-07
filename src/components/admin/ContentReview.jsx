@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/lib/supabase';
-import { config } from '@/config/env';
 import { toast } from 'sonner';
 import {
   CheckCircle,
@@ -25,7 +24,7 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
     setLoading(true);
     
     try {
-      console.log('[Review] Starting direct OpenAI call...');
+      console.log('[Review] Calling Edge Function...');
       console.log('[Review] Content length:', content?.length);
 
       if (!content || content.length < 100) {
@@ -34,153 +33,42 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
         return;
       }
 
-      // Direct OpenAI API call (temporary solution)
-      const openaiKey = config.openaiKey;
-      
-      if (!openaiKey) {
-        toast.error('OpenAI key missing');
-        setLoading(false);
-        return;
-      }
-
-      const systemPrompt = `Jsi senior medicínský reviewer pro obor ${specialty || 'medicínu'}.
-
-ÚKOL: Zkontroluj tento AI-generovaný medicínský text na:
-1. FAKTICKÁ PŘESNOST - dávkování, diagnózy, protokoly
-2. SAFETY - nebezpečné informace, kontraindikace
-3. COMPLETENESS - chybí důležité sekce?
-4. GUIDELINES COMPLIANCE - odpovídá současným guidelines?
-
-Vrať JSON v tomto přesném formátu:
-{
-  "approved": true nebo false,
-  "confidence": číslo 0-1,
-  "safety_score": číslo 0-100,
-  "completeness_score": číslo 0-100,
-  "issues": [
-    {
-      "severity": "high" nebo "medium" nebo "low",
-      "category": "dosage" nebo "contraindication" nebo "missing_info",
-      "line": "citace textu",
-      "description": "popis problému",
-      "suggestion": "jak to opravit"
-    }
-  ],
-  "strengths": ["seznam silných stránek"],
-  "missing_sections": ["seznam chybějících sekcí"]
-}`;
-
-      console.log('[Review] Calling OpenAI...');
-
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${openaiKey}`
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o',
-          messages: [
-            {
-              role: 'system',
-              content: systemPrompt
-            },
-            {
-              role: 'user',
-              content: `OBSAH K REVIEW (zkráceno na prvních 3000 znaků pro rychlost):\n\n${content.substring(0, 3000)}`
-            }
-          ],
-          response_format: { type: 'json_object' },
-          temperature: 0.2,
-          max_tokens: 2000
-        })
+      // Call Supabase Edge Function (backend)
+      const { data, error } = await supabase.functions.invoke('review-content', {
+        body: {
+          content: content,
+          specialty: specialty,
+          mode: mode
+        }
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('[Review] OpenAI error:', errorText);
-        throw new Error(`OpenAI API error: ${response.status}`);
+      console.log('[Review] Response:', data);
+      console.log('[Review] Error:', error);
+
+      if (error) {
+        console.error('[Review] Supabase error:', error);
+        throw new Error(error.message || 'Edge Function failed');
       }
 
-      const data = await response.json();
-      console.log('[Review] OpenAI response:', data);
-
-      const reviewText = data.choices[0].message.content;
-      console.log('[Review] Review text:', reviewText);
-
-      // Parse JSON
-      let reviewData;
-      try {
-        reviewData = JSON.parse(reviewText);
-      } catch (e) {
-        console.error('[Review] Failed to parse JSON:', e);
-        throw new Error('Failed to parse review response');
+      if (!data) {
+        throw new Error('No data returned from review');
       }
 
-      console.log('[Review] Parsed review:', reviewData);
-
-      // Add metadata
-      const fullReview = {
-        ...reviewData,
-        metadata: {
-          model: 'gpt-4o',
-          provider: 'openai',
-          tokensUsed: data.usage,
-          cost: {
-            input: ((data.usage.prompt_tokens / 1_000_000) * 2.50).toFixed(4),
-            output: ((data.usage.completion_tokens / 1_000_000) * 10).toFixed(4),
-            total: (
-              (data.usage.prompt_tokens / 1_000_000) * 2.50 +
-              (data.usage.completion_tokens / 1_000_000) * 10
-            ).toFixed(4)
-          },
-          reviewedAt: new Date().toISOString()
-        }
-      };
-
-      setReview(fullReview);
-
-      if (fullReview.approved) {
+      setReview(data);
+      
+      if (data.approved) {
         toast.success('✅ Content approved by AI review!');
       } else {
-        toast.warning(`⚠️ ${fullReview.issues?.length || 0} issues found`);
+        toast.warning(`⚠️ ${data.issues?.length || 0} issues found`);
       }
 
       if (onReviewComplete) {
-        onReviewComplete(fullReview);
+        onReviewComplete(data);
       }
 
     } catch (error) {
-      console.error('[Review] Full error object:', error);
-      console.error('[Review] Error message:', error.message);
-      console.error('[Review] Error stack:', error.stack);
-      
-      // Show detailed error to user
-      if (error.message?.includes('API key')) {
-        toast.error('OpenAI API key is not configured. Check .env.local');
-      } else if (error.message?.includes('429')) {
-        toast.error('Rate limit exceeded. Try again in a moment.');
-      } else if (error.message?.includes('401')) {
-        toast.error('Invalid API key. Check your OpenAI key in .env.local');
-      } else {
-        toast.error(`Review failed: ${error.message || 'Unknown error'}`);
-      }
-      
-      // Set dummy review for testing UI
-      setReview({
-        approved: false,
-        confidence: 0,
-        safety_score: 0,
-        completeness_score: 0,
-        issues: [{
-          severity: 'high',
-          category: 'error',
-          description: `Review failed: ${error.message}`,
-          suggestion: 'Check console for details'
-        }],
-        strengths: [],
-        missing_sections: []
-      });
+      console.error('[Review] Full error:', error);
+      toast.error(`Review failed: ${error.message || 'Unknown error'}`);
     } finally {
       setLoading(false);
     }
