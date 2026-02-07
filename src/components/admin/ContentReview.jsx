@@ -15,6 +15,9 @@ import {
   Info
 } from 'lucide-react';
 
+// Get env vars at module load time
+const OPENAI_KEY = import.meta?.env?.VITE_OPENAI_API_KEY || (typeof process !== 'undefined' && process.env?.VITE_OPENAI_API_KEY);
+
 export const ContentReview = ({ content, specialty, mode, onReviewComplete }) => {
   const [review, setReview] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -33,7 +36,7 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
       }
 
       // Direct OpenAI API call (temporary solution)
-      const openaiKey = import.meta.env.VITE_OPENAI_API_KEY;
+      const openaiKey = OPENAI_KEY;
       
       if (!openaiKey) {
         toast.error('OpenAI API key not configured');
