@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/lib/supabase';
+import { config } from '@/config/env';
 import { toast } from 'sonner';
 import {
   CheckCircle,
@@ -15,8 +16,6 @@ import {
   Info
 } from 'lucide-react';
 
-// Get env vars at module load time
-const OPENAI_KEY = import.meta?.env?.VITE_OPENAI_API_KEY || (typeof process !== 'undefined' && process.env?.VITE_OPENAI_API_KEY);
 
 export const ContentReview = ({ content, specialty, mode, onReviewComplete }) => {
   const [review, setReview] = useState(null);
@@ -36,10 +35,10 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
       }
 
       // Direct OpenAI API call (temporary solution)
-      const openaiKey = OPENAI_KEY;
+      const openaiKey = config.openaiKey;
       
       if (!openaiKey) {
-        toast.error('OpenAI API key not configured');
+        toast.error('OpenAI key missing');
         setLoading(false);
         return;
       }
