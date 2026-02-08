@@ -154,45 +154,83 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
 
   const handleSave = async () => {
     setIsSaving(true);
+
     try {
+      // ========== DEBUG LOGGING ==========
+      console.group('💾 [SAVE DEBUG]');
+      console.log('Full content length:', content.full_text_content?.length);
+      console.log('First 200 chars:', content.full_text_content?.substring(0, 200));
+      console.log(
+        'Last 200 chars:',
+        content.full_text_content?.substring(
+          Math.max(0, (content.full_text_content?.length || 0) - 200)
+        )
+      );
+
+      // Check for suspicious patterns
+      if (content.full_text_content?.includes('Gold standard\\')) {
+        console.warn('⚠️ Found backslash escape - might be JSON stringified!');
+      }
+
+      // Prepare update data
       const updateData = {
-        status: content.status,
         full_text_content: content.full_text_content,
         bullet_points_summary: content.bullet_points_summary,
         deep_dive_content: content.deep_dive_content,
-        learning_objectives: content.learning_objectives,
-        source_pack: content.source_pack,
-        updated_at: new Date().toISOString(),
-
-        // NOVÁ AI METADATA
-        ai_model: lastGenerated?.metadata?.model || 'claude-sonnet-4',
-        ai_confidence: lastGenerated?.confidence || null,
-        ai_warnings: lastGenerated?.warnings || [],
-        ai_generated_at: lastGenerated?.metadata?.generatedAt || null,
-        ai_cost: lastGenerated?.metadata?.cost?.total
-          ? parseFloat(lastGenerated.metadata.cost.total)
-          : null,
-
-        // Review status
-        review_status: content.status === 'published' ? 'approved' : 'pending'
+        last_ai_model_used: lastGenerated?.metadata?.model || null,
+        last_ai_cost: lastGenerated?.metadata?.cost?.total || null,
+        updated_at: new Date().toISOString()
       };
 
-      await base44.entities.Topic.update(topic.id, updateData);
+      console.log('Update payload keys:', Object.keys(updateData));
+      console.log('Update payload size (bytes):', JSON.stringify(updateData).length);
 
-      const { error: versionError } = await supabase.rpc('create_topic_version', {
-        p_topic_id: topic.id,
-        p_change_reason: 'Manual save'
-      });
+      // Save to database
+      const { error, data } = await supabase
+        .from('topics')
+        .update(updateData)
+        .eq('id', topic.id)
+        .select(); // ← IMPORTANT: Return saved data!
 
-      if (versionError) {
-        console.error('Version creation failed:', versionError);
+      if (error) {
+        console.error('❌ Supabase error:', error);
+        throw error;
       }
 
-      toast.success('Téma uloženo');
-      if (onSave) onSave();
+      // Verify what was saved
+      console.log('✅ Save successful!');
+      console.log('Returned data:', data);
+
+      if (data && data[0]) {
+        const saved = data[0];
+        console.log('Saved content length:', saved.full_text_content?.length);
+        console.log(
+          'Saved last 200:',
+          saved.full_text_content?.substring(
+            Math.max(0, (saved.full_text_content?.length || 0) - 200)
+          )
+        );
+
+        // Compare lengths
+        const originalLength = content.full_text_content?.length || 0;
+        const savedLength = saved.full_text_content?.length || 0;
+
+        if (savedLength < originalLength) {
+          console.error('🚨 TRUNCATION DETECTED!');
+          console.error(`Original: ${originalLength} chars`);
+          console.error(`Saved: ${savedLength} chars`);
+          console.error(`Lost: ${originalLength - savedLength} chars`);
+        } else {
+          console.log('✅ Full content saved successfully!');
+        }
+      }
+
+      console.groupEnd();
+
+      toast.success('Uloženo!');
     } catch (error) {
-      console.error('Save error:', error);
-      toast.error('Chyba při ukládání: ' + error.message);
+      console.error('❌ Save failed:', error);
+      toast.error(`Chyba: ${error.message}`);
     } finally {
       setIsSaving(false);
     }
