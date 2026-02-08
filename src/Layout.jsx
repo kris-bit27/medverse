@@ -34,10 +34,8 @@ import {
   ClipboardList,
   MessageSquare,
   Package,
-  Calendar as CalendarIcon,
-  Brain
+  Calendar as CalendarIcon
 } from 'lucide-react';
-import FloatingCopilot from '@/components/ai/FloatingCopilot';
 import { canAccessAdmin, getRoleDisplayName, getRoleBadgeColor } from '@/components/utils/permissions';
 
 const publicPages = ['Landing', 'Pricing', 'Demo'];
@@ -49,7 +47,6 @@ const navItems = [
   { name: 'Studijní balíčky', page: 'StudyPackages', icon: Package },
   { name: 'Články', page: 'Articles', icon: BookOpen },
   { name: 'Nástroje', page: 'Tools', icon: Stethoscope },
-  { name: 'Hippo', page: 'AICopilot', icon: Brain },
   { name: 'Plánovač', page: 'StudyPlanner', icon: CalendarIcon },
   { name: 'Logbook', page: 'Logbook', icon: ClipboardList },
   { name: 'Forum', page: 'Forum', icon: MessageSquare },
@@ -174,12 +171,11 @@ export default function Layout({ children, currentPageName }) {
           {/* Navigation */}
           <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
             {navItems.map((item) => {
-              const isActive = currentPageName === item.page || 
+              const isActive = currentPageName === item.page ||
                 (item.page === 'Atestace' && ['Okruhy', 'OkruhDetail', 'QuestionDetail', 'TestGenerator'].includes(currentPageName)) ||
                 (item.page === 'Forum' && ['Forum', 'ForumThread'].includes(currentPageName)) ||
                 (item.page === 'StudyPackages' && ['StudyPackages', 'StudyPackageCreate', 'StudyPackageDetail'].includes(currentPageName)) ||
-                (item.page === 'StudyPlanner' && ['StudyPlanner', 'StudyPlanCreate', 'StudyPlanDetail'].includes(currentPageName)) ||
-                (item.page === 'AICopilot' && currentPageName === 'AICopilot');
+                (item.page === 'StudyPlanner' && ['StudyPlanner', 'StudyPlanCreate', 'StudyPlanDetail'].includes(currentPageName));
               const Icon = item.icon;
               
               return (
@@ -311,8 +307,6 @@ export default function Layout({ children, currentPageName }) {
         </main>
       </div>
 
-      {/* Floating AI Copilot */}
-      <FloatingCopilot />
     </div>
   );
 }

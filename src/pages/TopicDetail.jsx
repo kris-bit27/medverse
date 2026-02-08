@@ -25,7 +25,6 @@ import DifficultyIndicator from '@/components/ui/DifficultyIndicator';
 import StatusBadge from '@/components/ui/StatusBadge';
 import HighlightableText from '@/components/study/HighlightableText';
 import TopicNotes from '@/components/study/TopicNotes.jsx';
-import TopicHippoAssistant from '@/components/topics/TopicHippoAssistant';
 import HTMLContent from '@/components/study/HTMLContent';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import EmptyState from '@/components/common/EmptyState';
@@ -346,9 +345,6 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
           )}
 
           {/* 9. Hippo vysvětluje */}
-          {topic.hippo_enabled !== false && (
-            <TopicHippoAssistant topic={topic} user={user} />
-          )}
         </div>
       ) : hasContent ? (
         <Tabs value={activeView} onValueChange={setActiveView} className="mb-8">
