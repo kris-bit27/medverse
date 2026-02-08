@@ -238,6 +238,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
 
   const handleAIGenerate = async (mode) => {
     setIsGenerating(true);
+    let didOpenDebugGroup = false;
     try {
       // Validace pro high-yield a deep-dive
       if ((mode === 'topic_generate_high_yield' || mode === 'topic_generate_deep_dive') && !content.full_text_content) {
@@ -311,12 +312,39 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         }
       };
 
+      // ========== DEBUG LOGGING ==========
+      console.group('🤖 [AI RESPONSE DEBUG]');
+      didOpenDebugGroup = true;
+      console.log('Raw response (parsed):', result);
+      console.log('Raw response text length:', responseText?.length || 0);
+      console.log('Content length:', result?.content?.length);
+
+      // Parse JSON content if wrapped in result.content
+      if (typeof result?.content === 'string') {
+        let textContent = result.content;
+        console.log('Before JSON parse:', textContent.substring(0, 200));
+
+        if (textContent.startsWith('```json')) {
+          textContent = textContent.replace(/^```json\n/, '').replace(/\n```$/, '');
+        }
+
+        try {
+          const parsed = JSON.parse(textContent.trim());
+          result = { ...result, ...parsed };
+          delete result.content;
+          console.log('Parsed full_text length:', parsed.full_text?.length);
+          console.log('Parsed full_text last 200:', parsed.full_text?.slice(-200));
+        } catch (parseError) {
+          console.error('Parse JSON content failed:', parseError);
+        }
+      }
+
       if (typeof result?.full_text === 'string') {
         const parsed = tryParseJsonString(result.full_text);
-        if (parsed) result = parsed;
+        if (parsed) result = { ...result, ...parsed };
       } else if (typeof result?.text === 'string') {
         const parsed = tryParseJsonString(result.text);
-        if (parsed) result = parsed;
+        if (parsed) result = { ...result, ...parsed };
       }
 
       // Extrakce metadata
@@ -340,9 +368,11 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
 
       // Aplikuj podle módu
       if (mode === 'topic_generate_fulltext_v2') {
+        const fullText = normalizeText(result.full_text || result.text || '');
+        console.log('[Parse] Full text length:', fullText.length);
         setContent(prev => ({ 
           ...prev, 
-          full_text_content: normalizeText(result.full_text || result.text || ''),
+          full_text_content: fullText,
           source_pack: {
             internal_refs: prev.source_pack?.internal_refs || [],
             external_refs: [
@@ -351,6 +381,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
             ]
           }
         }));
+        console.log('[State] Set content length:', fullText.length);
         // toast handled below
         
       } else if (mode === 'topic_generate_high_yield') {
@@ -409,6 +440,9 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
       console.error('[Claude] Error:', error);
       toast.error('Chyba při generování: ' + error.message);
     } finally {
+      if (didOpenDebugGroup) {
+        console.groupEnd();
+      }
       setIsGenerating(false);
     }
   };
