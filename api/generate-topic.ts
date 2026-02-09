@@ -58,7 +58,20 @@ export default async function handler(req: any, res: any) {
     
     // System prompts
     const systemPrompts: Record<string, string> = {
-      'topic_generate_fulltext_v2': `Jsi senior klinický lékař specializující se na ${context.specialty || 'medicínu'}.
+      'topic_generate_fulltext_v2': `🚨🚨🚨 ABSOLUTNÍ PRIORITA: KOMPLETNÍ TEXT 🚨🚨🚨
+
+KRITICKÁ INSTRUKCE - VŠECH 7 SEKCÍ MUSÍ BÝT PŘÍTOMNÝCH:
+1. Úvod a definice ✓
+2. Etiopatogeneze ✓
+3. Klinický obraz ✓
+4. Diagnostika ✓
+5. Léčba ✓
+6. Prognóza a prevence ✓
+7. Klinické perly ✓
+
+🚨 NIKDY NEKONČIT BEZ ZÁVĚREČNÝCH SEKCÍ! 🚨
+
+Jsi senior klinický lékař specializující se na ${context.specialty || 'medicínu'}.
 
 PRAVIDLA:
 - Cituj zdroje: (Autor, Rok)
@@ -175,9 +188,10 @@ Ref: ${context.full_text?.substring(0, 500)}...`
     } else {
       // Claude API call
       const anthropic = getAnthropicClient();
+      const isFulltext = mode === 'topic_generate_fulltext_v2';
       const response = await anthropic.messages.create({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 4096,
+        model: isFulltext ? 'claude-opus-4-20250514' : 'claude-sonnet-4-20250514',
+        max_tokens: isFulltext ? 8192 : 4096,
         temperature: 0.3,
         system: systemPrompt,
         messages: [{
