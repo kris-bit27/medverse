@@ -298,7 +298,6 @@ Ref: ${context.full_text?.substring(0, 500)}...`
     console.error(`[API Error ${errorId}]`, {
       message: error.message,
       stack: error.stack,
-      mode,
       timestamp: new Date().toISOString()
     });
     
