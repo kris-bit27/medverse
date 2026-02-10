@@ -48,6 +48,7 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import Admin from './pages/Admin';
+import AdminAnalytics from './pages/AdminAnalytics';
 import AdminArticleEdit from './pages/AdminArticleEdit';
 import AdminArticles from './pages/AdminArticles';
 import AdminAudit from './pages/AdminAudit';
@@ -87,11 +88,14 @@ import TestSession from './pages/TestSession';
 import ToolDetail from './pages/ToolDetail';
 import Tools from './pages/Tools';
 import TopicDetail from './pages/TopicDetail';
+import UserSettings from './pages/UserSettings';
+import AdminCostAnalytics from './pages/AdminCostAnalytics';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "Admin": Admin,
+    "AdminAnalytics": AdminAnalytics,
     "AdminArticleEdit": AdminArticleEdit,
     "AdminArticles": AdminArticles,
     "AdminAudit": AdminAudit,
@@ -131,6 +135,8 @@ export const PAGES = {
     "ToolDetail": ToolDetail,
     "Tools": Tools,
     "TopicDetail": TopicDetail,
+    "UserSettings": UserSettings,
+    "AdminCostAnalytics": AdminCostAnalytics,
 }
 
 export const pagesConfig = {
