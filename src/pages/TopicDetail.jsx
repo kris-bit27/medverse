@@ -24,7 +24,8 @@ import ReactMarkdown from 'react-markdown';
 import DifficultyIndicator from '@/components/ui/DifficultyIndicator';
 import StatusBadge from '@/components/ui/StatusBadge';
 import HighlightableText from '@/components/study/HighlightableText';
-import TopicNotes from '@/components/study/TopicNotes.jsx';
+import TopicNotesV2 from '@/components/study/TopicNotesV2';
+import FlashcardLauncher from '@/components/study/FlashcardLauncher';
 import HTMLContent from '@/components/study/HTMLContent';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import EmptyState from '@/components/common/EmptyState';
@@ -474,31 +475,15 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
       {/* User Notes */}
       {hasContent && (
         <div className="mb-8">
-          <TopicNotes key={notesKey} topicId={topicId} user={user} />
+          <TopicNotesV2 topicId={topicId} user={user} />
         </div>
       )}
 
-      {/* Generate practice questions */}
+      {/* Flashcards Practice */}
       {hasContent && (
-        <Card className="mb-8 bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 border-teal-200 dark:border-teal-800">
-          <CardContent className="p-6">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-teal-600" />
-                  Procvičování
-                </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  Vygenerujte otázky pro procvičení tohoto tématu pomocí AI
-                </p>
-              </div>
-              <Button onClick={handleGeneratePracticeQuestions} className="flex-shrink-0">
-                <Sparkles className="w-4 h-4 mr-2" />
-                Generovat otázky
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="mb-8">
+          <FlashcardLauncher topicId={topicId} user={user} />
+        </div>
       )}
 
       {/* Questions list */}
