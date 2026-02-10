@@ -1,5 +1,21 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { getCached, setCache } from './cache.js';
+import { z } from 'zod';
+
+// Input validation schema
+const GenerateTopicSchema = z.object({
+  mode: z.enum([
+    'topic_generate_fulltext_v2',
+    'topic_generate_high_yield',
+    'topic_generate_deep_dive'
+  ]),
+  context: z.object({
+    specialty: z.string().min(1, "Specialty is required").max(100, "Specialty too long"),
+    okruh: z.string().min(1, "Okruh is required").max(200, "Okruh too long"),
+    title: z.string().min(1, "Title is required").max(300, "Title too long"),
+    full_text: z.string().max(50000, "Content too large").optional()
+  })
+});
 
 const GEMINI_MODELS = {
   high_yield: process.env.GEMINI_HIGH_YIELD_MODEL || process.env.GEMINI_MODEL || 'gemini-1.5-flash'
@@ -23,10 +39,26 @@ function getAnthropicClient() {
 }
 
 export default async function handler(req: any, res: any) {
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  // CORS headers - whitelist only allowed origins
+  const ALLOWED_ORIGINS = [
+    'https://medverse-gilt.vercel.app',
+    'https://medverse.com',
+    'https://www.medverse.com',
+    ...(process.env.NODE_ENV === 'development' ? [
+      'http://localhost:3000',
+      'http://localhost:5173'
+    ] : [])
+  ];
+  
+  const origin = req.headers.origin;
+  
+  if (ALLOWED_ORIGINS.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+  }
+  
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -37,7 +69,17 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    const { mode, context } = req.body;
+    // Validate input
+    const validationResult = GenerateTopicSchema.safeParse(req.body);
+    
+    if (!validationResult.success) {
+      return res.status(400).json({
+        error: 'Invalid input',
+        details: validationResult.error.errors
+      });
+    }
+    
+    const { mode, context } = validationResult.data;
 
     console.log('[API] Mode:', mode);
     console.log('[API] Context:', context);
@@ -250,9 +292,23 @@ Ref: ${context.full_text?.substring(0, 500)}...`
     return res.status(200).json(output);
 
   } catch (error: any) {
-    console.error('[API] Error:', error);
+    const errorId = Math.random().toString(36).substring(7);
+    
+    // Log pro debugging (server-side only)
+    console.error(`[API Error ${errorId}]`, {
+      message: error.message,
+      stack: error.stack,
+      mode,
+      timestamp: new Date().toISOString()
+    });
+    
+    // Generic message pro klienta (bezpečné)
     return res.status(500).json({
-      error: error?.message || 'Unknown server error'
+      error: 'Internal server error',
+      errorId: errorId,
+      message: process.env.NODE_ENV === 'development' 
+        ? error.message 
+        : 'An error occurred. Please contact support with error ID.'
     });
   }
 }

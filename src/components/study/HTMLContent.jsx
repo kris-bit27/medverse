@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
+import DOMPurify from 'isomorphic-dompurify';
 
 export default function HTMLContent({ content }) {
   if (!content) return null;
@@ -115,12 +116,24 @@ export default function HTMLContent({ content }) {
   }
 
   // Clean HTML: remove classes, empty paragraphs, and excessive breaks
-  const cleanHTML = sanitizeHtml(resolvedContent)
-    // Remove empty paragraphs
-    .replace(/<p><\/p>/gi, '')
-    .replace(/<p>\s*<\/p>/gi, '')
-    // Clean up multiple consecutive line breaks
-    .replace(/(<br\s*\/?>\s*){2,}/gi, '<br />');
+  const cleanHTML = useMemo(() => {
+    // First use DOMPurify for security
+    const sanitized = DOMPurify.sanitize(resolvedContent, {
+      ALLOWED_TAGS: [
+        'p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'ul', 'ol', 'li', 'blockquote', 'code', 'pre', 'a', 'img', 'table',
+        'thead', 'tbody', 'tr', 'th', 'td', 'span', 'div'
+      ],
+      ALLOWED_ATTR: ['href', 'src', 'alt', 'title'],
+      ALLOW_DATA_ATTR: false
+    });
+    
+    // Then clean up formatting
+    return sanitizeHtml(sanitized)
+      .replace(/<p><\/p>/gi, '')
+      .replace(/<p>\s*<\/p>/gi, '')
+      .replace(/(<br\s*\/?>\s*){2,}/gi, '<br />');
+  }, [resolvedContent]);
 
   return (
     <div
