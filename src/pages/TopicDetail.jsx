@@ -243,49 +243,6 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
             </CardContent>
           </Card>
         )}
-
-        {/* AI-generated metadata: sources and warnings */}
-        {(topic.sources?.length > 0 || topic.warnings?.length > 0) && (
-          <div className="space-y-3 mt-4">
-            {topic.sources?.length > 0 && (
-              <Card className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
-                <CardContent className="p-4">
-                  <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2 flex items-center gap-2">
-                    <BookOpen className="w-4 h-4" />
-                    📚 Citované zdroje ({topic.sources.length})
-                  </h3>
-                  <ul className="space-y-1 text-xs text-blue-800 dark:text-blue-200">
-                    {topic.sources.map((source, i) => (
-                      <li key={i} className="flex items-start gap-2">
-                        <span className="text-blue-600 dark:text-blue-400 mt-0.5">•</span>
-                        <span>{source}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            )}
-
-            {topic.warnings?.length > 0 && (
-              <Alert className="bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
-                <AlertTriangle className="h-4 w-4 text-amber-600" />
-                <AlertDescription>
-                  <div className="font-semibold text-amber-900 dark:text-amber-100 mb-2">
-                    ⚠️ Vyžaduje ověření odborníkem
-                  </div>
-                  <ul className="space-y-1 text-sm text-amber-800 dark:text-amber-200">
-                    {topic.warnings.map((warning, i) => (
-                      <li key={i} className="flex items-start gap-2">
-                        <span className="text-amber-600 dark:text-amber-400 mt-0.5">•</span>
-                        <span>{warning}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </AlertDescription>
-              </Alert>
-            )}
-          </div>
-        )}
       </div>
 
       {/* Content - New Template or Legacy */}
@@ -467,6 +424,51 @@ Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z toho
             <p className="text-sm text-slate-400">Přidejte obsah v admin panelu</p>
           </CardContent>
         </Card>
+      )}
+
+      {/* AI-generated metadata: warnings and sources (at the end of content) */}
+      {hasContent && (topic.warnings?.length > 0 || topic.sources?.length > 0) && (
+        <div className="space-y-3 mb-8">
+          {/* Warnings first */}
+          {topic.warnings?.length > 0 && (
+            <Alert className="bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
+              <AlertTriangle className="h-4 w-4 text-amber-600" />
+              <AlertDescription>
+                <div className="font-semibold text-amber-900 dark:text-amber-100 mb-2">
+                  ⚠️ Vyžaduje ověření odborníkem
+                </div>
+                <ul className="space-y-1 text-sm text-amber-800 dark:text-amber-200">
+                  {topic.warnings.map((warning, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="text-amber-600 dark:text-amber-400 mt-0.5">•</span>
+                      <span>{warning}</span>
+                    </li>
+                  ))}
+                </ul>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* Sources second */}
+          {topic.sources?.length > 0 && (
+            <Card className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
+              <CardContent className="p-4">
+                <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2 flex items-center gap-2">
+                  <BookOpen className="w-4 h-4" />
+                  📚 Citované zdroje ({topic.sources.length})
+                </h3>
+                <ul className="space-y-1 text-xs text-blue-800 dark:text-blue-200">
+                  {topic.sources.map((source, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="text-blue-600 dark:text-blue-400 mt-0.5">•</span>
+                      <span>{source}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       )}
 
       {/* User Notes */}
