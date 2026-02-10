@@ -115,7 +115,7 @@ export default function Admin() {
       description: 'Cache & AI náklady',
       count: null,
       icon: BarChart3,
-      href: createPageUrl('AdminAnalytics'),
+      href: createPageUrl('AdminCostAnalytics'),
       color: 'from-emerald-500 to-teal-600'
     }
   ];
