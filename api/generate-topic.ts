@@ -224,14 +224,14 @@ Ref: ${context.full_text?.substring(0, 500)}...`
         ...result,
         metadata: {
           provider: 'anthropic',
-          model: 'claude-sonnet-4',
+          model: 'claude-opus-4',
           tokensUsed: response.usage,
           cost: {
-            input: ((response.usage.input_tokens / 1_000_000) * 3).toFixed(4),
-            output: ((response.usage.output_tokens / 1_000_000) * 15).toFixed(4),
+            input: ((response.usage.input_tokens / 1_000_000) * 15).toFixed(4),
+            output: ((response.usage.output_tokens / 1_000_000) * 75).toFixed(4),
             total: (
-              (response.usage.input_tokens / 1_000_000) * 3 +
-              (response.usage.output_tokens / 1_000_000) * 15
+              (response.usage.input_tokens / 1_000_000) * 15 +
+              (response.usage.output_tokens / 1_000_000) * 75
             ).toFixed(4)
           },
           generatedAt: new Date().toISOString(),
