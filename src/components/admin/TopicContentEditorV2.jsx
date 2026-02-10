@@ -618,6 +618,22 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
               </Alert>
             )}
 
+            {lastGenerated?.sources?.length > 0 && (
+              <Alert className="bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800">
+                <BookOpen className="h-4 w-4" />
+                <AlertDescription>
+                  <div className="font-semibold text-blue-900 dark:text-blue-100">
+                    📚 Citované zdroje ({lastGenerated.sources.length})
+                  </div>
+                  <ul className="list-disc list-inside mt-2 space-y-1 text-sm text-blue-800 dark:text-blue-200">
+                    {lastGenerated.sources.map((source, i) => (
+                      <li key={i} className="text-xs">{source}</li>
+                    ))}
+                  </ul>
+                </AlertDescription>
+              </Alert>
+            )}
+
             {content.status === 'published' && (
               <Alert>
                 <Shield className="h-4 w-4" />
