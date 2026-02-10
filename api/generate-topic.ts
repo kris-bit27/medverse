@@ -71,6 +71,8 @@ KRITICKÁ INSTRUKCE - VŠECH 7 SEKCÍ MUSÍ BÝT PŘÍTOMNÝCH:
 
 🚨 NIKDY NEKONČIT BEZ ZÁVĚREČNÝCH SEKCÍ! 🚨
 
+⚡ COMPLETION GUARANTEE: Musíš dokončit CELOU odpověď s VŠEMI sekcemi. Pokud by došlo k přerušení, označ jasně kde jsi skončil a pokračuj v následující odpovědi.
+
 Jsi senior klinický lékař specializující se na ${context.specialty || 'medicínu'}.
 
 PRAVIDLA:
@@ -190,8 +192,8 @@ Ref: ${context.full_text?.substring(0, 500)}...`
       const anthropic = getAnthropicClient();
       const isFulltext = mode === 'topic_generate_fulltext_v2';
       const response = await anthropic.messages.create({
-        model: isFulltext ? 'claude-opus-4-20250514' : 'claude-sonnet-4-20250514',
-        max_tokens: isFulltext ? 8192 : 4096,
+        model: 'claude-opus-4-20250514',
+        max_tokens: 8192,
         temperature: 0.3,
         system: systemPrompt,
         messages: [{

@@ -116,7 +116,9 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
     bullet_points_summary: cleanAiWrappedText(topic?.bullet_points_summary),
     deep_dive_content: cleanAiWrappedText(topic?.deep_dive_content),
     learning_objectives: topic?.learning_objectives || [],
-    source_pack: topic?.source_pack || { internal_refs: [], external_refs: [] }
+    source_pack: topic?.source_pack || { internal_refs: [], external_refs: [] },
+    sources: topic?.sources || [],
+    warnings: topic?.warnings || []
   });
   const [isSaving, setIsSaving] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -141,7 +143,9 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         bullet_points_summary: cleanAiWrappedText(fresh?.bullet_points_summary),
         deep_dive_content: cleanAiWrappedText(fresh?.deep_dive_content),
         learning_objectives: fresh?.learning_objectives || [],
-        source_pack: fresh?.source_pack || { internal_refs: [], external_refs: [] }
+        source_pack: fresh?.source_pack || { internal_refs: [], external_refs: [] },
+        sources: fresh?.sources || [],
+        warnings: fresh?.warnings || []
       });
       setLastGenerated(null);
       setGenerationWarnings([]);
@@ -179,6 +183,8 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         deep_dive_content: content.deep_dive_content,
         last_ai_model_used: lastGenerated?.metadata?.model || null,
         last_ai_cost: lastGenerated?.metadata?.cost?.total || null,
+        sources: content.sources || [],
+        warnings: content.warnings || [],
         updated_at: new Date().toISOString()
       };
 
@@ -373,6 +379,8 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         setContent(prev => ({ 
           ...prev, 
           full_text_content: fullText,
+          sources: result.sources || [],
+          warnings: result.warnings || [],
           source_pack: {
             internal_refs: prev.source_pack?.internal_refs || [],
             external_refs: [
@@ -387,7 +395,9 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
       } else if (mode === 'topic_generate_high_yield') {
         setContent(prev => ({ 
           ...prev, 
-          bullet_points_summary: normalizeText(result.high_yield || result.text || '')
+          bullet_points_summary: normalizeText(result.high_yield || result.text || ''),
+          sources: result.sources || prev.sources || [],
+          warnings: result.warnings || prev.warnings || []
         }));
         // toast handled below
         
@@ -395,6 +405,8 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         setContent(prev => ({ 
           ...prev, 
           deep_dive_content: normalizeText(result.deep_dive || result.text || ''),
+          sources: result.sources || prev.sources || [],
+          warnings: result.warnings || prev.warnings || [],
           source_pack: {
             internal_refs: prev.source_pack?.internal_refs || [],
             external_refs: [
@@ -777,6 +789,47 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
                   • {ref.title} {ref.publisher && `(${ref.publisher})`}
                 </div>
               ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* AI-Generated Sources & Warnings */}
+      {(content.sources?.length > 0 || content.warnings?.length > 0) && (
+        <div className="space-y-3 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
+          <Label className="text-sm font-semibold flex items-center gap-2">
+            <Sparkles className="w-4 h-4" />
+            AI-generované informace
+          </Label>
+          
+          {content.sources?.length > 0 && (
+            <div className="space-y-2">
+              <div className="text-xs font-medium text-blue-700 dark:text-blue-300">
+                📚 Citované zdroje ({content.sources.length})
+              </div>
+              <div className="space-y-1">
+                {content.sources.map((source, i) => (
+                  <div key={i} className="text-sm text-slate-700 dark:text-slate-300 pl-3 border-l-2 border-blue-300">
+                    {typeof source === 'string' ? source : source.title || source.citation || JSON.stringify(source)}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {content.warnings?.length > 0 && (
+            <div className="space-y-2">
+              <div className="text-xs font-medium text-amber-700 dark:text-amber-300 flex items-center gap-1">
+                <AlertTriangle className="w-3 h-3" />
+                Varování k ověření ({content.warnings.length})
+              </div>
+              <div className="space-y-1">
+                {content.warnings.map((warning, i) => (
+                  <div key={i} className="text-sm text-amber-800 dark:text-amber-200 pl-3 border-l-2 border-amber-400 bg-amber-50 dark:bg-amber-900/20 p-2 rounded">
+                    {typeof warning === 'string' ? warning : warning.message || warning.text || JSON.stringify(warning)}
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
