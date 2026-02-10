@@ -219,9 +219,11 @@ Ref: ${context.full_text?.substring(0, 500)}...`
       if (result?.high_yield) result.high_yield = normalizeText(result.high_yield);
       if (result?.deep_dive) result.deep_dive = normalizeText(result.deep_dive);
 
-      // Add metadata
+      // Add metadata with sources and warnings
       output = {
         ...result,
+        sources: result?.sources || [],
+        warnings: result?.warnings || [],
         metadata: {
           provider: 'anthropic',
           model: 'claude-opus-4',
