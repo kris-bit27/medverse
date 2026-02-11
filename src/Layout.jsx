@@ -46,7 +46,7 @@ const navItems = [
   { name: 'Opakování', page: 'ReviewToday', icon: RefreshCw },
   { name: 'Studijní balíčky', page: 'StudyPackages', icon: Package },
   { name: 'Články', page: 'Articles', icon: BookOpen },
-  { name: 'Nástroje', page: 'Tools', icon: Stethoscope },
+  { name: 'Kalkulačky', page: 'ClinicalCalculators', icon: Stethoscope },
   { name: 'Plánovač', page: 'StudyPlansV2', icon: CalendarIcon },
   { name: 'Logbook', page: 'Logbook', icon: ClipboardList },
   { name: 'Forum', page: 'Forum', icon: MessageSquare },
