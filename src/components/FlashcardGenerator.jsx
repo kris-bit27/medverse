@@ -92,16 +92,23 @@ export default function FlashcardGenerator({ topicId, topicContent }) {
         supabase
           .from('flashcards')
           .insert({
-            user_id: user.id,
             topic_id: topicId,
-            front: card.front,
-            back: card.back,
-            difficulty: card.difficulty,
-            next_review_date: new Date().toISOString()
+            question: card.front,
+            answer: card.back,
+            difficulty: card.difficulty === 'easy' ? 1 : card.difficulty === 'medium' ? 2 : 3,
+            card_type: 'basic',
+            ai_generated: true,
+            ai_model: 'pattern-extraction',
+            ai_confidence: 0.85
           })
       );
 
-      await Promise.all(promises);
+      const results = await Promise.all(promises);
+      
+      // Check for errors
+      results.forEach(result => {
+        if (result.error) throw result.error;
+      });
     },
     onSuccess: () => {
       toast.success('Kartičky uloženy!');
