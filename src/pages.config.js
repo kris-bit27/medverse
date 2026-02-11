@@ -43,6 +43,9 @@ import Tools from './pages/Tools';
 import TopicDetail from './pages/TopicDetail';
 import UserSettings from './pages/UserSettings';
 import AdminCostAnalytics from './pages/AdminCostAnalytics';
+import MyProfile from './pages/MyProfile';
+import AccountSettings from './pages/AccountSettings';
+import AICredits from './pages/AICredits';
 import __Layout from './Layout.jsx';
 
 
@@ -89,6 +92,9 @@ export const PAGES = {
     "TopicDetail": TopicDetail,
     "UserSettings": UserSettings,
     "AdminCostAnalytics": AdminCostAnalytics,
+    "MyProfile": MyProfile,
+    "AccountSettings": AccountSettings,
+    "AICredits": AICredits,
 }
 
 export const pagesConfig = {
