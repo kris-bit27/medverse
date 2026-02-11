@@ -37,7 +37,9 @@ import {
   Zap,
   Calculator,
   Pill,
-  FileText
+  FileText,
+  Users,
+  Trophy
 } from 'lucide-react';
 import { canAccessAdmin, getRoleDisplayName, getRoleBadgeColor } from '@/components/utils/permissions';
 
@@ -60,7 +62,8 @@ const navItems = [
   },
   { name: 'Plánovač', page: 'StudyPlansV2', icon: CalendarIcon },
   { name: 'Logbook', page: 'Logbook', icon: ClipboardList },
-  { name: 'Forum', page: 'Forum', icon: MessageSquare },
+  { name: 'Studijní skupiny', page: 'StudyGroups', icon: Users },
+  { name: 'Žebříčky', page: 'Leaderboards', icon: Trophy },
   { name: 'Vyhledávání', page: 'ScholarSearch', icon: Search },
 ];
 
