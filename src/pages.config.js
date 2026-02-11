@@ -63,6 +63,7 @@ import StudyGroups from './pages/StudyGroups';
 import Leaderboards from './pages/Leaderboards';
 import OrganizationManagement from './pages/OrganizationManagement';
 import TeamAnalytics from './pages/TeamAnalytics';
+import AdminConsole from './pages/AdminConsole';
 import LogbookV2 from './pages/LogbookV2';
 import __Layout from './Layout.jsx';
 
@@ -130,6 +131,7 @@ export const PAGES = {
     "Leaderboards": Leaderboards,
     "OrganizationManagement": OrganizationManagement,
     "TeamAnalytics": TeamAnalytics,
+    "AdminConsole": AdminConsole,
 }
 
 export const pagesConfig = {
