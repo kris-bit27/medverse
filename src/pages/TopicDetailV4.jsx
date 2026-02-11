@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useQuery } from '@tantml/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
 import { Card, CardContent } from '@/components/ui/card';
