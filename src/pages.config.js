@@ -54,6 +54,7 @@ import DashboardV2 from './pages/DashboardV2';
 import TestGeneratorV2 from './pages/TestGeneratorV2';
 import TestSessionV2 from './pages/TestSessionV2';
 import TestResults from './pages/TestResults';
+import TestResultsV2 from './pages/TestResultsV2';
 import StudyPlansV2 from './pages/StudyPlansV2';
 import __Layout from './Layout.jsx';
 
@@ -112,6 +113,7 @@ export const PAGES = {
     "TestGeneratorV2": TestGeneratorV2,
     "TestSessionV2": TestSessionV2,
     "TestResults": TestResults,
+    "TestResultsV2": TestResultsV2,
     "StudyPlansV2": StudyPlansV2,
 }
 
