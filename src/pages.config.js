@@ -74,7 +74,7 @@ export const PAGES = {
     "ArticleDetail": ArticleDetail,
     "Articles": Articles,
     "Atestace": Atestace,
-    "Dashboard": Dashboard,
+    "Dashboard": DashboardV2,
     "Demo": Demo,
     "Forum": Forum,
     "ForumThread": ForumThread,
