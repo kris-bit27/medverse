@@ -50,6 +50,7 @@ import Studium from './pages/Studium';
 import StudiumV2 from './pages/StudiumV2';
 import TopicDetailV2 from './pages/TopicDetailV2';
 import TopicDetailV3 from './pages/TopicDetailV3';
+import TopicDetailV4 from './pages/TopicDetailV4';
 import FlashcardReviewV2 from './pages/FlashcardReviewV2';
 import DashboardV2 from './pages/DashboardV2';
 import TestGeneratorV2 from './pages/TestGeneratorV2';
@@ -119,6 +120,7 @@ export const PAGES = {
     "StudiumV2": StudiumV2,
     "TopicDetailV2": TopicDetailV2,
     "TopicDetailV3": TopicDetailV3,
+    "TopicDetailV4": TopicDetailV4,
     "FlashcardReviewV2": FlashcardReviewV2,
     "DashboardV2": DashboardV2,
     "TestGeneratorV2": TestGeneratorV2,
