@@ -272,11 +272,11 @@ export default function Layout({ children, currentPageName }) {
                   </p>
                 </div>
                 <Link
-                  to={createPageUrl('Admin')}
+                  to={createPageUrl('AdminConsole')}
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
                     "mn-sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
-                    currentPageName === 'Admin' || currentPageName?.startsWith('Admin')
+                    currentPageName === 'AdminConsole' || currentPageName?.startsWith('Admin')
                       ? "is-active"
                       : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                   )}
