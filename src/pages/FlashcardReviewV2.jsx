@@ -71,15 +71,25 @@ export default function FlashcardReviewV2() {
     queryFn: async () => {
       const today = new Date().toISOString().split('T')[0];
       
+      // Get all flashcards (not just with progress tracking)
       const { data, error } = await supabase
-        .from('user_flashcard_progress')
-        .select('*, flashcards(*)')
-        .eq('user_id', user.id)
-        .lte('next_review', today)
+        .from('flashcards')
+        .select('*')
+        .order('created_at', { ascending: false })
         .limit(20);
 
       if (error) throw error;
-      return data?.map(d => ({ ...d.flashcards, progress: d })) || [];
+      
+      // Return with mock progress for cards without tracking
+      return data?.map(card => ({
+        ...card,
+        progress: {
+          repetitions: 0,
+          easiness: 2.5,
+          interval: 0,
+          next_review: today
+        }
+      })) || [];
     },
     enabled: !!user?.id
   });
