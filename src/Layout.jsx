@@ -41,13 +41,13 @@ import { canAccessAdmin, getRoleDisplayName, getRoleBadgeColor } from '@/compone
 const publicPages = ['Landing', 'Pricing', 'Demo'];
 
 const navItems = [
-  { name: 'Dashboard', page: 'Dashboard', icon: LayoutDashboard },
+  { name: 'Dashboard', page: 'DashboardV2', icon: LayoutDashboard },
   { name: 'Studium', page: 'StudiumV2', icon: GraduationCap },
   { name: 'Opakování', page: 'ReviewToday', icon: RefreshCw },
   { name: 'Studijní balíčky', page: 'StudyPackages', icon: Package },
   { name: 'Články', page: 'Articles', icon: BookOpen },
   { name: 'Nástroje', page: 'Tools', icon: Stethoscope },
-  { name: 'Plánovač', page: 'StudyPlanner', icon: CalendarIcon },
+  { name: 'Plánovač', page: 'StudyPlansV2', icon: CalendarIcon },
   { name: 'Logbook', page: 'Logbook', icon: ClipboardList },
   { name: 'Forum', page: 'Forum', icon: MessageSquare },
   { name: 'Vyhledávání', page: 'ScholarSearch', icon: Search },
