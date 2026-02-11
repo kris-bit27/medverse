@@ -51,6 +51,7 @@ import StudiumV2 from './pages/StudiumV2';
 import TopicDetailV2 from './pages/TopicDetailV2';
 import FlashcardReviewV2 from './pages/FlashcardReviewV2';
 import DashboardV2 from './pages/DashboardV2';
+import TestGeneratorV2 from './pages/TestGeneratorV2';
 import __Layout from './Layout.jsx';
 
 
@@ -105,6 +106,7 @@ export const PAGES = {
     "TopicDetailV2": TopicDetailV2,
     "FlashcardReviewV2": FlashcardReviewV2,
     "DashboardV2": DashboardV2,
+    "TestGeneratorV2": TestGeneratorV2,
 }
 
 export const pagesConfig = {
