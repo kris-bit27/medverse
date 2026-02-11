@@ -59,6 +59,8 @@ import StudyPlansV2 from './pages/StudyPlansV2';
 import ClinicalCalculators from './pages/ClinicalCalculators';
 import DrugDatabase from './pages/DrugDatabase';
 import ClinicalGuidelines from './pages/ClinicalGuidelines';
+import StudyGroups from './pages/StudyGroups';
+import Leaderboards from './pages/Leaderboards';
 import LogbookV2 from './pages/LogbookV2';
 import __Layout from './Layout.jsx';
 
@@ -122,6 +124,8 @@ export const PAGES = {
     "ClinicalCalculators": ClinicalCalculators,
     "DrugDatabase": DrugDatabase,
     "ClinicalGuidelines": ClinicalGuidelines,
+    "StudyGroups": StudyGroups,
+    "Leaderboards": Leaderboards,
 }
 
 export const pagesConfig = {
