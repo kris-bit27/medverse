@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent } from '@/components/ui/card';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/lib/AuthContext';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -11,515 +11,457 @@ import {
   ChevronLeft, 
   BookOpen,
   List,
-  Microscope,
+  Zap,
   Target,
   Sparkles,
-  ChevronRight,
-  AlertCircle,
-  Shield,
-  AlertTriangle
+  Brain,
+  FileText,
+  Link as LinkIcon,
+  AlertTriangle,
+  Star,
+  Clock,
+  TrendingUp
 } from 'lucide-react';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
-import ReactMarkdown from 'react-markdown';
-import DifficultyIndicator from '@/components/ui/DifficultyIndicator';
-import StatusBadge from '@/components/ui/StatusBadge';
-import HighlightableText from '@/components/study/HighlightableText';
-import TopicNotesV2 from '@/components/study/TopicNotesV2';
-import FlashcardLauncher from '@/components/study/FlashcardLauncher';
-import HTMLContent from '@/components/study/HTMLContent';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import EmptyState from '@/components/common/EmptyState';
-import { FloatingCopilot } from '@/components/FloatingCopilot';
+import { toast } from 'sonner';
 
-export default function TopicDetail() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const topicId = urlParams.get('id');
-  const [activeView, setActiveView] = useState('full');
-  const [notesKey, setNotesKey] = useState(0);
+export default function TopicDetailV2() {
+  const { topicId } = useParams();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [activeTab, setActiveTab] = useState('fulltext');
 
-  const { data: user } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
-  });
-
-  const handleNoteCreated = () => {
-    setNotesKey(prev => prev + 1);
-  };
-
-  const { data: topic, isLoading, isError, error } = useQuery({
+  // Fetch topic
+  const { data: topic, isLoading, error } = useQuery({
     queryKey: ['topic', topicId],
     queryFn: async () => {
-      const topics = await base44.entities.Topic.filter({ id: topicId });
-      return topics[0];
+      const { data, error } = await supabase
+        .from('topics')
+        .select(`
+          *,
+          obory:obor_id(id, name, slug),
+          okruhy:okruh_id(id, name, slug)
+        `)
+        .eq('id', topicId)
+        .single();
+      
+      if (error) throw error;
+      return data;
     },
     enabled: !!topicId
   });
 
-  const { data: okruh } = useQuery({
-    queryKey: ['okruh', topic?.okruh_id],
+  // Fetch flashcards for this topic
+  const { data: flashcards = [] } = useQuery({
+    queryKey: ['topicFlashcards', topicId],
     queryFn: async () => {
-      const okruhy = await base44.entities.Okruh.filter({ id: topic.okruh_id });
-      return okruhy[0];
+      const { data, error } = await supabase
+        .from('flashcards')
+        .select('*')
+        .eq('topic_id', topicId);
+      
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!topicId
+  });
+
+  // Fetch user's flashcard progress
+  const { data: flashcardProgress = [] } = useQuery({
+    queryKey: ['flashcardProgress', user?.id, topicId],
+    queryFn: async () => {
+      if (!flashcards.length) return [];
+      
+      const flashcardIds = flashcards.map(f => f.id);
+      const { data, error } = await supabase
+        .from('user_flashcard_progress')
+        .select('*')
+        .eq('user_id', user.id)
+        .in('flashcard_id', flashcardIds);
+      
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!user?.id && flashcards.length > 0
+  });
+
+  // Fetch user notes
+  const { data: userNotes = [] } = useQuery({
+    queryKey: ['topicNotes', user?.id, topicId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('user_notes')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('topic_id', topicId)
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!user?.id && !!topicId
+  });
+
+  // Fetch related topics
+  const { data: relatedTopics = [] } = useQuery({
+    queryKey: ['relatedTopics', topic?.okruh_id, topicId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('topics')
+        .select('id, title, slug, status')
+        .eq('okruh_id', topic.okruh_id)
+        .eq('status', 'published')
+        .neq('id', topicId)
+        .limit(5);
+      
+      if (error) throw error;
+      return data || [];
     },
     enabled: !!topic?.okruh_id
   });
 
-  const { data: questions = [] } = useQuery({
-    queryKey: ['topicQuestions', topicId],
-    queryFn: () => base44.entities.Question.filter({ topic_id: topicId }),
-    enabled: !!topicId
-  });
-
-  const { data: progress = [] } = useQuery({
-    queryKey: ['userProgress', user?.id],
-    queryFn: () => base44.entities.UserProgress.filter({ user_id: user.id }),
-    enabled: !!user?.id
-  });
-
-  const handleGeneratePracticeQuestions = async () => {
-    if (!topic) return;
-    const MAX_SOURCE_CHARS = 8000;
-    const sourceText = (topic.full_text_content || topic.bullet_points_summary || '').slice(0, MAX_SOURCE_CHARS);
-    const prompt = `Na základě následujícího studijního obsahu vygeneruj 5 atestačních otázek pro opakování:
-
-Téma: ${topic.title}
-${sourceText}
-
-Vytvoř otázky různé obtížnosti, které testují klíčové koncepty z tohoto tématu.`;
-
-    try {
-      const response = await base44.integrations.Core.InvokeLLM({
-        prompt,
-        model: 'gemini-1.5-pro',
-        maxTokens: 2048,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            questions: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  title: { type: "string" },
-                  question_text: { type: "string" },
-                  answer_rich: { type: "string" },
-                  difficulty: { type: "number" }
-                },
-                required: ["title", "question_text", "answer_rich", "difficulty"]
-              }
-            }
-          },
-          required: ["questions"]
-        }
-      });
-
-      if (!response?.questions || !Array.isArray(response.questions)) {
-        throw new Error('AI nevrátila seznam otázek');
-      }
-
-      const generatedQuestions = response.questions.map(q => ({
-        ...q,
-        okruh_id: topic.okruh_id,
-        topic_id: topic.id,
-        visibility: 'public'
-      }));
-
-      await base44.entities.Question.bulkCreate(generatedQuestions);
-      alert(`Vygenerováno ${generatedQuestions.length} nových otázek pro opakování!`);
-      window.location.reload();
-    } catch (error) {
-      console.error('Error generating questions:', error);
-      alert('Chyba při generování otázek');
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <LoadingSpinner size="lg" />
+        <div className="w-8 h-8 border-4 border-slate-200 border-t-purple-600 rounded-full animate-spin"></div>
       </div>
     );
   }
 
-  if (isError) {
+  if (error || !topic) {
     return (
-      <div className="p-6 max-w-2xl mx-auto">
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            Nepodařilo se načíst téma. {error?.message || 'Zkuste to prosím znovu.'}
-          </AlertDescription>
-        </Alert>
-        <div className="mt-4">
-          <Button variant="outline" asChild>
-            <Link to={createPageUrl('Atestace')}>
-              <ChevronLeft className="w-4 h-4 mr-2" />
-              Zpět na studium
-            </Link>
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  if (!topic) {
-    return (
-      <div className="p-6 max-w-2xl mx-auto">
-        <EmptyState
-          icon={BookOpen}
-          title="Téma nenalezeno"
-          description="Toto téma neexistuje nebo bylo smazáno"
-          action={
-            <Button asChild>
-              <Link to={createPageUrl('Atestace')}>
-                <ChevronLeft className="w-4 h-4 mr-2" />
-                Zpět na studium
-              </Link>
+      <div className="container max-w-4xl mx-auto p-6">
+        <Card className="border-red-200">
+          <CardContent className="p-6">
+            <p className="text-red-600">Téma nenalezeno</p>
+            <Button onClick={() => navigate(-1)} variant="outline" className="mt-4">
+              Zpět
             </Button>
-          }
-        />
+          </CardContent>
+        </Card>
       </div>
     );
   }
-
-  const hasContent = topic.overview_md || topic.principles_md || topic.full_text_content || topic.bullet_points_summary || topic.deep_dive_content;
-  const hasNewTemplate = topic.overview_md || topic.principles_md || topic.relations_md;
 
   return (
-    <div className="mn-reading p-6 lg:p-8 max-w-5xl mx-auto">
-      {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-6">
-        <Link to={createPageUrl('Atestace')} className="hover:text-teal-600 transition-colors">
+    <div className="container max-w-6xl mx-auto p-6 space-y-6">
+      {/* Breadcrumbs */}
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <Link to="/Studium" className="hover:text-foreground">
           Studium
         </Link>
-        <span>/</span>
-        {okruh && (
-          <>
-            <Link 
-              to={createPageUrl('OkruhDetail') + `?id=${okruh.id}`}
-              className="hover:text-teal-600 transition-colors"
-            >
-              {okruh.title}
-            </Link>
-            <span>/</span>
-          </>
-        )}
-        <span className="text-slate-900 dark:text-white font-medium">{topic.title}</span>
+        <ChevronLeft className="w-4 h-4 rotate-180" />
+        <Link to={`/Okruhy?obor_id=${topic.obory?.id}`} className="hover:text-foreground">
+          {topic.obory?.name}
+        </Link>
+        <ChevronLeft className="w-4 h-4 rotate-180" />
+        <Link to={`/OkruhDetail?id=${topic.okruhy?.id}`} className="hover:text-foreground">
+          {topic.okruhy?.name}
+        </Link>
+        <ChevronLeft className="w-4 h-4 rotate-180" />
+        <span className="text-foreground font-medium">{topic.title}</span>
       </div>
 
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-start gap-3 mb-4">
-          <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white">
-            {topic.title}
-          </h1>
-          {topic.is_reviewed ? (
-            <Badge className="bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300 flex items-center gap-1">
-              <Shield className="w-3.5 h-3.5" />
-              Ověřeno odborníkem
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <h1 className="text-3xl font-bold mb-2">{topic.title}</h1>
+          {topic.description && (
+            <p className="text-muted-foreground">{topic.description}</p>
+          )}
+          
+          <div className="flex items-center gap-3 mt-4">
+            <Badge variant={topic.status === 'published' ? 'default' : 'secondary'}>
+              {topic.status}
             </Badge>
-          ) : (
-            <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 flex items-center gap-1">
-              <AlertTriangle className="w-3.5 h-3.5" />
-              AI Draft - vyžaduje odbornou kontrolu
-            </Badge>
+            
+            {topic.ai_model && (
+              <Badge variant="outline" className="gap-1">
+                <Sparkles className="w-3 h-3" />
+                {topic.ai_model}
+              </Badge>
+            )}
+            
+            {topic.ai_confidence && (
+              <Badge variant="outline" className="gap-1">
+                <TrendingUp className="w-3 h-3" />
+                Confidence: {(topic.ai_confidence * 100).toFixed(0)}%
+              </Badge>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm">
+            <Star className="w-4 h-4 mr-2" />
+            Oblíbené
+          </Button>
+          
+          {flashcards.length > 0 && (
+            <Button variant="default" size="sm">
+              <Zap className="w-4 h-4 mr-2" />
+              Review ({flashcards.length} cards)
+            </Button>
           )}
         </div>
-        
-        {topic.learning_objectives && topic.learning_objectives.length > 0 && (
-          <Card className="bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800">
-            <CardContent className="p-4">
-              <h3 className="font-semibold text-teal-900 dark:text-teal-100 mb-2 flex items-center gap-2">
-                <Target className="w-4 h-4" />
-                Výukové cíle
-              </h3>
-              <ul className="space-y-1 text-sm text-teal-800 dark:text-teal-200">
-                {topic.learning_objectives.map((obj, i) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <span className="text-teal-600 dark:text-teal-400 mt-0.5">•</span>
-                    <span>{obj}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        )}
       </div>
 
-      {/* Content - New Template or Legacy */}
-      {hasNewTemplate ? (
-        <div className="space-y-6 mb-8">
-          {/* 1. Přehled */}
-          {topic.overview_md && (
-            <Card>
-              <CardContent className="p-6">
-                <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
-                  Přehled
-                </h2>
-                <HTMLContent content={topic.overview_md} />
-              </CardContent>
-            </Card>
-          )}
-
-          {/* 2. Základní principy */}
-          {topic.principles_md && (
-            <Card>
-              <CardContent className="p-6">
-                <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
-                  Základní principy
-                </h2>
-                <HTMLContent content={topic.principles_md} />
-              </CardContent>
-            </Card>
-          )}
-
-          {/* 3. Souvislosti a vztahy */}
-          {topic.relations_md && (
-            <Card>
-              <CardContent className="p-6">
-                <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
-                  Souvislosti a vztahy
-                </h2>
-                <HTMLContent content={topic.relations_md} />
-              </CardContent>
-            </Card>
-          )}
-
-          {/* 4. Klinické myšlení */}
-          {topic.clinical_thinking_md && (
-            <Card>
-              <CardContent className="p-6">
-                <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
-                  Klinické myšlení
-                </h2>
-                <HTMLContent content={topic.clinical_thinking_md} />
-              </CardContent>
-            </Card>
-          )}
-
-          {/* 5. Časté chyby */}
-          {topic.common_pitfalls_md && (
-            <Card>
-              <CardContent className="p-6">
-                <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
-                  Časté chyby a slepé uličky
-                </h2>
-                <HTMLContent content={topic.common_pitfalls_md} />
-              </CardContent>
-            </Card>
-          )}
-
-          {/* 6. Mentální model */}
-          {topic.mental_model_md && (
-            <Card>
-              <CardContent className="p-6">
-                <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
-                  Mentální model
-                </h2>
-                <HTMLContent content={topic.mental_model_md} />
-              </CardContent>
-            </Card>
-          )}
-
-          {/* 7. Mini-scénáře */}
-          {topic.scenarios_md && (
-            <Card>
-              <CardContent className="p-6">
-                <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
-                  Mini-scénáře
-                </h2>
-                <HTMLContent content={topic.scenarios_md} />
-              </CardContent>
-            </Card>
-          )}
-
-          {/* 8. Klíčové body */}
-          {topic.key_takeaways_md && (
-            <Card>
-              <CardContent className="p-6">
-                <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
-                  Klíčové body k zapamatování
-                </h2>
-                <HTMLContent content={topic.key_takeaways_md} />
-              </CardContent>
-            </Card>
-          )}
-
-          {/* 9. Hippo vysvětluje */}
-        </div>
-      ) : hasContent ? (
-        <Tabs value={activeView} onValueChange={setActiveView} className="mb-8">
-          <TabsList className="mn-segmented grid w-full grid-cols-3 mb-6">
-            <TabsTrigger value="full" className="flex items-center gap-2">
-              <BookOpen className="w-4 h-4" />
-              Plný text
-            </TabsTrigger>
-            <TabsTrigger value="bullets" className="flex items-center gap-2">
-              <List className="w-4 h-4" />
-              High-Yield
-            </TabsTrigger>
-            <TabsTrigger value="deepdive" className="flex items-center gap-2">
-              <Microscope className="w-4 h-4" />
-              Deep Dive
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="full">
-            <Card>
-              <CardContent className="p-6">
-                {topic.full_text_content ? (
-                  <div className="high-yield-content">
-                    <HTMLContent content={topic.full_text_content} />
-                  </div>
-                ) : (
-                  <p className="text-slate-500 text-center py-8">
-                    Plný text zatím není dostupný
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="bullets">
-            <Card>
-              <CardContent className="p-6">
-                {topic.bullet_points_summary ? (
-                  <div>
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 italic">
-                      Toto jsou klíčové znalosti, které si máš odnést.
-                    </p>
-                    <div className="high-yield-content">
-                      <HTMLContent content={topic.bullet_points_summary} />
-                    </div>
-                  </div>
-                ) : (
-                  <p className="text-slate-500 text-center py-8">
-                    High-Yield obsah zatím není dostupný
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="deepdive">
-            <Card>
-              <CardContent className="p-6">
-                {topic.deep_dive_content ? (
-                  <div className="high-yield-content">
-                    <HTMLContent content={topic.deep_dive_content} />
-                  </div>
-                ) : (
-                  <p className="text-slate-500 text-center py-8">
-                    Podrobný obsah zatím není dostupný
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      ) : (
-        <Card className="mb-8">
-          <CardContent className="p-8 text-center">
-            <BookOpen className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-            <p className="text-slate-500 mb-2">Studijní obsah zatím není k dispozici</p>
-            <p className="text-sm text-slate-400">Přidejte obsah v admin panelu</p>
+      {/* AI Warnings */}
+      {topic.warnings && topic.warnings.length > 0 && (
+        <Card className="border-yellow-200 bg-yellow-50 dark:bg-yellow-950/20">
+          <CardContent className="p-4">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="font-medium text-yellow-900 dark:text-yellow-100 mb-2">
+                  Expert verification needed
+                </p>
+                <ul className="text-sm text-yellow-800 dark:text-yellow-200 space-y-1">
+                  {topic.warnings.map((warning, idx) => (
+                    <li key={idx}>• {warning.message || warning}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </CardContent>
         </Card>
       )}
 
-      {/* AI-generated metadata: warnings and sources (at the end of content) */}
-      {hasContent && (topic.warnings?.length > 0 || topic.sources?.length > 0) && (
-        <div className="space-y-3 mb-8">
-          {/* Warnings first */}
-          {topic.warnings?.length > 0 && (
-            <Alert className="bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
-              <AlertTriangle className="h-4 w-4 text-amber-600" />
-              <AlertDescription>
-                <div className="font-semibold text-amber-900 dark:text-amber-100 mb-2">
-                  ⚠️ Vyžaduje ověření odborníkem
-                </div>
-                <ul className="space-y-1 text-sm text-amber-800 dark:text-amber-200">
-                  {topic.warnings.map((warning, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className="text-amber-600 dark:text-amber-400 mt-0.5">•</span>
-                      <span>{warning}</span>
-                    </li>
-                  ))}
-                </ul>
-              </AlertDescription>
-            </Alert>
-          )}
+      {/* Main Content */}
+      <Card>
+        <CardHeader>
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="fulltext" className="gap-2">
+                <BookOpen className="w-4 h-4" />
+                Full Text
+              </TabsTrigger>
+              <TabsTrigger value="bullet" className="gap-2">
+                <List className="w-4 h-4" />
+                Quick Overview
+              </TabsTrigger>
+              <TabsTrigger value="deepdive" className="gap-2">
+                <Brain className="w-4 h-4" />
+                Deep Dive
+              </TabsTrigger>
+              <TabsTrigger value="sources" className="gap-2">
+                <LinkIcon className="w-4 h-4" />
+                Sources
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </CardHeader>
 
-          {/* Sources second */}
-          {topic.sources?.length > 0 && (
-            <Card className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
-              <CardContent className="p-4">
-                <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2 flex items-center gap-2">
-                  <BookOpen className="w-4 h-4" />
-                  📚 Citované zdroje ({topic.sources.length})
-                </h3>
-                <ul className="space-y-1 text-xs text-blue-800 dark:text-blue-200">
-                  {topic.sources.map((source, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className="text-blue-600 dark:text-blue-400 mt-0.5">•</span>
-                      <span>{source}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          )}
-        </div>
+        <CardContent className="p-6">
+          <TabsContent value="fulltext" className="mt-0">
+            {topic.full_text_content ? (
+              <div className="prose dark:prose-invert max-w-none">
+                {topic.full_text_content}
+              </div>
+            ) : (
+              <EmptyContent message="No full text available" />
+            )}
+          </TabsContent>
+
+          <TabsContent value="bullet" className="mt-0">
+            {topic.bullet_points_summary ? (
+              <div className="prose dark:prose-invert max-w-none">
+                {topic.bullet_points_summary}
+              </div>
+            ) : (
+              <EmptyContent message="No summary available" />
+            )}
+          </TabsContent>
+
+          <TabsContent value="deepdive" className="mt-0">
+            {topic.deep_dive_content ? (
+              <div className="prose dark:prose-invert max-w-none">
+                {topic.deep_dive_content}
+              </div>
+            ) : (
+              <EmptyContent message="No deep dive content available" />
+            )}
+          </TabsContent>
+
+          <TabsContent value="sources" className="mt-0">
+            {topic.sources && topic.sources.length > 0 ? (
+              <div className="space-y-3">
+                {topic.sources.map((source, idx) => (
+                  <Card key={idx} className="border-slate-200">
+                    <CardContent className="p-4">
+                      <div className="flex items-start gap-3">
+                        <FileText className="w-5 h-5 text-muted-foreground mt-0.5" />
+                        <div className="flex-1">
+                          <p className="font-medium">{source.title || `Source ${idx + 1}`}</p>
+                          {source.url && (
+                            <a 
+                              href={source.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-sm text-purple-600 hover:underline"
+                            >
+                              {source.url}
+                            </a>
+                          )}
+                          {source.description && (
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {source.description}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <EmptyContent message="No sources cited" />
+            )}
+          </TabsContent>
+        </CardContent>
+      </Card>
+
+      {/* Learning Objectives */}
+      {topic.learning_objectives && topic.learning_objectives.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Target className="w-5 h-5" />
+              Learning Objectives
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2">
+              {topic.learning_objectives.map((objective, idx) => (
+                <li key={idx} className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 flex items-center justify-center text-sm font-medium flex-shrink-0">
+                    {idx + 1}
+                  </div>
+                  <span className="flex-1">{objective}</span>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Flashcards Section */}
+      {flashcards.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Zap className="w-5 h-5" />
+                Flashcards ({flashcards.length})
+              </div>
+              <Button size="sm">
+                Start Review
+              </Button>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-2 gap-4">
+              {flashcards.slice(0, 4).map((card) => {
+                const progress = flashcardProgress.find(p => p.flashcard_id === card.id);
+                return (
+                  <Card key={card.id} className="border-slate-200">
+                    <CardContent className="p-4">
+                      <div className="flex items-start justify-between mb-2">
+                        <Badge variant="outline">
+                          Difficulty: {card.difficulty || 2}/3
+                        </Badge>
+                        {progress && (
+                          <Badge variant="default">
+                            {progress.repetitions} reviews
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="font-medium mb-2">{card.question}</p>
+                      <p className="text-sm text-muted-foreground line-clamp-2">
+                        {card.answer}
+                      </p>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+            
+            {flashcards.length > 4 && (
+              <div className="text-center mt-4">
+                <Button variant="outline" size="sm">
+                  Show all {flashcards.length} cards
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       )}
 
       {/* User Notes */}
-      {hasContent && (
-        <div className="mb-8">
-          <TopicNotesV2 topicId={topicId} user={user} />
-        </div>
-      )}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="w-5 h-5" />
+            My Notes ({userNotes.length})
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {userNotes.length === 0 ? (
+            <EmptyContent message="No notes yet. Start taking notes while studying!" />
+          ) : (
+            <div className="space-y-3">
+              {userNotes.map((note) => (
+                <Card key={note.id} className="border-slate-200">
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between mb-2">
+                      <Badge variant="outline">{note.category || 'Note'}</Badge>
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(note.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <p className="text-sm">{note.note_text}</p>
+                    {note.selected_text && (
+                      <div className="mt-2 p-2 bg-yellow-50 dark:bg-yellow-950/20 rounded text-sm">
+                        "{note.selected_text}"
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-      {/* Flashcards Practice */}
-      {hasContent && (
-        <div className="mb-8">
-          <FlashcardLauncher topicId={topicId} user={user} />
-        </div>
-      )}
-
-      {/* Questions list */}
-      {questions.length > 0 && (
-        <div>
-          <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-            Otázky k tomuto tématu ({questions.length})
-          </h2>
-          <div className="space-y-2">
-            {questions.map((question) => {
-              const questionProgress = progress.find(p => p.question_id === question.id);
-              return (
+      {/* Related Topics */}
+      {relatedTopics.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Related Topics</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-2 gap-3">
+              {relatedTopics.map((related) => (
                 <Link
-                  key={question.id}
-                  to={createPageUrl('QuestionDetail') + `?id=${question.id}`}
-                  className="flex items-center gap-4 p-4 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 hover:border-teal-300 dark:hover:border-teal-700 transition-colors group"
+                  key={related.id}
+                  to={`/TopicDetail/${related.id}`}
+                  className="block p-3 rounded-lg border hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
                 >
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
-                      {question.title}
-                    </p>
-                    <DifficultyIndicator level={question.difficulty || 1} />
-                  </div>
-                  <StatusBadge status={questionProgress?.status || 'new'} size="sm" />
-                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-teal-600 transition-colors" />
+                  <p className="font-medium">{related.title}</p>
                 </Link>
-              );
-            })}
-          </div>
-        </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       )}
+    </div>
+  );
+}
 
-      <FloatingCopilot
-        topicContent={topic.full_text_content || topic.bullet_points_summary || ''}
-        topicTitle={topic.title || ''}
-      />
+function EmptyContent({ message }) {
+  return (
+    <div className="text-center py-12 text-muted-foreground">
+      <p>{message}</p>
     </div>
   );
 }
