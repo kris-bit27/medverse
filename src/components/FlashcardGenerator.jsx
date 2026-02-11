@@ -189,23 +189,28 @@ export default function FlashcardGenerator({ topicId, topicContent }) {
               return (
                 <Card 
                   key={index}
-                  className={`cursor-pointer transition-all ${
+                  className={`transition-all ${
                     isApproved 
-                      ? 'border-green-200 bg-green-50 dark:bg-green-950/20' 
-                      : 'border-red-200 bg-red-50 dark:bg-red-950/20 opacity-60'
+                      ? 'border-green-500 bg-green-50 dark:bg-green-950/20' 
+                      : 'border-red-500 bg-red-50 dark:bg-red-950/20 opacity-60'
                   }`}
-                  onClick={() => toggleCardApproval(index)}
                 >
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between mb-3">
                       <Badge variant="outline" className="text-xs">
                         {card.difficulty}
                       </Badge>
-                      {isApproved ? (
-                        <CheckCircle className="w-5 h-5 text-green-600" />
-                      ) : (
-                        <XCircle className="w-5 h-5 text-red-600" />
-                      )}
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => toggleCardApproval(index)}
+                      >
+                        {isApproved ? (
+                          <CheckCircle className="w-5 h-5 text-green-600" />
+                        ) : (
+                          <XCircle className="w-5 h-5 text-red-600" />
+                        )}
+                      </Button>
                     </div>
 
                     <div className="space-y-2">
@@ -220,9 +225,14 @@ export default function FlashcardGenerator({ topicId, topicContent }) {
                       </div>
                     </div>
 
-                    <p className="text-xs text-muted-foreground mt-3">
-                      Klikněte pro {isApproved ? 'odmítnutí' : 'schválení'}
-                    </p>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="w-full mt-3"
+                      onClick={() => toggleCardApproval(index)}
+                    >
+                      {isApproved ? 'Odmítnout' : 'Schválit'}
+                    </Button>
                   </CardContent>
                 </Card>
               );
