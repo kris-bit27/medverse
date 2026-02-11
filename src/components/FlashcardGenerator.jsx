@@ -88,27 +88,33 @@ export default function FlashcardGenerator({ topicId, topicContent }) {
   // Save flashcards mutation
   const saveFlashcards = useMutation({
     mutationFn: async (selectedCards) => {
-      const promises = selectedCards.map(card => 
-        supabase
-          .from('flashcards')
-          .insert({
-            topic_id: topicId,
-            question: card.front,
-            answer: card.back,
-            difficulty: card.difficulty === 'easy' ? 1 : card.difficulty === 'medium' ? 2 : 3,
-            card_type: 'basic',
-            ai_generated: true,
-            ai_model: 'pattern-extraction',
-            ai_confidence: 0.85
-          })
-      );
-
-      const results = await Promise.all(promises);
+      console.log('💾 Saving flashcards:', selectedCards);
       
-      // Check for errors
-      results.forEach(result => {
-        if (result.error) throw result.error;
-      });
+      const cardsToInsert = selectedCards.map(card => ({
+        topic_id: topicId,
+        question: card.front,
+        answer: card.back,
+        difficulty: card.difficulty === 'easy' ? 1 : card.difficulty === 'medium' ? 2 : 3,
+        card_type: 'basic',
+        ai_generated: true,
+        ai_model: 'pattern-extraction',
+        ai_confidence: 0.85
+      }));
+
+      console.log('📝 Cards to insert:', cardsToInsert);
+
+      const { data, error } = await supabase
+        .from('flashcards')
+        .insert(cardsToInsert)
+        .select();
+
+      if (error) {
+        console.error('❌ Flashcard save error:', error);
+        throw error;
+      }
+
+      console.log('✅ Flashcards saved:', data);
+      return data;
     },
     onSuccess: () => {
       toast.success('Kartičky uloženy!');
@@ -122,10 +128,16 @@ export default function FlashcardGenerator({ topicId, topicContent }) {
 
   const handleSaveAll = () => {
     const approved = generatedCards.filter(card => card.approved !== false);
+    
+    console.log('🎯 Approved cards:', approved);
+    console.log('📊 Total cards:', generatedCards.length);
+    
     if (approved.length === 0) {
-      toast.error('Vyberte alespoň jednu kartičku');
+      toast.error('Vyberte alespoň jednu kartičku ke schválení');
       return;
     }
+    
+    console.log('💾 Attempting to save', approved.length, 'cards...');
     saveFlashcards.mutate(approved);
   };
 
