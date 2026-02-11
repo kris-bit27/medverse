@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
+import { createPageUrl } from '../utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -167,7 +168,7 @@ export default function DashboardV2() {
             </p>
             {dueCardsCount > 0 && (
               <Button size="sm" className="mt-3 w-full" asChild>
-                <Link to="/FlashcardReview">
+                <Link to={createPageUrl("FlashcardReviewV2")}>
                   Start Review
                 </Link>
               </Button>
@@ -215,7 +216,7 @@ export default function DashboardV2() {
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-3 gap-4">
-            <Link to="/Studium">
+            <Link to={createPageUrl("Studium")}>
               <Card className="hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors cursor-pointer border-2">
                 <CardContent className="p-6 flex items-start gap-4">
                   <div className="p-3 rounded-lg bg-purple-100 dark:bg-purple-900">
@@ -232,7 +233,7 @@ export default function DashboardV2() {
               </Card>
             </Link>
 
-            <Link to="/FlashcardReview">
+            <Link to={createPageUrl("FlashcardReviewV2")}>
               <Card className="hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors cursor-pointer border-2">
                 <CardContent className="p-6 flex items-start gap-4">
                   <div className="p-3 rounded-lg bg-orange-100 dark:bg-orange-900">
@@ -249,7 +250,7 @@ export default function DashboardV2() {
               </Card>
             </Link>
 
-            <Link to="/TestGenerator">
+            <Link to={createPageUrl("TestGenerator")}>
               <Card className="hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors cursor-pointer border-2">
                 <CardContent className="p-6 flex items-start gap-4">
                   <div className="p-3 rounded-lg bg-blue-100 dark:bg-blue-900">
