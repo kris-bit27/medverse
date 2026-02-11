@@ -33,7 +33,8 @@ import {
   ClipboardList,
   MessageSquare,
   Package,
-  Calendar as CalendarIcon
+  Calendar as CalendarIcon,
+  Zap
 } from 'lucide-react';
 import { canAccessAdmin, getRoleDisplayName, getRoleBadgeColor } from '@/components/utils/permissions';
 
@@ -59,7 +60,7 @@ export default function Layout({ children, currentPageName }) {
   const isPublicPage = publicPages.includes(currentPageName);
 
   // Use Supabase Auth instead of base44
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
     const saved = localStorage.getItem('mn:theme') || localStorage.getItem('medverse-theme');
@@ -78,8 +79,8 @@ export default function Layout({ children, currentPageName }) {
     localStorage.setItem('mn:theme', nextTheme);
   };
 
-  const handleLogout = () => {
-    base44.auth.logout();
+  const handleLogout = async () => {
+    await logout();
   };
 
   // Public pages - no layout wrapper
@@ -275,15 +276,21 @@ export default function Layout({ children, currentPageName }) {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuItem asChild>
-                  <Link to={createPageUrl('Profile')} className="flex items-center gap-2">
+                  <Link to={createPageUrl('MyProfile')} className="flex items-center gap-2">
                     <User className="w-4 h-4" />
-                    Profil
+                    Můj profil
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to={createPageUrl('Profile')} className="flex items-center gap-2">
+                  <Link to={createPageUrl('AccountSettings')} className="flex items-center gap-2">
                     <Settings className="w-4 h-4" />
-                    Nastavení
+                    Nastavení účtu
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to={createPageUrl('AICredits')} className="flex items-center gap-2">
+                    <Zap className="w-4 h-4" />
+                    AI Kredity & Billing
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
