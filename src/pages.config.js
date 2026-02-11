@@ -46,6 +46,10 @@ import AdminCostAnalytics from './pages/AdminCostAnalytics';
 import MyProfile from './pages/MyProfile';
 import AccountSettings from './pages/AccountSettings';
 import AICredits from './pages/AICredits';
+import Studium from './pages/Studium';
+import TopicDetailV2 from './pages/TopicDetailV2';
+import FlashcardReviewV2 from './pages/FlashcardReviewV2';
+import DashboardV2 from './pages/DashboardV2';
 import __Layout from './Layout.jsx';
 
 
@@ -95,6 +99,10 @@ export const PAGES = {
     "MyProfile": MyProfile,
     "AccountSettings": AccountSettings,
     "AICredits": AICredits,
+    "Studium": Studium,
+    "TopicDetailV2": TopicDetailV2,
+    "FlashcardReviewV2": FlashcardReviewV2,
+    "DashboardV2": DashboardV2,
 }
 
 export const pagesConfig = {
