@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
+import { createPageUrl } from '../utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -25,7 +26,10 @@ import {
 import { toast } from 'sonner';
 
 export default function TopicDetailV2() {
-  const { topicId } = useParams();
+  // Get topicId from query params (MedVerse uses ?id=...)
+  const urlParams = new URLSearchParams(window.location.search);
+  const topicId = urlParams.get('id');
+  
   const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -444,7 +448,7 @@ export default function TopicDetailV2() {
               {relatedTopics.map((related) => (
                 <Link
                   key={related.id}
-                  to={`/TopicDetail/${related.id}`}
+                  to={`/TopicDetailV2?id=${related.id}`}
                   className="block p-3 rounded-lg border hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
                 >
                   <p className="font-medium">{related.title}</p>
