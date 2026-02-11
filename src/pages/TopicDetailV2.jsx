@@ -7,7 +7,9 @@ import { createPageUrl } from '../utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
 import { 
   ChevronLeft, 
   BookOpen,
@@ -21,7 +23,9 @@ import {
   AlertTriangle,
   Star,
   Clock,
-  TrendingUp
+  TrendingUp,
+  Save,
+  StickyNote
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -34,6 +38,7 @@ export default function TopicDetailV2() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('fulltext');
+  const [noteContent, setNoteContent] = useState('');
 
   // Fetch topic
   const { data: topic, isLoading, error } = useQuery({
@@ -89,22 +94,29 @@ export default function TopicDetailV2() {
     enabled: !!user?.id && flashcards.length > 0
   });
 
-  // Fetch user notes
-  const { data: userNotes = [] } = useQuery({
-    queryKey: ['topicNotes', user?.id, topicId],
+  // Fetch user note
+  const { data: userNote } = useQuery({
+    queryKey: ['topicNote', user?.id, topicId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('user_notes')
+        .from('topic_notes')
         .select('*')
         .eq('user_id', user.id)
         .eq('topic_id', topicId)
-        .order('created_at', { ascending: false });
+        .single();
       
-      if (error) throw error;
-      return data || [];
+      if (error && error.code !== 'PGRST116') throw error; // Ignore "not found" error
+      return data;
     },
     enabled: !!user?.id && !!topicId
   });
+
+  // Initialize note content when loaded
+  React.useEffect(() => {
+    if (userNote?.content) {
+      setNoteContent(userNote.content);
+    }
+  }, [userNote]);
 
   // Fetch related topics
   const { data: relatedTopics = [] } = useQuery({
@@ -122,6 +134,34 @@ export default function TopicDetailV2() {
       return data || [];
     },
     enabled: !!topic?.okruh_id
+  });
+
+  // Save note mutation
+  const saveNote = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase
+        .from('topic_notes')
+        .upsert({
+          user_id: user.id,
+          topic_id: topicId,
+          content: noteContent,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id,topic_id'
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      toast.success('Poznámka uložena');
+      queryClient.invalidateQueries(['topicNote', user?.id, topicId]);
+    },
+    onError: () => {
+      toast.error('Chyba při ukládání poznámky');
+    }
   });
 
   if (isLoading) {
@@ -235,7 +275,7 @@ export default function TopicDetailV2() {
       <Card>
         <CardHeader>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="fulltext" className="gap-2">
                 <BookOpen className="w-4 h-4" />
                 Full Text
@@ -247,6 +287,10 @@ export default function TopicDetailV2() {
               <TabsTrigger value="deepdive" className="gap-2">
                 <Brain className="w-4 h-4" />
                 Deep Dive
+              </TabsTrigger>
+              <TabsTrigger value="notes" className="gap-2">
+                <StickyNote className="w-4 h-4" />
+                Moje Poznámky
               </TabsTrigger>
               <TabsTrigger value="sources" className="gap-2">
                 <LinkIcon className="w-4 h-4" />
@@ -285,6 +329,43 @@ export default function TopicDetailV2() {
             ) : (
               <EmptyContent message="No deep dive content available" />
             )}
+          </TabsContent>
+
+          <TabsContent value="notes" className="mt-0">
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="notes" className="text-sm font-medium mb-2 block">
+                  Vaše poznámky k tématu
+                </Label>
+                <Textarea
+                  id="notes"
+                  placeholder="Začněte psát své poznámky zde..."
+                  value={noteContent}
+                  onChange={(e) => setNoteContent(e.target.value)}
+                  className="min-h-[300px] font-mono text-sm"
+                />
+                <p className="text-xs text-muted-foreground mt-2">
+                  {noteContent.length} znaků • Poznámky se automaticky ukládají
+                </p>
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => saveNote.mutate()}
+                  disabled={saveNote.isPending || !noteContent}
+                  className="gap-2"
+                >
+                  <Save className="w-4 h-4" />
+                  {saveNote.isPending ? 'Ukládání...' : 'Uložit poznámku'}
+                </Button>
+
+                {userNote && (
+                  <p className="text-sm text-muted-foreground flex items-center gap-2 py-2">
+                    Naposledy uloženo: {new Date(userNote.updated_at).toLocaleString('cs-CZ')}
+                  </p>
+                )}
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="sources" className="mt-0">
@@ -350,7 +431,8 @@ export default function TopicDetailV2() {
       )}
 
       {/* Flashcards Section */}
-      {flashcards.length > 0 && (
+      {/* Flashcards Section */}
+      {flashcards.length > 0 ? (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
@@ -397,6 +479,29 @@ export default function TopicDetailV2() {
                 </Button>
               </div>
             )}
+          </CardContent>
+        </Card>
+      ) : (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5" />
+              Flashcards
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-center py-8">
+            <Zap className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+            <h3 className="font-semibold mb-2">Zatím žádné flashcards</h3>
+            <p className="text-sm text-muted-foreground mb-6">
+              Vygenerujte AI flashcards z tohoto tématu pro efektivní učení
+            </p>
+            <Button>
+              <Sparkles className="w-4 h-4 mr-2" />
+              Generovat Flashcards (AI)
+            </Button>
+            <p className="text-xs text-muted-foreground mt-3">
+              Spotřebuje 1 AI kredit
+            </p>
           </CardContent>
         </Card>
       )}
