@@ -7,7 +7,7 @@ import {
   LogOut,
   ChevronDown 
 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 
 export default function TopBar({ user }) {
@@ -29,8 +29,8 @@ export default function TopBar({ user }) {
 
   const handleSignOut = async () => {
     try {
-      await base44.auth.logout();
-      navigate('/');
+      await supabase.auth.signOut();
+      navigate('/login');
       toast.success('Odhlášen');
     } catch (error) {
       toast.error('Chyba při odhlašování');
