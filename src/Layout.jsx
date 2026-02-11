@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import { useAuth } from '@/lib/AuthContext';
 import { createPageUrl } from './utils';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -59,12 +58,8 @@ export default function Layout({ children, currentPageName }) {
 
   const isPublicPage = publicPages.includes(currentPageName);
 
-  const { data: user } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me(),
-    retry: false,
-    enabled: !isPublicPage
-  });
+  // Use Supabase Auth instead of base44
+  const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
     const saved = localStorage.getItem('mn:theme') || localStorage.getItem('medverse-theme');
