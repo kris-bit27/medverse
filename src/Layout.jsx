@@ -42,7 +42,7 @@ const publicPages = ['Landing', 'Pricing', 'Demo'];
 
 const navItems = [
   { name: 'Dashboard', page: 'Dashboard', icon: LayoutDashboard },
-  { name: 'Studium', page: 'Studium', icon: GraduationCap },
+  { name: 'Studium', page: 'StudiumV2', icon: GraduationCap },
   { name: 'Opakování', page: 'ReviewToday', icon: RefreshCw },
   { name: 'Studijní balíčky', page: 'StudyPackages', icon: Package },
   { name: 'Články', page: 'Articles', icon: BookOpen },
@@ -168,7 +168,7 @@ export default function Layout({ children, currentPageName }) {
           <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
             {navItems.map((item) => {
               const isActive = currentPageName === item.page ||
-                (item.page === 'Studium' && ['Okruhy', 'OkruhDetail', 'QuestionDetail', 'TestGenerator', 'TopicDetail', 'TopicDetailV2'].includes(currentPageName)) ||
+                (item.page === 'StudiumV2' && ['Okruhy', 'OkruhDetail', 'QuestionDetail', 'TestGenerator', 'TopicDetail', 'TopicDetailV2', 'Studium'].includes(currentPageName)) ||
                 (item.page === 'Forum' && ['Forum', 'ForumThread'].includes(currentPageName)) ||
                 (item.page === 'StudyPackages' && ['StudyPackages', 'StudyPackageCreate', 'StudyPackageDetail'].includes(currentPageName)) ||
                 (item.page === 'StudyPlanner' && ['StudyPlanner', 'StudyPlanCreate', 'StudyPlanDetail'].includes(currentPageName));
