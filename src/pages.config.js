@@ -52,6 +52,9 @@ import TopicDetailV2 from './pages/TopicDetailV2';
 import FlashcardReviewV2 from './pages/FlashcardReviewV2';
 import DashboardV2 from './pages/DashboardV2';
 import TestGeneratorV2 from './pages/TestGeneratorV2';
+import TestSessionV2 from './pages/TestSessionV2';
+import TestResults from './pages/TestResults';
+import StudyPlansV2 from './pages/StudyPlansV2';
 import __Layout from './Layout.jsx';
 
 
@@ -107,6 +110,9 @@ export const PAGES = {
     "FlashcardReviewV2": FlashcardReviewV2,
     "DashboardV2": DashboardV2,
     "TestGeneratorV2": TestGeneratorV2,
+    "TestSessionV2": TestSessionV2,
+    "TestResults": TestResults,
+    "StudyPlansV2": StudyPlansV2,
 }
 
 export const pagesConfig = {
