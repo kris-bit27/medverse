@@ -45,10 +45,11 @@ export const AuthProvider = ({ children }) => {
         } else if (data?.session?.user) {
           setUser(mapSupabaseUser(data.session.user));
           setIsAuthenticated(true);
+          setAuthError(null);
         } else {
           setUser(null);
           setIsAuthenticated(false);
-          setAuthError({ type: 'auth_required', message: 'Authentication required' });
+          setAuthError(null); // Don't set error - let routes handle public vs private
         }
       } catch (error) {
         if (!isMounted) return;
@@ -73,7 +74,7 @@ export const AuthProvider = ({ children }) => {
       } else {
         setUser(null);
         setIsAuthenticated(false);
-        setAuthError({ type: 'auth_required', message: 'Authentication required' });
+        setAuthError(null); // Don't set error - let routes handle public vs private
       }
       setIsLoadingAuth(false);
     });
