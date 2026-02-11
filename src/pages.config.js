@@ -57,6 +57,8 @@ import TestResults from './pages/TestResults';
 import TestResultsV2 from './pages/TestResultsV2';
 import StudyPlansV2 from './pages/StudyPlansV2';
 import ClinicalCalculators from './pages/ClinicalCalculators';
+import DrugDatabase from './pages/DrugDatabase';
+import ClinicalGuidelines from './pages/ClinicalGuidelines';
 import LogbookV2 from './pages/LogbookV2';
 import __Layout from './Layout.jsx';
 
@@ -118,6 +120,8 @@ export const PAGES = {
     "TestResultsV2": TestResultsV2,
     "StudyPlansV2": StudyPlansV2,
     "ClinicalCalculators": ClinicalCalculators,
+    "DrugDatabase": DrugDatabase,
+    "ClinicalGuidelines": ClinicalGuidelines,
 }
 
 export const pagesConfig = {
