@@ -107,14 +107,18 @@ export default function TopicDetailV3() {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="content" className="gap-2">
             <BookOpen className="w-4 h-4" />
-            Obsah
+            Full Text
           </TabsTrigger>
           <TabsTrigger value="summary" className="gap-2">
             <FileText className="w-4 h-4" />
-            Souhrn
+            High-Yield
+          </TabsTrigger>
+          <TabsTrigger value="deepdive" className="gap-2">
+            <List className="w-4 h-4" />
+            Deep Dive
           </TabsTrigger>
           <TabsTrigger value="notes" className="gap-2">
             <StickyNote className="w-4 h-4" />
@@ -130,12 +134,12 @@ export default function TopicDetailV3() {
         <TabsContent value="content" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Úplný obsah</CardTitle>
+              <CardTitle>Úplný obsah (Full Text)</CardTitle>
             </CardHeader>
             <CardContent>
-              {topic.fulltext ? (
+              {topic.full_text_content ? (
                 <div className="prose dark:prose-invert max-w-none">
-                  <ReactMarkdown>{topic.fulltext}</ReactMarkdown>
+                  <ReactMarkdown>{topic.full_text_content}</ReactMarkdown>
                 </div>
               ) : (
                 <p className="text-muted-foreground">Obsah není k dispozici</p>
@@ -148,12 +152,12 @@ export default function TopicDetailV3() {
         <TabsContent value="summary" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Shrnutí tématu</CardTitle>
+              <CardTitle>High-Yield Summary</CardTitle>
             </CardHeader>
             <CardContent>
-              {topic.summary ? (
+              {topic.bullet_points_summary ? (
                 <div className="prose dark:prose-invert max-w-none">
-                  <ReactMarkdown>{topic.summary}</ReactMarkdown>
+                  <ReactMarkdown>{topic.bullet_points_summary}</ReactMarkdown>
                 </div>
               ) : (
                 <p className="text-muted-foreground">Souhrn není k dispozici</p>
@@ -161,26 +165,44 @@ export default function TopicDetailV3() {
             </CardContent>
           </Card>
 
-          {topic.key_points && topic.key_points.length > 0 && (
+          {topic.learning_objectives && topic.learning_objectives.length > 0 && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <List className="w-5 h-5" />
-                  Klíčové body
+                  Learning Objectives
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
-                  {topic.key_points.map((point, idx) => (
+                  {topic.learning_objectives.map((obj, idx) => (
                     <li key={idx} className="flex items-start gap-2">
                       <span className="text-purple-600 font-bold">•</span>
-                      <span>{point}</span>
+                      <span>{obj}</span>
                     </li>
                   ))}
                 </ul>
               </CardContent>
             </Card>
           )}
+        </TabsContent>
+
+        {/* Deep Dive Tab */}
+        <TabsContent value="deepdive" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Deep Dive - Pokročilý obsah</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {topic.deep_dive_content ? (
+                <div className="prose dark:prose-invert max-w-none">
+                  <ReactMarkdown>{topic.deep_dive_content}</ReactMarkdown>
+                </div>
+              ) : (
+                <p className="text-muted-foreground">Deep dive obsah není k dispozici</p>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* Notes Tab */}
@@ -192,7 +214,7 @@ export default function TopicDetailV3() {
         <TabsContent value="flashcards">
           <FlashcardGenerator 
             topicId={topicId} 
-            topicContent={topic.fulltext || topic.summary}
+            topicContent={topic.full_text_content || topic.bullet_points_summary}
           />
         </TabsContent>
       </Tabs>
