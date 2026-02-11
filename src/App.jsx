@@ -19,7 +19,7 @@ const LayoutWrapper = ({ children, currentPageName }) => Layout ?
   : <>{children}</>;
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, authError, navigateToLogin } = useAuth();
+  const { user, isAuthenticated, isLoadingAuth, authError, navigateToLogin } = useAuth();
   const location = useLocation();
 
   const publicPaths = new Set([
@@ -33,7 +33,7 @@ const AuthenticatedApp = () => {
 
   const isPublicRoute = publicPaths.has(location.pathname);
 
-  // Show loading spinner while checking app public settings or auth
+  // Show loading spinner while checking auth on private routes
   if (isLoadingAuth && !isPublicRoute) {
     return (
       <div className="fixed inset-0 flex items-center justify-center">
@@ -42,14 +42,16 @@ const AuthenticatedApp = () => {
     );
   }
 
-  // Handle authentication errors
+  // Redirect to login if not authenticated on private route
+  if (!isAuthenticated && !isPublicRoute && !isLoadingAuth) {
+    navigateToLogin();
+    return null;
+  }
+
+  // Handle specific authentication errors
   if (authError && !isPublicRoute) {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
-    } else if (authError.type === 'auth_required') {
-      // Redirect to login automatically
-      navigateToLogin();
-      return null;
     }
   }
 
