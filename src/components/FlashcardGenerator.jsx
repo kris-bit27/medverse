@@ -116,13 +116,20 @@ export default function FlashcardGenerator({ topicId, topicContent }) {
       console.log('✅ Flashcards saved:', data);
       return data;
     },
-    onSuccess: () => {
-      toast.success('Kartičky uloženy!');
+    onSuccess: (data) => {
+      console.log('✅ Save successful, data:', data);
+      toast.success(`Uloženo ${data.length} kartiček!`);
       queryClient.invalidateQueries(['flashcards']);
-      setGeneratedCards([]);
+      setGeneratedCards([]); // Clear the list
     },
-    onError: () => {
-      toast.error('Chyba při ukládání kartiček');
+    onError: (error) => {
+      console.error('❌ Save failed:', error);
+      
+      if (error.code === '23505') {
+        toast.error('Některé kartičky už existují. Zkuste vygenerovat nové.');
+      } else {
+        toast.error(`Chyba při ukládání: ${error.message}`);
+      }
     }
   });
 
@@ -200,6 +207,10 @@ export default function FlashcardGenerator({ topicId, topicContent }) {
               </Button>
             </div>
           </div>
+
+          <p className="text-xs text-muted-foreground">
+            💡 Po uložení můžete vygenerovat nové kartičky z jiné části textu
+          </p>
 
           <div className="space-y-3">
             {generatedCards.map((card, index) => {
