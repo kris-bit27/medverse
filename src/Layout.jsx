@@ -34,7 +34,10 @@ import {
   MessageSquare,
   Package,
   Calendar as CalendarIcon,
-  Zap
+  Zap,
+  Calculator,
+  Pill,
+  FileText
 } from 'lucide-react';
 import { canAccessAdmin, getRoleDisplayName, getRoleBadgeColor } from '@/components/utils/permissions';
 
@@ -46,7 +49,15 @@ const navItems = [
   { name: 'Opakování', page: 'ReviewToday', icon: RefreshCw },
   { name: 'Studijní balíčky', page: 'StudyPackages', icon: Package },
   { name: 'Články', page: 'Articles', icon: BookOpen },
-  { name: 'Kalkulačky', page: 'ClinicalCalculators', icon: Stethoscope },
+  { 
+    name: 'Nástroje', 
+    icon: Stethoscope,
+    submenu: [
+      { name: 'Kalkulačky', page: 'ClinicalCalculators', icon: Calculator },
+      { name: 'Databáze léků', page: 'DrugDatabase', icon: Pill },
+      { name: 'Klinické postupy', page: 'ClinicalGuidelines', icon: FileText },
+    ]
+  },
   { name: 'Plánovač', page: 'StudyPlansV2', icon: CalendarIcon },
   { name: 'Logbook', page: 'Logbook', icon: ClipboardList },
   { name: 'Forum', page: 'Forum', icon: MessageSquare },
@@ -167,6 +178,65 @@ export default function Layout({ children, currentPageName }) {
           {/* Navigation */}
           <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
             {navItems.map((item) => {
+              // Handle submenu items
+              if (item.submenu) {
+                const Icon = item.icon;
+                const hasActiveSubmenu = item.submenu.some(subItem => 
+                  currentPageName === subItem.page
+                );
+                const [isExpanded, setIsExpanded] = React.useState(hasActiveSubmenu);
+
+                return (
+                  <div key={item.name}>
+                    <button
+                      onClick={() => setIsExpanded(!isExpanded)}
+                      className={cn(
+                        "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
+                        hasActiveSubmenu 
+                          ? "is-active" 
+                          : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      )}
+                    >
+                      <Icon className={cn("w-5 h-5", hasActiveSubmenu && "text-teal-600 dark:text-teal-400")} />
+                      {item.name}
+                      <ChevronRight 
+                        className={cn(
+                          "w-4 h-4 ml-auto transition-transform",
+                          isExpanded && "rotate-90"
+                        )} 
+                      />
+                    </button>
+                    
+                    {isExpanded && (
+                      <div className="ml-4 mt-1 space-y-1">
+                        {item.submenu.map((subItem) => {
+                          const isActive = currentPageName === subItem.page;
+                          const SubIcon = subItem.icon;
+
+                          return (
+                            <Link
+                              key={subItem.page}
+                              to={createPageUrl(subItem.page)}
+                              onClick={() => setSidebarOpen(false)}
+                              className={cn(
+                                "flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-all",
+                                isActive 
+                                  ? "bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400" 
+                                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                              )}
+                            >
+                              <SubIcon className="w-4 h-4" />
+                              {subItem.name}
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
+              // Regular nav items
               const isActive = currentPageName === item.page ||
                 (item.page === 'StudiumV2' && ['Okruhy', 'OkruhDetail', 'QuestionDetail', 'TestGenerator', 'TopicDetail', 'TopicDetailV2', 'Studium'].includes(currentPageName)) ||
                 (item.page === 'Forum' && ['Forum', 'ForumThread'].includes(currentPageName)) ||
