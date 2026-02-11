@@ -48,7 +48,7 @@ export default function TopicNotes({ topicId }) {
         const { error } = await supabase
           .from('user_notes')
           .update({
-            content: content,
+            note_text: content,
             updated_at: new Date().toISOString()
           })
           .eq('id', noteId);
@@ -61,8 +61,7 @@ export default function TopicNotes({ topicId }) {
           .insert({
             user_id: user.id,
             topic_id: topicId,
-            content: content,
-            is_private: true
+            note_text: content
           });
 
         if (error) throw error;
@@ -100,7 +99,7 @@ export default function TopicNotes({ topicId }) {
   });
 
   const handleEdit = (note) => {
-    setNoteContent(note.content);
+    setNoteContent(note.note_text);
     setEditingNoteId(note.id);
     setIsEditing(true);
   };
@@ -217,7 +216,7 @@ export default function TopicNotes({ topicId }) {
                   </div>
                 </div>
                 
-                <p className="text-sm whitespace-pre-wrap">{note.content}</p>
+                <p className="text-sm whitespace-pre-wrap">{note.note_text}</p>
                 
                 {note.updated_at !== note.created_at && (
                   <p className="text-xs text-muted-foreground mt-2">
