@@ -114,6 +114,23 @@ export default function DashboardV2() {
     enabled: !!user?.id
   });
 
+  // Fetch recent test sessions
+  const { data: recentTests = [] } = useQuery({
+    queryKey: ['recentTests', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('test_sessions')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(5);
+      
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!user?.id
+  });
+
   const tokenPercentage = tokens 
     ? ((tokens.current_tokens / tokens.monthly_limit) * 100)
     : 0;
@@ -307,6 +324,117 @@ export default function DashboardV2() {
           </CardContent>
         </Card>
       )}
+
+      {/* My Tests Section */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Target className="w-5 h-5" />
+              Moje Testy
+            </CardTitle>
+            <Link to={createPageUrl('TestGeneratorV2')}>
+              <Button size="sm">
+                <Target className="w-4 h-4 mr-2" />
+                Nový test
+              </Button>
+            </Link>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {recentTests.length === 0 ? (
+            <div className="text-center py-8">
+              <Target className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
+              <p className="text-muted-foreground mb-4">
+                Zatím jste nevytvořili žádný test
+              </p>
+              <Link to={createPageUrl('TestGeneratorV2')}>
+                <Button>
+                  <Target className="w-4 h-4 mr-2" />
+                  Vytvořit první test
+                </Button>
+              </Link>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {recentTests.map((test) => {
+                const isCompleted = test.status === 'completed';
+                const inProgress = test.status === 'in_progress';
+
+                return (
+                  <div
+                    key={test.id}
+                    className="flex items-center justify-between p-4 rounded-lg border hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+                  >
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Badge variant={isCompleted ? 'default' : inProgress ? 'secondary' : 'outline'}>
+                          {isCompleted ? 'Dokončeno' : inProgress ? 'Probíhá' : 'Opuštěno'}
+                        </Badge>
+                        <span className="text-sm text-muted-foreground">
+                          {test.question_count} otázek
+                        </span>
+                        {test.time_limit_minutes && (
+                          <span className="text-sm text-muted-foreground">
+                            • {test.time_limit_minutes} min
+                          </span>
+                        )}
+                      </div>
+                      
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(test.created_at).toLocaleString('cs-CZ')}
+                      </p>
+
+                      {isCompleted && test.score !== null && (
+                        <div className="mt-2">
+                          <div className="flex items-center gap-2">
+                            <span className={`text-lg font-bold ${
+                              test.score >= 80 ? 'text-green-600' :
+                              test.score >= 60 ? 'text-yellow-600' :
+                              'text-red-600'
+                            }`}>
+                              {test.score.toFixed(1)}%
+                            </span>
+                            <span className="text-sm text-muted-foreground">
+                              ({test.correct_answers}/{test.total_questions} správně)
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      {inProgress && (
+                        <Link to={`${createPageUrl('TestSessionV2')}?id=${test.id}`}>
+                          <Button size="sm" variant="default">
+                            Pokračovat
+                          </Button>
+                        </Link>
+                      )}
+                      
+                      {isCompleted && (
+                        <Link to={`${createPageUrl('TestResults')}?id=${test.id}`}>
+                          <Button size="sm" variant="outline">
+                            Zobrazit výsledky
+                          </Button>
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+
+              {recentTests.length >= 5 && (
+                <div className="text-center pt-2">
+                  <Button variant="ghost" size="sm">
+                    Zobrazit všechny testy
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
