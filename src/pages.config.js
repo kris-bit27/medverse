@@ -57,6 +57,7 @@ import TestResults from './pages/TestResults';
 import TestResultsV2 from './pages/TestResultsV2';
 import StudyPlansV2 from './pages/StudyPlansV2';
 import ClinicalCalculators from './pages/ClinicalCalculators';
+import LogbookV2 from './pages/LogbookV2';
 import __Layout from './Layout.jsx';
 
 
@@ -80,7 +81,7 @@ export const PAGES = {
     "Forum": Forum,
     "ForumThread": ForumThread,
     "Landing": Landing,
-    "Logbook": Logbook,
+    "Logbook": LogbookV2,
     "OkruhDetail": OkruhDetail,
     "Pricing": Pricing,
     "Profile": Profile,
