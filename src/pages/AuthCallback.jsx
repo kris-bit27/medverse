@@ -19,7 +19,7 @@ export default function AuthCallback() {
       const url = new URL(window.location.href);
       const params = new URLSearchParams(url.search);
       const code = params.get('code');
-      const redirectTo = params.get('redirectTo') || '/Dashboard';
+      const redirectTo = params.get('redirectTo') || '/dashboard';
       const errorParam = params.get('error_description') || params.get('error');
 
       console.log('[AuthCallback] params', Object.fromEntries(params.entries()));
