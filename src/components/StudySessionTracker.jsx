@@ -132,7 +132,7 @@ export default function StudySessionTracker({ topicId, sessionType = 'reading' }
               )}
             </Button>
 
-            {elapsedSeconds > 0 && !isActive && (
+            {elapsedSeconds > 0 && (
               <Button
                 size="sm"
                 onClick={handleComplete}
