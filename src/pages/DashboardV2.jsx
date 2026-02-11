@@ -250,7 +250,7 @@ export default function DashboardV2() {
               </Card>
             </Link>
 
-            <Link to={createPageUrl("TestGenerator")}>
+            <Link to={createPageUrl("TestGeneratorV2")}>
               <Card className="hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors cursor-pointer border-2">
                 <CardContent className="p-6 flex items-start gap-4">
                   <div className="p-3 rounded-lg bg-blue-100 dark:bg-blue-900">
