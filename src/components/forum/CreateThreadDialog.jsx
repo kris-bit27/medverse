@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,7 +23,8 @@ export default function CreateThreadDialog({ open, onOpenChange, disciplines = [
 
   const createThreadMutation = useMutation({
     mutationFn: async (data) => {
-      return await base44.entities.ForumThread.create(data);
+      const { data: thread } = await supabase.from('forum_threads').insert(data).select().single();
+      return thread;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['forumThreads'] });

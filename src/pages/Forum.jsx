@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/lib/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
@@ -26,20 +27,23 @@ export default function Forum() {
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
 
-  const { data: user } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
-  });
+  const { user } = useAuth();
 
   const { data: threadsRaw, isLoading } = useQuery({
     queryKey: ['forumThreads'],
-    queryFn: () => base44.entities.ForumThread.list('-created_date', 100)
+    queryFn: async () => {
+      const { data } = await supabase.from('forum_threads').select('*').order('created_at', { ascending: false }).limit(100);
+      return data || [];
+    }
   });
   const threads = asArray(threadsRaw);
 
   const { data: disciplinesRaw } = useQuery({
     queryKey: ['disciplines'],
-    queryFn: () => base44.entities.ClinicalDiscipline.list()
+    queryFn: async () => {
+      const { data } = await supabase.from('obory').select('*').order('order_index');
+      return data || [];
+    }
   });
   const disciplines = asArray(disciplinesRaw);
 

@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/lib/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -34,44 +35,56 @@ export default function Atestace() {
 
   const [selectedDiscipline, setSelectedDiscipline] = useState('all');
 
-  const { data: user } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
-  });
+  const { user } = useAuth();
 
   const { data: disciplinesRaw } = useQuery({
     queryKey: ['clinicalDisciplines'],
-    queryFn: () => base44.entities.ClinicalDiscipline.list()
+    queryFn: async () => {
+      const { data } = await supabase.from('obory').select('*').order('order_index');
+      return data || [];
+    }
   });
   const disciplines = useMemo(() => asArray(disciplinesRaw), [disciplinesRaw]);
 
   const { data: allOkruhyRaw, isLoading } = useQuery({
     queryKey: ['okruhy'],
-    queryFn: () => base44.entities.Okruh.list('order')
+    queryFn: async () => {
+      const { data } = await supabase.from('okruhy').select('*').order('order_index');
+      return data || [];
+    }
   });
   const allOkruhy = useMemo(() => asArray(allOkruhyRaw), [allOkruhyRaw]);
 
   // Filter okruhy by selected discipline
   const okruhy = useMemo(() => {
     if (selectedDiscipline === 'all') return allOkruhy;
-    return allOkruhy.filter(o => o.clinical_discipline_id === selectedDiscipline);
+    return allOkruhy.filter(o => o.obor_id === selectedDiscipline);
   }, [allOkruhy, selectedDiscipline]);
 
   const { data: topicsRaw } = useQuery({
     queryKey: ['topics'],
-    queryFn: () => base44.entities.Topic.list()
+    queryFn: async () => {
+      const { data } = await supabase.from('topics').select('*');
+      return data || [];
+    }
   });
   const topics = useMemo(() => asArray(topicsRaw), [topicsRaw]);
 
   const { data: questionsRaw } = useQuery({
     queryKey: ['questions'],
-    queryFn: () => base44.entities.Question.list()
+    queryFn: async () => {
+      const { data } = await supabase.from('questions').select('*');
+      return data || [];
+    }
   });
   const questions = useMemo(() => asArray(questionsRaw), [questionsRaw]);
 
   const { data: progressRaw } = useQuery({
-    queryKey: ['userProgress', user?.id],
-    queryFn: () => base44.entities.UserProgress.filter({ user_id: user.id }),
+    queryKey: ['userFlashcardProgress', user?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from('user_flashcard_progress').select('*').eq('user_id', user.id);
+      return data || [];
+    },
     enabled: !!user?.id
   });
   const progress = useMemo(() => asArray(progressRaw), [progressRaw]);
