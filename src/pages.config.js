@@ -1,141 +1,109 @@
 /**
  * pages.config.js - Page routing configuration
+ * Uses React.lazy for route-level code splitting
  */
-import Admin from './pages/Admin';
-import AdminAnalytics from './pages/AdminAnalytics';
-import AdminArticleEdit from './pages/AdminArticleEdit';
-import AdminArticles from './pages/AdminArticles';
-import AdminAudit from './pages/AdminAudit';
-import AdminQuestionEdit from './pages/AdminQuestionEdit';
-import AdminQuestions from './pages/AdminQuestions';
-import AdminTaxonomy from './pages/AdminTaxonomy';
-import AdminToolEdit from './pages/AdminToolEdit';
-import AdminTools from './pages/AdminTools';
-import AdminUsers from './pages/AdminUsers';
-import ArticleDetail from './pages/ArticleDetail';
-import Articles from './pages/Articles';
-import Atestace from './pages/Atestace';
-import Demo from './pages/Demo';
-import Forum from './pages/Forum';
-import ForumThread from './pages/ForumThread';
-import Landing from './pages/Landing';
-import OkruhDetail from './pages/OkruhDetail';
-import Pricing from './pages/Pricing';
-import Profile from './pages/Profile';
-import QuestionDetail from './pages/QuestionDetail';
-import ReviewQueue from './pages/ReviewQueue';
-import ReviewToday from './pages/ReviewToday';
-import ScholarSearch from './pages/ScholarSearch';
-import Search from './pages/Search';
-import StudyPackageCreate from './pages/StudyPackageCreate';
-import StudyPackageDetail from './pages/StudyPackageDetail';
-import StudyPackages from './pages/StudyPackages';
-import StudyPlanAI from './pages/StudyPlanAI';
-import StudyPlanCreate from './pages/StudyPlanCreate';
-import StudyPlanDetail from './pages/StudyPlanDetail';
-import StudyPlanner from './pages/StudyPlanner';
-import TestGenerator from './pages/TestGenerator';
-import TestSession from './pages/TestSession';
-import ToolDetail from './pages/ToolDetail';
-import Tools from './pages/Tools';
-import TopicDetail from './pages/TopicDetail';
-import UserSettings from './pages/UserSettings';
-import AdminCostAnalytics from './pages/AdminCostAnalytics';
-import MyProfile from './pages/MyProfile';
-import AccountSettings from './pages/AccountSettings';
-import AICredits from './pages/AICredits';
-import Studium from './pages/Studium';
-import StudiumV2 from './pages/StudiumV2';
-import TopicDetailV2 from './pages/TopicDetailV2';
-import TopicDetailV4 from './pages/TopicDetailV4';
-import FlashcardReviewV2 from './pages/FlashcardReviewV2';
-import DashboardV2 from './pages/DashboardV2';
-import TestGeneratorV2 from './pages/TestGeneratorV2';
-import TestSessionV2 from './pages/TestSessionV2';
-import TestResults from './pages/TestResults';
-import TestResultsV2 from './pages/TestResultsV2';
-import StudyPlansV2 from './pages/StudyPlansV2';
-import ClinicalCalculators from './pages/ClinicalCalculators';
-import DrugDatabase from './pages/DrugDatabase';
-import ClinicalGuidelines from './pages/ClinicalGuidelines';
-import StudyGroups from './pages/StudyGroups';
-import Leaderboards from './pages/Leaderboards';
-import OrganizationManagement from './pages/OrganizationManagement';
-import TeamAnalytics from './pages/TeamAnalytics';
-import AdminConsole from './pages/AdminConsole';
-import LogbookV2 from './pages/LogbookV2';
+import { lazy } from 'react';
+
+// Layout is eagerly loaded (always needed)
 import __Layout from './Layout.jsx';
 
+// Helper for cleaner lazy imports
+const L = (fn) => lazy(fn);
 
 export const PAGES = {
-    "Admin": Admin,
-    "AdminAnalytics": AdminAnalytics,
-    "AdminArticleEdit": AdminArticleEdit,
-    "AdminArticles": AdminArticles,
-    "AdminAudit": AdminAudit,
-    "AdminQuestionEdit": AdminQuestionEdit,
-    "AdminQuestions": AdminQuestions,
-    "AdminTaxonomy": AdminTaxonomy,
-    "AdminToolEdit": AdminToolEdit,
-    "AdminTools": AdminTools,
-    "AdminUsers": AdminUsers,
-    "ArticleDetail": ArticleDetail,
-    "Articles": Articles,
-    "Atestace": Atestace,
-    "Dashboard": DashboardV2,
-    "Demo": Demo,
-    "Forum": Forum,
-    "ForumThread": ForumThread,
-    "Landing": Landing,
-    "Logbook": LogbookV2,
-    "OkruhDetail": OkruhDetail,
-    "Pricing": Pricing,
-    "Profile": Profile,
-    "QuestionDetail": QuestionDetail,
-    "ReviewQueue": ReviewQueue,
-    "ReviewToday": ReviewToday,
-    "ScholarSearch": ScholarSearch,
-    "Search": Search,
-    "StudyPackageCreate": StudyPackageCreate,
-    "StudyPackageDetail": StudyPackageDetail,
-    "StudyPackages": StudyPackages,
-    "StudyPlanAI": StudyPlanAI,
-    "StudyPlanCreate": StudyPlanCreate,
-    "StudyPlanDetail": StudyPlanDetail,
-    "StudyPlanner": StudyPlanner,
-    "TestGenerator": TestGenerator,
-    "TestSession": TestSession,
-    "ToolDetail": ToolDetail,
-    "Tools": Tools,
-    "TopicDetail": TopicDetail,
-    "UserSettings": UserSettings,
-    "AdminCostAnalytics": AdminCostAnalytics,
-    "MyProfile": MyProfile,
-    "AccountSettings": AccountSettings,
-    "AICredits": AICredits,
-    "Studium": Studium,
-    "StudiumV2": StudiumV2,
-    "TopicDetailV2": TopicDetailV2,
-    "TopicDetailV4": TopicDetailV4,
-    "FlashcardReviewV2": FlashcardReviewV2,
-    "DashboardV2": DashboardV2,
-    "TestGeneratorV2": TestGeneratorV2,
-    "TestSessionV2": TestSessionV2,
-    "TestResults": TestResults,
-    "TestResultsV2": TestResultsV2,
-    "StudyPlansV2": StudyPlansV2,
-    "ClinicalCalculators": ClinicalCalculators,
-    "DrugDatabase": DrugDatabase,
-    "ClinicalGuidelines": ClinicalGuidelines,
-    "StudyGroups": StudyGroups,
-    "Leaderboards": Leaderboards,
-    "OrganizationManagement": OrganizationManagement,
-    "TeamAnalytics": TeamAnalytics,
-    "AdminConsole": AdminConsole,
-}
+  // === Core pages (most visited) ===
+  "Dashboard":          L(() => import('./pages/DashboardV2')),
+  "DashboardV2":        L(() => import('./pages/DashboardV2')),
+  "StudiumV2":          L(() => import('./pages/StudiumV2')),
+  "ReviewToday":        L(() => import('./pages/ReviewToday')),
+  "TopicDetail":        L(() => import('./pages/TopicDetail')),
+  "TopicDetailV2":      L(() => import('./pages/TopicDetailV2')),
+  "TopicDetailV4":      L(() => import('./pages/TopicDetailV4')),
+
+  // === Public pages ===
+  "Landing":            L(() => import('./pages/Landing')),
+  "Demo":               L(() => import('./pages/Demo')),
+  "Pricing":            L(() => import('./pages/Pricing')),
+
+  // === Study ===
+  "Studium":            L(() => import('./pages/Studium')),
+  "OkruhDetail":        L(() => import('./pages/OkruhDetail')),
+  "QuestionDetail":     L(() => import('./pages/QuestionDetail')),
+  "FlashcardReviewV2":  L(() => import('./pages/FlashcardReviewV2')),
+  "StudyPackages":      L(() => import('./pages/StudyPackages')),
+  "StudyPackageDetail": L(() => import('./pages/StudyPackageDetail')),
+  "StudyPackageCreate": L(() => import('./pages/StudyPackageCreate')),
+
+  // === Tests ===
+  "TestGenerator":      L(() => import('./pages/TestGenerator')),
+  "TestGeneratorV2":    L(() => import('./pages/TestGeneratorV2')),
+  "TestSession":        L(() => import('./pages/TestSession')),
+  "TestSessionV2":      L(() => import('./pages/TestSessionV2')),
+  "TestResults":        L(() => import('./pages/TestResults')),
+  "TestResultsV2":      L(() => import('./pages/TestResultsV2')),
+
+  // === Plans ===
+  "StudyPlansV2":       L(() => import('./pages/StudyPlansV2')),
+  "StudyPlanAI":        L(() => import('./pages/StudyPlanAI')),
+  "StudyPlanCreate":    L(() => import('./pages/StudyPlanCreate')),
+  "StudyPlanDetail":    L(() => import('./pages/StudyPlanDetail')),
+  "StudyPlanner":       L(() => import('./pages/StudyPlanner')),
+
+  // === Tools ===
+  "ClinicalCalculators": L(() => import('./pages/ClinicalCalculators')),
+  "DrugDatabase":       L(() => import('./pages/DrugDatabase')),
+  "ClinicalGuidelines": L(() => import('./pages/ClinicalGuidelines')),
+  "ToolDetail":         L(() => import('./pages/ToolDetail')),
+  "Tools":              L(() => import('./pages/Tools')),
+
+  // === Social ===
+  "Forum":              L(() => import('./pages/Forum')),
+  "ForumThread":        L(() => import('./pages/ForumThread')),
+  "StudyGroups":        L(() => import('./pages/StudyGroups')),
+  "Leaderboards":       L(() => import('./pages/Leaderboards')),
+
+  // === User ===
+  "Profile":            L(() => import('./pages/Profile')),
+  "MyProfile":          L(() => import('./pages/MyProfile')),
+  "AccountSettings":    L(() => import('./pages/AccountSettings')),
+  "AICredits":          L(() => import('./pages/AICredits')),
+  "UserSettings":       L(() => import('./pages/UserSettings')),
+
+  // === Logbook / Atestace ===
+  "Logbook":            L(() => import('./pages/LogbookV2')),
+  "Atestace":           L(() => import('./pages/Atestace')),
+
+  // === Search ===
+  "Search":             L(() => import('./pages/Search')),
+  "ScholarSearch":      L(() => import('./pages/ScholarSearch')),
+
+  // === Articles ===
+  "ArticleDetail":      L(() => import('./pages/ArticleDetail')),
+  "Articles":           L(() => import('./pages/Articles')),
+  "ReviewQueue":        L(() => import('./pages/ReviewQueue')),
+
+  // === Admin (heavy, rarely loaded) ===
+  "Admin":              L(() => import('./pages/Admin')),
+  "AdminAnalytics":     L(() => import('./pages/AdminAnalytics')),
+  "AdminArticleEdit":   L(() => import('./pages/AdminArticleEdit')),
+  "AdminArticles":      L(() => import('./pages/AdminArticles')),
+  "AdminAudit":         L(() => import('./pages/AdminAudit')),
+  "AdminConsole":       L(() => import('./pages/AdminConsole')),
+  "AdminCostAnalytics": L(() => import('./pages/AdminCostAnalytics')),
+  "AdminQuestionEdit":  L(() => import('./pages/AdminQuestionEdit')),
+  "AdminQuestions":     L(() => import('./pages/AdminQuestions')),
+  "AdminTaxonomy":      L(() => import('./pages/AdminTaxonomy')),
+  "AdminToolEdit":      L(() => import('./pages/AdminToolEdit')),
+  "AdminTools":         L(() => import('./pages/AdminTools')),
+  "AdminUsers":         L(() => import('./pages/AdminUsers')),
+
+  // === Org ===
+  "OrganizationManagement": L(() => import('./pages/OrganizationManagement')),
+  "TeamAnalytics":      L(() => import('./pages/TeamAnalytics')),
+};
 
 export const pagesConfig = {
-    mainPage: "Landing",
-    Pages: PAGES,
-    Layout: __Layout,
+  mainPage: "Landing",
+  Pages: PAGES,
+  Layout: __Layout,
 };
