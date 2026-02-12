@@ -15,12 +15,10 @@ import AdminUsers from './pages/AdminUsers';
 import ArticleDetail from './pages/ArticleDetail';
 import Articles from './pages/Articles';
 import Atestace from './pages/Atestace';
-import Dashboard from './pages/Dashboard';
 import Demo from './pages/Demo';
 import Forum from './pages/Forum';
 import ForumThread from './pages/ForumThread';
 import Landing from './pages/Landing';
-import Logbook from './pages/Logbook';
 import OkruhDetail from './pages/OkruhDetail';
 import Pricing from './pages/Pricing';
 import Profile from './pages/Profile';
@@ -49,7 +47,6 @@ import AICredits from './pages/AICredits';
 import Studium from './pages/Studium';
 import StudiumV2 from './pages/StudiumV2';
 import TopicDetailV2 from './pages/TopicDetailV2';
-import TopicDetailV3 from './pages/TopicDetailV3';
 import TopicDetailV4 from './pages/TopicDetailV4';
 import FlashcardReviewV2 from './pages/FlashcardReviewV2';
 import DashboardV2 from './pages/DashboardV2';
@@ -119,7 +116,6 @@ export const PAGES = {
     "Studium": Studium,
     "StudiumV2": StudiumV2,
     "TopicDetailV2": TopicDetailV2,
-    "TopicDetailV3": TopicDetailV3,
     "TopicDetailV4": TopicDetailV4,
     "FlashcardReviewV2": FlashcardReviewV2,
     "DashboardV2": DashboardV2,
