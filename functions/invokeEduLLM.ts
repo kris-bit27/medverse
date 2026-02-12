@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { getUserFromRequest, getSupabaseAdmin, handleCors, corsHeaders } from "./_shared/supabaseAdmin.ts";
 
 // AI Version Tag - centrální konstanta pro verzování AI systému
 const AI_VERSION_TAG = "medverse_gemini_1.5_pro_v3";
@@ -554,7 +554,7 @@ const OUTPUT_SCHEMAS = {
  * - Nikdy nemíchat kontext nahodile
  * - Logický pořadník: Topic → Question → Související témata → Externí zdroje
  */
-async function buildRAGContext(base44, user, mode, entityContext, allowWeb, options = {}) {
+async function buildRAGContext(supabaseAdmin, user, mode, entityContext, allowWeb, options = {}) {
   const context = {
     rag_text: '',
     rag_sources: []
@@ -596,7 +596,7 @@ async function buildRAGContext(base44, user, mode, entityContext, allowWeb, opti
   // 1. SourceDocument (pokud existuje k tématu) - NEJVYŠŠÍ PRIORITA
   if (entityContext.topic?.id && isPrivileged) {
     try {
-      const sourceDocs = await base44.asServiceRole.entities.SourceDocument?.filter(
+      const { data: sourceDocs } = await supabaseAdmin.from("source_documents").select("*").match(
         { topic_id: entityContext.topic.id },
         '-created_date',
         3
@@ -677,9 +677,9 @@ async function buildRAGContext(base44, user, mode, entityContext, allowWeb, opti
   // 4. UserProgress (pro copilot_chat) - PRIORITA 4
   if (mode === 'copilot_chat') {
     try {
-      const currentUser = await base44.auth.me().catch(() => null);
+      const currentUser = user;
       if (currentUser?.id) {
-        const recentProgress = await base44.asServiceRole.entities.UserProgress.filter(
+        const { data: recentProgress } = await supabaseAdmin.from("user_progress").select("*").match(
           { user_id: currentUser.id },
           '-last_reviewed_at',
           5
@@ -704,7 +704,7 @@ async function buildRAGContext(base44, user, mode, entityContext, allowWeb, opti
   // 5. Související témata ze stejného okruhu - PRIORITA 5 (max 2)
   if (entityContext.question?.okruh_id && currentLength < MAX_RAG_CHARS * 0.7) {
     try {
-      const relatedTopics = await base44.asServiceRole.entities.Topic.filter(
+      const { data: relatedTopics } = await supabaseAdmin.from("topics").select("*").match(
         { 
           okruh_id: entityContext.question.okruh_id,
           status: 'published'
@@ -785,9 +785,9 @@ function generateCacheKey(mode, entityId, contentHash, userPromptHash, systemPro
   return `ck_${Math.abs(hash).toString(36)}`;
 }
 
-async function checkCache(base44, cacheKey, mode, entityContext) {
+async function checkCache(supabaseAdmin, cacheKey, mode, entityContext) {
   try {
-    const logs = await base44.asServiceRole.entities.AIInteractionLog.filter(
+    const { data: logs } = await supabaseAdmin.from("ai_interaction_logs").select("*").match(
       { 
         cache_key: cacheKey,
         mode: mode,
@@ -872,8 +872,8 @@ Deno.serve(async (req) => {
   let payload = null;
   
   try {
-    const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
+    const supabaseAdmin = getSupabaseAdmin();
+    const user = await getUserFromRequest(req);
     
     if (!user) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
@@ -959,10 +959,10 @@ Deno.serve(async (req) => {
     );
 
     // Pokus o cache hit
-    const cachedResult = await checkCache(base44, cacheKey, mode, entityContext);
+    const cachedResult = await checkCache(supabaseAdmin, cacheKey, mode, entityContext);
     if (cachedResult) {
       // Log cache hit
-      await base44.asServiceRole.entities.AIInteractionLog.create({
+      await supabaseAdmin.from("ai_interaction_logs").insert({
         user_id: user.id,
         mode: mode,
         entity_type: entityContext.entityType || 'none',
@@ -993,7 +993,7 @@ Deno.serve(async (req) => {
     }
 
     // Sestavení RAG kontextu - POVINNÉ pro všechna AI volání
-    const ragContext = await buildRAGContext(base44, user, mode, entityContext, effectiveAllowWeb, {
+    const ragContext = await buildRAGContext(supabaseAdmin, user, mode, entityContext, effectiveAllowWeb, {
       maxRagChars,
       maxSectionChars,
       skipRag
@@ -1054,14 +1054,31 @@ ${pageCtx}
     const temperature = AI_STRICT_MODE ? 0.1 : 0.2;
 
     // Volání Google Gemini 1.5 Pro přes Base44 Core integration
-    const llmResponse = await base44.integrations.Core.InvokeLLM({
-      prompt: fullPrompt,
-      add_context_from_internet: effectiveAllowWeb,
-      response_json_schema: outputSchema,
-      model: 'gemini-1.5-pro',
-      temperature: temperature, // 0.1 v STRICT_MODE pro maximální faktickou přesnost
-      maxTokens: MAX_TOKENS_BY_MODE[mode] || 2048
-    });
+    // Direct Gemini API call (replaces base44.integrations.Core.InvokeLLM)
+    const geminiKey = Deno.env.get('GEMINI_API_KEY') || Deno.env.get('GOOGLE_API_KEY') || '';
+    if (!geminiKey) throw new Error('GEMINI_API_KEY not configured');
+    const geminiModel = Deno.env.get('GEMINI_MODEL') || 'gemini-1.5-pro';
+    const geminiRes = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ role: 'user', parts: [{ text: fullPrompt }] }],
+          generationConfig: {
+            temperature: temperature,
+            maxOutputTokens: MAX_TOKENS_BY_MODE[mode] || 2048,
+            responseMimeType: outputSchema ? 'application/json' : undefined,
+          },
+        }),
+      },
+    );
+    if (!geminiRes.ok) throw new Error(`Gemini failed (${geminiRes.status}): ${await geminiRes.text()}`);
+    const geminiJson = await geminiRes.json();
+    const geminiText = (geminiJson?.candidates?.[0]?.content?.parts || []).map((p: any) => p?.text || '').join('');
+    let llmResponse;
+    try { llmResponse = JSON.parse(geminiText.replace(/```json\n?|```/g, '').trim()); }
+    catch { llmResponse = { text: geminiText }; }
 
     // Normalizace výstupu
     const result = normalizeAIResponse(llmResponse, mode, outputSchema);
@@ -1085,7 +1102,7 @@ ${pageCtx}
     }
 
     // Logování do AIInteractionLog - 100% AUDIT
-    await base44.asServiceRole.entities.AIInteractionLog.create({
+    await supabaseAdmin.from("ai_interaction_logs").insert({
       user_id: user.id,
       mode: mode,
       entity_type: entityContext.entityType || 'none',
@@ -1130,10 +1147,10 @@ ${pageCtx}
 
     // Log error
     try {
-      const base44 = createClientFromRequest(req);
-      const user = await base44.auth.me();
+      const supabaseAdmin = getSupabaseAdmin();
+      const user = await getUserFromRequest(req);
       if (user) {
-        await base44.asServiceRole.entities.AIInteractionLog.create({
+        await supabaseAdmin.from("ai_interaction_logs").insert({
           user_id: user.id,
           mode: payload?.mode || 'unknown',
           entity_type: payload?.entityContext?.entityType || 'none',
