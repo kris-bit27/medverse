@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/lib/AuthContext';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -41,24 +42,25 @@ export default function TestSession() {
     }
   }, []);
 
-  const { data: user } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
-  });
+  const { user } = useAuth();
 
   const { data: questions = [], isLoading } = useQuery({
     queryKey: ['testQuestions', questionIds],
     queryFn: async () => {
       if (questionIds.length === 0) return [];
-      const all = await base44.entities.Question.list();
-      return questionIds.map(id => all.find(q => q.id === id)).filter(Boolean);
+      const { data } = await supabase.from('questions').select('*').in('id', questionIds);
+      // Preserve order from questionIds
+      return questionIds.map(id => data?.find(q => q.id === id)).filter(Boolean);
     },
     enabled: questionIds.length > 0
   });
 
   const { data: progress = [] } = useQuery({
-    queryKey: ['userProgress', user?.id],
-    queryFn: () => base44.entities.UserProgress.filter({ user_id: user.id }),
+    queryKey: ['testProgress', user?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from('user_flashcard_progress').select('*').eq('user_id', user.id);
+      return data || [];
+    },
     enabled: !!user?.id
   });
 
@@ -66,21 +68,23 @@ export default function TestSession() {
 
   const progressMutation = useMutation({
     mutationFn: async ({ questionId, rating }) => {
-      const existing = progress.find(p => p.question_id === questionId);
+      const existing = progress.find(p => p.flashcard_id === questionId);
       const updates = calculateNextReview(existing || {}, rating);
       
       if (existing) {
-        return base44.entities.UserProgress.update(existing.id, updates);
+        const { data } = await supabase.from('user_flashcard_progress').update(updates).eq('id', existing.id).select().single();
+        return data;
       } else {
-        return base44.entities.UserProgress.create({
+        const { data } = await supabase.from('user_flashcard_progress').insert({
           user_id: user.id,
-          question_id: questionId,
+          flashcard_id: questionId,
           ...updates
-        });
+        }).select().single();
+        return data;
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['userProgress', user?.id]);
+      queryClient.invalidateQueries(['testProgress', user?.id]);
     }
   });
 

@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/lib/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -29,29 +30,38 @@ export default function TestGenerator() {
   const [includeLearning, setIncludeLearning] = useState(true);
   const [includeMastered, setIncludeMastered] = useState(false);
 
-  const { data: user } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
-  });
+  const { user } = useAuth();
 
   const { data: okruhy = [], isLoading } = useQuery({
     queryKey: ['okruhy'],
-    queryFn: () => base44.entities.Okruh.list('order')
+    queryFn: async () => {
+      const { data } = await supabase.from('okruhy').select('*').order('order_index');
+      return data || [];
+    }
   });
 
   const { data: topics = [] } = useQuery({
     queryKey: ['topics'],
-    queryFn: () => base44.entities.Topic.list()
+    queryFn: async () => {
+      const { data } = await supabase.from('topics').select('*');
+      return data || [];
+    }
   });
 
   const { data: questions = [] } = useQuery({
     queryKey: ['questions'],
-    queryFn: () => base44.entities.Question.list()
+    queryFn: async () => {
+      const { data } = await supabase.from('questions').select('*');
+      return data || [];
+    }
   });
 
   const { data: progress = [] } = useQuery({
-    queryKey: ['userProgress', user?.id],
-    queryFn: () => base44.entities.UserProgress.filter({ user_id: user.id }),
+    queryKey: ['userFlashcardProgress', user?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from('user_flashcard_progress').select('*').eq('user_id', user.id);
+      return data || [];
+    },
     enabled: !!user?.id
   });
 

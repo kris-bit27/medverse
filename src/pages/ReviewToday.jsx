@@ -110,19 +110,81 @@ export default function ReviewToday() {
     });
   }, [flashcardsRaw, selectedObor, selectedOkruh, selectedTopic]);
 
-  const handleAnswer = (quality) => {
+  const handleAnswer = async (quality) => {
     const isCorrect = quality >= 3;
+    const currentCard = flashcards[currentIndex];
     
     setSessionStats(prev => ({
       reviewed: prev.reviewed + 1,
       correct: prev.correct + (isCorrect ? 1 : 0)
     }));
 
+    // Save SRS progress to DB
+    if (user?.id && currentCard?.id) {
+      try {
+        // Fetch current progress
+        const { data: existing } = await supabase
+          .from('user_flashcard_progress')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('flashcard_id', currentCard.id)
+          .maybeSingle();
+
+        const reps = existing?.repetitions || 0;
+        const ease = existing?.easiness || 2.5;
+        const interval = existing?.interval || 0;
+
+        // SM-2 algorithm
+        let newEase = ease;
+        let newInterval = interval;
+        let newReps = reps;
+
+        if (quality >= 3) {
+          newReps = reps + 1;
+          if (newReps === 1) newInterval = 1;
+          else if (newReps === 2) newInterval = 6;
+          else newInterval = Math.round(interval * ease);
+          newEase = ease + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
+        } else {
+          newReps = 0;
+          newInterval = 1;
+          newEase = Math.max(1.3, ease - 0.2);
+        }
+        if (newEase < 1.3) newEase = 1.3;
+
+        const nextReview = new Date();
+        nextReview.setDate(nextReview.getDate() + newInterval);
+
+        await supabase
+          .from('user_flashcard_progress')
+          .upsert({
+            user_id: user.id,
+            flashcard_id: currentCard.id,
+            repetitions: newReps,
+            easiness: newEase,
+            interval: newInterval,
+            next_review: nextReview.toISOString().split('T')[0],
+            last_reviewed: new Date().toISOString(),
+            last_quality: quality,
+            total_reviews: (existing?.total_reviews || 0) + 1,
+            correct_reviews: isCorrect 
+              ? (existing?.correct_reviews || 0) + 1 
+              : (existing?.correct_reviews || 0),
+            streak: isCorrect ? (existing?.streak || 0) + 1 : 0,
+            best_streak: isCorrect 
+              ? Math.max(existing?.best_streak || 0, (existing?.streak || 0) + 1)
+              : (existing?.best_streak || 0),
+          }, { onConflict: 'user_id,flashcard_id' });
+      } catch (err) {
+        console.error('[SRS] Failed to save progress:', err);
+      }
+    }
+
     if (currentIndex < flashcards.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setIsFlipped(false);
     } else {
-      toast.success(`Session complete! ${sessionStats.correct + (isCorrect ? 1 : 0)}/${sessionStats.reviewed + 1} correct`);
+      toast.success(`Session hotova! ${sessionStats.correct + (isCorrect ? 1 : 0)}/${sessionStats.reviewed + 1} správně`);
       setCurrentIndex(0);
       setSessionStats({ reviewed: 0, correct: 0 });
     }
