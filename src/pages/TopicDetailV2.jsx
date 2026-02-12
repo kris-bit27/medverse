@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import TopicNotes from '@/components/TopicNotes';
 import FlashcardGenerator from '@/components/FlashcardGenerator';
+import ExistingFlashcards from '@/components/ExistingFlashcards';
 import ReactMarkdown from 'react-markdown';
 import { 
   BookOpen,
@@ -185,14 +186,17 @@ export default function TopicDetailV2() {
               Procvičování
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground mb-4">
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">
               Vygenerujte otázky pro procvičení tohoto tématu pomocí AI
             </p>
             <FlashcardGenerator 
               topicId={topicId} 
               topicContent={topic.full_text_content || topic.bullet_points_summary}
             />
+            
+            {/* Existing Flashcards for this topic */}
+            <ExistingFlashcards topicId={topicId} />
           </CardContent>
         </Card>
       </div>
