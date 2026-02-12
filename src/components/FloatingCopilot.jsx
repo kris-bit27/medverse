@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { supabase } from '@/lib/supabase';
+import { base44 } from '@/api/base44Client';
 import { MessageCircle, X, Send, Loader2, Minimize2, Maximize2, Trash2 } from 'lucide-react';
 
 export const FloatingCopilot = ({ topicContent, topicTitle }) => {
@@ -49,22 +49,22 @@ export const FloatingCopilot = ({ topicContent, topicTitle }) => {
     try {
       console.log('[Copilot] Sending question:', userMessage.content);
 
-      const { data, error } = await supabase.functions.invoke('copilot-chat', {
-        body: {
-          question: userMessage.content,
-          context: topicContent || '',
-          conversationHistory: messages.slice(-6) // Last 3 exchanges
-        }
+      const data = await base44.functions.invoke('invokeEduLLM', {
+        mode: 'copilot',
+        entityContext: {
+          entityType: 'topic',
+          topic: { title: topicTitle },
+        },
+        userPrompt: userMessage.content,
+        pageContext: topicContent || '',
+        allowWeb: false,
       });
 
       console.log('[Copilot] Response:', data);
-      console.log('[Copilot] Error:', error);
-
-      if (error) throw error;
 
       const assistantMessage = {
         role: 'assistant',
-        content: data.answer,
+        content: data.text || data.answer || 'Nemám odpověď.',
         metadata: data.metadata,
         timestamp: new Date().toISOString()
       };

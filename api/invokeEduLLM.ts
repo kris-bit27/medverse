@@ -34,7 +34,7 @@ const buildModeInstructions = (mode: string) => {
     return 'Structure the answer: definice, etiologie/klasifikace, diagnostika, léčba, komplikace, perličky.';
   }
   if (mode.includes('copilot')) {
-    return 'Keep it short and practical. If page context is provided, use it.';
+    return 'Keep it short and practical. If page context is provided, use it. Answer in Czech. Be concise but accurate.';
   }
   return '';
 };
