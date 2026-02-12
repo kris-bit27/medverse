@@ -33,8 +33,31 @@ const buildModeInstructions = (mode: string) => {
   if (mode.includes('exam')) {
     return 'Structure the answer: definice, etiologie/klasifikace, diagnostika, léčba, komplikace, perličky.';
   }
+  if (mode.includes('review')) {
+    return `You are a medical content reviewer. Analyze the provided content for:
+1. SAFETY: incorrect dosages, dangerous advice, missing contraindications (score 0-100)
+2. COMPLETENESS: missing standard sections for the topic (score 0-100)  
+3. ACCURACY: factual errors, outdated guidelines, unsupported claims
+
+Return JSON:
+{
+  "approved": boolean,
+  "confidence": number (0-1),
+  "safety_score": number (0-100),
+  "completeness_score": number (0-100),
+  "issues": [{ "severity": "high|medium|low", "category": "dosage|safety|missing_info|accuracy|formatting", "description": "...", "line": "quoted context or null", "suggestion": "..." }],
+  "strengths": ["..."],
+  "missing_sections": ["..."]
+}
+approved=true only if safety_score >= 80 AND no high-severity issues.`;
+  }
   if (mode.includes('copilot')) {
-    return 'Keep it short and practical. If page context is provided, use it. Answer in Czech. Be concise but accurate.';
+    return `You are a study copilot helping a medical student. Rules:
+- Answer in Czech, concisely (max 300 words)
+- Use the PAGE_CONTEXT to ground your answers in the current topic
+- If the student asks something outside the topic context, briefly answer but redirect
+- Format: short paragraphs, use bold for key terms
+- Never give patient-specific clinical advice`;
   }
   return '';
 };
@@ -70,9 +93,11 @@ export default async function handler(req: any, res: any) {
     const pageBlock = pageContext ? `\n\nPAGE_CONTEXT:\n${JSON.stringify(pageContext)}` : '';
     const webBlock = allowWeb ? '\n\nYou may mention if web search would help, but do not browse.' : '';
 
+    const maxTokens = mode?.includes('review') ? 4096 : mode?.includes('copilot') ? 1024 : 2048;
+
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 2048,
+      max_tokens: maxTokens,
       temperature: 0.3,
       system: systemPrompt,
       messages: [{

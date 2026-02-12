@@ -47,7 +47,16 @@ export const FloatingCopilot = ({ topicContent, topicTitle }) => {
     setLoading(true);
 
     try {
-      console.log('[Copilot] Sending question:', userMessage.content);
+      // Build conversation history for context (last 6 messages = 3 exchanges)
+      const recentHistory = messages
+        .filter(m => m.role === 'user' || m.role === 'assistant')
+        .slice(-6)
+        .map(m => `${m.role === 'user' ? 'Student' : 'Copilot'}: ${m.content}`)
+        .join('\n');
+
+      const conversationContext = recentHistory
+        ? `\n\n=== PŘEDCHOZÍ KONVERZACE ===\n${recentHistory}\n=== KONEC KONVERZACE ===`
+        : '';
 
       const data = await base44.functions.invoke('invokeEduLLM', {
         mode: 'copilot',
@@ -55,16 +64,16 @@ export const FloatingCopilot = ({ topicContent, topicTitle }) => {
           entityType: 'topic',
           topic: { title: topicTitle },
         },
-        userPrompt: userMessage.content,
-        pageContext: topicContent || '',
+        userPrompt: `${userMessage.content}${conversationContext}`,
+        pageContext: topicContent ? topicContent.substring(0, 6000) : '',
         allowWeb: false,
       });
 
-      console.log('[Copilot] Response:', data);
+      const answerText = data.text || data.answer || (typeof data === 'string' ? data : 'Omlouvám se, nepodařilo se mi vygenerovat odpověď.');
 
       const assistantMessage = {
         role: 'assistant',
-        content: data.text || data.answer || 'Nemám odpověď.',
+        content: answerText,
         metadata: data.metadata,
         timestamp: new Date().toISOString()
       };

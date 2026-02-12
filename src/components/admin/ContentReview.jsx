@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { supabase } from '@/lib/supabase';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import {
   CheckCircle,
@@ -12,12 +12,9 @@ import {
   Loader2,
   ThumbsUp,
   ThumbsDown,
-  Info
+  Info,
+  ShieldCheck,
 } from 'lucide-react';
-
-// TODO: Replace mock review with real OpenAI/Edge Function when rate limits resolved
-// Current: Using randomized mock data for development
-// See: https://platform.openai.com/settings/organization/billing to upgrade tier
 
 export const ContentReview = ({ content, specialty, mode, onReviewComplete }) => {
   const [review, setReview] = useState(null);
@@ -25,97 +22,75 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
 
   const runReview = async () => {
     setLoading(true);
-    
-    try {
-      console.log('[Review] Running MOCK review (OpenAI rate limited)');
-      console.log('[Review] Content length:', content?.length);
 
+    try {
       if (!content || content.length < 100) {
-        toast.error('Content too short for review');
+        toast.error('Obsah je příliš krátký pro review (min. 100 znaků)');
         setLoading(false);
         return;
       }
 
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const result = await base44.functions.invoke('invokeEduLLM', {
+        mode: 'review',
+        entityContext: {
+          specialty: specialty || 'Medicína',
+          contentMode: mode || 'fulltext',
+        },
+        userPrompt: `Proveď důkladnou recenzi následujícího medicínského obsahu.
+Obor: ${specialty || 'Medicína'}
+Typ obsahu: ${mode || 'fulltext'}
 
-      // Generate randomized mock review
-      const isApproved = Math.random() > 0.4; // 60% chance approved
-      const hasHighIssue = Math.random() > 0.7;
-      const hasMediumIssue = Math.random() > 0.5;
-      
-      const mockIssues = [];
-      
-      if (hasHighIssue) {
-        mockIssues.push({
-          severity: 'high',
-          category: 'dosage',
-          line: 'Dávka 500mg denně',
-          description: 'Příliš vysoká dávka pro běžného pacienta',
-          suggestion: 'Změnit na 325mg podle guidelines'
-        });
-      }
-      
-      if (hasMediumIssue) {
-        mockIssues.push({
-          severity: 'medium',
-          category: 'missing_info',
-          description: 'Chybí sekce o kontraindikacích',
-          suggestion: 'Přidat seznam kontraindikací'
-        });
-      }
-      
-      if (Math.random() > 0.6) {
-        mockIssues.push({
-          severity: 'low',
-          category: 'formatting',
-          description: 'Některé sekce by mohly být lépe strukturované',
-          suggestion: 'Použít podnadpisy pro lepší čitelnost'
-        });
-      }
+=== OBSAH K RECENZI ===
+${content.substring(0, 12000)}
+=== KONEC OBSAHU ===
 
-      const mockReview = {
-        approved: isApproved,
-        confidence: 0.70 + Math.random() * 0.25,
-        safety_score: 75 + Math.floor(Math.random() * 20),
-        completeness_score: 70 + Math.floor(Math.random() * 25),
-        issues: mockIssues,
-        strengths: [
-          'Dobře strukturovaný text',
-          'Správné použití medicínské terminologie',
-          'Relevantní klinické informace'
-        ].slice(0, Math.floor(Math.random() * 2) + 1),
-        missing_sections: isApproved ? [] : [
-          'Prognóza',
-          'Diferenciální diagnostika'
-        ].slice(0, Math.floor(Math.random() * 2)),
-        metadata: {
-          model: 'mock-gpt-4o',
-          provider: 'mock',
-          cost: {
-            input: '0.0000',
-            output: '0.0000',
-            total: '0.0000'
-          },
-          reviewedAt: new Date().toISOString()
-        }
+Zkontroluj bezpečnost (dávkování, kontraindikace), úplnost (chybějící sekce), přesnost (faktické chyby, zastaralé guidelines).`,
+        allowWeb: false,
+      });
+
+      // Parse the review result
+      const reviewData = result.approved !== undefined ? result : {
+        approved: false,
+        confidence: result.confidence?.level === 'high' ? 0.9 : result.confidence?.level === 'medium' ? 0.7 : 0.5,
+        safety_score: 70,
+        completeness_score: 70,
+        issues: [],
+        strengths: [],
+        missing_sections: [],
+        ...(typeof result.text === 'string' ? (() => {
+          try { return JSON.parse(result.text.replace(/```json\n?|```/g, '').trim()); } catch { return {}; }
+        })() : {}),
       };
 
-      setReview(mockReview);
+      // Ensure numeric scores
+      reviewData.confidence = typeof reviewData.confidence === 'number' ? reviewData.confidence : 0.7;
+      reviewData.safety_score = reviewData.safety_score || 70;
+      reviewData.completeness_score = reviewData.completeness_score || 70;
+      reviewData.issues = reviewData.issues || [];
+      reviewData.strengths = reviewData.strengths || [];
+      reviewData.missing_sections = reviewData.missing_sections || [];
 
-      if (mockReview.approved) {
-        toast.success('✅ Content approved (MOCK review)');
+      reviewData.metadata = {
+        model: 'claude-sonnet-4',
+        provider: 'anthropic',
+        cost: result.metadata?.cost || { total: 'N/A' },
+        reviewedAt: new Date().toISOString(),
+      };
+
+      setReview(reviewData);
+
+      if (reviewData.approved) {
+        toast.success('✅ Obsah schválen AI review');
       } else {
-        toast.warning(`⚠️ ${mockReview.issues.length} issues found (MOCK review)`);
+        toast.warning(`⚠️ Nalezeno ${reviewData.issues.length} problémů`);
       }
 
       if (onReviewComplete) {
-        onReviewComplete(mockReview);
+        onReviewComplete(reviewData);
       }
-
     } catch (error) {
-      console.error('[Review] Full error:', error);
-      toast.error(`Review failed: ${error.message || 'Unknown error'}`);
+      console.error('[Review] Error:', error);
+      toast.error(`Review selhal: ${error.message || 'Neznámá chyba'}`);
     } finally {
       setLoading(false);
     }
@@ -131,12 +106,14 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
   };
 
   const getSeverityBadge = (severity) => {
-    const variants = {
-      high: 'destructive',
-      medium: 'warning',
-      low: 'secondary'
-    };
+    const variants = { high: 'destructive', medium: 'warning', low: 'secondary' };
     return variants[severity] || 'secondary';
+  };
+
+  const getScoreColor = (score) => {
+    if (score >= 85) return 'text-green-600';
+    if (score >= 60) return 'text-yellow-600';
+    return 'text-red-600';
   };
 
   return (
@@ -144,17 +121,18 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm flex items-center gap-2">
-            🤖 AI Review (GPT-4o)
+            <ShieldCheck className="h-4 w-4" />
+            AI Content Review
             {review && (
               review.approved ? (
                 <Badge variant="default" className="bg-green-100 text-green-700">
                   <CheckCircle className="h-3 w-3 mr-1" />
-                  Approved
+                  Schváleno
                 </Badge>
               ) : (
                 <Badge variant="destructive">
                   <AlertTriangle className="h-3 w-3 mr-1" />
-                  Needs Revision
+                  Vyžaduje revizi
                 </Badge>
               )
             )}
@@ -163,91 +141,77 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
             onClick={runReview}
             disabled={loading || !content}
             size="sm"
-            className={loading ? 'opacity-50' : ''}
           >
             {loading ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                Reviewing...
+                Analyzuji...
               </>
             ) : (
-              <>
-                🔍 Run Review
-              </>
+              '🔍 Spustit review'
             )}
           </Button>
         </div>
       </CardHeader>
 
       {loading && (
-        <div className="mt-4 flex items-center justify-center p-8 bg-blue-50 rounded">
-          <Loader2 className="h-8 w-8 animate-spin text-blue-600 mr-3" />
-          <div>
-            <p className="font-medium">Running AI Review...</p>
-            <p className="text-sm text-muted-foreground">This may take 5-10 seconds</p>
+        <CardContent>
+          <div className="flex items-center justify-center p-8 bg-blue-50 rounded">
+            <Loader2 className="h-8 w-8 animate-spin text-blue-600 mr-3" />
+            <div>
+              <p className="font-medium">AI analyzuje obsah...</p>
+              <p className="text-sm text-muted-foreground">Claude kontroluje bezpečnost, úplnost a přesnost</p>
+            </div>
           </div>
-        </div>
+        </CardContent>
       )}
 
-      {review && (
+      {review && !loading && (
         <CardContent className="space-y-4">
           {/* Scores */}
           <div className="grid grid-cols-3 gap-3">
-            <div className="text-center p-3 bg-gray-50 text-slate-900 rounded">
-              <div className="text-2xl font-bold">
+            <div className="text-center p-3 bg-gray-50 rounded">
+              <div className={`text-2xl font-bold ${getScoreColor(review.confidence * 100)}`}>
                 {(review.confidence * 100).toFixed(0)}%
               </div>
               <div className="text-xs text-muted-foreground">Confidence</div>
             </div>
-
-            <div className="text-center p-3 bg-gray-50 text-slate-900 rounded">
-              <div className="text-2xl font-bold">
-                {review.safety_score || 'N/A'}
+            <div className="text-center p-3 bg-gray-50 rounded">
+              <div className={`text-2xl font-bold ${getScoreColor(review.safety_score)}`}>
+                {review.safety_score}
               </div>
               <div className="text-xs text-muted-foreground">Safety</div>
             </div>
-
-            <div className="text-center p-3 bg-gray-50 text-slate-900 rounded">
-              <div className="text-2xl font-bold">
-                {review.completeness_score || 'N/A'}
+            <div className="text-center p-3 bg-gray-50 rounded">
+              <div className={`text-2xl font-bold ${getScoreColor(review.completeness_score)}`}>
+                {review.completeness_score}
               </div>
-              <div className="text-xs text-muted-foreground">Complete</div>
+              <div className="text-xs text-muted-foreground">Kompletnost</div>
             </div>
           </div>
 
           {/* Issues */}
-          {review.issues && review.issues.length > 0 && (
+          {review.issues.length > 0 && (
             <div className="space-y-2">
-              <h4 className="font-semibold text-sm">Issues Found ({review.issues.length})</h4>
+              <h4 className="font-semibold text-sm">Problémy ({review.issues.length})</h4>
               {review.issues.map((issue, i) => (
-                <Alert
-                  key={i}
-                  variant={issue.severity === 'high' ? 'destructive' : 'default'}
-                  className="relative"
-                >
+                <Alert key={i} variant={issue.severity === 'high' ? 'destructive' : 'default'}>
                   <div className="flex items-start gap-3">
                     {getSeverityIcon(issue.severity)}
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <Badge variant={getSeverityBadge(issue.severity)}>
-                          {issue.severity}
-                        </Badge>
-                        <Badge variant="outline">{issue.category}</Badge>
+                        <Badge variant={getSeverityBadge(issue.severity)}>{issue.severity}</Badge>
+                        {issue.category && <Badge variant="outline">{issue.category}</Badge>}
                       </div>
-
-                      <AlertDescription className="text-sm mb-2">
-                        {issue.description}
-                      </AlertDescription>
-
+                      <AlertDescription className="text-sm mb-2">{issue.description}</AlertDescription>
                       {issue.line && (
-                        <div className="text-xs bg-white text-slate-900 p-2 rounded border mb-2">
-                          <span className="text-slate-600">Context:</span> "{issue.line}"
+                        <div className="text-xs bg-white p-2 rounded border mb-2">
+                          <span className="text-slate-500">Kontext:</span> „{issue.line}"
                         </div>
                       )}
-
                       {issue.suggestion && (
                         <div className="text-sm text-green-700 bg-green-50 p-2 rounded">
-                          💡 <strong>Suggestion:</strong> {issue.suggestion}
+                          💡 <strong>Návrh:</strong> {issue.suggestion}
                         </div>
                       )}
                     </div>
@@ -258,35 +222,35 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
           )}
 
           {/* Strengths */}
-          {review.strengths && review.strengths.length > 0 && (
+          {review.strengths.length > 0 && (
             <div>
               <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
                 <ThumbsUp className="h-4 w-4 text-green-600" />
-                Strengths
+                Silné stránky
               </h4>
               <ul className="space-y-1">
-                {review.strengths.map((strength, i) => (
+                {review.strengths.map((s, i) => (
                   <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
                     <CheckCircle className="h-3 w-3 text-green-600 mt-1 flex-shrink-0" />
-                    {strength}
+                    {s}
                   </li>
                 ))}
               </ul>
             </div>
           )}
 
-          {/* Missing Sections */}
-          {review.missing_sections && review.missing_sections.length > 0 && (
+          {/* Missing */}
+          {review.missing_sections.length > 0 && (
             <div>
               <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
                 <ThumbsDown className="h-4 w-4 text-orange-600" />
-                Missing Sections
+                Chybějící sekce
               </h4>
               <ul className="space-y-1">
-                {review.missing_sections.map((section, i) => (
+                {review.missing_sections.map((s, i) => (
                   <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
                     <AlertTriangle className="h-3 w-3 text-orange-600 mt-1 flex-shrink-0" />
-                    {section}
+                    {s}
                   </li>
                 ))}
               </ul>
@@ -294,14 +258,10 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
           )}
 
           {/* Metadata */}
-          {review.metadata && (
-            <div className="text-xs text-muted-foreground pt-3 border-t">
-              <div className="flex justify-between">
-                <span>Model: {review.metadata.model}</span>
-                <span>Cost: ${review.metadata.cost?.total || '0'}</span>
-              </div>
-            </div>
-          )}
+          <div className="text-xs text-muted-foreground pt-3 border-t flex justify-between">
+            <span>Model: {review.metadata?.model}</span>
+            <span>{new Date(review.metadata?.reviewedAt).toLocaleString('cs-CZ')}</span>
+          </div>
         </CardContent>
       )}
     </Card>
