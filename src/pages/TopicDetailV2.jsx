@@ -6,7 +6,6 @@ import { createPageUrl } from '../utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TopicNotes from '@/components/TopicNotes';
 import FlashcardGenerator from '@/components/FlashcardGenerator';
 import ReactMarkdown from 'react-markdown';
@@ -16,8 +15,7 @@ import {
   Layers,
   StickyNote,
   Sparkles,
-  ChevronLeft,
-  FileText
+  AlertTriangle
 } from 'lucide-react';
 
 export default function TopicDetailV2() {
@@ -25,7 +23,7 @@ export default function TopicDetailV2() {
   const topicId = urlParams.get('id');
   
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('fulltext');
+  const [activeView, setActiveView] = useState('fulltext');
 
   // Fetch topic
   const { data: topic, isLoading } = useQuery({
@@ -70,24 +68,24 @@ export default function TopicDetailV2() {
     );
   }
 
+  const viewButtons = [
+    { id: 'fulltext', label: 'Plný text', icon: BookOpen },
+    { id: 'summary', label: 'High-Yield', icon: Zap },
+    { id: 'deepdive', label: 'Deep Dive', icon: Layers }
+  ];
+
   return (
-    <div className="container max-w-6xl mx-auto p-6 space-y-6">
+    <div className="container max-w-5xl mx-auto p-6 space-y-6">
       {/* Breadcrumbs */}
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <Link to={createPageUrl('StudiumV2')} className="hover:text-foreground">
           Studium
         </Link>
-        <ChevronLeft className="w-4 h-4 rotate-180" />
-        {topic.obory && (
-          <>
-            <span className="hover:text-foreground">{topic.obory.name}</span>
-            <ChevronLeft className="w-4 h-4 rotate-180" />
-          </>
-        )}
+        <span>/</span>
         {topic.okruhy && (
           <>
             <span className="hover:text-foreground">{topic.okruhy.name}</span>
-            <ChevronLeft className="w-4 h-4 rotate-180" />
+            <span>/</span>
           </>
         )}
         <span className="text-foreground font-medium">{topic.title}</span>
@@ -95,139 +93,109 @@ export default function TopicDetailV2() {
 
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold mb-2">{topic.title}</h1>
-        <div className="flex items-center gap-2 mt-4">
-          {topic.obory && (
-            <Badge variant="outline">{topic.obory.name}</Badge>
-          )}
-          {topic.okruhy && (
-            <Badge variant="secondary">{topic.okruhy.name}</Badge>
+        <div className="flex items-center gap-3 mb-2">
+          <h1 className="text-3xl font-bold">{topic.title}</h1>
+          {topic.ai_generated && (
+            <Badge variant="outline" className="gap-1 text-yellow-600 border-yellow-600">
+              <AlertTriangle className="w-3 h-3" />
+              AI Draft - vyžaduje odbornou kontrolu
+            </Badge>
           )}
         </div>
       </div>
 
-      {/* Content Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="fulltext" className="gap-2">
-            <BookOpen className="w-4 h-4" />
-            Full Text
-          </TabsTrigger>
-          <TabsTrigger value="summary" className="gap-2">
-            <Zap className="w-4 h-4" />
-            High-Yield
-          </TabsTrigger>
-          <TabsTrigger value="deepdive" className="gap-2">
-            <Layers className="w-4 h-4" />
-            Deep Dive
-          </TabsTrigger>
-          <TabsTrigger value="notes" className="gap-2">
-            <StickyNote className="w-4 h-4" />
-            Poznámky
-          </TabsTrigger>
-          <TabsTrigger value="flashcards" className="gap-2">
-            <Sparkles className="w-4 h-4" />
-            Kartičky
-          </TabsTrigger>
-        </TabsList>
+      {/* View Switcher */}
+      <div className="flex gap-2 border-b">
+        {viewButtons.map((btn) => {
+          const Icon = btn.icon;
+          const isActive = activeView === btn.id;
+          
+          return (
+            <button
+              key={btn.id}
+              onClick={() => setActiveView(btn.id)}
+              className={`px-4 py-2 font-medium border-b-2 transition-colors flex items-center gap-2 ${
+                isActive
+                  ? 'border-purple-600 text-purple-600'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <Icon className="w-4 h-4" />
+              {btn.label}
+            </button>
+          );
+        })}
+      </div>
 
-        {/* Full Text */}
-        <TabsContent value="fulltext">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BookOpen className="w-5 h-5" />
-                Úplný obsah
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {topic.full_text_content ? (
-                <div className="prose dark:prose-invert max-w-none">
+      {/* Content */}
+      <div className="space-y-6">
+        {/* Main Content Card */}
+        <Card className="bg-slate-900/50 border-slate-800">
+          <CardContent className="p-8">
+            {activeView === 'fulltext' && (
+              topic.full_text_content ? (
+                <div className="prose prose-invert max-w-none">
                   <ReactMarkdown>{topic.full_text_content}</ReactMarkdown>
                 </div>
               ) : (
                 <p className="text-muted-foreground">Obsah není k dispozici</p>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
+              )
+            )}
 
-        {/* High-Yield */}
-        <TabsContent value="summary">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Zap className="w-5 h-5" />
-                High-Yield Summary
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {topic.bullet_points_summary ? (
-                <div className="prose dark:prose-invert max-w-none">
+            {activeView === 'summary' && (
+              topic.bullet_points_summary ? (
+                <div className="prose prose-invert max-w-none">
                   <ReactMarkdown>{topic.bullet_points_summary}</ReactMarkdown>
                 </div>
               ) : (
                 <p className="text-muted-foreground">Souhrn není k dispozici</p>
-              )}
-            </CardContent>
-          </Card>
+              )
+            )}
 
-          {topic.learning_objectives && topic.learning_objectives.length > 0 && (
-            <Card className="mt-4">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="w-5 h-5" />
-                  Learning Objectives
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2">
-                  {topic.learning_objectives.map((obj, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
-                      <span className="text-purple-600 font-bold">•</span>
-                      <span>{obj}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
-
-        {/* Deep Dive */}
-        <TabsContent value="deepdive">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Layers className="w-5 h-5" />
-                Deep Dive
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {topic.deep_dive_content ? (
-                <div className="prose dark:prose-invert max-w-none">
+            {activeView === 'deepdive' && (
+              topic.deep_dive_content ? (
+                <div className="prose prose-invert max-w-none">
                   <ReactMarkdown>{topic.deep_dive_content}</ReactMarkdown>
                 </div>
               ) : (
                 <p className="text-muted-foreground">Deep dive obsah není k dispozici</p>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
+              )
+            )}
+          </CardContent>
+        </Card>
 
-        {/* Notes */}
-        <TabsContent value="notes">
-          <TopicNotes topicId={topicId} />
-        </TabsContent>
+        {/* Notes Section */}
+        <Card className="bg-slate-900/50 border-slate-800">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <StickyNote className="w-5 h-5 text-orange-400" />
+              Vaše poznámky (0)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <TopicNotes topicId={topicId} />
+          </CardContent>
+        </Card>
 
-        {/* Flashcards */}
-        <TabsContent value="flashcards">
-          <FlashcardGenerator 
-            topicId={topicId} 
-            topicContent={topic.full_text_content || topic.bullet_points_summary}
-          />
-        </TabsContent>
-      </Tabs>
+        {/* Flashcards Section */}
+        <Card className="bg-slate-900/50 border-slate-800">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Sparkles className="w-5 h-5 text-purple-400" />
+              Procvičování
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">
+              Vygenerujte otázky pro procvičení tohoto tématu pomocí AI
+            </p>
+            <FlashcardGenerator 
+              topicId={topicId} 
+              topicContent={topic.full_text_content || topic.bullet_points_summary}
+            />
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
