@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
@@ -6,13 +6,15 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   CheckCircle,
   XCircle,
   RotateCcw,
   Zap,
   Trophy,
-  ArrowLeft
+  ArrowLeft,
+  Filter
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -26,34 +28,87 @@ export default function ReviewToday() {
     reviewed: 0,
     correct: 0
   });
+  
+  // Filters
+  const [selectedObor, setSelectedObor] = useState('all');
+  const [selectedOkruh, setSelectedOkruh] = useState('all');
+  const [selectedTopic, setSelectedTopic] = useState('all');
 
-  // Fetch ALL flashcards
-  const { data: flashcards = [], isLoading } = useQuery({
+  // Fetch flashcards with topic info
+  const { data: flashcardsRaw = [], isLoading } = useQuery({
     queryKey: ['allFlashcards'],
     queryFn: async () => {
-      console.log('🔍 === REVIEWTODAY QUERY DEBUG ===');
-      console.log('1️⃣ Fetching flashcards...');
-      
       const { data, error } = await supabase
         .from('flashcards')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(50);
+        .select(`
+          *,
+          topics:topic_id(
+            id,
+            title,
+            obor_id,
+            okruh_id,
+            obory:obor_id(id, name),
+            okruhy:okruh_id(id, name)
+          )
+        `)
+        .order('created_at', { ascending: false });
 
-      console.log('2️⃣ Data:', data);
-      console.log('3️⃣ Error:', error);
-      console.log('4️⃣ Count:', data?.length || 0);
-      console.log('🏁 === END DEBUG ===');
-
-      if (error) {
-        console.error('❌ Query failed:', error);
-        throw error;
-      }
-
+      if (error) throw error;
       return data || [];
     },
     enabled: !!user?.id
   });
+
+  // Extract unique obory, okruhy, topics
+  const obory = useMemo(() => {
+    const unique = new Map();
+    flashcardsRaw.forEach(card => {
+      if (card.topics?.obory) {
+        unique.set(card.topics.obory.id, card.topics.obory);
+      }
+    });
+    return Array.from(unique.values());
+  }, [flashcardsRaw]);
+
+  const okruhy = useMemo(() => {
+    const unique = new Map();
+    flashcardsRaw.forEach(card => {
+      if (card.topics?.okruhy) {
+        const matchesObor = selectedObor === 'all' || card.topics.obor_id === selectedObor;
+        if (matchesObor) {
+          unique.set(card.topics.okruhy.id, card.topics.okruhy);
+        }
+      }
+    });
+    return Array.from(unique.values());
+  }, [flashcardsRaw, selectedObor]);
+
+  const topics = useMemo(() => {
+    const unique = new Map();
+    flashcardsRaw.forEach(card => {
+      if (card.topics) {
+        const matchesObor = selectedObor === 'all' || card.topics.obor_id === selectedObor;
+        const matchesOkruh = selectedOkruh === 'all' || card.topics.okruh_id === selectedOkruh;
+        if (matchesObor && matchesOkruh) {
+          unique.set(card.topics.id, card.topics);
+        }
+      }
+    });
+    return Array.from(unique.values());
+  }, [flashcardsRaw, selectedObor, selectedOkruh]);
+
+  // Filtered flashcards
+  const flashcards = useMemo(() => {
+    return flashcardsRaw.filter(card => {
+      if (!card.topics) return false;
+      
+      const matchesObor = selectedObor === 'all' || card.topics.obor_id === selectedObor;
+      const matchesOkruh = selectedOkruh === 'all' || card.topics.okruh_id === selectedOkruh;
+      const matchesTopic = selectedTopic === 'all' || card.topics.id === selectedTopic;
+      
+      return matchesObor && matchesOkruh && matchesTopic;
+    });
+  }, [flashcardsRaw, selectedObor, selectedOkruh, selectedTopic]);
 
   const handleAnswer = (quality) => {
     const isCorrect = quality >= 3;
@@ -63,16 +118,21 @@ export default function ReviewToday() {
       correct: prev.correct + (isCorrect ? 1 : 0)
     }));
 
-    // Move to next card
     if (currentIndex < flashcards.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setIsFlipped(false);
     } else {
-      // Session complete
       toast.success(`Session complete! ${sessionStats.correct + (isCorrect ? 1 : 0)}/${sessionStats.reviewed + 1} correct`);
-      navigate('/Dashboard');
+      setCurrentIndex(0);
+      setSessionStats({ reviewed: 0, correct: 0 });
     }
   };
+
+  // Reset index when filters change
+  React.useEffect(() => {
+    setCurrentIndex(0);
+    setIsFlipped(false);
+  }, [selectedObor, selectedOkruh, selectedTopic]);
 
   if (isLoading) {
     return (
@@ -84,13 +144,78 @@ export default function ReviewToday() {
 
   if (!flashcards.length) {
     return (
-      <div className="container max-w-2xl mx-auto p-6">
+      <div className="container max-w-3xl mx-auto p-6 space-y-6">
+        {/* Filters */}
+        <Card className="bg-slate-900/50 border-slate-800">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Filter className="w-4 h-4" />
+              <h3 className="font-semibold">Filtry</h3>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="text-sm text-muted-foreground mb-2 block">Obor</label>
+                <Select value={selectedObor} onValueChange={setSelectedObor}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Všechny obory</SelectItem>
+                    {obory.map(obor => (
+                      <SelectItem key={obor.id} value={obor.id}>
+                        {obor.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <label className="text-sm text-muted-foreground mb-2 block">Okruh</label>
+                <Select value={selectedOkruh} onValueChange={setSelectedOkruh}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Všechny okruhy</SelectItem>
+                    {okruhy.map(okruh => (
+                      <SelectItem key={okruh.id} value={okruh.id}>
+                        {okruh.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <label className="text-sm text-muted-foreground mb-2 block">Téma</label>
+                <Select value={selectedTopic} onValueChange={setSelectedTopic}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Všechna témata</SelectItem>
+                    {topics.map(topic => (
+                      <SelectItem key={topic.id} value={topic.id}>
+                        {topic.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardContent className="p-12 text-center">
             <Zap className="w-16 h-16 mx-auto mb-4 text-purple-600" />
             <h2 className="text-2xl font-bold mb-2">Žádné kartičky!</h2>
             <p className="text-muted-foreground mb-6">
-              Vytvořte si kartičky v sekci Studium
+              {selectedObor !== 'all' || selectedOkruh !== 'all' || selectedTopic !== 'all'
+                ? 'Zkuste změnit filtry nebo vytvořte nové kartičky'
+                : 'Vytvořte si kartičky v sekci Studium'}
             </p>
             <Button onClick={() => navigate('/Dashboard')}>
               Dashboard
@@ -122,6 +247,60 @@ export default function ReviewToday() {
         </div>
       </div>
 
+      {/* Filters */}
+      <Card className="bg-slate-900/50 border-slate-800">
+        <CardContent className="p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Filter className="w-4 h-4" />
+            <h3 className="font-semibold text-sm">Filtry</h3>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <Select value={selectedObor} onValueChange={setSelectedObor}>
+              <SelectTrigger className="h-9">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Všechny obory</SelectItem>
+                {obory.map(obor => (
+                  <SelectItem key={obor.id} value={obor.id}>
+                    {obor.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={selectedOkruh} onValueChange={setSelectedOkruh}>
+              <SelectTrigger className="h-9">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Všechny okruhy</SelectItem>
+                {okruhy.map(okruh => (
+                  <SelectItem key={okruh.id} value={okruh.id}>
+                    {okruh.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={selectedTopic} onValueChange={setSelectedTopic}>
+              <SelectTrigger className="h-9">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Všechna témata</SelectItem>
+                {topics.map(topic => (
+                  <SelectItem key={topic.id} value={topic.id}>
+                    {topic.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Progress */}
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
@@ -132,6 +311,13 @@ export default function ReviewToday() {
         </div>
         <Progress value={progressPercent} />
       </div>
+
+      {/* Topic Info */}
+      {card.topics && (
+        <div className="text-sm text-muted-foreground">
+          {card.topics.obory?.name} → {card.topics.okruhy?.name} → {card.topics.title}
+        </div>
+      )}
 
       {/* Flashcard */}
       <div 
