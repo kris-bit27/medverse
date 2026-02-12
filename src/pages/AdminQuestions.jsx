@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -47,26 +47,26 @@ export default function AdminQuestions() {
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
+    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; }
   });
 
   const { data: questions = [], isLoading } = useQuery({
     queryKey: ['questions'],
-    queryFn: () => base44.entities.Question.list('-created_date')
+    queryFn: () => supabase.from('questions').select('*').order('created_at', { ascending: false }).then(r => r.data || [])
   });
 
   const { data: okruhy = [] } = useQuery({
     queryKey: ['okruhy'],
-    queryFn: () => base44.entities.Okruh.list('order')
+    queryFn: () => supabase.from('okruhy').select('*').order('order_index').then(r => r.data || [])
   });
 
   const { data: topics = [] } = useQuery({
     queryKey: ['topics'],
-    queryFn: () => base44.entities.Topic.list()
+    queryFn: () => supabase.from('topics').select('*').then(r => r.data || [])
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.Question.delete(id),
+    mutationFn: (id) => supabase.from('questions').delete().eq('id', id),
     onSuccess: () => {
       queryClient.invalidateQueries(['questions']);
     }
@@ -74,7 +74,7 @@ export default function AdminQuestions() {
 
   const bulkDeleteMutation = useMutation({
     mutationFn: async (ids) => {
-      await Promise.all(ids.map(id => base44.entities.Question.delete(id)));
+      await Promise.all(ids.map(id => supabase.from('questions').delete().eq('id', id)));
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['questions']);

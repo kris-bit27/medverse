@@ -5,7 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Textarea } from '@/components/ui/textarea';
 import { Highlighter, Loader2, Save } from 'lucide-react';
 import { toast } from 'sonner';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 
 export default function HighlightableText({ 
   content, 
@@ -33,7 +33,7 @@ export default function HighlightableText({
 
     setIsSaving(true);
     try {
-      await base44.entities.UserNote.create({
+      const { data: note } = await supabase.from('user_notes').insert({
         user_id: user.id,
         entity_type: 'topic',
         entity_id: topicId,

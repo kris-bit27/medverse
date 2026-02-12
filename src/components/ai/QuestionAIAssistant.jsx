@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -163,7 +163,7 @@ export default function QuestionAIAssistant({ question, user, onNoteSaved, topic
       if (!topicId) return;
 
       try {
-        const t = await base44.entities.Topic.get(topicId);
+        const t = await supabase.from('topics').select('*').eq('id', topicId).single().then(r => r.data);
         setTopic(t);
       } catch (e) {
         // silent fail (assistant can still work with question-only)

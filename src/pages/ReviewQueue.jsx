@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -23,17 +23,17 @@ import DifficultyIndicator from '@/components/ui/DifficultyIndicator';
 export default function ReviewQueue() {
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
+    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; }
   });
 
   const { data: questions = [] } = useQuery({
     queryKey: ['questions'],
-    queryFn: () => base44.entities.Question.list()
+    queryFn: () => supabase.from('questions').select('*').then(r => r.data || [])
   });
 
   const { data: progress = [], isLoading } = useQuery({
     queryKey: ['userProgress', user?.id],
-    queryFn: () => base44.entities.UserProgress.filter({ user_id: user.id }),
+    queryFn: () => supabase.from('user_flashcard_progress').select('*').eq('user_id', user.id).then(r => r.data || []),
     enabled: !!user?.id
   });
 

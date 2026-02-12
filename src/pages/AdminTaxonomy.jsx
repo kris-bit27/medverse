@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardTitle, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -110,12 +110,12 @@ export default function AdminTaxonomy() {
 
   const { data: disciplines = [] } = useQuery({
     queryKey: ['clinicalDisciplines'],
-    queryFn: () => base44.entities.ClinicalDiscipline.list()
+    queryFn: () => supabase.from('obory').select('*').order('order_index').then(r => r.data || [])
   });
 
   const { data: okruhy = [], isLoading } = useQuery({
     queryKey: ['okruhy'],
-    queryFn: () => base44.entities.Okruh.list('order')
+    queryFn: () => supabase.from('okruhy').select('*').order('order_index').then(r => r.data || [])
   });
 
   const okruhForEditingTopic = editingTopic ? okruhy.find(o => o.id === editingTopic.okruh_id) : null;
@@ -125,12 +125,12 @@ export default function AdminTaxonomy() {
 
   const { data: topics = [] } = useQuery({
     queryKey: ['topics'],
-    queryFn: () => base44.entities.Topic.list()
+    queryFn: () => supabase.from('topics').select('*').then(r => r.data || [])
   });
 
   const { data: questions = [] } = useQuery({
     queryKey: ['questions'],
-    queryFn: () => base44.entities.Question.list()
+    queryFn: () => supabase.from('questions').select('*').then(r => r.data || [])
   });
 
   const okruhById = useMemo(() => {
@@ -170,9 +170,9 @@ export default function AdminTaxonomy() {
   const saveDisciplineMutation = useMutation({
     mutationFn: async (data) => {
       if (editingDiscipline) {
-        return base44.entities.ClinicalDiscipline.update(editingDiscipline.id, data);
+        return supabase.from('obory').update(data).eq('id', editingDiscipline.id).select().single().then(r => r.data);
       }
-      return base44.entities.ClinicalDiscipline.create(data);
+      return supabase.from('obory').insert(data).select().single().then(r => r.data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['clinicalDisciplines']);
@@ -189,7 +189,7 @@ export default function AdminTaxonomy() {
   });
 
   const deleteDisciplineMutation = useMutation({
-    mutationFn: (id) => base44.entities.ClinicalDiscipline.delete(id),
+    mutationFn: (id) => supabase.from('obory').delete().eq('id', id),
     onSuccess: () => queryClient.invalidateQueries(['clinicalDisciplines']),
     onError: (error) => {
       console.error('Delete discipline failed:', error);
@@ -200,9 +200,9 @@ export default function AdminTaxonomy() {
   const saveOkruhMutation = useMutation({
     mutationFn: async (data) => {
       if (editingOkruh) {
-        return base44.entities.Okruh.update(editingOkruh.id, data);
+        return supabase.from('okruhy').update(data).eq('id', editingOkruh.id).select().single().then(r => r.data);
       }
-      return base44.entities.Okruh.create(data);
+      return supabase.from('okruhy').insert(data).select().single().then(r => r.data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['okruhy']);
@@ -218,7 +218,7 @@ export default function AdminTaxonomy() {
   });
 
   const deleteOkruhMutation = useMutation({
-    mutationFn: (id) => base44.entities.Okruh.delete(id),
+    mutationFn: (id) => supabase.from('okruhy').delete().eq('id', id),
     onSuccess: () => queryClient.invalidateQueries(['okruhy']),
     onError: (error) => {
       console.error('Delete okruh failed:', error);
@@ -229,9 +229,9 @@ export default function AdminTaxonomy() {
   const saveTopicMutation = useMutation({
     mutationFn: async (data) => {
       if (editingTopic) {
-        return base44.entities.Topic.update(editingTopic.id, data);
+        return supabase.from('topics').update(data).eq('id', editingTopic.id).select().single().then(r => r.data);
       }
-      return base44.entities.Topic.create(data);
+      return supabase.from('topics').insert(data).select().single().then(r => r.data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['topics']);
@@ -247,7 +247,7 @@ export default function AdminTaxonomy() {
   });
 
   const deleteTopicMutation = useMutation({
-    mutationFn: (id) => base44.entities.Topic.delete(id),
+    mutationFn: (id) => supabase.from('topics').delete().eq('id', id),
     onSuccess: () => queryClient.invalidateQueries(['topics']),
     onError: (error) => {
       console.error('Delete topic failed:', error);
@@ -256,7 +256,7 @@ export default function AdminTaxonomy() {
   });
 
   const updateTopicStatusMutation = useMutation({
-    mutationFn: async ({ id, data }) => base44.entities.Topic.update(id, data),
+    mutationFn: async ({ id, data }) => supabase.from('topics').update(data).eq('id', id).select().single().then(r => r.data),
     onSuccess: () => queryClient.invalidateQueries(['topics']),
     onError: (error) => {
       console.error('Update topic failed:', error);
@@ -284,7 +284,7 @@ export default function AdminTaxonomy() {
 
   const handleToggleReviewed = async (topic) => {
     try {
-      const user = await base44.auth.me();
+      const { data: { user } } = await supabase.auth.getUser();
       await updateTopicStatusMutation.mutateAsync({
         id: topic.id,
         data: {
@@ -369,7 +369,7 @@ export default function AdminTaxonomy() {
   const handleBulkReview = async () => {
     setBulkActionLoading(true);
     try {
-      const user = await base44.auth.me();
+      const { data: { user } } = await supabase.auth.getUser();
       await Promise.all(selectedTopics.map(topicId =>
         updateTopicStatusMutation.mutateAsync({
           id: topicId,

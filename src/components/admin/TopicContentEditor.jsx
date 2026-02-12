@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -23,7 +23,7 @@ export default function TopicContentEditor({ topic, onSave }) {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await base44.entities.Topic.update(topic.id, content);
+      await supabase.from('topics').update(content).eq('id', topic.id).select().single().then(r => r.data);
       toast.success('Obsah uložen');
       onSave?.();
     } catch (error) {
@@ -78,7 +78,7 @@ STUDIJNÍ TEXT:
 ${fullTextSnippet}`;
       }
 
-      const response = await base44.integrations.Core.InvokeLLM({
+      const response = await base44.functions.invoke('invokeLLM', {
         prompt,
         add_context_from_internet: type === 'deepdive_from_full',
         maxTokens: type === 'deepdive_from_full' ? 2048 : 1024,

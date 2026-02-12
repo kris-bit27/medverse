@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -130,10 +130,10 @@ export default function AIExamTab({ question, user, topic, onNoteSaved }) {
         const resetDate = user.ai_usage_reset_date?.split('T')[0];
         const shouldReset = resetDate !== today;
 
-        await base44.auth.updateMe({
+        await supabase.auth.updateUser({ data: {
           ai_usage_today: shouldReset ? 1 : (user.ai_usage_today || 0) + 1,
           ai_usage_reset_date: new Date().toISOString()
-        });
+        } });
       }
     } catch (e) {
       console.error('Hippo generation error:', e);

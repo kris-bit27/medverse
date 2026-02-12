@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
@@ -37,12 +37,12 @@ export default function StudyPlanner() {
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
+    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; }
   });
 
   const { data: myPlansRaw, isLoading: loadingMyPlans } = useQuery({
     queryKey: ['myStudyPlans', user?.id],
-    queryFn: () => base44.entities.StudyPlan.filter({ user_id: user.id }),
+    queryFn: () => supabase.from('study_plans').select('*').eq('user_id', user.id ).then(r => r.data || []),
     enabled: !!user
   });
   const myPlans = asArray(myPlansRaw);
@@ -50,7 +50,7 @@ export default function StudyPlanner() {
   const { data: sharedPlansRaw, isLoading: loadingSharedPlans } = useQuery({
     queryKey: ['sharedStudyPlans', user?.id],
     queryFn: async () => {
-      const all = await base44.entities.StudyPlan.list();
+      const all = await supabase.from('study_plans').select('*').then(r => r.data || []);
       const allPlans = asArray(all);
       return allPlans.filter(p => 
         p.collaborators?.some(c => c.user_id === user.id) && 

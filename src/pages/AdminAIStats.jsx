@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -8,7 +8,7 @@ export default function AdminAIStats() {
   const { data: topics } = useQuery({
     queryKey: ['ai-stats'],
     queryFn: async () => {
-      const allTopics = await base44.entities.Topic.filter({});
+      const { data: allTopics } = await supabase.from('topics').select('*');
       return allTopics.filter(t => t.ai_generated_at);
     }
   });

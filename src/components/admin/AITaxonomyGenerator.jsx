@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -87,7 +87,7 @@ VRAŤ POUZE VALIDNÍ JSON (bez komentářů, bez Markdownu).`;
         required: ["okruhy"]
       };
 
-      const invoke = (promptText, allowWeb) => base44.integrations.Core.InvokeLLM({
+      const invoke = (promptText, allowWeb) => base44.functions.invoke('invokeLLM', {
         prompt: promptText,
         add_context_from_internet: allowWeb,
         response_json_schema: jsonSchema,
@@ -136,7 +136,7 @@ VRAŤ POUZE VALIDNÍ JSON (bez komentářů, bez Markdownu).`;
             generation_source: 'Gemini 1.5 Pro Taxonomy'
           }));
 
-          await base44.entities.Topic.bulkCreate(topicsToCreate);
+          await supabase.from('topics').insert(topicsToCreate).select().then(r => r.data);
           createdTopics += topicsToCreate.length;
         }
       }

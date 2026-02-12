@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -23,32 +23,32 @@ import { canAccessAdmin, canManageUsers, canViewAudit } from '@/components/utils
 export default function Admin() {
   const { data: user, isLoading } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
+    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; }
   });
 
   const { data: questions = [] } = useQuery({
     queryKey: ['questions'],
-    queryFn: () => base44.entities.Question.list()
+    queryFn: () => supabase.from('questions').select('*').then(r => r.data || [])
   });
 
   const { data: articles = [] } = useQuery({
     queryKey: ['articles'],
-    queryFn: () => base44.entities.Article.list()
+    queryFn: () => supabase.from('articles').select('*').then(r => r.data || [])
   });
 
   const { data: tools = [] } = useQuery({
     queryKey: ['tools'],
-    queryFn: () => base44.entities.Tool.list()
+    queryFn: () => supabase.from('clinical_tools').select('*').then(r => r.data || [])
   });
 
   const { data: okruhy = [] } = useQuery({
     queryKey: ['okruhy'],
-    queryFn: () => base44.entities.Okruh.list()
+    queryFn: () => supabase.from('okruhy').select('*').then(r => r.data || [])
   });
 
   const { data: users = [] } = useQuery({
     queryKey: ['users'],
-    queryFn: () => base44.entities.User.list(),
+    queryFn: () => supabase.from('user_profiles').select('*').then(r => r.data || []),
     enabled: canManageUsers(user)
   });
 

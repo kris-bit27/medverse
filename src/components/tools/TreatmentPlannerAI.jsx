@@ -38,7 +38,7 @@ export default function TreatmentPlannerAI() {
       const safeAllergies = (patientInfo.allergies || '').slice(0, MAX_INPUT_CHARS);
       const safeMeds = (patientInfo.current_medications || '').slice(0, MAX_INPUT_CHARS);
       const safeTests = (patientInfo.performed_tests || '').slice(0, MAX_INPUT_CHARS);
-      const response = await base44.integrations.Core.InvokeLLM({
+      const response = await base44.functions.invoke('invokeLLM', {
         prompt: `Jsi zkušený klinický lékař. Vytvoř léčebný plán na základě následujících informací:
 
 DIAGNÓZA: ${safeDiagnosis}

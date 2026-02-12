@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   Dialog, 
@@ -59,7 +59,10 @@ export default function LogbookEntryForm({ entry, disciplines, userId, onClose }
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.LogbookEntry.create({ ...data, user_id: userId }),
+    mutationFn: async (data) => {
+      const { data: entry } = await supabase.from('logbook_entries').insert({ ...data, user_id: userId }).select().single();
+      return entry;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries(['logbookEntries']);
       onClose();
@@ -67,7 +70,10 @@ export default function LogbookEntryForm({ entry, disciplines, userId, onClose }
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data) => base44.entities.LogbookEntry.update(entry.id, data),
+    mutationFn: async (data) => {
+      const { data: updated } = await supabase.from('logbook_entries').update(data).eq('id', entry.id).select().single();
+      return updated;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries(['logbookEntries']);
       onClose();
@@ -75,7 +81,9 @@ export default function LogbookEntryForm({ entry, disciplines, userId, onClose }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: () => base44.entities.LogbookEntry.delete(entry.id),
+    mutationFn: async () => {
+      await supabase.from('logbook_entries').delete().eq('id', entry.id);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries(['logbookEntries']);
       onClose();

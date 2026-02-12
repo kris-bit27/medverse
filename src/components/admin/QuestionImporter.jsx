@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -97,7 +97,7 @@ Pro každou otázku vytvořit:
 
 Otázky musí být relevantní pro české lékařské atestace a odpovídat běžným požadavkům atestační komise.`;
 
-      const response = await base44.integrations.Core.InvokeLLM({
+      const response = await base44.functions.invoke('invokeLLM', {
         prompt,
         model: 'gemini-1.5-pro',
         maxTokens: 4096,
@@ -131,7 +131,7 @@ Otázky musí být relevantní pro české lékařské atestace a odpovídat bě
         visibility: 'public'
       }));
 
-      await base44.entities.Question.bulkCreate(generatedQuestions);
+      await supabase.from('questions').insert(generatedQuestions).select().then(r => r.data);
 
       setResult({
         success: true,
@@ -190,7 +190,7 @@ Otázky musí být relevantní pro české lékařské atestace a odpovídat bě
         visibility: q.visibility || 'public'
       }));
 
-      await base44.entities.Question.bulkCreate(questionsWithIds);
+      await supabase.from('questions').insert(questionsWithIds).select().then(r => r.data);
 
       setResult({
         success: true,

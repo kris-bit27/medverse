@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -38,18 +38,18 @@ export default function Profile() {
 
   const { data: user, isLoading } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
+    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; }
   });
 
   const { data: progress = [] } = useQuery({
     queryKey: ['userProgress', user?.id],
-    queryFn: () => base44.entities.UserProgress.filter({ user_id: user.id }),
+    queryFn: () => supabase.from('user_flashcard_progress').select('*').eq('user_id', user.id).then(r => r.data || []),
     enabled: !!user?.id
   });
 
   const { data: questions = [] } = useQuery({
     queryKey: ['questions'],
-    queryFn: () => base44.entities.Question.list()
+    queryFn: () => supabase.from('questions').select('*').then(r => r.data || [])
   });
 
   const [settings, setSettings] = useState(null);
@@ -68,7 +68,7 @@ export default function Profile() {
 
   const handleSaveSettings = async () => {
     setSaving(true);
-    await base44.auth.updateMe({ settings });
+    await supabase.auth.updateUser({ settings });
     
     // Apply theme immediately
     if (settings.theme) {

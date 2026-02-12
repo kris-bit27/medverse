@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -24,13 +24,13 @@ export default function ToolDetail() {
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
+    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; }
   });
 
   const { data: tool, isLoading } = useQuery({
     queryKey: ['tool', toolId],
     queryFn: async () => {
-      const tools = await base44.entities.Tool.filter({ id: toolId });
+      const tools = await supabase.from('clinical_tools').select('*').eq('id', toolId ).then(r => r.data || []);
       return tools[0];
     },
     enabled: !!toolId
@@ -39,7 +39,7 @@ export default function ToolDetail() {
   const { data: topic } = useQuery({
     queryKey: ['topic', tool?.topic_id],
     queryFn: async () => {
-      const topics = await base44.entities.Topic.filter({ id: tool.topic_id });
+      const topics = await supabase.from('topics').select('*').eq('id', tool.topic_id ).then(r => r.data || []);
       return topics[0];
     },
     enabled: !!tool?.topic_id
@@ -61,7 +61,7 @@ export default function ToolDetail() {
   const bookmarkMutation = useMutation({
     mutationFn: async () => {
       if (bookmark) {
-        return base44.entities.Bookmark.delete(bookmark.id);
+        return supabase.from('bookmarks').delete().eq('id', bookmark.id);
       } else {
         return base44.entities.Bookmark.create({
           user_id: user.id,

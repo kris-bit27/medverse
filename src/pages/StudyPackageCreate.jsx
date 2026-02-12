@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
@@ -35,31 +35,31 @@ export default function StudyPackageCreate() {
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
+    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; }
   });
 
   const { data: disciplines = [] } = useQuery({
     queryKey: ['clinicalDisciplines'],
-    queryFn: () => base44.entities.ClinicalDiscipline.list()
+    queryFn: () => supabase.from('obory').select('*').order('order_index').then(r => r.data || [])
   });
 
   const { data: questions = [], isLoading: loadingQuestions } = useQuery({
     queryKey: ['questions'],
-    queryFn: () => base44.entities.Question.list()
+    queryFn: () => supabase.from('questions').select('*').then(r => r.data || [])
   });
 
   const { data: articles = [], isLoading: loadingArticles } = useQuery({
     queryKey: ['articles'],
-    queryFn: () => base44.entities.Article.list()
+    queryFn: () => supabase.from('articles').select('*').then(r => r.data || [])
   });
 
   const { data: tools = [], isLoading: loadingTools } = useQuery({
     queryKey: ['tools'],
-    queryFn: () => base44.entities.Tool.list()
+    queryFn: () => supabase.from('clinical_tools').select('*').then(r => r.data || [])
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.StudyPackage.create(data),
+    mutationFn: (data) => supabase.from('study_packages').insert(data).select().single().then(r => r.data),
     onSuccess: (pkg) => {
       queryClient.invalidateQueries(['myStudyPackages']);
       navigate(createPageUrl('StudyPackageDetail') + `?id=${pkg.id}`);

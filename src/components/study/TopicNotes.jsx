@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -69,7 +69,7 @@ export default function TopicNotes({ topicId, user }) {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (noteId) => base44.entities.UserNote.delete(noteId),
+    mutationFn: (noteId) => supabase.from('user_notes').delete().eq('id', noteId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['topicNotes', topicId, user?.id] });
       toast.success('Poznámka smazána');
@@ -77,7 +77,7 @@ export default function TopicNotes({ topicId, user }) {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.UserNote.update(id, data),
+    mutationFn: ({ id, data }) => supabase.from('user_notes').update(data).eq('id', id).select().single().then(r => r.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['topicNotes', topicId, user?.id] });
       setEditingNote(null);
@@ -106,7 +106,7 @@ export default function TopicNotes({ topicId, user }) {
     
     try {
       // Fetch users by email
-      const allUsers = await base44.entities.User.list();
+      const allUsers = await supabase.from('user_profiles').select('*').then(r => r.data || []);
       const targetUserIds = allUsers
         .filter(u => emails.includes(u.email))
         .map(u => u.id);

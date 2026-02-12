@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
@@ -39,7 +39,7 @@ export default function StudyPlanDetail() {
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
+    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; }
   });
 
   const { data: plan, isLoading } = useQuery({
@@ -58,7 +58,7 @@ export default function StudyPlanDetail() {
     queryKey: ['planPackages', plan?.study_package_ids],
     queryFn: async () => {
       if (!plan?.study_package_ids?.length) return [];
-      const all = await base44.entities.StudyPackage.list();
+      const all = await supabase.from('study_packages').select('*').then(r => r.data || []);
       return all.filter(p => plan.study_package_ids.includes(p.id));
     },
     enabled: !!plan?.study_package_ids
@@ -68,7 +68,7 @@ export default function StudyPlanDetail() {
     queryKey: ['planDisciplines', plan?.clinical_discipline_ids],
     queryFn: async () => {
       if (!plan?.clinical_discipline_ids?.length) return [];
-      const all = await base44.entities.ClinicalDiscipline.list();
+      const all = await supabase.from('obory').select('*').order('order_index').then(r => r.data || []);
       return all.filter(d => plan.clinical_discipline_ids.includes(d.id));
     },
     enabled: !!plan?.clinical_discipline_ids
@@ -76,11 +76,11 @@ export default function StudyPlanDetail() {
 
   const { data: allUsers = [] } = useQuery({
     queryKey: ['allUsers'],
-    queryFn: () => base44.entities.User.list()
+    queryFn: () => supabase.from('user_profiles').select('*').then(r => r.data || [])
   });
 
   const deleteMutation = useMutation({
-    mutationFn: () => base44.entities.StudyPlan.delete(planId),
+    mutationFn: () => supabase.from('study_plans').delete().eq('id', planId),
     onSuccess: () => {
       queryClient.invalidateQueries(['studyPlans']);
       navigate(createPageUrl('StudyPlanner'));

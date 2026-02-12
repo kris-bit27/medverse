@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
@@ -41,7 +41,7 @@ export default function StudyPackageDetail() {
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
+    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; }
   });
 
   const { data: pkg, isLoading } = useQuery({
@@ -54,7 +54,7 @@ export default function StudyPackageDetail() {
     queryKey: ['packageQuestions', pkg?.question_ids],
     queryFn: async () => {
       if (!pkg?.question_ids?.length) return [];
-      const all = await base44.entities.Question.list();
+      const all = await supabase.from('questions').select('*').then(r => r.data || []);
       return all.filter(q => pkg.question_ids.includes(q.id));
     },
     enabled: !!pkg?.question_ids
@@ -64,7 +64,7 @@ export default function StudyPackageDetail() {
     queryKey: ['packageArticles', pkg?.article_ids],
     queryFn: async () => {
       if (!pkg?.article_ids?.length) return [];
-      const all = await base44.entities.Article.list();
+      const all = await supabase.from('articles').select('*').then(r => r.data || []);
       return all.filter(a => pkg.article_ids.includes(a.id));
     },
     enabled: !!pkg?.article_ids
@@ -74,7 +74,7 @@ export default function StudyPackageDetail() {
     queryKey: ['packageTools', pkg?.tool_ids],
     queryFn: async () => {
       if (!pkg?.tool_ids?.length) return [];
-      const all = await base44.entities.Tool.list();
+      const all = await supabase.from('clinical_tools').select('*').then(r => r.data || []);
       return all.filter(t => pkg.tool_ids.includes(t.id));
     },
     enabled: !!pkg?.tool_ids
@@ -82,12 +82,12 @@ export default function StudyPackageDetail() {
 
   const { data: discipline } = useQuery({
     queryKey: ['discipline', pkg?.clinical_discipline_id],
-    queryFn: () => base44.entities.ClinicalDiscipline.filter({ id: pkg.clinical_discipline_id }).then(r => r[0]),
+    queryFn: () => supabase.from('obory').select('*').eq('id', pkg.clinical_discipline_id ).then(r => r.data || []).then(r => r[0]),
     enabled: !!pkg?.clinical_discipline_id
   });
 
   const deleteMutation = useMutation({
-    mutationFn: () => base44.entities.StudyPackage.delete(packageId),
+    mutationFn: () => supabase.from('study_packages').delete().eq('id', packageId),
     onSuccess: () => {
       queryClient.invalidateQueries(['myStudyPackages']);
       navigate(createPageUrl('StudyPackages'));
@@ -96,7 +96,7 @@ export default function StudyPackageDetail() {
 
   const shareMutation = useMutation({
     mutationFn: async (email) => {
-      const users = await base44.entities.User.list();
+      const users = await supabase.from('user_profiles').select('*').then(r => r.data || []);
       const targetUser = users.find(u => u.email === email);
       if (!targetUser) throw new Error('Uživatel nenalezen');
       
@@ -130,7 +130,7 @@ export default function StudyPackageDetail() {
       delete forked.updated_date;
       delete forked.created_by;
       
-      const newPkg = await base44.entities.StudyPackage.create(forked);
+      const newPkg = await supabase.from('study_packages').insert(forked).select().single().then(r => r.data);
       await base44.entities.StudyPackage.update(pkg.id, {
         fork_count: (pkg.fork_count || 0) + 1
       });

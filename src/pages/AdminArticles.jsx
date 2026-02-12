@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -41,16 +41,16 @@ export default function AdminArticles() {
 
   const { data: articles = [], isLoading } = useQuery({
     queryKey: ['articles'],
-    queryFn: () => base44.entities.Article.list('-created_date')
+    queryFn: () => supabase.from('articles').select('*').order('created_at', { ascending: false }).then(r => r.data || [])
   });
 
   const { data: topics = [] } = useQuery({
     queryKey: ['topics'],
-    queryFn: () => base44.entities.Topic.list()
+    queryFn: () => supabase.from('topics').select('*').then(r => r.data || [])
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.Article.delete(id),
+    mutationFn: (id) => supabase.from('articles').delete().eq('id', id),
     onSuccess: () => queryClient.invalidateQueries(['articles'])
   });
 

@@ -18,7 +18,7 @@ export default function ScholarSearch() {
 
     setLoading(true);
     try {
-      const response = await base44.integrations.Core.InvokeLLM({
+      const response = await base44.functions.invoke('invokeLLM', {
         prompt: `Vyhledej odborné medicínské články na téma: "${query}". 
         
 Pro každý článek vrať:

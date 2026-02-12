@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -26,13 +26,13 @@ export default function OkruhDetail() {
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
+    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; }
   });
 
   const { data: okruh, isLoading } = useQuery({
     queryKey: ['okruh', okruhId],
     queryFn: async () => {
-      const okruhy = await base44.entities.Okruh.filter({ id: okruhId });
+      const okruhy = await supabase.from('okruhy').select('*').eq('id', okruhId ).then(r => r.data || []);
       return okruhy[0];
     },
     enabled: !!okruhId
@@ -40,19 +40,19 @@ export default function OkruhDetail() {
 
   const { data: topics = [] } = useQuery({
     queryKey: ['topics', okruhId],
-    queryFn: () => base44.entities.Topic.filter({ okruh_id: okruhId }, 'title'),
+    queryFn: () => supabase.from('topics').select('*').eq('okruh_id', okruhId).order('title').then(r => r.data || []),
     enabled: !!okruhId
   });
 
   const { data: questions = [] } = useQuery({
     queryKey: ['questions', okruhId],
-    queryFn: () => base44.entities.Question.filter({ okruh_id: okruhId }),
+    queryFn: () => supabase.from('questions').select('*').eq('okruh_id', okruhId).then(r => r.data || []),
     enabled: !!okruhId
   });
 
   const { data: progress = [] } = useQuery({
     queryKey: ['userProgress', user?.id],
-    queryFn: () => base44.entities.UserProgress.filter({ user_id: user.id }),
+    queryFn: () => supabase.from('user_flashcard_progress').select('*').eq('user_id', user.id).then(r => r.data || []),
     enabled: !!user?.id
   });
 

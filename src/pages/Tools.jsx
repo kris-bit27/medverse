@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -38,18 +38,18 @@ export default function Tools() {
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
+    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; }
   });
 
   const { data: toolsRaw, isLoading } = useQuery({
     queryKey: ['tools'],
-    queryFn: () => base44.entities.Tool.list('-created_date')
+    queryFn: () => supabase.from('clinical_tools').select('*').order('created_at', { ascending: false }).then(r => r.data || [])
   });
   const tools = useMemo(() => asArray(toolsRaw), [toolsRaw]);
 
   const { data: topicsRaw } = useQuery({
     queryKey: ['topics'],
-    queryFn: () => base44.entities.Topic.list()
+    queryFn: () => supabase.from('topics').select('*').then(r => r.data || [])
   });
   const topics = useMemo(() => asArray(topicsRaw), [topicsRaw]);
 
@@ -298,7 +298,7 @@ function SavedCases() {
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
+    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; }
   });
 
   const { data: casesRaw, isLoading } = useQuery({

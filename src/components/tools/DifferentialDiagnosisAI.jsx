@@ -29,7 +29,7 @@ export default function DifferentialDiagnosisAI() {
       const safeSymptoms = symptoms.slice(0, MAX_INPUT_CHARS);
       const safeHistory = (patientInfo.history || '').slice(0, MAX_INPUT_CHARS);
       const safeTests = (patientInfo.performed_tests || '').slice(0, MAX_INPUT_CHARS);
-      const response = await base44.integrations.Core.InvokeLLM({
+      const response = await base44.functions.invoke('invokeLLM', {
         prompt: `Jsi zkušený klinický lékař. Na základě následujících informací vytvoř diferenciální diagnózu:
 
 SYMPTOMY: ${safeSymptoms}

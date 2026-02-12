@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
@@ -54,12 +54,12 @@ export default function StudyPackages() {
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
+    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; }
   });
 
   const { data: myPackagesRaw, isLoading: loadingMy } = useQuery({
     queryKey: ['myStudyPackages', user?.id],
-    queryFn: () => base44.entities.StudyPackage.filter({ created_by: user.email }),
+    queryFn: () => supabase.from('study_packages').select('*').eq('created_by', user.email ).then(r => r.data || []),
     enabled: !!user
   });
   const myPackages = asArray(myPackagesRaw);
@@ -67,7 +67,7 @@ export default function StudyPackages() {
   const { data: sharedPackagesRaw, isLoading: loadingShared } = useQuery({
     queryKey: ['sharedStudyPackages', user?.id],
     queryFn: async () => {
-      const all = await base44.entities.StudyPackage.list();
+      const all = await supabase.from('study_packages').select('*').then(r => r.data || []);
       const allPackages = asArray(all);
       return allPackages.filter(p => 
         (p.shared_with?.includes(user.id) || 
@@ -87,13 +87,13 @@ export default function StudyPackages() {
 
   const { data: disciplinesRaw } = useQuery({
     queryKey: ['clinicalDisciplines'],
-    queryFn: () => base44.entities.ClinicalDiscipline.list()
+    queryFn: () => supabase.from('obory').select('*').order('order_index').then(r => r.data || [])
   });
   const disciplines = asArray(disciplinesRaw);
 
   const { data: okruhyRaw } = useQuery({
     queryKey: ['okruhy'],
-    queryFn: () => base44.entities.Okruh.list('title'),
+    queryFn: () => supabase.from('okruhy').select('*').order('name').then(r => r.data || []),
     enabled: !!user && isAdmin(user)
   });
   const okruhy = asArray(okruhyRaw);
@@ -101,7 +101,7 @@ export default function StudyPackages() {
   const { data: aiPacksRaw, refetch: refetchAiPacks } = useQuery({
     queryKey: ['aiStudyPacks', user?.id],
     queryFn: async () => {
-      const all = await base44.entities.StudyPack.filter({ user_id: user.id }, '-created_date');
+      const all = await supabase.from('study_packs').select('*').eq('user_id', user.id ).order('created_at', { ascending: false }).then(r => r.data || []);
       return asArray(all);
     },
     enabled: !!user
@@ -111,11 +111,11 @@ export default function StudyPackages() {
   const { data: aiPackDetail, refetch: refetchAiPackDetail } = useQuery({
     queryKey: ['aiStudyPack', selectedPackId],
     queryFn: async () => {
-      const packList = await base44.entities.StudyPack.filter({ id: selectedPackId });
+      const packList = await supabase.from('study_packs').select('*').eq('id', selectedPackId ).then(r => r.data || []);
       const pack = asArray(packList)[0];
       if (!pack) return { pack: null, outputs: [], files: [] };
-      const outputsRaw = await base44.entities.StudyPackOutput.filter({ pack_id: selectedPackId });
-      const filesRaw = await base44.entities.StudyPackFile.filter({ pack_id: selectedPackId });
+      const outputsRaw = await supabase.from('study_pack_outputs').select('*').eq('pack_id', selectedPackId ).then(r => r.data || []);
+      const filesRaw = await supabase.from('study_pack_files').select('*').eq('pack_id', selectedPackId ).then(r => r.data || []);
       return { pack, outputs: asArray(outputsRaw), files: asArray(filesRaw) };
     },
     enabled: !!selectedPackId,

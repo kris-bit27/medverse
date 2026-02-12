@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -15,24 +15,21 @@ export default function NotesTab({ question, user }) {
   const { data: notes = [], isLoading } = useQuery({
     queryKey: ['userNotes', user?.id, question.id],
     queryFn: async () => {
-      return base44.entities.UserNote.filter({
-        user_id: user.id,
-        entity_type: 'question',
-        entity_id: question.id
-      });
+      const { data } = await supabase.from('user_notes').select('*')
+        .eq('user_id', user.id).eq('topic_id', question.id);
+      return data || [];
     },
     enabled: !!user?.id
   });
 
   const createNoteMutation = useMutation({
     mutationFn: async (content) => {
-      return base44.entities.UserNote.create({
+      const { data } = await supabase.from('user_notes').insert({
         user_id: user.id,
-        entity_type: 'question',
-        entity_id: question.id,
-        content,
-        is_ai_generated: false
-      });
+        topic_id: question.id,
+        note_text: content,
+      }).select().single();
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['userNotes', user?.id, question.id]);
@@ -41,7 +38,9 @@ export default function NotesTab({ question, user }) {
   });
 
   const deleteNoteMutation = useMutation({
-    mutationFn: (noteId) => base44.entities.UserNote.delete(noteId),
+    mutationFn: async (noteId) => {
+      await supabase.from('user_notes').delete().eq('id', noteId);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries(['userNotes', user?.id, question.id]);
     }

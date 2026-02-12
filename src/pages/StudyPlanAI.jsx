@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
@@ -28,44 +28,44 @@ export default function StudyPlanAI() {
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
+    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; }
   });
 
   const { data: disciplines = [], isLoading: loadingDisciplines } = useQuery({
     queryKey: ['clinicalDisciplines'],
-    queryFn: () => base44.entities.ClinicalDiscipline.list()
+    queryFn: () => supabase.from('obory').select('*').order('order_index').then(r => r.data || [])
   });
 
   const { data: okruhy = [] } = useQuery({
     queryKey: ['okruhy'],
-    queryFn: () => base44.entities.Okruh.list(),
+    queryFn: () => supabase.from('okruhy').select('*').then(r => r.data || []),
     enabled: selectedDisciplines.length > 0
   });
 
   const { data: topics = [] } = useQuery({
     queryKey: ['topics'],
-    queryFn: () => base44.entities.Topic.list(),
+    queryFn: () => supabase.from('topics').select('*').then(r => r.data || []),
     enabled: selectedDisciplines.length > 0
   });
 
   const { data: progress = [] } = useQuery({
     queryKey: ['userProgress', user?.id],
-    queryFn: () => base44.entities.UserProgress.filter({ user_id: user.id }),
+    queryFn: () => supabase.from('user_flashcard_progress').select('*').eq('user_id', user.id).then(r => r.data || []),
     enabled: !!user
   });
 
   const { data: questions = [] } = useQuery({
     queryKey: ['questions'],
-    queryFn: () => base44.entities.Question.list(),
+    queryFn: () => supabase.from('questions').select('*').then(r => r.data || []),
     enabled: selectedDisciplines.length > 0
   });
 
   const createPlanMutation = useMutation({
     mutationFn: async ({ plan, tasks }) => {
-      const createdPlan = await base44.entities.StudyPlan.create(plan);
+      const createdPlan = await supabase.from('study_plans').insert(plan).select().single().then(r => r.data);
       if (tasks && tasks.length > 0) {
-        await base44.entities.StudyTask.bulkCreate(
-          tasks.map(t => ({ ...t, study_plan_id: createdPlan.id, user_id: user.id }))
+        await supabase.from('study_plan_items').insert((
+          tasks.map(t => ({ ...t, study_plan_id: createdPlan.id, user_id: user.id }).select().then(r => r.data)))
         );
       }
       return createdPlan;
@@ -140,7 +140,7 @@ Na základě pokroku uživatele vytvoř strukturovaný studijní plán s konkré
 
 Vrať JSON s týdenním rozpisu úkolů.`;
 
-      const response = await base44.integrations.Core.InvokeLLM({
+      const response = await base44.functions.invoke('invokeLLM', {
         prompt,
         model: 'gemini-1.5-pro',
         maxTokens: 2048,

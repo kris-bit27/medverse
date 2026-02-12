@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -41,7 +41,7 @@ export default function EducationSettings({ user }) {
 
   const { data: disciplinesRaw } = useQuery({
     queryKey: ['clinicalDisciplines'],
-    queryFn: () => base44.entities.ClinicalDiscipline.list()
+    queryFn: () => supabase.from('obory').select('*').order('order_index').then(r => r.data || [])
   });
   const disciplines = normalizeArray(disciplinesRaw);
 
@@ -62,10 +62,10 @@ export default function EducationSettings({ user }) {
 
   const handleSave = async () => {
     setSaving(true);
-    await base44.auth.updateMe({
+    await supabase.auth.updateUser({ data: {
       education_level: educationLevel,
       clinical_disciplines: selectedDisciplines
-    });
+    } });
     queryClient.invalidateQueries(['currentUser']);
     setSaving(false);
     setSaved(true);

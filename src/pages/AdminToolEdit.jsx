@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -30,7 +30,7 @@ export default function AdminToolEdit() {
   const { data: tool, isLoading } = useQuery({
     queryKey: ['tool', toolId],
     queryFn: async () => {
-      const tools = await base44.entities.Tool.filter({ id: toolId });
+      const tools = await supabase.from('clinical_tools').select('*').eq('id', toolId ).then(r => r.data || []);
       return tools[0];
     },
     enabled: isEdit
@@ -38,7 +38,7 @@ export default function AdminToolEdit() {
 
   const { data: topics = [] } = useQuery({
     queryKey: ['topics'],
-    queryFn: () => base44.entities.Topic.list()
+    queryFn: () => supabase.from('topics').select('*').then(r => r.data || [])
   });
 
   useEffect(() => {
@@ -57,9 +57,9 @@ export default function AdminToolEdit() {
   const saveMutation = useMutation({
     mutationFn: async (data) => {
       if (isEdit) {
-        return base44.entities.Tool.update(toolId, data);
+        return supabase.from('clinical_tools').update(data).eq('id', toolId).select().single().then(r => r.data);
       }
-      return base44.entities.Tool.create(data);
+      return supabase.from('clinical_tools').insert(data).select().single().then(r => r.data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['tools']);

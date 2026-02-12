@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -44,7 +44,7 @@ export default function AdminQuestionEdit() {
   const { data: question, isLoading: questionLoading } = useQuery({
     queryKey: ['question', questionId],
     queryFn: async () => {
-      const questions = await base44.entities.Question.filter({ id: questionId });
+      const questions = await supabase.from('questions').select('*').eq('id', questionId ).then(r => r.data || []);
       return questions[0];
     },
     enabled: isEdit
@@ -52,12 +52,12 @@ export default function AdminQuestionEdit() {
 
   const { data: okruhy = [] } = useQuery({
     queryKey: ['okruhy'],
-    queryFn: () => base44.entities.Okruh.list('order')
+    queryFn: () => supabase.from('okruhy').select('*').order('order_index').then(r => r.data || [])
   });
 
   const { data: topics = [] } = useQuery({
     queryKey: ['topics'],
-    queryFn: () => base44.entities.Topic.list()
+    queryFn: () => supabase.from('topics').select('*').then(r => r.data || [])
   });
 
   // Load question data
@@ -85,9 +85,9 @@ export default function AdminQuestionEdit() {
   const saveMutation = useMutation({
     mutationFn: async (data) => {
       if (isEdit) {
-        return base44.entities.Question.update(questionId, data);
+        return supabase.from('questions').update(data).eq('id', questionId).select().single().then(r => r.data);
       } else {
-        return base44.entities.Question.create(data);
+        return supabase.from('questions').insert(data).select().single().then(r => r.data);
       }
     },
     onSuccess: () => {

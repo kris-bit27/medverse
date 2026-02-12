@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -41,13 +41,13 @@ export default function QuestionDetail() {
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
+    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; }
   });
 
   const { data: question, isLoading, error: questionError } = useQuery({
     queryKey: ['question', questionId],
     queryFn: async () => {
-      const questions = await base44.entities.Question.filter({ id: questionId });
+      const questions = await supabase.from('questions').select('*').eq('id', questionId ).then(r => r.data || []);
       return questions[0];
     },
     enabled: !!questionId,
@@ -57,7 +57,7 @@ export default function QuestionDetail() {
   const { data: okruh } = useQuery({
     queryKey: ['okruh', question?.okruh_id],
     queryFn: async () => {
-      const okruhy = await base44.entities.Okruh.filter({ id: question.okruh_id });
+      const okruhy = await supabase.from('okruhy').select('*').eq('id', question.okruh_id ).then(r => r.data || []);
       return okruhy[0];
     },
     enabled: !!question?.okruh_id
@@ -66,7 +66,7 @@ export default function QuestionDetail() {
   const { data: topic } = useQuery({
     queryKey: ['topic', question?.topic_id],
     queryFn: async () => {
-      const topics = await base44.entities.Topic.filter({ id: question.topic_id });
+      const topics = await supabase.from('topics').select('*').eq('id', question.topic_id ).then(r => r.data || []);
       return topics[0];
     },
     enabled: !!question?.topic_id
@@ -106,7 +106,7 @@ export default function QuestionDetail() {
       const updates = calculateNextReview(progress || {}, rating);
       
       if (progress) {
-        return base44.entities.UserProgress.update(progress.id, updates);
+        return supabase.from('user_flashcard_progress').update(updates).eq('id', progress.id).select().single().then(r => r.data);
       } else {
         return base44.entities.UserProgress.create({
           user_id: user.id,
@@ -124,7 +124,7 @@ export default function QuestionDetail() {
   const bookmarkMutation = useMutation({
     mutationFn: async () => {
       if (bookmark) {
-        return base44.entities.Bookmark.delete(bookmark.id);
+        return supabase.from('bookmarks').delete().eq('id', bookmark.id);
       } else {
         return base44.entities.Bookmark.create({
           user_id: user.id,

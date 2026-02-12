@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -30,7 +30,7 @@ export default function AdminArticleEdit() {
   const { data: article, isLoading } = useQuery({
     queryKey: ['article', articleId],
     queryFn: async () => {
-      const articles = await base44.entities.Article.filter({ id: articleId });
+      const articles = await supabase.from('articles').select('*').eq('id', articleId ).then(r => r.data || []);
       return articles[0];
     },
     enabled: isEdit
@@ -38,7 +38,7 @@ export default function AdminArticleEdit() {
 
   const { data: topics = [] } = useQuery({
     queryKey: ['topics'],
-    queryFn: () => base44.entities.Topic.list()
+    queryFn: () => supabase.from('topics').select('*').then(r => r.data || [])
   });
 
   useEffect(() => {
@@ -57,9 +57,9 @@ export default function AdminArticleEdit() {
   const saveMutation = useMutation({
     mutationFn: async (data) => {
       if (isEdit) {
-        return base44.entities.Article.update(articleId, data);
+        return supabase.from('articles').update(data).eq('id', articleId).select().single().then(r => r.data);
       }
-      return base44.entities.Article.create(data);
+      return supabase.from('articles').insert(data).select().single().then(r => r.data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['articles']);

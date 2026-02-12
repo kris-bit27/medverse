@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -136,7 +135,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
 
   const fetchTopicContent = async () => {
     try {
-      const fresh = await base44.entities.Topic.get(topic.id);
+      const fresh = await supabase.from('topics').select('*').eq('id', topic.id).single().then(r => r.data);
       setContent({
         status: fresh?.status || 'draft',
         full_text_content: cleanAiWrappedText(fresh?.full_text_content),

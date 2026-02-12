@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -36,18 +36,18 @@ export default function Studium() {
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
+    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; }
   });
 
   const { data: disciplinesRaw } = useQuery({
     queryKey: ['clinicalDisciplines'],
-    queryFn: () => base44.entities.ClinicalDiscipline.list()
+    queryFn: () => supabase.from('obory').select('*').order('order_index').then(r => r.data || [])
   });
   const disciplines = useMemo(() => asArray(disciplinesRaw), [disciplinesRaw]);
 
   const { data: allOkruhyRaw, isLoading } = useQuery({
     queryKey: ['okruhy'],
-    queryFn: () => base44.entities.Okruh.list('order')
+    queryFn: () => supabase.from('okruhy').select('*').order('order_index').then(r => r.data || [])
   });
   const allOkruhy = useMemo(() => asArray(allOkruhyRaw), [allOkruhyRaw]);
 
@@ -59,19 +59,19 @@ export default function Studium() {
 
   const { data: topicsRaw } = useQuery({
     queryKey: ['topics'],
-    queryFn: () => base44.entities.Topic.list()
+    queryFn: () => supabase.from('topics').select('*').then(r => r.data || [])
   });
   const topics = useMemo(() => asArray(topicsRaw), [topicsRaw]);
 
   const { data: questionsRaw } = useQuery({
     queryKey: ['questions'],
-    queryFn: () => base44.entities.Question.list()
+    queryFn: () => supabase.from('questions').select('*').then(r => r.data || [])
   });
   const questions = useMemo(() => asArray(questionsRaw), [questionsRaw]);
 
   const { data: progressRaw } = useQuery({
     queryKey: ['userProgress', user?.id],
-    queryFn: () => base44.entities.UserProgress.filter({ user_id: user.id }),
+    queryFn: () => supabase.from('user_flashcard_progress').select('*').eq('user_id', user.id).then(r => r.data || []),
     enabled: !!user?.id
   });
   const progress = useMemo(() => asArray(progressRaw), [progressRaw]);
