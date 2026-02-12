@@ -88,32 +88,50 @@ export default function FlashcardGenerator({ topicId, topicContent }) {
   // Save flashcards mutation
   const saveFlashcards = useMutation({
     mutationFn: async (selectedCards) => {
-      console.log('💾 Saving flashcards:', selectedCards);
+      console.log('🚀 === FLASHCARD SAVE DEBUG START ===');
+      console.log('1️⃣ Selected cards:', selectedCards);
+      console.log('2️⃣ Topic ID:', topicId);
+      console.log('3️⃣ User:', user);
       
-      const cardsToInsert = selectedCards.map(card => ({
-        topic_id: topicId,
-        question: card.front,
-        answer: card.back,
-        difficulty: card.difficulty === 'easy' ? 1 : card.difficulty === 'medium' ? 2 : 3,
-        card_type: 'basic',
-        ai_generated: true,
-        ai_model: 'pattern-extraction',
-        ai_confidence: 0.85
-      }));
+      const cardsToInsert = selectedCards.map(card => {
+        const mappedCard = {
+          topic_id: topicId,
+          question: card.front,
+          answer: card.back,
+          difficulty: card.difficulty === 'easy' ? 1 : card.difficulty === 'medium' ? 2 : 3,
+          card_type: 'basic',
+          ai_generated: true,
+          ai_model: 'pattern-extraction',
+          ai_confidence: 0.85
+        };
+        console.log('4️⃣ Mapped card:', mappedCard);
+        return mappedCard;
+      });
 
-      console.log('📝 Cards to insert:', cardsToInsert);
+      console.log('5️⃣ All cards to insert:', cardsToInsert);
+      console.log('6️⃣ Calling Supabase insert...');
 
       const { data, error } = await supabase
         .from('flashcards')
         .insert(cardsToInsert)
         .select();
 
+      console.log('7️⃣ Supabase response - data:', data);
+      console.log('8️⃣ Supabase response - error:', error);
+
       if (error) {
-        console.error('❌ Flashcard save error:', error);
+        console.error('❌ INSERT FAILED:', error);
+        console.error('   Code:', error.code);
+        console.error('   Message:', error.message);
+        console.error('   Details:', error.details);
+        console.error('   Hint:', error.hint);
         throw error;
       }
 
-      console.log('✅ Flashcards saved:', data);
+      console.log('✅ INSERT SUCCESS!');
+      console.log('9️⃣ Inserted data:', data);
+      console.log('🏁 === FLASHCARD SAVE DEBUG END ===');
+      
       return data;
     },
     onSuccess: (data) => {
