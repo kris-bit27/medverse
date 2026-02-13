@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { callApi } from '@/lib/api';
 import { Card, CardContent, CardTitle, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -55,7 +55,7 @@ export default function TopicContentReviewPanel({ topic, aiResponse, onContentIm
         custom: 'copilot_chat'
       };
 
-      const response = await base44.functions.invoke('invokeEduLLM', {
+      const response = await callApi('invokeEduLLM', {
         mode: modeMapping[mode] || modeMapping.custom,
         entityContext: {
           topic: topic,

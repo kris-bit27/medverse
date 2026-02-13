@@ -125,12 +125,11 @@ export default function ArticleDetail() {
   const { data: bookmark } = useQuery({
     queryKey: ['bookmark', user?.id, articleId],
     queryFn: async () => {
-      const results = await base44.entities.Bookmark.filter({ 
-        user_id: user.id, 
-        entity_type: 'article',
-        entity_id: articleId 
-      });
-      return results[0];
+      const { data: results } = await supabase.from('bookmarks').select('*')
+        .eq('user_id', user.id)
+        .eq('entity_type', 'article')
+        .eq('entity_id', articleId);
+      return results?.[0];
     },
     enabled: !!user?.id && !!articleId
   });
@@ -140,11 +139,11 @@ export default function ArticleDetail() {
       if (bookmark) {
         return supabase.from('bookmarks').delete().eq('id', bookmark.id);
       } else {
-        return base44.entities.Bookmark.create({
+        return supabase.from('bookmarks').insert({
           user_id: user.id,
           entity_type: 'article',
           entity_id: articleId
-        });
+        }).select().single().then(r => r.data);
       }
     },
     onSuccess: () => {

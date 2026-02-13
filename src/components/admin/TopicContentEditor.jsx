@@ -78,7 +78,7 @@ STUDIJNÍ TEXT:
 ${fullTextSnippet}`;
       }
 
-      const response = await base44.functions.invoke('invokeLLM', {
+      const response = await callApi('invokeLLM', {
         prompt,
         add_context_from_internet: type === 'deepdive_from_full',
         maxTokens: type === 'deepdive_from_full' ? 2048 : 1024,

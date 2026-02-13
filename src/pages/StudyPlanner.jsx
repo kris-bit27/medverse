@@ -67,7 +67,7 @@ export default function StudyPlanner() {
 
   const { data: allTasksRaw, isLoading: loadingTasks } = useQuery({
     queryKey: ['studyTasks', user?.id],
-    queryFn: () => base44.entities.StudyTask.filter({ user_id: user.id }),
+    queryFn: () => supabase.from('study_plan_items').select('*').eq('user_id', user.id).then(r => r.data || []),
     enabled: !!user
   });
   const allTasks = asArray(allTasksRaw);
@@ -102,10 +102,10 @@ export default function StudyPlanner() {
 
   const completeTaskMutation = useMutation({
     mutationFn: ({ taskId, completed }) => 
-      base44.entities.StudyTask.update(taskId, {
+      supabase.from('study_plan_items').update({
         is_completed: completed,
         completed_at: completed ? new Date().toISOString() : null
-      }),
+      }).eq('id', taskId),
     onSuccess: () => {
       queryClient.invalidateQueries(['studyTasks']);
     }

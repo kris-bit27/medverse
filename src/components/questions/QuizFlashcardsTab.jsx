@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { callApi } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -18,7 +18,7 @@ export default function QuizFlashcardsTab({ question, user, topic }) {
   const generateQuiz = async () => {
     setIsLoading(true);
     try {
-      const res = await base44.functions.invoke('invokeEduLLM', {
+      const res = await callApi('invokeEduLLM', {
         mode: 'question_quiz',
         entityContext: {
           entityType: 'question',

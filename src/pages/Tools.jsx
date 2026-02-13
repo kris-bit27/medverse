@@ -303,10 +303,13 @@ function SavedCases() {
 
   const { data: casesRaw, isLoading } = useQuery({
     queryKey: ['savedCases', user?.id],
-    queryFn: () => base44.entities.CaseLog.filter({ 
-      user_id: user?.id,
-      case_type: { $in: ['ai_differential', 'ai_treatment'] }
-    }, '-created_date'),
+    queryFn: async () => {
+      const { data } = await supabase.from('case_logs').select('*')
+        .eq('user_id', user?.id)
+        .in('case_type', ['ai_differential', 'ai_treatment'])
+        .order('created_at', { ascending: false });
+      return data || [];
+    },
     enabled: !!user?.id
   });
   const cases = useMemo(() => asArray(casesRaw), [casesRaw]);

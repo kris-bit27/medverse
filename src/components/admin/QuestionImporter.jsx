@@ -97,7 +97,7 @@ Pro každou otázku vytvořit:
 
 Otázky musí být relevantní pro české lékařské atestace a odpovídat běžným požadavkům atestační komise.`;
 
-      const response = await base44.functions.invoke('invokeLLM', {
+      const response = await callApi('invokeLLM', {
         prompt,
         model: 'gemini-1.5-pro',
         maxTokens: 4096,

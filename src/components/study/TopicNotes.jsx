@@ -45,18 +45,12 @@ export default function TopicNotes({ topicId, user }) {
   const { data: notes = [], isLoading } = useQuery({
     queryKey: ['topicNotes', topicId, user?.id],
     queryFn: async () => {
-      const userNotes = await base44.entities.UserNote.filter({
-        entity_type: 'topic',
-        entity_id: topicId,
-        user_id: user.id
-      });
+      const { data: userNotes } = await supabase.from('user_notes').select('*')
+        .eq('topic_id', topicId).eq('user_id', user.id);
       
       // Also fetch shared notes
-      const allNotes = await base44.entities.UserNote.filter({
-        entity_type: 'topic',
-        entity_id: topicId,
-        is_shared: true
-      });
+      const { data: allNotes } = await supabase.from('user_notes').select('*')
+        .eq('topic_id', topicId).eq('is_shared', true);
       
       const sharedNotes = allNotes.filter(n => 
         n.user_id !== user.id && 

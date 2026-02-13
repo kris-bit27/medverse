@@ -75,11 +75,10 @@ export default function QuestionDetail() {
   const { data: progress } = useQuery({
     queryKey: ['questionProgress', user?.id, questionId],
     queryFn: async () => {
-      const results = await base44.entities.UserProgress.filter({ 
-        user_id: user.id, 
-        question_id: questionId 
-      });
-      return results[0] || null;
+      const { data: results } = await supabase.from('user_flashcard_progress').select('*')
+        .eq('user_id', user.id)
+        .eq('flashcard_id', questionId);
+      return results?.[0] || null;
     },
     enabled: !!user?.id && !!questionId
   });
@@ -87,12 +86,11 @@ export default function QuestionDetail() {
   const { data: bookmark } = useQuery({
     queryKey: ['bookmark', user?.id, questionId],
     queryFn: async () => {
-      const results = await base44.entities.Bookmark.filter({ 
-        user_id: user.id, 
-        entity_type: 'question',
-        entity_id: questionId 
-      });
-      return results[0];
+      const { data: results } = await supabase.from('bookmarks').select('*')
+        .eq('user_id', user.id)
+        .eq('entity_type', 'question')
+        .eq('entity_id', questionId);
+      return results?.[0];
     },
     enabled: !!user?.id && !!questionId
   });
@@ -108,11 +106,11 @@ export default function QuestionDetail() {
       if (progress) {
         return supabase.from('user_flashcard_progress').update(updates).eq('id', progress.id).select().single().then(r => r.data);
       } else {
-        return base44.entities.UserProgress.create({
+        return supabase.from('user_flashcard_progress').insert({
           user_id: user.id,
-          question_id: questionId,
+          flashcard_id: questionId,
           ...updates
-        });
+        }).select().single().then(r => r.data);
       }
     },
     onSuccess: () => {
@@ -126,11 +124,11 @@ export default function QuestionDetail() {
       if (bookmark) {
         return supabase.from('bookmarks').delete().eq('id', bookmark.id);
       } else {
-        return base44.entities.Bookmark.create({
+        return supabase.from('bookmarks').insert({
           user_id: user.id,
           entity_type: 'question',
           entity_id: questionId
-        });
+        }).select().single().then(r => r.data);
       }
     },
     onSuccess: () => {

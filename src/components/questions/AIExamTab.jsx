@@ -110,7 +110,7 @@ export default function AIExamTab({ question, user, topic, onNoteSaved }) {
   const generateExamAnswer = async () => {
     setIsLoading(true);
     try {
-      const res = await base44.functions.invoke('invokeEduLLM', {
+      const res = await callApi('invokeEduLLM', {
         mode: 'question_exam_answer',
         entityContext: {
           entityType: 'question',
@@ -152,12 +152,10 @@ export default function AIExamTab({ question, user, topic, onNoteSaved }) {
 
     setIsSaving(true);
     try {
-      await base44.entities.UserNote.create({
+      await supabase.from('user_notes').insert({
         user_id: user.id,
-        entity_type: 'question',
-        entity_id: question.id,
-        content: hippoResponse.text,
-        is_ai_generated: true
+        topic_id: question.id,
+        note_text: hippoResponse.text,
       });
 
       if (onNoteSaved) onNoteSaved();

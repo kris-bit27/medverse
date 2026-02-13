@@ -47,7 +47,12 @@ export default function SaveCaseDialog({
     setUploading(true);
     try {
       for (const file of files) {
-        const { file_url } = await base44.integrations.Core.UploadFile({ file });
+        // TODO: migrate to Supabase Storage when ready
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('case-files').upload(`${Date.now()}-${file.name}`, file);
+        const file_url = uploadData?.path 
+          ? supabase.storage.from('case-files').getPublicUrl(uploadData.path).data.publicUrl
+          : null;
         setAttachments(prev => [...prev, {
           url: file_url,
           name: file.name,
@@ -78,7 +83,7 @@ export default function SaveCaseDialog({
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      await base44.entities.CaseLog.create({
+      await supabase.from('case_logs').insert({
         user_id: user.id,
         title: title.trim(),
         case_type: caseType,

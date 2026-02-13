@@ -81,7 +81,7 @@ export default function StudyPackages() {
 
   const { data: publicPackagesRaw, isLoading: loadingPublic } = useQuery({
     queryKey: ['publicStudyPackages'],
-    queryFn: () => base44.entities.StudyPackage.filter({ is_public: true })
+    queryFn: () => supabase.from('study_packages').select('*').eq('is_public', true).then(r => r.data || [])
   });
   const publicPackages = asArray(publicPackagesRaw);
 
@@ -133,7 +133,7 @@ export default function StudyPackages() {
 
   const processMutation = useMutation({
     mutationFn: async () => {
-      return base44.functions.invoke('processStudyPack', {
+      return callApi('processStudyPack', {
         packId: selectedPackId,
         mode: processMode
       });
@@ -162,14 +162,18 @@ export default function StudyPackages() {
       if (aiFile.size > 10 * 1024 * 1024) {
         throw new Error('Soubor je příliš velký (max 10MB)');
       }
-      const { file_url } = await base44.integrations.Core.UploadFile({ file: aiFile });
-      const pack = await base44.entities.StudyPack.create({
+      const { data: uploadData } = await supabase.storage
+        .from('study-packs').upload(`${Date.now()}-${aiFile.name}`, aiFile);
+      const file_url = uploadData?.path 
+        ? supabase.storage.from('study-packs').getPublicUrl(uploadData.path).data.publicUrl
+        : null;
+      const { data: pack } = await supabase.from('study_packs').insert({
         user_id: user.id,
         title: aiTitle.trim(),
         status: 'UPLOADED',
         topic_focus: aiFocus.trim() || null
-      });
-      await base44.entities.StudyPackFile.create({
+      }).select().single();
+      await supabase.from('study_pack_files').insert({
         pack_id: pack.id,
         filename: aiFile.name,
         mime_type: aiFile.type,
@@ -198,12 +202,12 @@ export default function StudyPackages() {
       }
       const fullOutput = (aiPackDetail?.outputs || []).find(o => o.mode === 'FULLTEXT');
       const highOutput = (aiPackDetail?.outputs || []).find(o => o.mode === 'HIGH_YIELD');
-      return base44.entities.Topic.create({
+      return supabase.from('topics').insert({
         title: topicTitle.trim(),
         okruh_id: topicOkruhId,
         full_text_content: fullOutput?.content_html || '',
         bullet_points_summary: highOutput?.content_html || ''
-      });
+      }).select().single().then(r => r.data);
     },
     onSuccess: () => {
       toast.success('Téma vytvořeno');

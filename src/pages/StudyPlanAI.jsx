@@ -140,7 +140,7 @@ Na základě pokroku uživatele vytvoř strukturovaný studijní plán s konkré
 
 Vrať JSON s týdenním rozpisu úkolů.`;
 
-      const response = await base44.functions.invoke('invokeLLM', {
+      const response = await callApi('invokeLLM', {
         prompt,
         model: 'gemini-1.5-pro',
         maxTokens: 2048,

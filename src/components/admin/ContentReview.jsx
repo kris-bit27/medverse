@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { base44 } from '@/api/base44Client';
+import { callApi } from '@/lib/api';
 import { toast } from 'sonner';
 import {
   CheckCircle,
@@ -30,7 +30,7 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
         return;
       }
 
-      const result = await base44.functions.invoke('invokeEduLLM', {
+      const result = await callApi('invokeEduLLM', {
         mode: 'review',
         entityContext: {
           specialty: specialty || 'Medicína',

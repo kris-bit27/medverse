@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { base44 } from '@/api/base44Client';
+import { callApi } from '@/lib/api';
 import { MessageCircle, X, Send, Loader2, Minimize2, Maximize2, Trash2 } from 'lucide-react';
 
 export const FloatingCopilot = ({ topicContent, topicTitle }) => {
@@ -58,7 +58,7 @@ export const FloatingCopilot = ({ topicContent, topicTitle }) => {
         ? `\n\n=== PŘEDCHOZÍ KONVERZACE ===\n${recentHistory}\n=== KONEC KONVERZACE ===`
         : '';
 
-      const data = await base44.functions.invoke('invokeEduLLM', {
+      const data = await callApi('invokeEduLLM', {
         mode: 'copilot',
         entityContext: {
           entityType: 'topic',

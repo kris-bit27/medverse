@@ -87,7 +87,7 @@ VRAŤ POUZE VALIDNÍ JSON (bez komentářů, bez Markdownu).`;
         required: ["okruhy"]
       };
 
-      const invoke = (promptText, allowWeb) => base44.functions.invoke('invokeLLM', {
+      const invoke = (promptText, allowWeb) => callApi('invokeLLM', {
         prompt: promptText,
         add_context_from_internet: allowWeb,
         response_json_schema: jsonSchema,
@@ -119,11 +119,11 @@ VRAŤ POUZE VALIDNÍ JSON (bez komentářů, bez Markdownu).`;
 
       for (const okruhData of generatedData.okruhy) {
         // Create Okruh
-        const okruh = await base44.entities.Okruh.create({
-          title: okruhData.title,
+        const { data: okruh } = await supabase.from('okruhy').insert({
+          name: okruhData.title,
           description: okruhData.description,
-          clinical_discipline_id: selectedDiscipline
-        });
+          obor_id: selectedDiscipline
+        }).select().single();
         createdOkruhy++;
 
         // Create Topics in bulk

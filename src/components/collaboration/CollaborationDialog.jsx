@@ -52,11 +52,11 @@ export default function CollaborationDialog({
         { user_id: targetUser.id, permission }
       ];
 
-      await base44.entities[entityType].update(entityId, {
+      const tableMap = { Topic: 'topics', Question: 'questions', Article: 'articles', Tool: 'clinical_tools' };
+      const table = tableMap[entityType] || entityType.toLowerCase() + 's';
+      await supabase.from(table).update({
         collaborators: updated
-      });
-
-      return targetUser;
+      }).eq('id', entityId);
     },
     onSuccess: (user) => {
       queryClient.invalidateQueries([entityType.toLowerCase(), entityId]);
@@ -71,7 +71,8 @@ export default function CollaborationDialog({
   const removeMutation = useMutation({
     mutationFn: async (userId) => {
       const updated = collaborators.filter(c => c.user_id !== userId);
-      await base44.entities[entityType].update(entityId, {
+      const _tblMap = { Topic: 'topics', Question: 'questions', Article: 'articles', Tool: 'clinical_tools' };
+      await supabase.from(_tblMap[entityType] || entityType.toLowerCase() + 's').update({
         collaborators: updated
       });
     },
@@ -86,7 +87,8 @@ export default function CollaborationDialog({
       const updated = collaborators.map(c => 
         c.user_id === userId ? { ...c, permission } : c
       );
-      await base44.entities[entityType].update(entityId, {
+      const _tblMap = { Topic: 'topics', Question: 'questions', Article: 'articles', Tool: 'clinical_tools' };
+      await supabase.from(_tblMap[entityType] || entityType.toLowerCase() + 's').update({
         collaborators: updated
       });
     },

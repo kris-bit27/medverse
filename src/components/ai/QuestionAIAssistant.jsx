@@ -181,7 +181,7 @@ export default function QuestionAIAssistant({ question, user, onNoteSaved, topic
   const runLLM = async ({ mode, userPrompt, allowWeb = false }) => {
     setIsLoading(true);
     try {
-      const res = await base44.functions.invoke('invokeEduLLM', {
+      const res = await callApi('invokeEduLLM', {
         mode,
         entityContext,
         userPrompt,
@@ -273,12 +273,10 @@ export default function QuestionAIAssistant({ question, user, onNoteSaved, topic
         })
         .join('\n\n---\n\n');
 
-      await base44.entities.UserNote.create({
+      await supabase.from('user_notes').insert({
         user_id: user.id,
-        entity_type: 'question',
-        entity_id: question.id,
-        content,
-        is_ai_generated: true
+        topic_id: question.id,
+        note_text: content,
       });
 
       if (onNoteSaved) onNoteSaved();

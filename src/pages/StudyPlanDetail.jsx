@@ -44,13 +44,13 @@ export default function StudyPlanDetail() {
 
   const { data: plan, isLoading } = useQuery({
     queryKey: ['studyPlan', planId],
-    queryFn: () => base44.entities.StudyPlan.filter({ id: planId }).then(r => r[0]),
+    queryFn: () => supabase.from('study_plans').select('*').eq('id', planId).single().then(r => r.data),
     enabled: !!planId
   });
 
   const { data: tasks = [] } = useQuery({
     queryKey: ['planTasks', planId],
-    queryFn: () => base44.entities.StudyTask.filter({ study_plan_id: planId }),
+    queryFn: () => supabase.from('study_plan_items').select('*').eq('study_plan_id', planId).then(r => r.data || []),
     enabled: !!planId
   });
 
@@ -89,10 +89,10 @@ export default function StudyPlanDetail() {
 
   const completeTaskMutation = useMutation({
     mutationFn: ({ taskId, completed }) => 
-      base44.entities.StudyTask.update(taskId, {
+      supabase.from('study_plan_items').update({
         is_completed: completed,
         completed_at: completed ? new Date().toISOString() : null
-      }),
+      }).eq('id', taskId),
     onSuccess: () => {
       queryClient.invalidateQueries(['planTasks']);
     }

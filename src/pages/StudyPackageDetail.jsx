@@ -46,7 +46,7 @@ export default function StudyPackageDetail() {
 
   const { data: pkg, isLoading } = useQuery({
     queryKey: ['studyPackage', packageId],
-    queryFn: () => base44.entities.StudyPackage.filter({ id: packageId }).then(r => r[0]),
+    queryFn: () => supabase.from('study_packages').select('*').eq('id', packageId).single().then(r => r.data),
     enabled: !!packageId
   });
 
@@ -102,9 +102,9 @@ export default function StudyPackageDetail() {
       
       const sharedWith = pkg.shared_with || [];
       if (!sharedWith.includes(targetUser.id)) {
-        await base44.entities.StudyPackage.update(packageId, {
+        await supabase.from('study_packages').update({
           shared_with: [...sharedWith, targetUser.id]
-        });
+        }).eq('id', packageId);
       }
       return targetUser;
     },
@@ -131,9 +131,9 @@ export default function StudyPackageDetail() {
       delete forked.created_by;
       
       const newPkg = await supabase.from('study_packages').insert(forked).select().single().then(r => r.data);
-      await base44.entities.StudyPackage.update(pkg.id, {
+      await supabase.from('study_packages').update({
         fork_count: (pkg.fork_count || 0) + 1
-      });
+      }).eq('id', pkg.id);
       return newPkg;
     },
     onSuccess: (newPkg) => {

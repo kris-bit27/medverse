@@ -64,11 +64,11 @@ export default function TopicTemplateEditor({ topic, onSave }) {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await base44.entities.Topic.update(topic.id, {
+      await supabase.from('topics').update({
         ...content,
         updated_by_ai: true,
         ai_version_tag: AI_MODELS.VERSION_TAG
-      });
+      }).eq('id', topic.id);
       toast.success('Obsah uložen');
       onSave?.();
     } catch (error) {
@@ -82,7 +82,7 @@ export default function TopicTemplateEditor({ topic, onSave }) {
   const handleGenerateAll = async () => {
     setIsGenerating(true);
     try {
-      const response = await base44.functions.invoke('invokeEduLLM', {
+      const response = await callApi('invokeEduLLM', {
         mode: 'topic_generate_template',
         entityContext: {
           topic: topic,

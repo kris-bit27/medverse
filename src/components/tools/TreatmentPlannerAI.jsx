@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { callApi } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -38,7 +38,7 @@ export default function TreatmentPlannerAI() {
       const safeAllergies = (patientInfo.allergies || '').slice(0, MAX_INPUT_CHARS);
       const safeMeds = (patientInfo.current_medications || '').slice(0, MAX_INPUT_CHARS);
       const safeTests = (patientInfo.performed_tests || '').slice(0, MAX_INPUT_CHARS);
-      const response = await base44.functions.invoke('invokeLLM', {
+      const response = await callApi('invokeLLM', {
         prompt: `Jsi zkušený klinický lékař. Vytvoř léčebný plán na základě následujících informací:
 
 DIAGNÓZA: ${safeDiagnosis}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { callApi } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -29,7 +29,7 @@ export default function DifferentialDiagnosisAI() {
       const safeSymptoms = symptoms.slice(0, MAX_INPUT_CHARS);
       const safeHistory = (patientInfo.history || '').slice(0, MAX_INPUT_CHARS);
       const safeTests = (patientInfo.performed_tests || '').slice(0, MAX_INPUT_CHARS);
-      const response = await base44.functions.invoke('invokeLLM', {
+      const response = await callApi('invokeLLM', {
         prompt: `Jsi zkušený klinický lékař. Na základě následujících informací vytvoř diferenciální diagnózu:
 
 SYMPTOMY: ${safeSymptoms}
