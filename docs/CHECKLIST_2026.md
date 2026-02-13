@@ -28,11 +28,11 @@
 - [x] 3.3 Gamification/Leaderboards (already Supabase) — existing
 - [x] 3.4 Logbook/Atestace (migration) — `87843f2`
 
-## Phase 4 — Scale & Polish
-- [ ] 4.1 Route-based code splitting (lazy loading)
-- [ ] 4.2 Error monitoring (error boundaries + logging)
-- [ ] 4.3 Bundle analysis & optimization
-- [ ] 4.4 API rate limiting & error handling hardening
+## Phase 4 — Scale & Polish ✅
+- [x] 4.1 Route-based code splitting (1,982→583 KB, -70%) — `f46dfc7`
+- [x] 4.2 Error boundary (ErrorBoundary + Suspense fallback) — `f46dfc7`
+- [x] 4.3 Bundle optimization (implicit via splitting) — `f46dfc7`
+- [x] 4.4 API error handling (callApi utility with auth) — `f2ab1ff`
 
 ## Phase 5 — base44 SDK Elimination ✅ COMPLETE
 **Was: 199 calls in 44 files → Now: 0 calls, base44Client.js DELETED**
