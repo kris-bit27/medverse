@@ -34,35 +34,10 @@
 - [ ] 4.3 Bundle analysis & optimization
 - [ ] 4.4 API rate limiting & error handling hardening
 
-## Phase 5 — base44.entities Migration Debt
-**199 calls in 44 files** — currently work via base44Client.js proxy → Supabase.
-Migrate to direct `supabase.from()` calls for cleaner code and eventual SDK removal.
+## Phase 5 — base44 SDK Elimination ✅ COMPLETE
+**Was: 199 calls in 44 files → Now: 0 calls, base44Client.js DELETED**
 
-### Admin pages (11 files, ~80 calls)
-- [ ] Admin.jsx, AdminAIStats.jsx, AdminAudit.jsx
-- [ ] AdminArticleEdit.jsx, AdminArticles.jsx
-- [ ] AdminCostAnalytics.jsx
-- [ ] AdminQuestionEdit.jsx, AdminQuestions.jsx
-- [ ] AdminTaxonomy.jsx
-- [ ] AdminToolEdit.jsx, AdminTools.jsx, AdminUsers.jsx
-
-### Content editors (5 files, ~40 calls)
-- [ ] TopicContentEditor.jsx, TopicContentEditorV2.jsx
-- [ ] TopicTemplateEditor.jsx
-- [ ] AITaxonomyGenerator.jsx, QuestionImporter.jsx
-
-### Study/Topic pages (10 files, ~35 calls)
-- [ ] OkruhDetail.jsx, QuestionDetail.jsx
-- [ ] Studium.jsx, StudyPackageCreate.jsx, StudyPackageDetail.jsx, StudyPackages.jsx
-- [ ] StudyPlanAI.jsx, StudyPlanCreate.jsx, StudyPlanDetail.jsx, StudyPlanner.jsx
-
-### Components (7 files, ~25 calls)
-- [ ] AIExamTab.jsx, QuestionAIAssistant.jsx
-- [ ] NotesTab.jsx, HighlightableText.jsx, TopicNotes.jsx
-- [ ] CollaborationDialog.jsx, SaveCaseDialog.jsx
-
-### Other pages (8 files, ~19 calls)
-- [ ] Profile.jsx, UserSettings.jsx, EducationSettings.jsx
-- [ ] ArticleDetail.jsx, Articles.jsx
-- [ ] ToolDetail.jsx, Tools.jsx
-- [ ] ReviewQueue.jsx, PageNotFound.jsx
+- [x] base44.functions.invoke → callApi() (15 files) — `f2ab1ff`
+- [x] base44.agents → AICopilotChat stub — `f2ab1ff`
+- [x] base44Client.js deleted (-567 lines) — `f2ab1ff`
+- [x] localStorage keys: base44_ → medverse_ — `f2ab1ff`
