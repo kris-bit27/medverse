@@ -1,0 +1,78 @@
+# MedVerse Feature Audit — February 2026
+
+## Data Snapshot
+- 7 oborů, 18 okruhů, 32 témat (14 s fulltextem, 1 published s kartičkami)
+- 88 flashcards (všechny u 1 tématu — Akutní pankreatitida)
+- 0 questions, 0 user_profiles, 0 forum threads
+- 3 clinical tools, 3 drugs, 3 guidelines
+- 42 DB tabulek, 7 API routes
+
+---
+
+## FEATURE-BY-FEATURE AUDIT
+
+### ✅ FUNGUJE DOBŘE
+| Feature | Stav | Pozn. |
+|---------|------|-------|
+| Auth (login/logout/callback) | ✅ | Supabase Auth, Google OAuth |
+| Dashboard | ✅ | DashboardV2, studijní přehled |
+| TopicDetail | ✅ | Konsolidovaný (V4 layout + V1 features) |
+| ReviewToday (SRS) | ✅ | SM-2 algoritmus, DB persistence |
+| FlashcardReviewV2 | ✅ | Funkční SRS review |
+| Search | ✅ | Full-text search + ilike fallback |
+| FloatingCopilot | ✅ | Claude Haiku 3, conversation history |
+| ContentReview (admin) | ✅ | Claude Sonnet 4 AI review |
+| StudyPlansV2 | ✅ | CRUD study plans |
+| Leaderboards | ✅ | Supabase direct |
+| StudyGroups | ✅ | CRUD + members |
+| LogbookV2 | ✅ | Entry tracking, mentor verification |
+| Atestace | ✅ | Progress tracking per okruh |
+| Forum + ForumThread | ✅ | DB ready, CRUD migrated |
+| Layout/Navigation | ✅ | Sidebar, dark theme, responsive |
+| Code splitting | ✅ | 65 lazy-loaded routes, -70% bundle |
+| Error boundary | ✅ | Catches render errors |
+
+### ⚠️ FUNGUJE, ALE POTŘEBUJE PRÁCI
+| Feature | Problém | Priorita |
+|---------|---------|----------|
+| **Studium/StudiumV2** | Zobrazuje obory→okruhy→témata, ale 14/32 témat nemá obsah | HIGH — potřebuje content pipeline (1.3) |
+| **FlashcardGenerator** | Generuje kartičky přes AI, ale jen pro témata s obsahem | MEDIUM — závisí na obsahu |
+| **TestGenerator → TestSession** | Kód migrován na Supabase, ale 0 questions v DB | HIGH — potřebuje questions |
+| **TestResults/TestResultsV2** | Hotové UI, ale žádná data k zobrazení | depends on above |
+| **ClinicalCalculators** | Pouze 3 nástroje (BMI, GFR, Wells) | LOW — rozšíření později |
+| **DrugDatabase** | Pouze 3 léky | LOW — seed data |
+| **ClinicalGuidelines** | Pouze 3 guidelines | LOW — seed data |
+| **Articles/ArticleDetail** | Stránky existují, ale articles tabulka chybí v DB | MEDIUM — nepoužívá se? |
+| **StudyPackages** | Komplexní feature, používá `processStudyPack` API | MEDIUM — ověřit flow |
+| **StudyPlanAI** | AI generování plánů, závisí na invokeLLM | MEDIUM |
+| **ScholarSearch** | Akademické vyhledávání přes LLM | LOW |
+
+### ❌ NEFUNKČNÍ / MRTVÝ KÓD
+| Feature | Problém | Akce |
+|---------|---------|------|
+| **AdminAIStats** | Stránka v routeru ale nepoužívá se | Smazat nebo integrovat |
+| **Profile vs MyProfile** | 2 duplicitní profilové stránky | Konsolidovat |
+| **UserSettings vs AccountSettings** | 2 duplicitní nastavení | Konsolidovat |
+| **Studium vs StudiumV2** | 2 verze | Sjednotit na V2 |
+| **TestGenerator vs TestGeneratorV2** | 2 verze | Sjednotit |
+| **TestSession vs TestSessionV2** | 2 verze | Sjednotit |
+| **TestResults vs TestResultsV2** | 2 verze | Sjednotit |
+| **AICopilotChat** | Stub (deprecated) | Smazat import ze StudyPackageCreate/StudyPlanCreate |
+
+---
+
+## CO POTŘEBUJE AMBOSS/LECTURIO COMPETITOR
+
+### Must-Have (MVP)
+1. **Content** — 32 témat, ale jen 1 published s kartičkami. Potřeba: AI pipeline pro bulk generaci fulltext + high-yield + flashcards
+2. **Questions/Quiz** — 0 otázek v DB. Potřeba: MCQ generátor nebo import
+3. **User onboarding** — user_profiles má 0 záznamů, žádný onboarding flow
+4. **Mobile responsiveness** — ověřit
+5. **Page dedup** — sjednotit V1/V2 duplicity (Studium, Test*, Profile, Settings)
+
+### Nice-to-Have (v2)
+6. **Offline access** — PWA/service worker
+7. **Spaced repetition dashboard** — vizuální heat map, streak calendar
+8. **Collaborative notes** — sdílení poznámek ve skupinách
+9. **OSCE/clinical cases** — interaktivní kazuistiky
+10. **PDF export** — studijní materiály pro tisk
