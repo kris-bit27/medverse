@@ -30,22 +30,13 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
         return;
       }
 
-      const result = await callApi('invokeEduLLM', {
+      const result = await callApi('generate-topic', {
         mode: 'review',
-        entityContext: {
+        context: {
+          title: `${specialty || 'Medicína'} — ${mode || 'fulltext'} review`,
           specialty: specialty || 'Medicína',
-          contentMode: mode || 'fulltext',
+          full_text: content.substring(0, 12000),
         },
-        userPrompt: `Proveď důkladnou recenzi následujícího medicínského obsahu.
-Obor: ${specialty || 'Medicína'}
-Typ obsahu: ${mode || 'fulltext'}
-
-=== OBSAH K RECENZI ===
-${content.substring(0, 12000)}
-=== KONEC OBSAHU ===
-
-Zkontroluj bezpečnost (dávkování, kontraindikace), úplnost (chybějící sekce), přesnost (faktické chyby, zastaralé guidelines).`,
-        allowWeb: false,
       });
 
       // Parse the review result
@@ -71,8 +62,8 @@ Zkontroluj bezpečnost (dávkování, kontraindikace), úplnost (chybějící se
       reviewData.missing_sections = reviewData.missing_sections || [];
 
       reviewData.metadata = {
-        model: 'claude-sonnet-4',
-        provider: 'anthropic',
+        model: result.metadata?.model || 'gpt-4o',
+        provider: result.metadata?.provider || 'openai',
         cost: result.metadata?.cost || { total: 'N/A' },
         reviewedAt: new Date().toISOString(),
       };
