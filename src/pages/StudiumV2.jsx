@@ -74,7 +74,7 @@ export default function StudiumV2() {
 
   // Fetch all topics with relations
   const { data: allTopics = [], isLoading } = useQuery({
-    queryKey: ['topics'],
+    queryKey: ['topics', user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('topics')
@@ -83,8 +83,8 @@ export default function StudiumV2() {
           obory:obor_id(id, name, slug, color),
           okruhy:okruh_id(id, name, slug)
         `)
-        .eq('status', 'published')
-        .order('created_at', { ascending: false });
+        .or('owner_type.eq.platform,created_by.eq.' + (user?.id || '00000000-0000-0000-0000-000000000000'))
+        .order('title');
       
       if (error) throw error;
       return data || [];

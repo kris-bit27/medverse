@@ -25,6 +25,7 @@ import {
 import { canAccessAdmin } from '@/components/utils/permissions';
 import OrganizationManagement from './OrganizationManagement';
 import TeamAnalytics from './TeamAnalytics';
+import BatchGenerationPanel from '@/components/admin/BatchGenerationPanel';
 
 const ADMIN_TABS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -278,23 +279,20 @@ function AdminUsersTab() {
 
 function AdminContentTab() {
   return (
-    <Card>
-      <CardContent className="p-12 text-center">
-        <FileText className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-        <h3 className="text-xl font-bold mb-2">Správa obsahu</h3>
-        <p className="text-muted-foreground mb-6">
-          Spravujte témata, otázky a další obsah platformy
-        </p>
-        <div className="flex gap-3 justify-center">
-          <Link to={createPageUrl('AdminQuestions')}>
-            <Button>Otázky</Button>
-          </Link>
-          <Link to={createPageUrl('AdminArticles')}>
-            <Button variant="outline">Články</Button>
-          </Link>
-        </div>
-      </CardContent>
-    </Card>
+    <div className="space-y-6">
+      <div className="flex gap-3">
+        <Link to={createPageUrl('AdminTaxonomy')}>
+          <Button variant="outline">📋 Taxonomie</Button>
+        </Link>
+        <Link to={createPageUrl('AdminQuestions')}>
+          <Button variant="outline">❓ Otázky</Button>
+        </Link>
+        <Link to={createPageUrl('AdminArticles')}>
+          <Button variant="outline">📰 Články</Button>
+        </Link>
+      </div>
+      <BatchGenerationPanel />
+    </div>
   );
 }
 
