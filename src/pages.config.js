@@ -17,8 +17,8 @@ export const PAGES = {
   "StudiumV2":          L(() => import('./pages/StudiumV2')),
   "ReviewToday":        L(() => import('./pages/ReviewToday')),
   "TopicDetail":        L(() => import('./pages/TopicDetail')),
-  "TopicDetailV2":      L(() => import('./pages/TopicDetailV2')),
-  "TopicDetailV4":      L(() => import('./pages/TopicDetailV4')),
+  "TopicDetailV2":      L(() => import('./pages/TopicDetail')),
+  "TopicDetailV4":      L(() => import('./pages/TopicDetail')),
 
   // === Public pages ===
   "Landing":            L(() => import('./pages/Landing')),

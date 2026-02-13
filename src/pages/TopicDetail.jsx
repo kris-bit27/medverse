@@ -1,38 +1,35 @@
 import React, { useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useNavigate, Link, useParams } from 'react-router-dom';
+import { createPageUrl } from '../utils';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import TopicNotes from '@/components/TopicNotes';
+import FlashcardGenerator from '@/components/FlashcardGenerator';
+import ExistingFlashcards from '@/components/ExistingFlashcards';
+import ReactMarkdown from 'react-markdown';
 import { 
-  ChevronLeft, 
-  BookOpen,
-  List,
-  Zap,
-  Target,
-  Sparkles,
-  Brain,
-  FileText,
-  Link as LinkIcon,
-  AlertTriangle,
-  Star,
-  Clock,
-  TrendingUp
+  BookOpen, Zap, Layers, StickyNote, Sparkles,
+  ArrowLeft, ChevronRight, AlertTriangle, FileText,
+  LinkIcon, Target, TrendingUp
 } from 'lucide-react';
-import { toast } from 'sonner';
 
-export default function TopicDetailV2() {
-  const { topicId } = useParams();
+export default function TopicDetail() {
+  // Support both /TopicDetail/:topicId and ?id=
+  const { topicId: paramId } = useParams();
+  const urlParams = new URLSearchParams(window.location.search);
+  const topicId = paramId || urlParams.get('id');
+  
   const { user } = useAuth();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState('fulltext');
+  const [activeView, setActiveView] = useState('fulltext');
+  const [sidebarPanel, setSidebarPanel] = useState(null); // null | 'notes' | 'flashcards' | 'sources'
 
   // Fetch topic
-  const { data: topic, isLoading, error } = useQuery({
+  const { data: topic, isLoading } = useQuery({
     queryKey: ['topic', topicId],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -44,77 +41,47 @@ export default function TopicDetailV2() {
         `)
         .eq('id', topicId)
         .single();
-      
       if (error) throw error;
       return data;
     },
     enabled: !!topicId
   });
 
-  // Fetch flashcards for this topic
+  // Fetch flashcards + progress
   const { data: flashcards = [] } = useQuery({
     queryKey: ['topicFlashcards', topicId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('flashcards')
-        .select('*')
-        .eq('topic_id', topicId);
-      
-      if (error) throw error;
+      const { data } = await supabase.from('flashcards').select('*').eq('topic_id', topicId);
       return data || [];
     },
     enabled: !!topicId
   });
 
-  // Fetch user's flashcard progress
   const { data: flashcardProgress = [] } = useQuery({
     queryKey: ['flashcardProgress', user?.id, topicId],
     queryFn: async () => {
       if (!flashcards.length) return [];
-      
-      const flashcardIds = flashcards.map(f => f.id);
-      const { data, error } = await supabase
+      const ids = flashcards.map(f => f.id);
+      const { data } = await supabase
         .from('user_flashcard_progress')
         .select('*')
         .eq('user_id', user.id)
-        .in('flashcard_id', flashcardIds);
-      
-      if (error) throw error;
+        .in('flashcard_id', ids);
       return data || [];
     },
     enabled: !!user?.id && flashcards.length > 0
-  });
-
-  // Fetch user notes
-  const { data: userNotes = [] } = useQuery({
-    queryKey: ['topicNotes', user?.id, topicId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('user_notes')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('topic_id', topicId)
-        .order('created_at', { ascending: false });
-      
-      if (error) throw error;
-      return data || [];
-    },
-    enabled: !!user?.id && !!topicId
   });
 
   // Fetch related topics
   const { data: relatedTopics = [] } = useQuery({
     queryKey: ['relatedTopics', topic?.okruh_id, topicId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('topics')
-        .select('id, title, slug, status')
+        .select('id, title, status')
         .eq('okruh_id', topic.okruh_id)
-        .eq('status', 'published')
         .neq('id', topicId)
         .limit(5);
-      
-      if (error) throw error;
       return data || [];
     },
     enabled: !!topic?.okruh_id
@@ -122,346 +89,302 @@ export default function TopicDetailV2() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-purple-600 rounded-full animate-spin"></div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
-  if (error || !topic) {
+  if (!topic) {
     return (
       <div className="container max-w-4xl mx-auto p-6">
-        <Card className="border-red-200">
-          <CardContent className="p-6">
-            <p className="text-red-600">Téma nenalezeno</p>
-            <Button onClick={() => navigate(-1)} variant="outline" className="mt-4">
-              Zpět
-            </Button>
-          </CardContent>
-        </Card>
+        <Card><CardContent className="p-12 text-center">
+          <p className="text-muted-foreground">Téma nenalezeno</p>
+          <Button onClick={() => navigate(-1)} variant="outline" className="mt-4">Zpět</Button>
+        </CardContent></Card>
       </div>
     );
   }
 
-  return (
-    <div className="container max-w-6xl mx-auto p-6 space-y-6">
-      {/* Breadcrumbs */}
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Link to="/Studium" className="hover:text-foreground">
-          Studium
-        </Link>
-        <ChevronLeft className="w-4 h-4 rotate-180" />
-        <Link to={`/Okruhy?obor_id=${topic.obory?.id}`} className="hover:text-foreground">
-          {topic.obory?.name}
-        </Link>
-        <ChevronLeft className="w-4 h-4 rotate-180" />
-        <Link to={`/OkruhDetail?id=${topic.okruhy?.id}`} className="hover:text-foreground">
-          {topic.okruhy?.name}
-        </Link>
-        <ChevronLeft className="w-4 h-4 rotate-180" />
-        <span className="text-foreground font-medium">{topic.title}</span>
-      </div>
+  const contentViews = [
+    { id: 'fulltext', label: 'Plný text', icon: BookOpen, content: topic.full_text_content },
+    { id: 'summary', label: 'High-Yield', icon: Zap, content: topic.bullet_points_summary },
+    { id: 'deepdive', label: 'Deep Dive', icon: Layers, content: topic.deep_dive_content },
+  ];
+  const currentContent = contentViews.find(v => v.id === activeView)?.content;
 
-      {/* Header */}
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <h1 className="text-3xl font-bold mb-2">{topic.title}</h1>
-          {topic.description && (
-            <p className="text-muted-foreground">{topic.description}</p>
-          )}
-          
-          <div className="flex items-center gap-3 mt-4">
-            <Badge variant={topic.status === 'published' ? 'default' : 'secondary'}>
-              {topic.status}
-            </Badge>
-            
-            {topic.ai_model && (
-              <Badge variant="outline" className="gap-1">
-                <Sparkles className="w-3 h-3" />
-                {topic.ai_model}
-              </Badge>
-            )}
-            
-            {topic.ai_confidence && (
-              <Badge variant="outline" className="gap-1">
-                <TrendingUp className="w-3 h-3" />
-                Confidence: {(topic.ai_confidence * 100).toFixed(0)}%
-              </Badge>
-            )}
+  const masteredCount = flashcardProgress.filter(p => p.repetitions >= 3).length;
+  const togglePanel = (panel) => setSidebarPanel(prev => prev === panel ? null : panel);
+
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+      {/* Sticky Top Bar */}
+      <div className="bg-white dark:bg-slate-900 border-b sticky top-0 z-10">
+        <div className="container max-w-7xl mx-auto px-6 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground min-w-0">
+              <Button variant="ghost" size="sm" onClick={() => navigate(createPageUrl('StudiumV2'))}>
+                <ArrowLeft className="w-4 h-4 mr-1" /> Studium
+              </Button>
+              {topic.obory && (
+                <>
+                  <ChevronRight className="w-3 h-3 flex-shrink-0" />
+                  <span className="truncate">{topic.obory.name}</span>
+                </>
+              )}
+              {topic.okruhy && (
+                <>
+                  <ChevronRight className="w-3 h-3 flex-shrink-0" />
+                  <span className="truncate">{topic.okruhy.name}</span>
+                </>
+              )}
+            </div>
+
+            <div className="flex gap-2 flex-shrink-0">
+              <Button
+                variant={sidebarPanel === 'notes' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => togglePanel('notes')}
+              >
+                <StickyNote className="w-4 h-4 mr-1" /> Poznámky
+              </Button>
+              <Button
+                variant={sidebarPanel === 'flashcards' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => togglePanel('flashcards')}
+              >
+                <Sparkles className="w-4 h-4 mr-1" />
+                Kartičky {flashcards.length > 0 && `(${flashcards.length})`}
+              </Button>
+              {topic.sources?.length > 0 && (
+                <Button
+                  variant={sidebarPanel === 'sources' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => togglePanel('sources')}
+                >
+                  <LinkIcon className="w-4 h-4 mr-1" /> Zdroje
+                </Button>
+              )}
+            </div>
           </div>
         </div>
+      </div>
 
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm">
-            <Star className="w-4 h-4 mr-2" />
-            Oblíbené
-          </Button>
-          
-          {flashcards.length > 0 && (
-            <Button variant="default" size="sm">
-              <Zap className="w-4 h-4 mr-2" />
-              Review ({flashcards.length} cards)
-            </Button>
+      <div className="container max-w-7xl mx-auto p-6">
+        <div className={`grid gap-6 ${sidebarPanel ? 'lg:grid-cols-3' : 'max-w-5xl mx-auto'}`}>
+          {/* Main Content */}
+          <div className={sidebarPanel ? 'lg:col-span-2' : ''}>
+            <div className="space-y-6">
+              {/* Header */}
+              <div className="bg-white dark:bg-slate-900 rounded-xl p-8 shadow-sm">
+                <h1 className="text-3xl font-bold mb-3 leading-tight">{topic.title}</h1>
+                {topic.description && (
+                  <p className="text-muted-foreground mb-4">{topic.description}</p>
+                )}
+                <div className="flex flex-wrap gap-2">
+                  {topic.obory && <Badge variant="outline">{topic.obory.name}</Badge>}
+                  {topic.okruhy && <Badge variant="secondary">{topic.okruhy.name}</Badge>}
+                  <Badge variant={topic.status === 'published' ? 'default' : 'secondary'}>{topic.status}</Badge>
+                  {topic.ai_model && (
+                    <Badge variant="outline" className="gap-1"><Sparkles className="w-3 h-3" />{topic.ai_model}</Badge>
+                  )}
+                  {topic.ai_confidence != null && (
+                    <Badge variant="outline" className="gap-1">
+                      <TrendingUp className="w-3 h-3" />{(topic.ai_confidence * 100).toFixed(0)}%
+                    </Badge>
+                  )}
+                </div>
+              </div>
+
+              {/* Warnings */}
+              {topic.warnings?.length > 0 && (
+                <div className="bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-5">
+                  <div className="flex items-start gap-3">
+                    <AlertTriangle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-yellow-900 dark:text-yellow-100 mb-2">Vyžaduje odbornou kontrolu</p>
+                      <ul className="text-sm text-yellow-800 dark:text-yellow-200 space-y-1">
+                        {topic.warnings.map((w, i) => (
+                          <li key={i}>• {w.message || w}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Content Tabs */}
+              <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm overflow-hidden">
+                <div className="border-b flex">
+                  {contentViews.map(view => {
+                    const Icon = view.icon;
+                    const isActive = activeView === view.id;
+                    return (
+                      <button
+                        key={view.id}
+                        onClick={() => setActiveView(view.id)}
+                        className={`flex-1 px-6 py-4 font-medium transition-colors flex items-center justify-center gap-2 ${
+                          isActive
+                            ? 'bg-purple-50 dark:bg-purple-950/20 text-purple-600 border-b-2 border-purple-600'
+                            : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" />
+                        <span className="hidden sm:inline">{view.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="p-8">
+                  {currentContent ? (
+                    <article className="prose prose-lg dark:prose-invert max-w-none
+                      prose-headings:font-bold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
+                      prose-h1:text-3xl prose-h1:mb-4 prose-h1:mt-8
+                      prose-h2:text-2xl prose-h2:mb-3 prose-h2:mt-6 prose-h2:pb-2 prose-h2:border-b prose-h2:border-slate-200
+                      prose-h3:text-xl prose-h3:mb-2 prose-h3:mt-4
+                      prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-p:leading-relaxed prose-p:mb-4
+                      prose-li:text-slate-700 dark:prose-li:text-slate-300 prose-li:leading-relaxed
+                      prose-strong:text-slate-900 dark:prose-strong:text-slate-100 prose-strong:font-semibold
+                      prose-code:text-purple-600 prose-code:bg-purple-50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
+                      prose-pre:bg-slate-100 dark:prose-pre:bg-slate-800 prose-pre:border prose-pre:border-slate-200
+                      prose-ul:my-4 prose-ol:my-4 prose-li:my-1">
+                      <ReactMarkdown>{currentContent}</ReactMarkdown>
+                    </article>
+                  ) : (
+                    <div className="text-center py-12 text-muted-foreground">
+                      Obsah není k dispozici
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Learning Objectives */}
+              {topic.learning_objectives?.length > 0 && (
+                <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 rounded-xl p-6 shadow-sm">
+                  <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+                    <Target className="w-5 h-5 text-purple-600" /> Výukové cíle
+                  </h3>
+                  <ul className="space-y-2">
+                    {topic.learning_objectives.map((obj, idx) => (
+                      <li key={idx} className="flex items-start gap-3">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-600 text-white text-xs font-bold flex items-center justify-center mt-0.5">
+                          {idx + 1}
+                        </span>
+                        <span className="text-slate-700 dark:text-slate-300 leading-relaxed">{obj}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Related Topics */}
+              {relatedTopics.length > 0 && (
+                <div className="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm">
+                  <h3 className="font-bold text-lg mb-4">Příbuzná témata</h3>
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    {relatedTopics.map(related => (
+                      <Link
+                        key={related.id}
+                        to={`/TopicDetail/${related.id}`}
+                        className="block p-3 rounded-lg border hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                      >
+                        <p className="font-medium">{related.title}</p>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          {sidebarPanel && (
+            <div className="lg:col-span-1">
+              <div className="sticky top-24 space-y-4">
+                {/* Notes Panel */}
+                {sidebarPanel === 'notes' && (
+                  <div className="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm">
+                    <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+                      <StickyNote className="w-5 h-5 text-orange-400" /> Moje poznámky
+                    </h3>
+                    <TopicNotes topicId={topicId} />
+                  </div>
+                )}
+
+                {/* Flashcards Panel */}
+                {sidebarPanel === 'flashcards' && (
+                  <div className="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm space-y-4">
+                    <h3 className="font-bold text-lg flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-purple-400" /> Kartičky
+                    </h3>
+
+                    {/* Progress summary */}
+                    {flashcards.length > 0 && (
+                      <div className="grid grid-cols-3 gap-2 text-center text-sm">
+                        <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-2">
+                          <div className="font-bold text-lg">{flashcards.length}</div>
+                          <div className="text-muted-foreground text-xs">Celkem</div>
+                        </div>
+                        <div className="bg-green-50 dark:bg-green-950/20 rounded-lg p-2">
+                          <div className="font-bold text-lg text-green-600">{masteredCount}</div>
+                          <div className="text-muted-foreground text-xs">Zvládnuto</div>
+                        </div>
+                        <div className="bg-purple-50 dark:bg-purple-950/20 rounded-lg p-2">
+                          <div className="font-bold text-lg text-purple-600">
+                            {flashcards.length > 0 ? Math.round((masteredCount / flashcards.length) * 100) : 0}%
+                          </div>
+                          <div className="text-muted-foreground text-xs">Progres</div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Existing flashcards */}
+                    <ExistingFlashcards topicId={topicId} />
+
+                    {/* Generator */}
+                    <div className="border-t pt-4">
+                      <p className="text-sm text-muted-foreground mb-3">Vygenerovat nové kartičky z obsahu</p>
+                      <FlashcardGenerator 
+                        topicId={topicId} 
+                        topicContent={currentContent}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Sources Panel */}
+                {sidebarPanel === 'sources' && (
+                  <div className="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm">
+                    <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+                      <LinkIcon className="w-5 h-5 text-blue-400" /> Zdroje
+                    </h3>
+                    <div className="space-y-3">
+                      {(topic.sources || []).map((source, idx) => (
+                        <div key={idx} className="flex items-start gap-3 p-3 rounded-lg border">
+                          <FileText className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                          <div className="min-w-0">
+                            <p className="font-medium text-sm">{source.title || `Zdroj ${idx + 1}`}</p>
+                            {source.url && (
+                              <a href={source.url} target="_blank" rel="noopener noreferrer"
+                                className="text-xs text-purple-600 hover:underline truncate block">
+                                {source.url}
+                              </a>
+                            )}
+                            {source.description && (
+                              <p className="text-xs text-muted-foreground mt-1">{source.description}</p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           )}
         </div>
       </div>
-
-      {/* AI Warnings */}
-      {topic.warnings && topic.warnings.length > 0 && (
-        <Card className="border-yellow-200 bg-yellow-50 dark:bg-yellow-950/20">
-          <CardContent className="p-4">
-            <div className="flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="font-medium text-yellow-900 dark:text-yellow-100 mb-2">
-                  Expert verification needed
-                </p>
-                <ul className="text-sm text-yellow-800 dark:text-yellow-200 space-y-1">
-                  {topic.warnings.map((warning, idx) => (
-                    <li key={idx}>• {warning.message || warning}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Main Content */}
-      <Card>
-        <CardHeader>
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="fulltext" className="gap-2">
-                <BookOpen className="w-4 h-4" />
-                Full Text
-              </TabsTrigger>
-              <TabsTrigger value="bullet" className="gap-2">
-                <List className="w-4 h-4" />
-                Quick Overview
-              </TabsTrigger>
-              <TabsTrigger value="deepdive" className="gap-2">
-                <Brain className="w-4 h-4" />
-                Deep Dive
-              </TabsTrigger>
-              <TabsTrigger value="sources" className="gap-2">
-                <LinkIcon className="w-4 h-4" />
-                Sources
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </CardHeader>
-
-        <CardContent className="p-6">
-          <TabsContent value="fulltext" className="mt-0">
-            {topic.full_text_content ? (
-              <div className="prose dark:prose-invert max-w-none">
-                {topic.full_text_content}
-              </div>
-            ) : (
-              <EmptyContent message="No full text available" />
-            )}
-          </TabsContent>
-
-          <TabsContent value="bullet" className="mt-0">
-            {topic.bullet_points_summary ? (
-              <div className="prose dark:prose-invert max-w-none">
-                {topic.bullet_points_summary}
-              </div>
-            ) : (
-              <EmptyContent message="No summary available" />
-            )}
-          </TabsContent>
-
-          <TabsContent value="deepdive" className="mt-0">
-            {topic.deep_dive_content ? (
-              <div className="prose dark:prose-invert max-w-none">
-                {topic.deep_dive_content}
-              </div>
-            ) : (
-              <EmptyContent message="No deep dive content available" />
-            )}
-          </TabsContent>
-
-          <TabsContent value="sources" className="mt-0">
-            {topic.sources && topic.sources.length > 0 ? (
-              <div className="space-y-3">
-                {topic.sources.map((source, idx) => (
-                  <Card key={idx} className="border-slate-200">
-                    <CardContent className="p-4">
-                      <div className="flex items-start gap-3">
-                        <FileText className="w-5 h-5 text-muted-foreground mt-0.5" />
-                        <div className="flex-1">
-                          <p className="font-medium">{source.title || `Source ${idx + 1}`}</p>
-                          {source.url && (
-                            <a 
-                              href={source.url} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-sm text-purple-600 hover:underline"
-                            >
-                              {source.url}
-                            </a>
-                          )}
-                          {source.description && (
-                            <p className="text-sm text-muted-foreground mt-1">
-                              {source.description}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <EmptyContent message="No sources cited" />
-            )}
-          </TabsContent>
-        </CardContent>
-      </Card>
-
-      {/* Learning Objectives */}
-      {topic.learning_objectives && topic.learning_objectives.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Target className="w-5 h-5" />
-              Learning Objectives
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2">
-              {topic.learning_objectives.map((objective, idx) => (
-                <li key={idx} className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 flex items-center justify-center text-sm font-medium flex-shrink-0">
-                    {idx + 1}
-                  </div>
-                  <span className="flex-1">{objective}</span>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Flashcards Section */}
-      {flashcards.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Zap className="w-5 h-5" />
-                Flashcards ({flashcards.length})
-              </div>
-              <Button size="sm">
-                Start Review
-              </Button>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-2 gap-4">
-              {flashcards.slice(0, 4).map((card) => {
-                const progress = flashcardProgress.find(p => p.flashcard_id === card.id);
-                return (
-                  <Card key={card.id} className="border-slate-200">
-                    <CardContent className="p-4">
-                      <div className="flex items-start justify-between mb-2">
-                        <Badge variant="outline">
-                          Difficulty: {card.difficulty || 2}/3
-                        </Badge>
-                        {progress && (
-                          <Badge variant="default">
-                            {progress.repetitions} reviews
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="font-medium mb-2">{card.question}</p>
-                      <p className="text-sm text-muted-foreground line-clamp-2">
-                        {card.answer}
-                      </p>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-            
-            {flashcards.length > 4 && (
-              <div className="text-center mt-4">
-                <Button variant="outline" size="sm">
-                  Show all {flashcards.length} cards
-                </Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
-
-      {/* User Notes */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="w-5 h-5" />
-            My Notes ({userNotes.length})
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {userNotes.length === 0 ? (
-            <EmptyContent message="No notes yet. Start taking notes while studying!" />
-          ) : (
-            <div className="space-y-3">
-              {userNotes.map((note) => (
-                <Card key={note.id} className="border-slate-200">
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between mb-2">
-                      <Badge variant="outline">{note.category || 'Note'}</Badge>
-                      <span className="text-xs text-muted-foreground">
-                        {new Date(note.created_at).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <p className="text-sm">{note.note_text}</p>
-                    {note.selected_text && (
-                      <div className="mt-2 p-2 bg-yellow-50 dark:bg-yellow-950/20 rounded text-sm">
-                        "{note.selected_text}"
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Related Topics */}
-      {relatedTopics.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Related Topics</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-2 gap-3">
-              {relatedTopics.map((related) => (
-                <Link
-                  key={related.id}
-                  to={`/TopicDetail/${related.id}`}
-                  className="block p-3 rounded-lg border hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
-                >
-                  <p className="font-medium">{related.title}</p>
-                </Link>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-    </div>
-  );
-}
-
-function EmptyContent({ message }) {
-  return (
-    <div className="text-center py-12 text-muted-foreground">
-      <p>{message}</p>
     </div>
   );
 }
