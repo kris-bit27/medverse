@@ -206,7 +206,7 @@ export default function ReviewToday() {
 
   if (!flashcards.length) {
     return (
-      <div className="container max-w-3xl mx-auto p-6 space-y-6">
+      <div className="container max-w-3xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
         {/* Filters */}
         <Card className="bg-slate-900/50 border-slate-800">
           <CardContent className="p-6">
@@ -292,7 +292,7 @@ export default function ReviewToday() {
   const progressPercent = ((currentIndex + 1) / flashcards.length) * 100;
 
   return (
-    <div className="container max-w-3xl mx-auto p-6 space-y-6">
+    <div className="container max-w-3xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <Button

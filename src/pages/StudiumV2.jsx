@@ -143,7 +143,7 @@ export default function StudiumV2() {
   }, [allTopics, filteredTopics, obory, okruhy]);
 
   return (
-    <div className="container max-w-7xl mx-auto p-6 space-y-6">
+    <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>

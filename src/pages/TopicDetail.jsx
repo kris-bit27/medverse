@@ -120,8 +120,8 @@ export default function TopicDetail() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Sticky Top Bar */}
       <div className="bg-white dark:bg-slate-900 border-b sticky top-0 z-10">
-        <div className="container max-w-7xl mx-auto px-6 py-3">
-          <div className="flex items-center justify-between">
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-3">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div className="flex items-center gap-2 text-sm text-muted-foreground min-w-0">
               <Button variant="ghost" size="sm" onClick={() => navigate(createPageUrl('StudiumV2'))}>
                 <ArrowLeft className="w-4 h-4 mr-1" /> Studium
@@ -170,7 +170,7 @@ export default function TopicDetail() {
         </div>
       </div>
 
-      <div className="container max-w-7xl mx-auto p-6">
+      <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
         <div className={`grid gap-6 ${sidebarPanel ? 'lg:grid-cols-3' : 'max-w-5xl mx-auto'}`}>
           {/* Main Content */}
           <div className={sidebarPanel ? 'lg:col-span-2' : ''}>

@@ -190,7 +190,7 @@ export default function TestGeneratorV2() {
   };
 
   return (
-    <div className="container max-w-6xl mx-auto p-6 space-y-6">
+    <div className="container max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold mb-2">Generátor Testů</h1>

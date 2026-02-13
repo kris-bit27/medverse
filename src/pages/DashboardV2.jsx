@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import OnboardingWizard from '@/components/OnboardingWizard';
 import { 
   Zap,
   BookOpen,
@@ -23,6 +24,33 @@ import {
 
 export default function DashboardV2() {
   const { user } = useAuth();
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  // Check if user has completed profile
+  const { data: profile, isLoading: profileLoading } = useQuery({
+    queryKey: ['userProfile', user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('user_profiles')
+        .select('profile_completed, display_name')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!user?.id,
+    onSuccess: (data) => {
+      if (!data || !data.profile_completed) {
+        setShowOnboarding(true);
+      }
+    }
+  });
+
+  // Show onboarding for new users
+  React.useEffect(() => {
+    if (!profileLoading && profile === null) {
+      setShowOnboarding(true);
+    }
+  }, [profile, profileLoading]);
 
   // Fetch user tokens
   const { data: tokens } = useQuery({
@@ -136,7 +164,12 @@ export default function DashboardV2() {
     : 0;
 
   return (
-    <div className="container max-w-7xl mx-auto p-6 space-y-6">
+    <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
+      {/* Onboarding for new users */}
+      {showOnboarding && (
+        <OnboardingWizard onComplete={() => setShowOnboarding(false)} />
+      )}
+
       {/* Welcome Header */}
       <div>
         <h1 className="text-3xl font-bold mb-2">
