@@ -1,32 +1,32 @@
 /**
  * pages.config.js - Page routing configuration
  * Uses React.lazy for route-level code splitting
+ * 
+ * DEDUP: Old routes are aliased to consolidated versions
  */
 import { lazy } from 'react';
 
-// Layout is eagerly loaded (always needed)
 import __Layout from './Layout.jsx';
 
-// Helper for cleaner lazy imports
 const L = (fn) => lazy(fn);
 
 export const PAGES = {
-  // === Core pages (most visited) ===
+  // === Core ===
   "Dashboard":          L(() => import('./pages/DashboardV2')),
   "DashboardV2":        L(() => import('./pages/DashboardV2')),
+  "Studium":            L(() => import('./pages/StudiumV2')),       // alias → StudiumV2
   "StudiumV2":          L(() => import('./pages/StudiumV2')),
   "ReviewToday":        L(() => import('./pages/ReviewToday')),
   "TopicDetail":        L(() => import('./pages/TopicDetail')),
-  "TopicDetailV2":      L(() => import('./pages/TopicDetail')),
-  "TopicDetailV4":      L(() => import('./pages/TopicDetail')),
+  "TopicDetailV2":      L(() => import('./pages/TopicDetail')),     // alias
+  "TopicDetailV4":      L(() => import('./pages/TopicDetail')),     // alias
 
-  // === Public pages ===
+  // === Public ===
   "Landing":            L(() => import('./pages/Landing')),
   "Demo":               L(() => import('./pages/Demo')),
   "Pricing":            L(() => import('./pages/Pricing')),
 
   // === Study ===
-  "Studium":            L(() => import('./pages/Studium')),
   "OkruhDetail":        L(() => import('./pages/OkruhDetail')),
   "QuestionDetail":     L(() => import('./pages/QuestionDetail')),
   "FlashcardReviewV2":  L(() => import('./pages/FlashcardReviewV2')),
@@ -34,12 +34,12 @@ export const PAGES = {
   "StudyPackageDetail": L(() => import('./pages/StudyPackageDetail')),
   "StudyPackageCreate": L(() => import('./pages/StudyPackageCreate')),
 
-  // === Tests ===
-  "TestGenerator":      L(() => import('./pages/TestGenerator')),
+  // === Tests (consolidated) ===
+  "TestGenerator":      L(() => import('./pages/TestGeneratorV2')), // alias → V2
   "TestGeneratorV2":    L(() => import('./pages/TestGeneratorV2')),
-  "TestSession":        L(() => import('./pages/TestSession')),
-  "TestSessionV2":      L(() => import('./pages/TestSessionV2')),
-  "TestResults":        L(() => import('./pages/TestResults')),
+  "TestSession":        L(() => import('./pages/TestSession')),     // V1 (Supabase-migrated)
+  "TestSessionV2":      L(() => import('./pages/TestSession')),     // alias → V1
+  "TestResults":        L(() => import('./pages/TestResultsV2')),   // alias → V2
   "TestResultsV2":      L(() => import('./pages/TestResultsV2')),
 
   // === Plans ===
@@ -62,12 +62,12 @@ export const PAGES = {
   "StudyGroups":        L(() => import('./pages/StudyGroups')),
   "Leaderboards":       L(() => import('./pages/Leaderboards')),
 
-  // === User ===
-  "Profile":            L(() => import('./pages/Profile')),
+  // === User (consolidated) ===
+  "Profile":            L(() => import('./pages/MyProfile')),       // alias → MyProfile
   "MyProfile":          L(() => import('./pages/MyProfile')),
   "AccountSettings":    L(() => import('./pages/AccountSettings')),
+  "UserSettings":       L(() => import('./pages/AccountSettings')), // alias → AccountSettings
   "AICredits":          L(() => import('./pages/AICredits')),
-  "UserSettings":       L(() => import('./pages/UserSettings')),
 
   // === Logbook / Atestace ===
   "Logbook":            L(() => import('./pages/LogbookV2')),
@@ -82,7 +82,7 @@ export const PAGES = {
   "Articles":           L(() => import('./pages/Articles')),
   "ReviewQueue":        L(() => import('./pages/ReviewQueue')),
 
-  // === Admin (heavy, rarely loaded) ===
+  // === Admin ===
   "Admin":              L(() => import('./pages/Admin')),
   "AdminAnalytics":     L(() => import('./pages/AdminAnalytics')),
   "AdminArticleEdit":   L(() => import('./pages/AdminArticleEdit')),
