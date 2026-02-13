@@ -13,7 +13,7 @@
 - [x] 1.1 ContentReview → real AI (Claude Sonnet 4) — `a2a17b9`
 - [x] 1.2 FloatingCopilot (conversation history, copilot mode) — `a2a17b9`
 - [ ] 1.3 Content pipeline (topics, questions, flashcards) — deferred
-- [ ] 1.4 TopicDetail flow consolidation (V1/V2/V4) — deferred
+- [x] 1.4 TopicDetail consolidation (V4 layout + V1 features → single component) — `fdfd1de`
 - [ ] 1.5 Token/credit system end-to-end — deferred
 
 ## Phase 2 — Learning Experience ✅
