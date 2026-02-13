@@ -64,11 +64,11 @@
 ## CO POTŘEBUJE AMBOSS/LECTURIO COMPETITOR
 
 ### Must-Have (MVP)
-1. **Content** — 32 témat, ale jen 1 published s kartičkami. Potřeba: AI pipeline pro bulk generaci fulltext + high-yield + flashcards
-2. **Questions/Quiz** — 0 otázek v DB. Potřeba: MCQ generátor nebo import
-3. **User onboarding** — user_profiles má 0 záznamů, žádný onboarding flow
-4. **Mobile responsiveness** — ověřit
-5. **Page dedup** — sjednotit V1/V2 duplicity (Studium, Test*, Profile, Settings)
+1. ~~**Page dedup**~~ ✅ — 6 duplicitních stránek archivováno — `7272998`
+2. **Content** — 32 témat, ale jen 1 published s kartičkami. Potřeba: AI pipeline pro bulk generaci
+3. **Questions/MCQ** — 0 otázek v DB. Potřeba: MCQ generátor nebo import
+4. ~~**User onboarding**~~ ✅ — OnboardingWizard (4 kroky: jméno → role → obor → start) — `3e69f9f`
+5. ~~**Mobile responsiveness**~~ ✅ — verified + padding fixes — `3e69f9f`
 
 ### Nice-to-Have (v2)
 6. **Offline access** — PWA/service worker
