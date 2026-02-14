@@ -5,7 +5,17 @@
     <link rel="icon" type="image/svg+xml" href="https://base44.com/logo_v2.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="manifest" href="/manifest.json" />
-    <title>Base44 APP</title>
+    <title>MedVerse EDU</title>
+    <script>
+      // Prevent FOUC: set dark class before any CSS renders
+      (function(){
+        var t = localStorage.getItem('mn:theme') || localStorage.getItem('medverse-theme') || 'dark';
+        if (t !== 'light') {
+          document.documentElement.classList.add('dark');
+        }
+        document.body && (document.body.dataset.theme = t);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

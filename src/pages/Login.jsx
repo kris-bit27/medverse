@@ -90,9 +90,9 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex items-center justify-center p-6">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(15,118,110,0.25),transparent_55%),radial-gradient(circle_at_bottom,rgba(59,130,246,0.18),transparent_45%)]" />
-      <Card className="relative w-full max-w-4xl overflow-hidden border-slate-800 bg-slate-950/80 shadow-[0_30px_80px_-40px_rgba(15,118,110,0.7)] backdrop-blur">
+      <Card className="relative w-full max-w-4xl overflow-hidden border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/80 shadow-[0_30px_80px_-40px_rgba(15,118,110,0.7)] backdrop-blur">
         <CardContent className="grid gap-0 p-0 md:grid-cols-[1.1fr_1fr]">
           <div className="p-10 md:p-12 border-b border-slate-900 md:border-b-0 md:border-r">
             <div className="flex items-center gap-3">
@@ -124,7 +124,7 @@ export default function Login() {
             </div>
           </div>
 
-          <div className="p-8 md:p-10 bg-slate-950/70">
+          <div className="p-8 md:p-10 bg-white/70 dark:bg-slate-950/70">
             <div className="text-sm uppercase tracking-[0.25em] text-slate-500">Přihlášení</div>
             <div className="mt-2 text-2xl font-semibold text-white">Vyberte metodu</div>
 
