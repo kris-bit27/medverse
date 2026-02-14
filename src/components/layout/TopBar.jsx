@@ -42,7 +42,7 @@ export default function TopBar({ user }) {
     <div className="h-16 border-b bg-white dark:bg-slate-900 flex items-center justify-between px-6">
       {/* Logo / Search */}
       <div className="flex items-center gap-4">
-        <Link to="/" className="text-xl font-bold text-purple-600">
+        <Link to="/" className="text-xl font-bold text-teal-600">
           Medverse
         </Link>
         
@@ -50,7 +50,7 @@ export default function TopBar({ user }) {
           <input
             type="search"
             placeholder="Hledat témata..."
-            className="w-64 px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="w-64 px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-teal-500"
           />
         </div>
       </div>
@@ -68,7 +68,7 @@ export default function TopBar({ user }) {
             onClick={() => setUserMenuOpen(!userMenuOpen)}
             className="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
-            <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-medium">
+            <div className="w-8 h-8 rounded-full bg-teal-600 text-white flex items-center justify-center font-medium">
               {user?.email?.charAt(0).toUpperCase() || 'U'}
             </div>
             <ChevronDown className={`w-4 h-4 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />

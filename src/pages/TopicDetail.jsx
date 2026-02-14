@@ -90,7 +90,7 @@ export default function TopicDetail() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -225,7 +225,7 @@ export default function TopicDetail() {
                         onClick={() => setActiveView(view.id)}
                         className={`flex-1 px-6 py-4 font-medium transition-colors flex items-center justify-center gap-2 ${
                           isActive
-                            ? 'bg-purple-50 dark:bg-purple-950/20 text-purple-600 border-b-2 border-purple-600'
+                            ? 'bg-teal-50 dark:bg-teal-950/20 text-teal-600 border-b-2 border-teal-600'
                             : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
                         }`}
                       >
@@ -246,7 +246,7 @@ export default function TopicDetail() {
                       prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-p:leading-relaxed prose-p:mb-4
                       prose-li:text-slate-700 dark:prose-li:text-slate-300 prose-li:leading-relaxed
                       prose-strong:text-slate-900 dark:prose-strong:text-slate-100 prose-strong:font-semibold
-                      prose-code:text-purple-600 prose-code:bg-purple-50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
+                      prose-code:text-teal-600 prose-code:bg-teal-50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
                       prose-pre:bg-slate-100 dark:prose-pre:bg-slate-800 prose-pre:border prose-pre:border-slate-200
                       prose-ul:my-4 prose-ol:my-4 prose-li:my-1">
                       <ReactMarkdown>{currentContent}</ReactMarkdown>
@@ -261,14 +261,14 @@ export default function TopicDetail() {
 
               {/* Learning Objectives */}
               {topic.learning_objectives?.length > 0 && (
-                <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 rounded-xl p-6 shadow-sm">
+                <div className="bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-950/20 dark:to-cyan-950/20 rounded-xl p-6 shadow-sm">
                   <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                    <Target className="w-5 h-5 text-purple-600" /> Výukové cíle
+                    <Target className="w-5 h-5 text-teal-600" /> Výukové cíle
                   </h3>
                   <ul className="space-y-2">
                     {topic.learning_objectives.map((obj, idx) => (
                       <li key={idx} className="flex items-start gap-3">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-600 text-white text-xs font-bold flex items-center justify-center mt-0.5">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-teal-600 text-white text-xs font-bold flex items-center justify-center mt-0.5">
                           {idx + 1}
                         </span>
                         <span className="text-slate-700 dark:text-slate-300 leading-relaxed">{obj}</span>
@@ -316,7 +316,7 @@ export default function TopicDetail() {
                 {sidebarPanel === 'flashcards' && (
                   <div className="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm space-y-4">
                     <h3 className="font-bold text-lg flex items-center gap-2">
-                      <Sparkles className="w-5 h-5 text-purple-400" /> Kartičky
+                      <Sparkles className="w-5 h-5 text-teal-400" /> Kartičky
                     </h3>
 
                     {/* Progress summary */}
@@ -330,8 +330,8 @@ export default function TopicDetail() {
                           <div className="font-bold text-lg text-green-600">{masteredCount}</div>
                           <div className="text-muted-foreground text-xs">Zvládnuto</div>
                         </div>
-                        <div className="bg-purple-50 dark:bg-purple-950/20 rounded-lg p-2">
-                          <div className="font-bold text-lg text-purple-600">
+                        <div className="bg-teal-50 dark:bg-teal-950/20 rounded-lg p-2">
+                          <div className="font-bold text-lg text-teal-600">
                             {flashcards.length > 0 ? Math.round((masteredCount / flashcards.length) * 100) : 0}%
                           </div>
                           <div className="text-muted-foreground text-xs">Progres</div>
@@ -367,7 +367,7 @@ export default function TopicDetail() {
                             <p className="font-medium text-sm">{source.title || `Zdroj ${idx + 1}`}</p>
                             {source.url && (
                               <a href={source.url} target="_blank" rel="noopener noreferrer"
-                                className="text-xs text-purple-600 hover:underline truncate block">
+                                className="text-xs text-teal-600 hover:underline truncate block">
                                 {source.url}
                               </a>
                             )}

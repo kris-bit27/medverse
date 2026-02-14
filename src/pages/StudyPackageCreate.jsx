@@ -352,7 +352,7 @@ export default function StudyPackageCreate() {
           <Card className="sticky top-6">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-purple-500" />
+                <Sparkles className="w-5 h-5 text-teal-500" />
                 AI Copilot
               </CardTitle>
             </CardHeader>

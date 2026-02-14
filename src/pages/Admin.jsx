@@ -100,7 +100,7 @@ export default function Admin() {
       count: tools.length,
       icon: Stethoscope,
       href: createPageUrl('AdminTools'),
-      color: 'from-purple-500 to-pink-600'
+      color: 'from-teal-500 to-cyan-600'
     },
     {
       title: 'Taxonomie',

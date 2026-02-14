@@ -138,7 +138,7 @@ export default function StudyProgressCard() {
             <p className="text-[10px] text-slate-500">Zbývá</p>
           </div>
           <div className="text-center">
-            <p className="text-lg font-bold text-violet-400">{totalTopics > 0 ? Math.round(studiedCount / totalTopics * 100) : 0}%</p>
+            <p className="text-lg font-bold text-teal-400">{totalTopics > 0 ? Math.round(studiedCount / totalTopics * 100) : 0}%</p>
             <p className="text-[10px] text-slate-500">Kompletnost</p>
           </div>
         </div>

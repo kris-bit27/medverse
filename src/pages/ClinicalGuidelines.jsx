@@ -54,7 +54,7 @@ export default function ClinicalGuidelines() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -109,13 +109,13 @@ export default function ClinicalGuidelines() {
                 <Card
                   key={guideline.id}
                   className={`cursor-pointer transition-colors ${
-                    isSelected ? 'border-purple-600 bg-purple-50 dark:bg-purple-950/20' : 'hover:bg-slate-50 dark:hover:bg-slate-900'
+                    isSelected ? 'border-teal-600 bg-teal-50 dark:bg-teal-950/20' : 'hover:bg-slate-50 dark:hover:bg-slate-900'
                   }`}
                   onClick={() => setSelectedGuideline(guideline)}
                 >
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3">
-                      <FileText className="w-5 h-5 text-purple-600 mt-0.5 flex-shrink-0" />
+                      <FileText className="w-5 h-5 text-teal-600 mt-0.5 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-sm line-clamp-2">{guideline.title}</p>
                         {guideline.summary && (
@@ -206,7 +206,7 @@ export default function ClinicalGuidelines() {
                       href={selectedGuideline.source_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-purple-600 hover:underline text-sm"
+                      className="flex items-center gap-2 text-teal-600 hover:underline text-sm"
                     >
                       <ExternalLink className="w-4 h-4" />
                       Původní zdroj

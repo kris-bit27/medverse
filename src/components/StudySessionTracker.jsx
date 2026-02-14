@@ -100,11 +100,11 @@ export default function StudySessionTracker({ topicId, sessionType = 'reading' }
   }
 
   return (
-    <Card className="border-purple-200 bg-purple-50 dark:bg-purple-950/20">
+    <Card className="border-teal-200 bg-teal-50 dark:bg-teal-950/20">
       <CardContent className="p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Clock className="w-5 h-5 text-purple-600" />
+            <Clock className="w-5 h-5 text-teal-600" />
             <div>
               <p className="text-sm font-medium">Study Timer</p>
               <p className="text-2xl font-mono font-bold">

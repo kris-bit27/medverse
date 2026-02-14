@@ -549,7 +549,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
                       variant="outline"
                       className={
                         lastGenerated.metadata.provider === 'google'
-                          ? 'bg-purple-50 text-purple-700 border-purple-200'
+                          ? 'bg-teal-50 text-teal-700 border-teal-200'
                           : lastGenerated.metadata.model.includes('haiku')
                             ? 'bg-green-50 text-green-700 border-green-200'
                             : 'bg-blue-50 text-blue-700 border-blue-200'

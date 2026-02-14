@@ -175,7 +175,7 @@ export default function TeamAnalytics() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -295,7 +295,7 @@ export default function TeamAnalytics() {
                       className="flex items-center justify-between p-4 rounded-lg border"
                     >
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center text-white font-bold">
                           #{idx + 1}
                         </div>
                         <div>
@@ -353,7 +353,7 @@ export default function TeamAnalytics() {
                     </div>
                     <div className="h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                       <div 
-                        className="h-full bg-purple-600"
+                        className="h-full bg-teal-600"
                         style={{ width: `${Math.min(100, (analytics.totalTests / analytics.totalMembers) * 10)}%` }}
                       />
                     </div>

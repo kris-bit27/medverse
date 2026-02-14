@@ -151,7 +151,7 @@ export default function AdminBatchMonitor() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-              <Database className="w-6 h-6 text-violet-400" />
+              <Database className="w-6 h-6 text-teal-400" />
               Batch Generation Monitor
             </h1>
             <p className="text-sm text-slate-500 mt-1">
@@ -171,7 +171,7 @@ export default function AdminBatchMonitor() {
           <StatBox icon={Loader2} label="Probíhá" value={stats.processing} accent="bg-blue-500/20" />
           <StatBox icon={CheckCircle2} label="Hotovo" value={stats.completed} accent="bg-emerald-500/20" />
           <StatBox icon={XCircle} label="Chyby" value={stats.failed} accent="bg-red-500/20" />
-          <StatBox icon={DollarSign} label="Celkem" value={`$${stats.totalCost.toFixed(2)}`} accent="bg-violet-500/20" />
+          <StatBox icon={DollarSign} label="Celkem" value={`$${stats.totalCost.toFixed(2)}`} accent="bg-teal-500/20" />
           <StatBox icon={BarChart3} label="Ø na téma" value={`$${stats.avgCost.toFixed(2)}`} accent="bg-cyan-500/20" />
         </div>
 
@@ -183,7 +183,7 @@ export default function AdminBatchMonitor() {
               <Button
                 onClick={() => triggerGeneration.mutate(3)}
                 disabled={triggerGeneration.isPending || stats.pending === 0}
-                className="bg-violet-600 hover:bg-violet-500 text-white"
+                className="bg-teal-600 hover:bg-teal-500 text-white"
               >
                 {triggerGeneration.isPending ? (
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />

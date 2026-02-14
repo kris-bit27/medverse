@@ -224,7 +224,7 @@ export default function AccountSettings() {
 
           <div className="flex items-center justify-between p-4 rounded-lg border">
             <div className="flex items-center gap-3">
-              <Lock className="w-5 h-5 text-purple-600" />
+              <Lock className="w-5 h-5 text-teal-600" />
               <div>
                 <div className="font-medium">Dvoufaktorové ověření (2FA)</div>
                 <p className="text-sm text-muted-foreground">
@@ -343,7 +343,7 @@ export default function AccountSettings() {
       </Card>
 
       {/* Privacy & Data (GDPR) */}
-      <Card className="border-purple-200">
+      <Card className="border-teal-200">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Database className="w-5 h-5" />
@@ -507,7 +507,7 @@ function DataConsentToggle({ label, description, bonus, checked, onChange, requi
             <Badge variant="secondary" className="text-xs">Povinné</Badge>
           )}
           {bonus > 0 && (
-            <Badge variant="default" className="text-xs bg-purple-500">
+            <Badge variant="default" className="text-xs bg-teal-500">
               +{bonus} 💎
             </Badge>
           )}

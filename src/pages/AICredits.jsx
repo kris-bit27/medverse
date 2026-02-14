@@ -88,7 +88,7 @@ export default function AICredits() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-purple-600 rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-slate-200 border-t-teal-600 rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -101,7 +101,7 @@ export default function AICredits() {
             <p className="text-red-600">Chyba: {error}</p>
             <button 
               onClick={loadData}
-              className="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+              className="mt-4 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
             >
               Zkusit znovu
             </button>
@@ -137,7 +137,7 @@ export default function AICredits() {
       </div>
 
       {/* Current Balance */}
-      <Card className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 border-purple-200">
+      <Card className="bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-950/20 dark:to-cyan-950/20 border-teal-200">
         <CardContent className="p-6">
           <div className="flex items-start justify-between mb-4">
             <div>
@@ -154,14 +154,14 @@ export default function AICredits() {
             </Badge>
           </div>
 
-          <div className="w-full bg-purple-200 dark:bg-purple-900 rounded-full h-4 mb-4">
+          <div className="w-full bg-teal-200 dark:bg-teal-900 rounded-full h-4 mb-4">
             <div 
               className={`h-4 rounded-full transition-all duration-500 ${
                 percentageUsed > 90 
                   ? 'bg-red-500' 
                   : percentageUsed > 70 
                     ? 'bg-yellow-500' 
-                    : 'bg-gradient-to-r from-purple-500 to-pink-500'
+                    : 'bg-gradient-to-r from-teal-500 to-cyan-500'
               }`}
               style={{ width: `${percentageUsed}%` }}
             />
@@ -193,7 +193,7 @@ export default function AICredits() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center gap-3 mb-2">
-              <Zap className="w-5 h-5 text-purple-600" />
+              <Zap className="w-5 h-5 text-teal-600" />
               <span className="text-sm text-muted-foreground">Celkem generací</span>
             </div>
             <p className="text-2xl font-bold">{transactions.length}</p>
@@ -286,7 +286,7 @@ export default function AICredits() {
           <div className="flex items-center justify-between p-4 rounded-lg border">
             <div>
               <div className="font-medium">Plán</div>
-              <p className="text-2xl font-bold text-purple-600 mt-1">
+              <p className="text-2xl font-bold text-teal-600 mt-1">
                 {tokens.plan_tier?.charAt(0).toUpperCase() + tokens.plan_tier?.slice(1) || 'Student'}
               </p>
               <p className="text-sm text-muted-foreground mt-1">

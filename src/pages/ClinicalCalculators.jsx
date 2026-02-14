@@ -197,7 +197,7 @@ export default function ClinicalCalculators() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -252,7 +252,7 @@ export default function ClinicalCalculators() {
               <Card
                 key={tool.id}
                 className={`cursor-pointer transition-colors ${
-                  isSelected ? 'border-purple-600 bg-purple-50 dark:bg-purple-950/20' : 'hover:bg-slate-50 dark:hover:bg-slate-900'
+                  isSelected ? 'border-teal-600 bg-teal-50 dark:bg-teal-950/20' : 'hover:bg-slate-50 dark:hover:bg-slate-900'
                 }`}
                 onClick={() => {
                   setSelectedTool(tool);
@@ -262,8 +262,8 @@ export default function ClinicalCalculators() {
               >
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900">
-                      <Icon className="w-5 h-5 text-purple-600 dark:text-purple-300" />
+                    <div className="p-2 rounded-lg bg-teal-100 dark:bg-teal-900">
+                      <Icon className="w-5 h-5 text-teal-600 dark:text-teal-300" />
                     </div>
                     <div className="flex-1">
                       <p className="font-medium text-sm">{tool.name}</p>
@@ -410,7 +410,7 @@ export default function ClinicalCalculators() {
                           href={citation.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm text-purple-600 hover:underline block"
+                          className="text-sm text-teal-600 hover:underline block"
                         >
                           {citation.title}
                         </a>

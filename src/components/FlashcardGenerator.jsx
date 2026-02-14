@@ -177,9 +177,9 @@ export default function FlashcardGenerator({ topicId, topicContent }) {
   return (
     <div className="space-y-4">
       {generatedCards.length === 0 ? (
-        <Card className="border-purple-200 bg-purple-50 dark:bg-purple-950/20">
+        <Card className="border-teal-200 bg-teal-50 dark:bg-teal-950/20">
           <CardContent className="p-6 text-center">
-            <Sparkles className="w-12 h-12 mx-auto mb-3 text-purple-600" />
+            <Sparkles className="w-12 h-12 mx-auto mb-3 text-teal-600" />
             <h3 className="font-semibold mb-2">AI Generátor Kartiček</h3>
             <p className="text-sm text-muted-foreground mb-4">
               Automaticky vytvoř kartičky z obsahu tématu

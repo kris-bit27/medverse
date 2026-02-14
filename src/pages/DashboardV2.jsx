@@ -186,7 +186,7 @@ export default function DashboardV2() {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Zap className="w-4 h-4 text-purple-600" />
+              <Zap className="w-4 h-4 text-teal-600" />
               AI Kredity
             </CardTitle>
           </CardHeader>
@@ -269,8 +269,8 @@ export default function DashboardV2() {
             <Link to={createPageUrl("Studium")}>
               <Card className="hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors cursor-pointer border-2">
                 <CardContent className="p-6 flex items-start gap-4">
-                  <div className="p-3 rounded-lg bg-purple-100 dark:bg-purple-900">
-                    <Brain className="w-6 h-6 text-purple-600 dark:text-purple-300" />
+                  <div className="p-3 rounded-lg bg-teal-100 dark:bg-teal-900">
+                    <Brain className="w-6 h-6 text-teal-600 dark:text-teal-300" />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold mb-1">Studuj téma</h3>

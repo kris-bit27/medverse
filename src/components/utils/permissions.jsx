@@ -198,7 +198,7 @@ export function getRoleDisplayName(role) {
 export function getRoleBadgeColor(role) {
   const colors = {
     [ROLES.STUDENT]: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-    [ROLES.EDITOR]: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+    [ROLES.EDITOR]: 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400',
     [ROLES.ADMIN]: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
   };
   return colors[role] || 'bg-slate-100 text-slate-700';

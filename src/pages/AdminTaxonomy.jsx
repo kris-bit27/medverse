@@ -481,7 +481,7 @@ export default function AdminTaxonomy() {
           Taxonomie
         </h1>
         <div className="flex gap-2">
-          <Button onClick={() => setAiGeneratorOpen(true)} className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+          <Button onClick={() => setAiGeneratorOpen(true)} className="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-pink-700">
             <Sparkles className="w-4 h-4 mr-2" />
             AI generátor
           </Button>

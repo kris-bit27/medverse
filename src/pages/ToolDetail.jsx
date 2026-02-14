@@ -107,8 +107,8 @@ export default function ToolDetail() {
       <header className="mb-8">
         <div className="flex items-start justify-between gap-4 mb-4">
           <div className="flex items-start gap-4">
-            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 flex items-center justify-center flex-shrink-0">
-              <GitBranch className="w-7 h-7 text-purple-600" />
+            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-teal-500/10 to-cyan-500/10 flex items-center justify-center flex-shrink-0">
+              <GitBranch className="w-7 h-7 text-teal-600" />
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-2">

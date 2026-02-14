@@ -101,7 +101,7 @@ function AdminDashboardTab() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -216,7 +216,7 @@ function AdminDashboardTab() {
                 </div>
                 <div className="h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-purple-600"
+                    className="h-full bg-teal-600"
                     style={{ width: `${Math.min(100, (stats.recentTests / 100) * 100)}%` }}
                   />
                 </div>

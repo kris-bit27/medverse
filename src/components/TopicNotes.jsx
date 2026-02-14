@@ -174,7 +174,7 @@ export default function TopicNotes({ topicId }) {
       {/* Notes List */}
       {isLoading ? (
         <div className="flex justify-center py-8">
-          <div className="w-6 h-6 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-6 h-6 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
         </div>
       ) : notes.length > 0 ? (
         <div className="space-y-3">
@@ -183,7 +183,7 @@ export default function TopicNotes({ topicId }) {
               <CardContent className="p-4">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <StickyNote className="w-4 h-4 text-purple-600" />
+                    <StickyNote className="w-4 h-4 text-teal-600" />
                     <span className="text-xs text-muted-foreground">
                       {new Date(note.created_at).toLocaleDateString('cs-CZ')}
                     </span>

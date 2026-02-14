@@ -100,17 +100,17 @@ export default function FlashcardLauncher({ topicId, user }) {
 
   return (
     <>
-      <Card className="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border-purple-200 dark:border-purple-800">
+      <Card className="bg-gradient-to-br from-teal-50 to-blue-50 dark:from-teal-900/20 dark:to-blue-900/20 border-teal-200 dark:border-teal-800">
         <CardContent className="p-6">
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-3">
-                <Brain className="w-5 h-5 text-purple-600" />
+                <Brain className="w-5 h-5 text-teal-600" />
                 <h3 className="font-semibold text-slate-900 dark:text-white">
                   Procvičování s kartičkami
                 </h3>
                 {hasDueCards && (
-                  <Badge className="bg-purple-600">
+                  <Badge className="bg-teal-600">
                     {dueCount} k procvičení
                   </Badge>
                 )}
@@ -178,7 +178,7 @@ export default function FlashcardLauncher({ topicId, user }) {
               {hasDueCards && (
                 <Button 
                   onClick={() => setShowReview(true)}
-                  className="bg-purple-600 hover:bg-purple-700"
+                  className="bg-teal-600 hover:bg-teal-700"
                 >
                   <Brain className="w-4 h-4 mr-2" />
                   Začít procvičovat
@@ -204,7 +204,7 @@ export default function FlashcardLauncher({ topicId, user }) {
         <DialogContent className="max-w-3xl">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Brain className="w-5 h-5 text-purple-600" />
+              <Brain className="w-5 h-5 text-teal-600" />
               Procvičování kartiček
             </DialogTitle>
           </DialogHeader>

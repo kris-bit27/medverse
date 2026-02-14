@@ -54,7 +54,7 @@ export default function DrugDatabase() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -109,13 +109,13 @@ export default function DrugDatabase() {
                 <Card
                   key={drug.id}
                   className={`cursor-pointer transition-colors ${
-                    isSelected ? 'border-purple-600 bg-purple-50 dark:bg-purple-950/20' : 'hover:bg-slate-50 dark:hover:bg-slate-900'
+                    isSelected ? 'border-teal-600 bg-teal-50 dark:bg-teal-950/20' : 'hover:bg-slate-50 dark:hover:bg-slate-900'
                   }`}
                   onClick={() => setSelectedDrug(drug)}
                 >
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3">
-                      <Pill className="w-5 h-5 text-purple-600 mt-0.5" />
+                      <Pill className="w-5 h-5 text-teal-600 mt-0.5" />
                       <div className="flex-1">
                         <p className="font-medium">{drug.name}</p>
                         {drug.generic_name && (

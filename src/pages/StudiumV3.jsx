@@ -251,7 +251,7 @@ export default function StudiumV3() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <GraduationCap className="w-6 h-6 text-violet-400" />
+              <GraduationCap className="w-6 h-6 text-teal-400" />
               <h1 className="text-2xl font-bold text-white tracking-tight">Studium</h1>
             </div>
             <p className="text-sm text-slate-400">
@@ -262,7 +262,7 @@ export default function StudiumV3() {
 
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <StatCard icon={BookOpen} label="Celkem témat" value={stats.total} accent="bg-violet-500/20" />
+          <StatCard icon={BookOpen} label="Celkem témat" value={stats.total} accent="bg-teal-500/20" />
           <StatCard icon={FileText} label="S fulltextem" value={stats.withFulltext} accent="bg-emerald-500/20" />
           <StatCard icon={Target} label="Oborů" value={stats.oboryCount} accent="bg-amber-500/20" />
           <StatCard icon={Filter} label="Zobrazeno" value={stats.filtered} accent="bg-blue-500/20" />
@@ -277,7 +277,7 @@ export default function StudiumV3() {
               placeholder="Hledat témata, obory, okruhy..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-slate-900/70 border-slate-700 text-slate-200 placeholder:text-slate-500 focus:border-violet-500/50 focus:ring-violet-500/20"
+              className="pl-10 bg-slate-900/70 border-slate-700 text-slate-200 placeholder:text-slate-500 focus:border-teal-500/50 focus:ring-teal-500/20"
             />
             {searchQuery && (
               <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">
@@ -290,12 +290,12 @@ export default function StudiumV3() {
           <Button
             variant="outline"
             onClick={() => setShowFilters(!showFilters)}
-            className={`gap-2 border-slate-700 bg-slate-900/70 hover:bg-slate-800 text-slate-300 ${showFilters ? 'border-violet-500/50 text-violet-300' : ''}`}
+            className={`gap-2 border-slate-700 bg-slate-900/70 hover:bg-slate-800 text-slate-300 ${showFilters ? 'border-teal-500/50 text-teal-300' : ''}`}
           >
             <SlidersHorizontal className="w-4 h-4" />
             Filtry
             {activeFilters > 0 && (
-              <Badge className="bg-violet-500 text-white text-[10px] px-1.5 py-0 ml-1">
+              <Badge className="bg-teal-500 text-white text-[10px] px-1.5 py-0 ml-1">
                 {activeFilters}
               </Badge>
             )}
@@ -389,7 +389,7 @@ export default function StudiumV3() {
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
             <div className="flex flex-col items-center gap-3">
-              <div className="w-10 h-10 border-3 border-slate-700 border-t-violet-500 rounded-full animate-spin" />
+              <div className="w-10 h-10 border-3 border-slate-700 border-t-teal-500 rounded-full animate-spin" />
               <p className="text-sm text-slate-500">Načítám témata...</p>
             </div>
           </div>

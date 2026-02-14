@@ -31,7 +31,7 @@ const COLORS = [
   { value: 'blue', label: 'Modrá', class: 'bg-blue-100 border-blue-300 text-blue-900' },
   { value: 'green', label: 'Zelená', class: 'bg-green-100 border-green-300 text-green-900' },
   { value: 'red', label: 'Červená', class: 'bg-red-100 border-red-300 text-red-900' },
-  { value: 'purple', label: 'Fialová', class: 'bg-purple-100 border-purple-300 text-purple-900' },
+  { value: 'purple', label: 'Fialová', class: 'bg-teal-100 border-teal-300 text-teal-900' },
 ];
 
 export default function TopicNotesV2({ topicId, user }) {

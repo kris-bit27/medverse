@@ -253,8 +253,8 @@ export default function StudyPlanner() {
                   {plans.filter(p => p.is_active).length}
                 </p>
               </div>
-              <div className="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-purple-600" />
+              <div className="w-12 h-12 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-teal-600" />
               </div>
             </div>
           </CardContent>

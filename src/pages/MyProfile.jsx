@@ -255,21 +255,21 @@ export default function MyProfile() {
       </div>
 
       {/* Gamification Progress */}
-      <Card className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 border-purple-200">
+      <Card className="bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-950/20 dark:to-cyan-950/20 border-teal-200">
         <CardContent className="p-6">
           <div className="flex items-start gap-4">
-            <div className="p-3 bg-purple-100 dark:bg-purple-900 rounded-xl">
-              <Gift className="w-6 h-6 text-purple-600" />
+            <div className="p-3 bg-teal-100 dark:bg-teal-900 rounded-xl">
+              <Gift className="w-6 h-6 text-teal-600" />
             </div>
             <div className="flex-1">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="font-semibold text-lg">Získej kredity za vyplnění profilu!</h3>
-                <span className="text-2xl font-bold text-purple-600">{earnedTokens} / {maxTokens} 💎</span>
+                <span className="text-2xl font-bold text-teal-600">{earnedTokens} / {maxTokens} 💎</span>
               </div>
               
-              <div className="w-full bg-purple-200 dark:bg-purple-900 rounded-full h-3 mb-4">
+              <div className="w-full bg-teal-200 dark:bg-teal-900 rounded-full h-3 mb-4">
                 <div 
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 h-3 rounded-full transition-all duration-500"
+                  className="bg-gradient-to-r from-teal-500 to-cyan-500 h-3 rounded-full transition-all duration-500"
                   style={{ width: `${(earnedTokens / maxTokens) * 100}%` }}
                 />
               </div>
@@ -572,7 +572,7 @@ function ProfileForm({ profile, user, isEditing, onSave, isSaving }) {
                   className={`
                     p-3 rounded-lg border-2 text-left transition-all
                     ${formData.career_paths.includes(path.value)
-                      ? 'border-purple-500 bg-purple-50 dark:bg-purple-950/20'
+                      ? 'border-teal-500 bg-teal-50 dark:bg-teal-950/20'
                       : 'border-slate-200 hover:border-slate-300'
                     }
                     ${!isEditing && 'opacity-60 cursor-not-allowed'}

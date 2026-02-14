@@ -199,7 +199,7 @@ export default function ReviewToday() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -272,7 +272,7 @@ export default function ReviewToday() {
 
         <Card>
           <CardContent className="p-12 text-center">
-            <Zap className="w-16 h-16 mx-auto mb-4 text-purple-600" />
+            <Zap className="w-16 h-16 mx-auto mb-4 text-teal-600" />
             <h2 className="text-2xl font-bold mb-2">Žádné kartičky!</h2>
             <p className="text-muted-foreground mb-6">
               {selectedObor !== 'all' || selectedOkruh !== 'all' || selectedTopic !== 'all'

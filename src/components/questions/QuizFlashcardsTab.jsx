@@ -51,9 +51,9 @@ export default function QuizFlashcardsTab({ question, user, topic }) {
   if (!featureCheck.allowed) {
     const upsell = UPSELL_MESSAGES.quiz;
     return (
-      <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 border-purple-200 dark:border-purple-800">
+      <Card className="bg-gradient-to-br from-teal-50 to-indigo-50 dark:from-teal-900/20 dark:to-indigo-900/20 border-teal-200 dark:border-teal-800">
         <CardContent className="p-8 text-center">
-          <Brain className="w-12 h-12 mx-auto mb-4 text-purple-600" />
+          <Brain className="w-12 h-12 mx-auto mb-4 text-teal-600" />
           <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
             {upsell.title}
           </h3>
@@ -63,7 +63,7 @@ export default function QuizFlashcardsTab({ question, user, topic }) {
           <p className="text-slate-600 dark:text-slate-400 mb-4 text-sm">
             {upsell.description}
           </p>
-          <Button asChild className="bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600">
+          <Button asChild className="bg-gradient-to-r from-teal-500 to-indigo-500 hover:from-teal-600 hover:to-indigo-600">
             <Link to={createPageUrl('Pricing')}>
               {upsell.cta}
             </Link>
@@ -77,7 +77,7 @@ export default function QuizFlashcardsTab({ question, user, topic }) {
     return (
       <Card>
         <CardContent className="p-8 text-center">
-          <Brain className="w-12 h-12 mx-auto mb-4 text-purple-600" />
+          <Brain className="w-12 h-12 mx-auto mb-4 text-teal-600" />
           <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
             Hippo vytvoří kvíz
           </h3>
@@ -87,7 +87,7 @@ export default function QuizFlashcardsTab({ question, user, topic }) {
           <Button
             onClick={generateQuiz}
             disabled={isLoading}
-            className="bg-purple-600 hover:bg-purple-700"
+            className="bg-teal-600 hover:bg-teal-700"
           >
             {isLoading ? (
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -103,11 +103,11 @@ export default function QuizFlashcardsTab({ question, user, topic }) {
 
   return (
     <div className="space-y-4">
-      <Card className="border-2 border-purple-200 dark:border-purple-800">
+      <Card className="border-2 border-teal-200 dark:border-teal-800">
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Brain className="w-5 h-5 text-purple-600" />
-            <Badge className="bg-purple-600 hover:bg-purple-700">
+            <Brain className="w-5 h-5 text-teal-600" />
+            <Badge className="bg-teal-600 hover:bg-teal-700">
               MCQ Kvíz
             </Badge>
             <span className="text-xs text-slate-500 dark:text-slate-400">
@@ -143,8 +143,8 @@ export default function QuizFlashcardsTab({ question, user, topic }) {
                       }
                     } else {
                       optionClass += isSelected
-                        ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
-                        : 'border-slate-200 dark:border-slate-700 hover:border-purple-300';
+                        ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20'
+                        : 'border-slate-200 dark:border-slate-700 hover:border-teal-300';
                     }
 
                     return (

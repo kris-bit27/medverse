@@ -29,7 +29,7 @@ const sectionConfig = {
   pearls: { 
     label: 'Klinické perly', 
     icon: Lightbulb,
-    color: 'bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800'
+    color: 'bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800'
   }
 };
 

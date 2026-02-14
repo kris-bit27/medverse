@@ -67,7 +67,7 @@ export default function OnboardingWizard({ onComplete }) {
         {/* Progress bar */}
         <div className="h-1 bg-slate-200 dark:bg-slate-800">
           <div 
-            className="h-full bg-purple-600 transition-all duration-500" 
+            className="h-full bg-teal-600 transition-all duration-500" 
             style={{ width: `${((step + 1) / STEPS.length) * 100}%` }} 
           />
         </div>
@@ -76,8 +76,8 @@ export default function OnboardingWizard({ onComplete }) {
           {/* Step: Welcome */}
           {currentStep === 'welcome' && (
             <div className="text-center space-y-6">
-              <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-2xl flex items-center justify-center mx-auto">
-                <Sparkles className="w-8 h-8 text-purple-600" />
+              <div className="w-16 h-16 bg-teal-100 dark:bg-teal-900/30 rounded-2xl flex items-center justify-center mx-auto">
+                <Sparkles className="w-8 h-8 text-teal-600" />
               </div>
               <div>
                 <h2 className="text-2xl font-bold mb-2">Vítejte v MedVerse!</h2>
@@ -101,7 +101,7 @@ export default function OnboardingWizard({ onComplete }) {
           {currentStep === 'role' && (
             <div className="space-y-6">
               <div className="text-center">
-                <GraduationCap className="w-10 h-10 text-purple-600 mx-auto mb-3" />
+                <GraduationCap className="w-10 h-10 text-teal-600 mx-auto mb-3" />
                 <h2 className="text-xl font-bold mb-1">Jaká je vaše role?</h2>
                 <p className="text-sm text-muted-foreground">Přizpůsobíme obtížnost a obsah</p>
               </div>
@@ -112,7 +112,7 @@ export default function OnboardingWizard({ onComplete }) {
                     onClick={() => setData(d => ({ ...d, education_level: level.value }))}
                     className={`w-full text-left p-4 rounded-xl border-2 transition-all ${
                       data.education_level === level.value
-                        ? 'border-purple-600 bg-purple-50 dark:bg-purple-950/20'
+                        ? 'border-teal-600 bg-teal-50 dark:bg-teal-950/20'
                         : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
                     }`}
                   >
@@ -123,7 +123,7 @@ export default function OnboardingWizard({ onComplete }) {
                         <div className="text-sm text-muted-foreground">{level.desc}</div>
                       </div>
                       {data.education_level === level.value && (
-                        <Check className="w-5 h-5 text-purple-600 ml-auto" />
+                        <Check className="w-5 h-5 text-teal-600 ml-auto" />
                       )}
                     </div>
                   </button>
@@ -136,7 +136,7 @@ export default function OnboardingWizard({ onComplete }) {
           {currentStep === 'specialty' && (
             <div className="space-y-6">
               <div className="text-center">
-                <Target className="w-10 h-10 text-purple-600 mx-auto mb-3" />
+                <Target className="w-10 h-10 text-teal-600 mx-auto mb-3" />
                 <h2 className="text-xl font-bold mb-1">
                   {data.education_level === 'student' ? 'Co vás zajímá?' : 'Vaše specializace?'}
                 </h2>
@@ -149,7 +149,7 @@ export default function OnboardingWizard({ onComplete }) {
                     onClick={() => setData(d => ({ ...d, current_specialization: s }))}
                     className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                       data.current_specialization === s
-                        ? 'bg-purple-600 text-white'
+                        ? 'bg-teal-600 text-white'
                         : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700'
                     }`}
                   >
@@ -182,21 +182,21 @@ export default function OnboardingWizard({ onComplete }) {
               </div>
               <div className="grid gap-3 text-left">
                 <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
-                  <BookOpen className="w-5 h-5 text-purple-600 flex-shrink-0" />
+                  <BookOpen className="w-5 h-5 text-teal-600 flex-shrink-0" />
                   <div className="text-sm">
                     <div className="font-medium">Studijní materiály</div>
                     <div className="text-muted-foreground">AI-generované texty pro {data.current_specialization || 'vaše obory'}</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
-                  <Sparkles className="w-5 h-5 text-purple-600 flex-shrink-0" />
+                  <Sparkles className="w-5 h-5 text-teal-600 flex-shrink-0" />
                   <div className="text-sm">
                     <div className="font-medium">Spaced repetition</div>
                     <div className="text-muted-foreground">Kartičky s algoritmen SM-2 pro efektivní opakování</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
-                  <Target className="w-5 h-5 text-purple-600 flex-shrink-0" />
+                  <Target className="w-5 h-5 text-teal-600 flex-shrink-0" />
                   <div className="text-sm">
                     <div className="font-medium">AI asistent</div>
                     <div className="text-muted-foreground">Copilot pro otázky přímo během studia</div>
@@ -228,7 +228,7 @@ export default function OnboardingWizard({ onComplete }) {
               <Button 
                 onClick={() => saveMutation.mutate()}
                 disabled={saveMutation.isPending}
-                className="bg-purple-600 hover:bg-purple-700"
+                className="bg-teal-600 hover:bg-teal-700"
               >
                 {saveMutation.isPending ? 'Ukládám...' : 'Začít studovat'} 
                 <Sparkles className="w-4 h-4 ml-1" />

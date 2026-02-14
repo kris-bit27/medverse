@@ -14,7 +14,7 @@ export default function LogbookStats({ entries }) {
 
   const statItems = [
     { label: 'Výkonů', value: stats.procedures, icon: Scissors, color: 'text-blue-600 bg-blue-100' },
-    { label: 'Stáží', value: stats.internships, icon: GraduationCap, color: 'text-purple-600 bg-purple-100' },
+    { label: 'Stáží', value: stats.internships, icon: GraduationCap, color: 'text-teal-600 bg-teal-100' },
     { label: 'Kurzů', value: stats.courses, icon: BookOpen, color: 'text-green-600 bg-green-100' },
     { label: 'Konferencí', value: stats.conferences, icon: Users, color: 'text-amber-600 bg-amber-100' },
     { label: 'Publikací', value: stats.publications, icon: FileText, color: 'text-pink-600 bg-pink-100' },

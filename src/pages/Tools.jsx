@@ -143,10 +143,10 @@ export default function Tools() {
             </motion.div>
 
             <motion.div whileHover={{ scale: 1.02 }} transition={{ type: "spring", stiffness: 300 }}>
-              <Card className="hover:shadow-xl transition-all duration-300 border-2 border-purple-200 dark:border-purple-800 hover:border-purple-300 dark:hover:border-purple-700 cursor-pointer h-full">
+              <Card className="hover:shadow-xl transition-all duration-300 border-2 border-teal-200 dark:border-teal-800 hover:border-teal-300 dark:hover:border-teal-700 cursor-pointer h-full">
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-lg shadow-purple-500/30 group-hover:scale-110 transition-transform">
+                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-teal-500/30 group-hover:scale-110 transition-transform">
                       <Pill className="w-7 h-7 text-white" />
                     </div>
                     <div className="flex-1">
@@ -229,8 +229,8 @@ export default function Tools() {
                       <Card className="h-full hover:shadow-lg transition-all hover:border-teal-200 dark:hover:border-teal-800 group">
                         <CardContent className="p-6">
                           <div className="flex items-start gap-4">
-                            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 flex items-center justify-center flex-shrink-0">
-                              <GitBranch className="w-7 h-7 text-purple-600" />
+                            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-teal-500/10 to-cyan-500/10 flex items-center justify-center flex-shrink-0">
+                              <GitBranch className="w-7 h-7 text-teal-600" />
                             </div>
 
                             <div className="flex-1 min-w-0">
@@ -335,7 +335,7 @@ function SavedCases() {
         const IconComponent = isAIDifferential ? Brain : Pill;
         const bgColor = isAIDifferential 
           ? 'from-teal-500 to-cyan-600' 
-          : 'from-purple-500 to-pink-600';
+          : 'from-teal-500 to-cyan-600';
 
         return (
           <motion.div

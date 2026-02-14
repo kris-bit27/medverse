@@ -44,7 +44,7 @@ export default function ExistingFlashcards({ topicId }) {
   return (
     <div className="pt-4 border-t border-slate-800">
       <div className="flex items-center gap-2 mb-3">
-        <Sparkles className="w-4 h-4 text-purple-400" />
+        <Sparkles className="w-4 h-4 text-teal-400" />
         <h4 className="font-semibold text-sm">
           Vaše kartičky ({flashcards.length})
         </h4>

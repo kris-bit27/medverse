@@ -105,7 +105,7 @@ export default function Leaderboards() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -135,11 +135,11 @@ export default function Leaderboards() {
 
       {/* My Rank */}
       {myRank && (
-        <Card className="border-purple-200 bg-purple-50 dark:bg-purple-950/20">
+        <Card className="border-teal-200 bg-teal-50 dark:bg-teal-950/20">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold text-lg">
+                <div className="w-12 h-12 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-lg">
                   #{myRank.rank}
                 </div>
                 <div>
@@ -248,7 +248,7 @@ export default function Leaderboards() {
                 <div
                   key={entry.user_id}
                   className={`flex items-center justify-between p-4 rounded-lg border ${
-                    isMe ? 'bg-purple-50 dark:bg-purple-950/20 border-purple-200' : 'hover:bg-slate-50 dark:hover:bg-slate-900'
+                    isMe ? 'bg-teal-50 dark:bg-teal-950/20 border-teal-200' : 'hover:bg-slate-50 dark:hover:bg-slate-900'
                   }`}
                 >
                   <div className="flex items-center gap-4 flex-1">

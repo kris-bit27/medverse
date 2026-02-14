@@ -206,7 +206,7 @@ export default function TestGeneratorV2() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <span className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 flex items-center justify-center font-bold">
+                <span className="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-900 text-teal-600 dark:text-teal-300 flex items-center justify-center font-bold">
                   1
                 </span>
                 Vyberte obor
@@ -234,7 +234,7 @@ export default function TestGeneratorV2() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
-                    <span className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 flex items-center justify-center font-bold">
+                    <span className="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-900 text-teal-600 dark:text-teal-300 flex items-center justify-center font-bold">
                       2
                     </span>
                     Vyberte okruhy
@@ -282,7 +282,7 @@ export default function TestGeneratorV2() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
-                    <span className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 flex items-center justify-center font-bold">
+                    <span className="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-900 text-teal-600 dark:text-teal-300 flex items-center justify-center font-bold">
                       3
                     </span>
                     Vyberte témata
@@ -329,7 +329,7 @@ export default function TestGeneratorV2() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <span className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 flex items-center justify-center font-bold">
+                  <span className="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-900 text-teal-600 dark:text-teal-300 flex items-center justify-center font-bold">
                     4
                   </span>
                   Nastavení testu

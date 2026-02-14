@@ -117,7 +117,7 @@ export const FloatingCopilot = ({ topicContent, topicTitle }) => {
         <Button
           onClick={() => setIsOpen(true)}
           size="lg"
-          className="rounded-full h-16 w-16 shadow-lg hover:shadow-xl transition-all bg-gradient-to-br from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+          className="rounded-full h-16 w-16 shadow-lg hover:shadow-xl transition-all bg-gradient-to-br from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700"
           title="Otevřít Copilot"
         >
           <MessageCircle className="h-7 w-7" />
@@ -143,10 +143,10 @@ export const FloatingCopilot = ({ topicContent, topicTitle }) => {
     >
       <Card className="h-full flex flex-col shadow-2xl border-2">
         {/* Header */}
-        <CardHeader className="flex-shrink-0 pb-3 bg-gradient-to-r from-blue-50 to-purple-50">
+        <CardHeader className="flex-shrink-0 pb-3 bg-gradient-to-r from-blue-50 to-teal-50">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+              <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-600 to-teal-600 flex items-center justify-center">
                 <MessageCircle className="h-5 w-5 text-white" />
               </div>
               <div>
@@ -202,7 +202,7 @@ export const FloatingCopilot = ({ topicContent, topicTitle }) => {
                   <div
                     className={`max-w-[85%] rounded-2xl px-4 py-2.5 ${
                       msg.role === 'user'
-                        ? 'bg-gradient-to-br from-blue-600 to-purple-600 text-white'
+                        ? 'bg-gradient-to-br from-blue-600 to-teal-600 text-white'
                         : 'bg-gray-100 text-gray-900 border border-gray-200'
                     }`}
                   >
@@ -251,7 +251,7 @@ export const FloatingCopilot = ({ topicContent, topicTitle }) => {
                   onClick={handleSend}
                   disabled={!input.trim() || loading}
                   size="sm"
-                  className="bg-gradient-to-br from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                  className="bg-gradient-to-br from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700"
                 >
                   {loading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />

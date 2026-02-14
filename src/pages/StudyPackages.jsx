@@ -240,7 +240,7 @@ export default function StudyPackages() {
           <div className="flex-1">
             <CardTitle className="text-lg flex items-center gap-2 mb-1">
               {pkg.is_ai_generated && (
-                <Sparkles className="w-4 h-4 text-purple-500" />
+                <Sparkles className="w-4 h-4 text-teal-500" />
               )}
               {pkg.title}
             </CardTitle>
