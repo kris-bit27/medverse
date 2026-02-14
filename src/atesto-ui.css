@@ -17,6 +17,15 @@
   --mn-shadow-2: 0 4px 16px rgba(15, 23, 42, 0.08), 0 12px 32px rgba(15, 23, 42, 0.06);
   --mn-radius: 14px;
   --mn-space: 16px;
+  --mn-space-1: 4px;
+  --mn-space-2: 8px;
+  --mn-space-3: 12px;
+  --mn-space-4: 16px;
+  --mn-space-5: 20px;
+  --mn-space-6: 24px;
+  --mn-space-8: 32px;
+  --mn-space-10: 40px;
+  --mn-space-12: 48px;
   --mn-focus: 176 56% 36%;
 
   /* Map to Tailwind/shadcn tokens */

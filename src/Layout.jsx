@@ -42,6 +42,7 @@ import {
   Trophy
 } from 'lucide-react';
 import { canAccessAdmin, getRoleDisplayName, getRoleBadgeColor } from '@/components/utils/permissions';
+import MedVerseLogo from '@/components/MedVerseLogo';
 
 const publicPages = ['Landing', 'Pricing', 'Demo'];
 
@@ -117,7 +118,7 @@ export default function Layout({ children, currentPageName }) {
           <Menu className="w-5 h-5" />
         </Button>
         <Link to={createPageUrl('Dashboard')} className="flex items-center gap-2">
-          <img src="/logo.svg" alt="MedVerse" className="w-8 h-8" />
+          <MedVerseLogo size={32} />
           <div className="flex items-center gap-2">
             <span className="font-bold text-slate-900 dark:text-white">MedVerse</span>
             <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400">
@@ -145,7 +146,7 @@ export default function Layout({ children, currentPageName }) {
           {/* Logo */}
           <div className="h-16 flex items-center justify-between px-6 border-b border-slate-200 dark:border-slate-800">
             <Link to={createPageUrl('Dashboard')} className="flex items-center gap-3">
-              <img src="/logo.svg" alt="MedVerse" className="w-10 h-10" />
+              <MedVerseLogo size={40} />
               <div>
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-lg text-slate-900 dark:text-white">MedVerse</span>
