@@ -14,12 +14,14 @@ export const PAGES = {
   // === Core ===
   "Dashboard":          L(() => import('./pages/DashboardV2')),
   "DashboardV2":        L(() => import('./pages/DashboardV2')),
-  "Studium":            L(() => import('./pages/StudiumV2')),       // alias → StudiumV2
-  "StudiumV2":          L(() => import('./pages/StudiumV2')),
+  "Studium":            L(() => import('./pages/StudiumV3')),       // alias → StudiumV3
+  "StudiumV2":          L(() => import('./pages/StudiumV3')),       // alias → StudiumV3
+  "StudiumV3":          L(() => import('./pages/StudiumV3')),
   "ReviewToday":        L(() => import('./pages/ReviewToday')),
-  "TopicDetail":        L(() => import('./pages/TopicDetail')),
-  "TopicDetailV2":      L(() => import('./pages/TopicDetail')),     // alias
-  "TopicDetailV4":      L(() => import('./pages/TopicDetail')),     // alias
+  "TopicDetail":        L(() => import('./pages/TopicDetailV5')),
+  "TopicDetailV2":      L(() => import('./pages/TopicDetailV5')),   // alias → V5
+  "TopicDetailV4":      L(() => import('./pages/TopicDetailV5')),   // alias → V5
+  "TopicDetailV5":      L(() => import('./pages/TopicDetailV5')),
 
   // === Public ===
   "Landing":            L(() => import('./pages/Landing')),
@@ -88,6 +90,7 @@ export const PAGES = {
   "AdminArticleEdit":   L(() => import('./pages/AdminArticleEdit')),
   "AdminArticles":      L(() => import('./pages/AdminArticles')),
   "AdminAudit":         L(() => import('./pages/AdminAudit')),
+  "AdminBatchMonitor":  L(() => import('./pages/AdminBatchMonitor')),
   "AdminConsole":       L(() => import('./pages/AdminConsole')),
   "AdminCostAnalytics": L(() => import('./pages/AdminCostAnalytics')),
   "AdminQuestionEdit":  L(() => import('./pages/AdminQuestionEdit')),
