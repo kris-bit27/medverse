@@ -42,23 +42,23 @@
 }
 
 body[data-theme="light"] {
-  --mn-bg: 210 24% 96%;
+  --mn-bg: 210 20% 97%;
   --mn-surface: 0 0% 100%;
-  --mn-surface-2: 210 18% 95%;
-  --mn-elevated: 210 24% 98%;
-  --mn-border: 220 14% 82%;
+  --mn-surface-2: 210 16% 95%;
+  --mn-elevated: 0 0% 100%;
+  --mn-border: 215 16% 78%;
   --mn-text: 222 32% 14%;
-  --mn-muted: 220 12% 36%;
-  --mn-accent: 176 56% 38%;
-  --mn-accent-2: 198 80% 46%;
-  --mn-success: 142 60% 40%;
-  --mn-warn: 38 92% 50%;
-  --mn-danger: 0 72% 50%;
-  --mn-shadow-1: 0 6px 16px rgba(15, 23, 42, 0.08);
-  --mn-shadow-2: 0 16px 36px rgba(15, 23, 42, 0.12);
+  --mn-muted: 220 12% 40%;
+  --mn-accent: 176 56% 36%;
+  --mn-accent-2: 198 80% 42%;
+  --mn-success: 142 60% 38%;
+  --mn-warn: 38 92% 48%;
+  --mn-danger: 0 72% 48%;
+  --mn-shadow-1: 0 1px 3px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.04);
+  --mn-shadow-2: 0 4px 16px rgba(15, 23, 42, 0.08), 0 12px 32px rgba(15, 23, 42, 0.06);
   --mn-radius: 14px;
   --mn-space: 16px;
-  --mn-focus: 176 56% 38%;
+  --mn-focus: 176 56% 36%;
 }
 
 /* Light mode readability overrides for common utility text colors */
@@ -261,9 +261,18 @@ body[data-theme="dark"] {
   border-right: 1px solid hsl(var(--mn-border));
 }
 
+body[data-theme="light"] .mn-sidebar {
+  box-shadow: 2px 0 12px rgba(15, 23, 42, 0.04);
+}
+
 .mn-topbar {
   background: hsl(var(--mn-elevated));
   border-bottom: 1px solid hsl(var(--mn-border));
+  backdrop-filter: blur(8px);
+}
+
+body[data-theme="light"] .mn-topbar {
+  background: hsla(0, 0%, 100%, 0.85);
 }
 
 .mn-main {
