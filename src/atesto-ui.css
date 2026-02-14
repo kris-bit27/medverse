@@ -61,16 +61,6 @@ body[data-theme="light"] {
   --mn-focus: 176 56% 36%;
 }
 
-/* Light mode readability overrides for common utility text colors */
-body[data-theme="light"] .text-slate-300,
-body[data-theme="light"] .text-slate-400,
-body[data-theme="light"] .text-slate-500 {
-  color: hsl(var(--mn-muted)) !important;
-}
-
-body[data-theme="light"] .text-slate-600 {
-  color: hsl(var(--mn-text)) !important;
-}
 
 body[data-theme="light"] .badge-outline,
 body[data-theme="light"] .badge-secondary {

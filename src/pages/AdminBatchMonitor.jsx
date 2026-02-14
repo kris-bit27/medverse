@@ -26,7 +26,7 @@ function StatBox({ icon: Icon, label, value, sub, accent }) {
           <Icon className="w-4 h-4 text-slate-300" />
         </div>
         <div>
-          <p className="text-lg font-bold text-white">{value}</p>
+          <p className="text-lg font-bold text-slate-900 dark:text-white">{value}</p>
           <p className="text-xs text-slate-500">{label}</p>
           {sub && <p className="text-[10px] text-slate-600 mt-0.5">{sub}</p>}
         </div>
@@ -144,13 +144,13 @@ export default function AdminBatchMonitor() {
   const availableTopics = allTopics.filter(t => !queuedTopicIds.has(t.id) && (!t.full_text_content || t.full_text_content.length < 100));
 
   return (
-    <div className="min-h-screen bg-slate-950 p-6">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6">
       <div className="max-w-6xl mx-auto space-y-6">
 
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <Database className="w-6 h-6 text-teal-400" />
               Batch Generation Monitor
             </h1>
@@ -176,7 +176,7 @@ export default function AdminBatchMonitor() {
         </div>
 
         {/* Actions */}
-        <Card className="bg-slate-900/50 border-slate-800">
+        <Card className="bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800">
           <CardContent className="p-4">
             <div className="flex flex-wrap items-center gap-3">
               {/* Trigger generation */}
@@ -209,10 +209,10 @@ export default function AdminBatchMonitor() {
               {/* Add to queue */}
               <div className="flex items-center gap-2 ml-auto">
                 <Select value={addTopicId} onValueChange={setAddTopicId}>
-                  <SelectTrigger className="w-[250px] bg-slate-800 border-slate-700 text-slate-300 text-sm h-9">
+                  <SelectTrigger className="w-[250px] bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-300 text-sm h-9">
                     <SelectValue placeholder="Přidat téma do fronty..." />
                   </SelectTrigger>
-                  <SelectContent className="bg-slate-900 border-slate-700 max-h-64">
+                  <SelectContent className="bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 max-h-64">
                     {availableTopics.map(t => (
                       <SelectItem key={t.id} value={t.id} className="text-sm">
                         <span className="text-slate-500 mr-1">{t.obory?.name?.substring(0, 3)}:</span> {t.title}
@@ -244,7 +244,7 @@ export default function AdminBatchMonitor() {
         </Card>
 
         {/* Queue Table */}
-        <Card className="bg-slate-900/50 border-slate-800">
+        <Card className="bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800">
           <CardHeader className="pb-3">
             <CardTitle className="text-slate-300 text-lg">
               Fronta generace ({queue.length})
@@ -276,7 +276,7 @@ export default function AdminBatchMonitor() {
                       {/* Topic info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-slate-200 truncate">{topic?.title}</span>
+                          <span className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">{topic?.title}</span>
                           <Badge variant="outline" className={`text-[10px] ${sc.badge} border`}>
                             {sc.label}
                           </Badge>

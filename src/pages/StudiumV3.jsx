@@ -244,7 +244,7 @@ export default function StudiumV3() {
   }, [okruhy, selectedObor, allTopics]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900">
+    <div className="min-h-screen bg-slate-50 dark:bg-gradient-to-b dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
 
         {/* Header */}
@@ -252,7 +252,7 @@ export default function StudiumV3() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <GraduationCap className="w-6 h-6 text-teal-400" />
-              <h1 className="text-2xl font-bold text-white tracking-tight">Studium</h1>
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Studium</h1>
             </div>
             <p className="text-sm text-slate-400">
               {stats.total} témat • {stats.withFulltext} s plným textem • {stats.oboryCount} oborů
@@ -290,7 +290,7 @@ export default function StudiumV3() {
           <Button
             variant="outline"
             onClick={() => setShowFilters(!showFilters)}
-            className={`gap-2 border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/70 hover:bg-slate-100 dark:hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 ${showFilters ? 'border-teal-500/50 text-teal-300' : ''}`}
+            className={`gap-2 border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/70 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 ${showFilters ? 'border-teal-500/50 text-teal-700 dark:text-teal-300' : ''}`}
           >
             <SlidersHorizontal className="w-4 h-4" />
             Filtry
@@ -375,7 +375,7 @@ export default function StudiumV3() {
                   variant="ghost"
                   size="sm"
                   onClick={() => { setSearchQuery(''); setSelectedObor('all'); setSelectedOkruh('all'); }}
-                  className="text-slate-400 hover:text-white h-9"
+                  className="text-slate-400 hover:text-slate-900 dark:hover:text-white h-9"
                 >
                   <X className="w-3 h-3 mr-1" />
                   Vymazat filtry

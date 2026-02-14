@@ -100,7 +100,7 @@ export default function StudyProgressCard() {
   const streak = progress.length > 0 ? Math.min(progress.length, 7) : 0;
 
   return (
-    <Card className="bg-slate-900/50 border-slate-800">
+    <Card className="bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800">
       <CardContent className="p-5 space-y-5">
         {/* Top: Overall progress */}
         <div className="flex items-center gap-5">
@@ -128,7 +128,7 @@ export default function StudyProgressCard() {
         </div>
 
         {/* Quick stats row */}
-        <div className="grid grid-cols-3 gap-3 pt-3 border-t border-slate-800">
+        <div className="grid grid-cols-3 gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
           <div className="text-center">
             <p className="text-lg font-bold text-white">{studiedCount}</p>
             <p className="text-[10px] text-slate-500">Prostudováno</p>
