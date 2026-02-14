@@ -94,30 +94,30 @@ export default function Login() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(15,118,110,0.25),transparent_55%),radial-gradient(circle_at_bottom,rgba(59,130,246,0.18),transparent_45%)]" />
       <Card className="relative w-full max-w-4xl overflow-hidden border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/80 shadow-[0_30px_80px_-40px_rgba(15,118,110,0.7)] backdrop-blur">
         <CardContent className="grid gap-0 p-0 md:grid-cols-[1.1fr_1fr]">
-          <div className="p-10 md:p-12 border-b border-slate-900 md:border-b-0 md:border-r">
+          <div className="p-10 md:p-12 border-b border-slate-200 dark:border-slate-900 md:border-b-0 md:border-r">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-teal-400 to-cyan-500" />
               <div>
-                <div className="text-xs uppercase tracking-[0.3em] text-teal-300">MedVerse</div>
-                <div className="text-lg font-semibold text-white">Klinické vzdělávání</div>
+                <div className="text-xs uppercase tracking-[0.3em] text-teal-600 dark:text-teal-300">MedVerse</div>
+                <div className="text-lg font-semibold text-slate-900 dark:text-white">Klinické vzdělávání</div>
               </div>
             </div>
             <div className="mt-10 space-y-4">
-              <h1 className="text-3xl font-semibold leading-tight text-white">Přihlášení do studijního prostoru</h1>
-              <p className="text-sm text-slate-300">
+              <h1 className="text-3xl font-semibold leading-tight text-slate-900 dark:text-white">Přihlášení do studijního prostoru</h1>
+              <p className="text-sm text-slate-600 dark:text-slate-300">
                 Pokračujte pomocí ověřeného účtu, nebo si nechte poslat bezpečný přihlašovací odkaz.
               </p>
-              <div className="mt-8 grid grid-cols-2 gap-3 text-xs text-slate-400">
-                <div className="rounded-xl border border-slate-800 p-4">
+              <div className="mt-8 grid grid-cols-2 gap-3 text-xs text-slate-500 dark:text-slate-400">
+                <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-4">
                   Přístup k premium obsahu
                 </div>
-                <div className="rounded-xl border border-slate-800 p-4">
+                <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-4">
                   Synchronizace napříč zařízeními
                 </div>
-                <div className="rounded-xl border border-slate-800 p-4">
+                <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-4">
                   Ověřené AI výstupy
                 </div>
-                <div className="rounded-xl border border-slate-800 p-4">
+                <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-4">
                   Individuální plán učení
                 </div>
               </div>
@@ -126,11 +126,11 @@ export default function Login() {
 
           <div className="p-8 md:p-10 bg-white/70 dark:bg-slate-950/70">
             <div className="text-sm uppercase tracking-[0.25em] text-slate-500">Přihlášení</div>
-            <div className="mt-2 text-2xl font-semibold text-white">Vyberte metodu</div>
+            <div className="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">Vyberte metodu</div>
 
             <div className="mt-6 space-y-3">
               {providers.length === 0 ? (
-                <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-200">
+                <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-700 dark:text-amber-200">
                   OAuth poskytovatelé nejsou povoleni. Zapněte je v Supabase nebo nastavte `VITE_AUTH_PROVIDERS`.
                 </div>
               ) : (
