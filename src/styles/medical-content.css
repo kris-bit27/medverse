@@ -1,0 +1,588 @@
+/* ============================================================
+   medical-content.css
+   MedVerse Study Content Styles
+   
+   Design System tokens:
+   - Accent: teal (--mn-accent)
+   - Fonts: Source Serif 4 (body), IBM Plex Sans (UI), IBM Plex Mono (values)
+   - Both light and dark mode supported via body[data-theme]
+   ============================================================ */
+
+/* ---- FONTS ---- */
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+/* ---- CSS TOKENS ---- */
+:root {
+  --mn-font-serif: 'Source Serif 4', Georgia, serif;
+  --mn-font-sans: 'IBM Plex Sans', -apple-system, sans-serif;
+  --mn-font-mono: 'IBM Plex Mono', monospace;
+
+  /* Dark mode (default) */
+  --mn-c-bg: #0c0f16;
+  --mn-c-surface: #131620;
+  --mn-c-surface2: #191d29;
+  --mn-c-elevated: #1f2333;
+  --mn-c-border: #2a2f42;
+  --mn-c-border-subtle: #222638;
+  --mn-c-text: #e8eaef;
+  --mn-c-text-secondary: #9498b0;
+  --mn-c-text-muted: #5f637a;
+  --mn-c-accent: #14b8a6;
+  --mn-c-accent-light: #2dd4bf;
+  --mn-c-accent-dim: #0d7d71;
+  --mn-c-accent-subtle: rgba(20, 184, 166, 0.10);
+  --mn-c-secondary: #06b6d4;
+  --mn-c-pearl: #f59e0b;
+  --mn-c-pearl-bg: rgba(245, 158, 11, 0.08);
+  --mn-c-danger: #ef4444;
+  --mn-c-danger-bg: rgba(239, 68, 68, 0.08);
+  --mn-c-success: #10b981;
+  --mn-c-success-bg: rgba(16, 185, 129, 0.08);
+  --mn-c-info: #3b82f6;
+  --mn-c-info-bg: rgba(59, 130, 246, 0.08);
+  --mn-c-link: #22d3ee;
+}
+
+body[data-theme="light"] {
+  --mn-c-bg: #f5f7fa;
+  --mn-c-surface: #ffffff;
+  --mn-c-surface2: #f0f2f6;
+  --mn-c-elevated: #ffffff;
+  --mn-c-border: #e2e5ee;
+  --mn-c-border-subtle: #ebeef4;
+  --mn-c-text: #111827;
+  --mn-c-text-secondary: #4b5563;
+  --mn-c-text-muted: #9ca3af;
+  --mn-c-accent: #0d9488;
+  --mn-c-accent-light: #14b8a6;
+  --mn-c-accent-dim: #0f766e;
+  --mn-c-accent-subtle: rgba(13, 148, 136, 0.08);
+  --mn-c-secondary: #0891b2;
+  --mn-c-pearl: #d97706;
+  --mn-c-pearl-bg: rgba(217, 119, 6, 0.06);
+  --mn-c-danger: #dc2626;
+  --mn-c-danger-bg: rgba(220, 38, 38, 0.05);
+  --mn-c-success: #059669;
+  --mn-c-success-bg: rgba(5, 150, 105, 0.05);
+  --mn-c-info: #2563eb;
+  --mn-c-info-bg: rgba(37, 99, 235, 0.05);
+  --mn-c-link: #0891b2;
+}
+
+/* ---- LAYOUT ---- */
+.mn-content-layout {
+  position: relative;
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.mn-content-layout.mn-has-toc {
+  max-width: 1120px;
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 40px;
+}
+
+@media (max-width: 1024px) {
+  .mn-content-layout.mn-has-toc {
+    grid-template-columns: 1fr;
+  }
+  .mn-toc-sidebar {
+    display: none;
+  }
+}
+
+/* ---- TABLE OF CONTENTS ---- */
+.mn-toc-sidebar {
+  position: relative;
+}
+
+.mn-toc {
+  position: sticky;
+  top: 100px;
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.mn-toc::-webkit-scrollbar {
+  width: 3px;
+}
+.mn-toc::-webkit-scrollbar-thumb {
+  background: var(--mn-c-border);
+  border-radius: 3px;
+}
+
+.mn-toc-header {
+  padding-bottom: 12px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--mn-c-border);
+}
+
+.mn-toc-label {
+  font-family: var(--mn-font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--mn-c-text-muted);
+  margin-bottom: 4px;
+}
+
+.mn-toc-title {
+  font-family: var(--mn-font-serif);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--mn-c-text);
+}
+
+.mn-toc-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.mn-toc-item {
+  display: block;
+  padding: 6px 12px 6px 14px;
+  font-family: var(--mn-font-sans);
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--mn-c-text-secondary);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.mn-toc-item:hover {
+  color: var(--mn-c-text);
+  background: var(--mn-c-accent-subtle);
+}
+
+.mn-toc-item.mn-toc-active {
+  color: var(--mn-c-accent-light);
+  border-left-color: var(--mn-c-accent);
+  background: var(--mn-c-accent-subtle);
+  font-weight: 500;
+}
+
+.mn-toc-item.mn-toc-sub {
+  padding-left: 28px;
+  font-size: 12px;
+  color: var(--mn-c-text-muted);
+}
+
+.mn-toc-item.mn-toc-sub.mn-toc-active {
+  color: var(--mn-c-accent-light);
+}
+
+/* ---- READING PROGRESS ---- */
+.mn-reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 200;
+  pointer-events: none;
+}
+
+.mn-reading-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--mn-c-accent-dim), var(--mn-c-accent-light));
+  transition: width 0.1s linear;
+}
+
+/* ---- ARTICLE BODY ---- */
+.mn-article-body {
+  font-family: var(--mn-font-serif);
+  font-size: 17px;
+  line-height: 1.82;
+  color: var(--mn-c-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- HEADINGS ---- */
+.mn-content-h1 {
+  font-family: var(--mn-font-serif);
+  font-size: 2em;
+  font-weight: 700;
+  color: var(--mn-c-text);
+  margin: 0 0 0.6em;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  scroll-margin-top: 80px;
+}
+
+.mn-content-h2 {
+  font-family: var(--mn-font-serif);
+  font-size: 1.5em;
+  font-weight: 700;
+  color: var(--mn-c-text);
+  margin: 2.4em 0 0.7em;
+  padding-top: 1.2em;
+  border-top: 1px solid var(--mn-c-border-subtle);
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  scroll-margin-top: 80px;
+}
+
+.mn-content-h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.mn-content-h3 {
+  font-family: var(--mn-font-sans);
+  font-size: 1.05em;
+  font-weight: 600;
+  color: var(--mn-c-accent-light);
+  margin: 1.8em 0 0.5em;
+  line-height: 1.4;
+  scroll-margin-top: 80px;
+}
+
+.mn-content-h4 {
+  font-family: var(--mn-font-sans);
+  font-size: 0.85em;
+  font-weight: 600;
+  color: var(--mn-c-text-secondary);
+  margin: 1.4em 0 0.4em;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ---- PARAGRAPHS ---- */
+.mn-content-p {
+  margin-bottom: 1em;
+  color: var(--mn-c-text);
+  line-height: 1.85;
+}
+
+.mn-content-strong {
+  font-weight: 600;
+  color: var(--mn-c-text);
+}
+
+/* Ensure strong stands out more in light mode */
+body[data-theme="light"] .mn-content-strong {
+  color: #0f172a;
+}
+
+.mn-content-em {
+  font-style: italic;
+  color: var(--mn-c-text-secondary);
+}
+
+/* ---- LISTS ---- */
+.mn-content-ul,
+.mn-content-ol {
+  margin: 0.6em 0 1.2em;
+  padding: 0;
+  list-style: none;
+}
+
+.mn-content-ul > .mn-content-li,
+.mn-content-ol > .mn-content-li {
+  position: relative;
+  padding: 0.3em 0 0.3em 1.5em;
+  line-height: 1.7;
+  color: var(--mn-c-text);
+  font-size: 0.97em;
+}
+
+/* Bullet dots */
+.mn-content-ul > .mn-content-li::before {
+  content: '';
+  position: absolute;
+  left: 0.25em;
+  top: 0.85em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--mn-c-accent-dim);
+}
+
+/* Ordered list numbers */
+.mn-content-ol {
+  counter-reset: mn-ol;
+}
+
+.mn-content-ol > .mn-content-li {
+  counter-increment: mn-ol;
+}
+
+.mn-content-ol > .mn-content-li::before {
+  content: counter(mn-ol) '.';
+  position: absolute;
+  left: 0;
+  font-family: var(--mn-font-mono);
+  font-size: 0.78em;
+  font-weight: 500;
+  color: var(--mn-c-accent);
+  top: 0.45em;
+}
+
+/* Nested lists */
+.mn-content-li .mn-content-ul,
+.mn-content-li .mn-content-ol {
+  margin: 0.2em 0 0.2em 0;
+}
+
+.mn-content-li .mn-content-ul > .mn-content-li::before {
+  width: 5px;
+  height: 5px;
+  background: transparent;
+  border: 1.5px solid var(--mn-c-text-muted);
+}
+
+/* ---- TABLES ---- */
+.mn-table-wrapper {
+  margin: 1.4em 0;
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 1px solid var(--mn-c-border);
+}
+
+.mn-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88em;
+}
+
+.mn-table-th {
+  font-family: var(--mn-font-sans);
+  font-size: 0.72em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--mn-c-text-muted);
+  text-align: left;
+  padding: 10px 16px;
+  background: var(--mn-c-elevated);
+  border-bottom: 1px solid var(--mn-c-border);
+  position: sticky;
+  top: 0;
+}
+
+.mn-table-td {
+  padding: 9px 16px;
+  border-bottom: 1px solid var(--mn-c-border-subtle);
+  color: var(--mn-c-text);
+  line-height: 1.5;
+}
+
+.mn-table-tr:last-child .mn-table-td {
+  border-bottom: none;
+}
+
+.mn-table-tr:hover .mn-table-td {
+  background: var(--mn-c-accent-subtle);
+}
+
+/* ---- INLINE CODE (medical values) ---- */
+.mn-inline-code {
+  font-family: var(--mn-font-mono);
+  font-size: 0.85em;
+  color: var(--mn-c-accent-light);
+  background: var(--mn-c-accent-subtle);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Medical value badge (for explicit use) */
+.mn-med-value {
+  font-family: var(--mn-font-mono);
+  font-size: 0.85em;
+  color: var(--mn-c-accent-light);
+  background: var(--mn-c-accent-subtle);
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* ---- CODE BLOCKS ---- */
+.mn-code-block {
+  background: var(--mn-c-surface2);
+  border: 1px solid var(--mn-c-border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  font-family: var(--mn-font-mono);
+  font-size: 0.82em;
+  line-height: 1.7;
+  color: var(--mn-c-text-secondary);
+  overflow-x: auto;
+  margin: 1.2em 0;
+}
+
+/* ---- BLOCKQUOTE / CALLOUT ---- */
+.mn-callout {
+  margin: 1.6em 0;
+  padding: 16px 20px;
+  border-radius: 10px;
+  border-left: 3px solid var(--mn-c-info);
+  background: var(--mn-c-info-bg);
+  font-size: 0.95em;
+}
+
+.mn-callout p {
+  margin-bottom: 0.5em;
+  line-height: 1.7;
+}
+
+.mn-callout p:last-child {
+  margin-bottom: 0;
+}
+
+.mn-callout.mn-callout-info {
+  border-color: var(--mn-c-info);
+  background: var(--mn-c-info-bg);
+}
+
+.mn-callout.mn-callout-pearl {
+  border-color: var(--mn-c-pearl);
+  background: var(--mn-c-pearl-bg);
+}
+
+.mn-callout.mn-callout-danger {
+  border-color: var(--mn-c-danger);
+  background: var(--mn-c-danger-bg);
+}
+
+.mn-callout.mn-callout-success {
+  border-color: var(--mn-c-success);
+  background: var(--mn-c-success-bg);
+}
+
+/* ---- LINKS ---- */
+.mn-content-link {
+  color: var(--mn-c-link);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(34, 211, 238, 0.3);
+  transition: all 0.15s;
+}
+
+.mn-content-link:hover {
+  border-bottom-color: var(--mn-c-link);
+}
+
+body[data-theme="light"] .mn-content-link {
+  border-bottom-color: rgba(8, 145, 178, 0.3);
+}
+
+/* ---- DIVIDER ---- */
+.mn-divider {
+  border: none;
+  height: 1px;
+  background: var(--mn-c-border-subtle);
+  margin: 2.5em 0;
+}
+
+/* ---- FLOATING TOOLBAR ---- */
+.mn-float-toolbar {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  display: flex;
+  gap: 6px;
+  z-index: 180;
+}
+
+.mn-float-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--mn-c-border);
+  background: var(--mn-c-surface);
+  color: var(--mn-c-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+body[data-theme="light"] .mn-float-btn {
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.08);
+}
+
+.mn-float-btn:hover {
+  background: var(--mn-c-elevated);
+  color: var(--mn-c-accent-light);
+  border-color: var(--mn-c-accent-dim);
+}
+
+/* ---- MARK (highlight) ---- */
+.mn-article-body mark {
+  background: rgba(245, 158, 11, 0.18);
+  color: var(--mn-c-text);
+  padding: 1px 3px;
+  border-radius: 2px;
+}
+
+body[data-theme="light"] .mn-article-body mark {
+  background: rgba(245, 158, 11, 0.15);
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 768px) {
+  .mn-article-body {
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  .mn-content-h1 {
+    font-size: 1.7em;
+  }
+
+  .mn-content-h2 {
+    font-size: 1.35em;
+  }
+
+  .mn-float-toolbar {
+    bottom: 16px;
+    right: 16px;
+  }
+}
+
+/* ---- PRINT ---- */
+@media print {
+  .mn-reading-progress,
+  .mn-float-toolbar,
+  .mn-toc-sidebar {
+    display: none !important;
+  }
+
+  .mn-article-body {
+    font-size: 11pt;
+    color: #000;
+  }
+
+  .mn-content-h3 {
+    color: #0d9488;
+  }
+
+  .mn-inline-code {
+    border: 1px solid #ddd;
+    background: #f5f5f5;
+    color: #0d7d71;
+  }
+}
+
+/* ---- UTILITY CLASSES for use in Tailwind components ---- */
+.mn-ui-font {
+  font-family: var(--mn-font-sans);
+}
+
+.mn-serif-font {
+  font-family: var(--mn-font-serif);
+}
+
+.mn-mono-font {
+  font-family: var(--mn-font-mono);
+}
