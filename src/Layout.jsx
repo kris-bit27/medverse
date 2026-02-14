@@ -276,13 +276,26 @@ export default function Layout({ children, currentPageName }) {
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
                     "mn-sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
-                    currentPageName === 'AdminConsole' || currentPageName?.startsWith('Admin')
+                    currentPageName === 'AdminConsole'
                       ? "is-active"
                       : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                   )}
                 >
                   <Shield className="w-5 h-5" />
                   Správa
+                </Link>
+                <Link
+                  to={createPageUrl('AdminBatchMonitor')}
+                  onClick={() => setSidebarOpen(false)}
+                  className={cn(
+                    "mn-sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
+                    currentPageName === 'AdminBatchMonitor'
+                      ? "is-active"
+                      : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  )}
+                >
+                  <Zap className="w-5 h-5" />
+                  Batch Generace
                 </Link>
               </>
             )}
