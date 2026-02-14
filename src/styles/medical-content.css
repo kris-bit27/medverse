@@ -199,6 +199,15 @@ html.dark {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Ensure all text inside article is visible in light mode */
+html:not(.dark) .mn-article-body,
+html:not(.dark) .mn-article-body p,
+html:not(.dark) .mn-article-body li,
+html:not(.dark) .mn-article-body span,
+html:not(.dark) .mn-article-body strong {
+  color: #111827;
+}
+
 /* ---- HEADINGS ---- */
 .mn-content-h1 {
   font-family: var(--mn-font-serif);
