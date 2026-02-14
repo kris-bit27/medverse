@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Tailwind v4: use class-based dark mode instead of media query */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   :root {
     /* All values come from atesto-ui.css --mn-* tokens */
