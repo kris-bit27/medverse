@@ -1,131 +1,171 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { 
-  ChevronLeft,
-  ChevronRight,
-  Eye,
-  EyeOff,
-  CheckCircle2,
-  XCircle,
-  RefreshCw,
-  Trophy,
-  RotateCcw
+  ChevronLeft, ChevronRight, CheckCircle2, XCircle,
+  Trophy, RotateCcw, Clock, AlertTriangle, BookOpen
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
-import DifficultyIndicator from '@/components/ui/DifficultyIndicator';
-import AnswerSection from '@/components/questions/AnswerSection';
-import { calculateNextReview, RATINGS } from '@/components/utils/srs';
+import { toast } from 'sonner';
 
 export default function TestSession() {
-  const [questionIds, setQuestionIds] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [showAnswer, setShowAnswer] = useState(false);
-  const [results, setResults] = useState({});
-  const [isComplete, setIsComplete] = useState(false);
+  const { user } = useAuth();
+  const [searchParams] = useSearchParams();
+  const sessionId = searchParams.get('id');
   const queryClient = useQueryClient();
 
-  // Load test questions from session storage
-  useEffect(() => {
-    const stored = sessionStorage.getItem('testQuestions');
-    if (stored) {
-      setQuestionIds(JSON.parse(stored));
-    } else {
-      window.location.href = createPageUrl('TestGenerator');
-    }
-  }, []);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [isRevealed, setIsRevealed] = useState(false);
+  const [answers, setAnswers] = useState({}); // { questionId: { selected, isCorrect } }
+  const [startTime, setStartTime] = useState(Date.now());
+  const [questionStartTime, setQuestionStartTime] = useState(Date.now());
 
-  const { user } = useAuth();
-
-  const { data: questions = [], isLoading } = useQuery({
-    queryKey: ['testQuestions', questionIds],
+  // Load session
+  const { data: session, isLoading: sessionLoading } = useQuery({
+    queryKey: ['test-session', sessionId],
     queryFn: async () => {
-      if (questionIds.length === 0) return [];
-      const { data } = await supabase.from('questions').select('*').in('id', questionIds);
-      // Preserve order from questionIds
-      return questionIds.map(id => data?.find(q => q.id === id)).filter(Boolean);
+      const { data, error } = await supabase
+        .from('test_sessions')
+        .select('*')
+        .eq('id', sessionId)
+        .single();
+      if (error) throw error;
+      return data;
     },
-    enabled: questionIds.length > 0
+    enabled: !!sessionId
   });
 
-  const { data: progress = [] } = useQuery({
-    queryKey: ['testProgress', user?.id],
+  // Load questions for this session's topics
+  const { data: questions = [], isLoading: questionsLoading } = useQuery({
+    queryKey: ['test-questions', sessionId, session?.topic_ids],
     queryFn: async () => {
-      const { data } = await supabase.from('user_flashcard_progress').select('*').eq('user_id', user.id);
-      return data || [];
+      if (!session?.topic_ids?.length) return [];
+      
+      let query = supabase
+        .from('questions')
+        .select('*, topics:topic_id(title)')
+        .in('topic_id', session.topic_ids);
+      
+      // Filter by difficulty if specified
+      if (session.difficulty && session.difficulty !== 'mixed') {
+        const diffMap = { easy: [1, 2], medium: [3], hard: [4, 5] };
+        const levels = diffMap[session.difficulty] || [1, 2, 3, 4, 5];
+        query = query.in('difficulty', levels);
+      }
+      
+      const { data, error } = await query;
+      if (error) throw error;
+      
+      // Shuffle and limit to question_count
+      const shuffled = (data || []).sort(() => Math.random() - 0.5);
+      return shuffled.slice(0, session.question_count || 20);
     },
-    enabled: !!user?.id
+    enabled: !!session?.topic_ids?.length
   });
 
   const currentQuestion = questions[currentIndex];
+  const isComplete = Object.keys(answers).length === questions.length && questions.length > 0;
+  const progressPct = questions.length > 0 ? Math.round((Object.keys(answers).length / questions.length) * 100) : 0;
 
-  const progressMutation = useMutation({
-    mutationFn: async ({ questionId, rating }) => {
-      const existing = progress.find(p => p.flashcard_id === questionId);
-      const updates = calculateNextReview(existing || {}, rating);
-      
-      if (existing) {
-        const { data } = await supabase.from('user_flashcard_progress').update(updates).eq('id', existing.id).select().single();
-        return data;
-      } else {
-        const { data } = await supabase.from('user_flashcard_progress').insert({
-          user_id: user.id,
-          flashcard_id: questionId,
-          ...updates
-        }).select().single();
-        return data;
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['testProgress', user?.id]);
+  // Parse MCQ options
+  const options = useMemo(() => {
+    if (!currentQuestion?.options) return [];
+    const opts = currentQuestion.options;
+    if (typeof opts === 'object' && !Array.isArray(opts)) {
+      return Object.entries(opts).map(([key, value]) => ({ key, value }));
+    }
+    return [];
+  }, [currentQuestion]);
+
+  // Save answer to test_answers
+  const saveAnswerMutation = useMutation({
+    mutationFn: async ({ questionId, selected, isCorrect, timeSpent }) => {
+      const { error } = await supabase.from('test_answers').insert({
+        session_id: sessionId,
+        question_id: questionId,
+        user_answer: selected,
+        is_correct: isCorrect,
+        time_spent_seconds: timeSpent,
+      });
+      if (error) console.error('Save answer error:', error);
     }
   });
 
-  const handleAnswer = (rating) => {
-    // Record result
-    setResults(prev => ({
+  // Complete session
+  const completeSessionMutation = useMutation({
+    mutationFn: async () => {
+      const correct = Object.values(answers).filter(a => a.isCorrect).length;
+      const total = Object.keys(answers).length;
+      const score = total > 0 ? Math.round((correct / total) * 100) : 0;
+      const elapsed = Math.round((Date.now() - startTime) / 1000);
+
+      const { error } = await supabase
+        .from('test_sessions')
+        .update({
+          status: 'completed',
+          score,
+          correct_answers: correct,
+          total_questions: total,
+          time_spent_seconds: elapsed,
+          completed_at: new Date().toISOString(),
+        })
+        .eq('id', sessionId);
+      if (error) console.error('Complete session error:', error);
+      queryClient.invalidateQueries(['test-session', sessionId]);
+    }
+  });
+
+  const handleSelectAnswer = useCallback((key) => {
+    if (isRevealed) return;
+    setSelectedAnswer(key);
+  }, [isRevealed]);
+
+  const handleConfirm = useCallback(() => {
+    if (!selectedAnswer || !currentQuestion) return;
+    const isCorrect = selectedAnswer === currentQuestion.correct_answer;
+    const timeSpent = Math.round((Date.now() - questionStartTime) / 1000);
+    
+    setIsRevealed(true);
+    setAnswers(prev => ({
       ...prev,
-      [currentQuestion.id]: rating
+      [currentQuestion.id]: { selected: selectedAnswer, isCorrect }
     }));
 
-    // Update progress
-    const ratingMap = {
-      correct: RATINGS.EASY,
-      partial: RATINGS.MEDIUM,
-      wrong: RATINGS.HARD
-    };
-    progressMutation.mutate({ 
-      questionId: currentQuestion.id, 
-      rating: ratingMap[rating] 
+    saveAnswerMutation.mutate({
+      questionId: currentQuestion.id,
+      selected: selectedAnswer,
+      isCorrect,
+      timeSpent,
     });
+  }, [selectedAnswer, currentQuestion, questionStartTime]);
 
-    // Move to next or complete
+  const handleNext = useCallback(() => {
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(prev => prev + 1);
-      setShowAnswer(false);
-    } else {
-      setIsComplete(true);
+      setSelectedAnswer(null);
+      setIsRevealed(false);
+      setQuestionStartTime(Date.now());
     }
-  };
+  }, [currentIndex, questions.length]);
 
-  // Results summary
-  const summary = useMemo(() => {
-    const correct = Object.values(results).filter(r => r === 'correct').length;
-    const partial = Object.values(results).filter(r => r === 'partial').length;
-    const wrong = Object.values(results).filter(r => r === 'wrong').length;
-    const total = Object.keys(results).length;
-    const score = total > 0 ? Math.round((correct / total) * 100) : 0;
-    return { correct, partial, wrong, total, score };
-  }, [results]);
+  // Auto-complete when all answered
+  useEffect(() => {
+    if (isComplete && !session?.completed_at) {
+      completeSessionMutation.mutate();
+    }
+  }, [isComplete]);
 
-  if (isLoading || questionIds.length === 0) {
+  // Loading state
+  if (sessionLoading || questionsLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <LoadingSpinner size="lg" text="Načítání testu..." />
@@ -133,51 +173,89 @@ export default function TestSession() {
     );
   }
 
-  // Completion screen
-  if (isComplete) {
+  if (!session || !sessionId) {
     return (
-      <div className="p-6 lg:p-8 max-w-2xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center py-8"
-        >
-          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center">
+      <div className="text-center py-20">
+        <AlertTriangle className="w-12 h-12 mx-auto text-amber-500 mb-4" />
+        <h2 className="text-xl font-bold mb-2">Test nenalezen</h2>
+        <Button asChild><Link to={createPageUrl('TestGeneratorV2')}>Vytvořit nový test</Link></Button>
+      </div>
+    );
+  }
+
+  if (questions.length === 0) {
+    return (
+      <div className="text-center py-20">
+        <BookOpen className="w-12 h-12 mx-auto text-slate-400 mb-4" />
+        <h2 className="text-xl font-bold mb-2">Žádné otázky</h2>
+        <p className="text-muted-foreground mb-4">Pro vybraná témata nejsou dostupné otázky.</p>
+        <Button asChild><Link to={createPageUrl('TestGeneratorV2')}>Zpět na generátor</Link></Button>
+      </div>
+    );
+  }
+
+  // ── Results screen ──
+  if (isComplete) {
+    const correct = Object.values(answers).filter(a => a.isCorrect).length;
+    const wrong = Object.values(answers).filter(a => !a.isCorrect).length;
+    const total = Object.keys(answers).length;
+    const score = total > 0 ? Math.round((correct / total) * 100) : 0;
+    const elapsed = Math.round((Date.now() - startTime) / 1000);
+
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-8">
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center">
+          <div className={`w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center ${
+            score >= 80 ? 'bg-gradient-to-br from-emerald-400 to-teal-500' :
+            score >= 60 ? 'bg-gradient-to-br from-amber-400 to-orange-500' :
+            'bg-gradient-to-br from-red-400 to-pink-500'
+          }`}>
             <Trophy className="w-12 h-12 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
-            Test dokončen!
-          </h1>
-          <p className="text-5xl font-bold text-teal-600 mb-6">
-            {summary.score}%
+          <h1 className="text-3xl font-bold mb-2">Test dokončen!</h1>
+          <p className="text-5xl font-bold text-teal-600 mb-2">{score}%</p>
+          <p className="text-sm text-muted-foreground mb-6">
+            {correct}/{total} správně • {Math.floor(elapsed / 60)}:{(elapsed % 60).toString().padStart(2, '0')} min
           </p>
 
-          <div className="grid grid-cols-3 gap-4 mb-8">
+          <div className="grid grid-cols-2 gap-4 mb-8">
             <Card className="p-4 bg-emerald-50 dark:bg-emerald-900/20">
-              <div className="text-2xl font-bold text-emerald-600">{summary.correct}</div>
-              <p className="text-sm text-slate-600 dark:text-slate-400">Správně</p>
-            </Card>
-            <Card className="p-4 bg-amber-50 dark:bg-amber-900/20">
-              <div className="text-2xl font-bold text-amber-600">{summary.partial}</div>
-              <p className="text-sm text-slate-600 dark:text-slate-400">Částečně</p>
+              <div className="text-2xl font-bold text-emerald-600">{correct}</div>
+              <p className="text-sm text-muted-foreground">Správně</p>
             </Card>
             <Card className="p-4 bg-red-50 dark:bg-red-900/20">
-              <div className="text-2xl font-bold text-red-600">{summary.wrong}</div>
-              <p className="text-sm text-slate-600 dark:text-slate-400">Špatně</p>
+              <div className="text-2xl font-bold text-red-600">{wrong}</div>
+              <p className="text-sm text-muted-foreground">Špatně</p>
             </Card>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          {/* Review wrong answers */}
+          {wrong > 0 && (
+            <div className="text-left mb-8">
+              <h3 className="font-semibold mb-3 text-sm text-muted-foreground uppercase">Chybné odpovědi</h3>
+              <div className="space-y-3">
+                {questions.filter(q => answers[q.id] && !answers[q.id].isCorrect).map(q => (
+                  <Card key={q.id} className="p-4 border-red-200 dark:border-red-900/30">
+                    <p className="text-sm font-medium mb-2">{q.question_text}</p>
+                    <div className="flex gap-4 text-xs">
+                      <span className="text-red-500">Vaše: {answers[q.id]?.selected}</span>
+                      <span className="text-emerald-500">Správně: {q.correct_answer}</span>
+                    </div>
+                    {q.explanation && (
+                      <p className="text-xs text-muted-foreground mt-2 border-t pt-2">{q.explanation}</p>
+                    )}
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button asChild variant="outline">
-              <Link to={createPageUrl('TestGenerator')}>
-                <RotateCcw className="w-4 h-4 mr-2" />
-                Nový test
-              </Link>
+              <Link to={createPageUrl('TestGeneratorV2')}><RotateCcw className="w-4 h-4 mr-2" />Nový test</Link>
             </Button>
             <Button asChild className="bg-teal-600 hover:bg-teal-700">
-              <Link to={createPageUrl('Dashboard')}>
-                Zpět na dashboard
-              </Link>
+              <Link to={createPageUrl('Dashboard')}>Zpět na dashboard</Link>
             </Button>
           </div>
         </motion.div>
@@ -185,110 +263,130 @@ export default function TestSession() {
     );
   }
 
-  const progressPercentage = Math.round((currentIndex / questions.length) * 100);
-
+  // ── Question screen ──
   return (
-    <div className="p-6 lg:p-8 max-w-3xl mx-auto">
+    <div className="max-w-3xl mx-auto px-4 py-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <Button variant="ghost" asChild>
-          <Link to={createPageUrl('TestGenerator')}>
-            <ChevronLeft className="w-4 h-4 mr-2" />
-            Ukončit test
+      <div className="flex items-center justify-between mb-4">
+        <Button variant="ghost" size="sm" asChild>
+          <Link to={createPageUrl('TestGeneratorV2')}>
+            <ChevronLeft className="w-4 h-4 mr-1" />Ukončit
           </Link>
         </Button>
-        <div className="text-sm text-slate-500 dark:text-slate-400">
-          {currentIndex + 1} / {questions.length}
+        <div className="flex items-center gap-3">
+          <span className="text-sm text-muted-foreground">{currentIndex + 1} / {questions.length}</span>
+          <Badge variant={session.mode === 'timed' ? 'destructive' : 'outline'} className="text-xs">
+            {session.mode === 'timed' ? `⏱ ${session.time_limit_minutes} min` : 'Praxe'}
+          </Badge>
         </div>
       </div>
 
-      {/* Progress */}
-      <div className="mb-8">
-        <Progress value={progressPercentage} className="h-2" />
-      </div>
+      <Progress value={progressPct} className="h-1.5 mb-6" />
 
-      {/* Question */}
       <AnimatePresence mode="wait">
         <motion.div
           key={currentQuestion.id}
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.15 }}
         >
+          {/* Question card */}
           <Card className="mb-6">
-            <CardHeader>
-              <div className="flex items-start justify-between gap-4">
-                <CardTitle className="text-xl">
-                  {currentQuestion.title}
-                </CardTitle>
-                <DifficultyIndicator level={currentQuestion.difficulty || 1} showLabel={false} />
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between gap-3 mb-1">
+                <Badge variant="outline" className="text-xs shrink-0">
+                  {currentQuestion.topics?.title?.substring(0, 40)}
+                </Badge>
+                <Badge variant="outline" className="text-xs shrink-0">
+                  Obtížnost {currentQuestion.difficulty || '?'}/5
+                </Badge>
               </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">
+              <p className="text-lg font-medium leading-relaxed mt-4">
                 {currentQuestion.question_text}
               </p>
             </CardContent>
           </Card>
 
-          {/* Show answer button */}
-          {!showAnswer ? (
-            <Button
-              onClick={() => setShowAnswer(true)}
-              className="w-full h-14 text-lg bg-teal-600 hover:bg-teal-700"
-            >
-              <Eye className="w-5 h-5 mr-2" />
-              Zobrazit odpověď
-            </Button>
-          ) : (
-            <>
-              <AnswerSection
-                answerRich={currentQuestion.answer_rich}
-                answerStructured={currentQuestion.answer_structured}
-                refs={currentQuestion.refs}
-                images={currentQuestion.images}
-              />
+          {/* MCQ Options */}
+          <div className="space-y-3 mb-6">
+            {options.map(({ key, value }) => {
+              const isSelected = selectedAnswer === key;
+              const isCorrectOption = key === currentQuestion.correct_answer;
+              
+              let style = 'border-slate-200 dark:border-slate-700 hover:border-purple-300 dark:hover:border-purple-600';
+              if (isRevealed) {
+                if (isCorrectOption) style = 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20';
+                else if (isSelected && !isCorrectOption) style = 'border-red-500 bg-red-50 dark:bg-red-900/20';
+                else style = 'border-slate-200 dark:border-slate-700 opacity-60';
+              } else if (isSelected) {
+                style = 'border-purple-500 bg-purple-50 dark:bg-purple-900/20 ring-2 ring-purple-500/30';
+              }
 
-              {/* Rating buttons */}
-              <Card className="mt-6">
-                <CardContent className="p-4">
-                  <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-4 text-center">
-                    Jak jste odpověděli?
-                  </p>
-                  <div className="grid grid-cols-3 gap-3">
-                    <Button
-                      onClick={() => handleAnswer('wrong')}
-                      disabled={progressMutation.isPending}
-                      variant="outline"
-                      className="h-auto py-4 flex-col gap-2 border-red-200 hover:border-red-300 hover:bg-red-50"
-                    >
-                      <XCircle className="w-6 h-6 text-red-500" />
-                      <span className="text-sm font-medium">Špatně</span>
-                    </Button>
-                    <Button
-                      onClick={() => handleAnswer('partial')}
-                      disabled={progressMutation.isPending}
-                      variant="outline"
-                      className="h-auto py-4 flex-col gap-2 border-amber-200 hover:border-amber-300 hover:bg-amber-50"
-                    >
-                      <RefreshCw className="w-6 h-6 text-amber-500" />
-                      <span className="text-sm font-medium">Částečně</span>
-                    </Button>
-                    <Button
-                      onClick={() => handleAnswer('correct')}
-                      disabled={progressMutation.isPending}
-                      variant="outline"
-                      className="h-auto py-4 flex-col gap-2 border-emerald-200 hover:border-emerald-300 hover:bg-emerald-50"
-                    >
-                      <CheckCircle2 className="w-6 h-6 text-emerald-500" />
-                      <span className="text-sm font-medium">Správně</span>
-                    </Button>
+              return (
+                <button
+                  key={key}
+                  onClick={() => handleSelectAnswer(key)}
+                  disabled={isRevealed}
+                  className={`w-full text-left p-4 rounded-xl border-2 transition-all ${style}`}
+                >
+                  <div className="flex items-start gap-3">
+                    <span className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 ${
+                      isRevealed && isCorrectOption ? 'bg-emerald-500 text-white border-emerald-500' :
+                      isRevealed && isSelected && !isCorrectOption ? 'bg-red-500 text-white border-red-500' :
+                      isSelected ? 'bg-purple-500 text-white border-purple-500' :
+                      'border-slate-300 dark:border-slate-600 text-slate-500'
+                    }`}>
+                      {key}
+                    </span>
+                    <span className="text-sm leading-relaxed pt-1">{value}</span>
+                    {isRevealed && isCorrectOption && (
+                      <CheckCircle2 className="w-5 h-5 text-emerald-500 ml-auto shrink-0 mt-1" />
+                    )}
+                    {isRevealed && isSelected && !isCorrectOption && (
+                      <XCircle className="w-5 h-5 text-red-500 ml-auto shrink-0 mt-1" />
+                    )}
                   </div>
-                </CardContent>
-              </Card>
-            </>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Explanation (after reveal) */}
+          {isRevealed && currentQuestion.explanation && (
+            <Card className="mb-6 border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/10">
+              <CardContent className="p-4">
+                <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-1">Vysvětlení</p>
+                <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                  {currentQuestion.explanation}
+                </p>
+              </CardContent>
+            </Card>
           )}
+
+          {/* Action buttons */}
+          <div className="flex gap-3">
+            {!isRevealed ? (
+              <Button
+                onClick={handleConfirm}
+                disabled={!selectedAnswer}
+                className="flex-1 h-12 bg-purple-600 hover:bg-purple-700"
+              >
+                Potvrdit odpověď
+              </Button>
+            ) : (
+              <Button
+                onClick={handleNext}
+                className="flex-1 h-12 bg-teal-600 hover:bg-teal-700"
+              >
+                {currentIndex < questions.length - 1 ? (
+                  <>Další otázka <ChevronRight className="w-4 h-4 ml-1" /></>
+                ) : (
+                  <>Zobrazit výsledky <Trophy className="w-4 h-4 ml-1" /></>
+                )}
+              </Button>
+            )}
+          </div>
         </motion.div>
       </AnimatePresence>
     </div>

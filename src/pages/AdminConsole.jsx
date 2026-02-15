@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { canAccessAdmin } from '@/components/utils/permissions';
+import ContentCoverage from '@/components/admin/ContentCoverage';
 
 /* ================================================================
    TAB: DASHBOARD
@@ -544,7 +545,10 @@ export default function AdminConsole() {
         })}
       </div>
 
-      {activeTab === 'dashboard' && <DashboardTab />}
+      {activeTab === 'dashboard' && <>
+        <DashboardTab />
+        <div className="mt-6"><ContentCoverage /></div>
+      </>}
       {activeTab === 'ai' && <AIGenerationTab />}
       {activeTab === 'content' && <ContentOverviewTab />}
     </div>
