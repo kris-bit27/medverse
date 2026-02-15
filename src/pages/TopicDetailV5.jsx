@@ -135,6 +135,19 @@ export default function TopicDetailV5() {
     enabled: !!topicId
   });
 
+  // Fetch content counts for this topic
+  const { data: contentCounts } = useQuery({
+    queryKey: ['topic-counts', topicId],
+    queryFn: async () => {
+      const [fc, q] = await Promise.all([
+        supabase.from('flashcards').select('id', { count: 'exact', head: true }).eq('topic_id', topicId),
+        supabase.from('questions').select('id', { count: 'exact', head: true }).eq('topic_id', topicId),
+      ]);
+      return { flashcards: fc.count || 0, questions: q.count || 0 };
+    },
+    enabled: !!topicId
+  });
+
   useEffect(() => {
     if (!topic) return;
     if (topic.full_text_content?.length > 100) { setActiveTab('fulltext'); return; }
@@ -225,6 +238,9 @@ export default function TopicDetailV5() {
                 }`}>
                 <Brain className="w-4 h-4" />
                 <span className="hidden sm:inline">Kartičky</span>
+                {contentCounts?.flashcards > 0 && (
+                  <span className="text-[10px] bg-teal-500/20 text-teal-600 dark:text-teal-400 px-1.5 py-0.5 rounded-full font-bold">{contentCounts.flashcards}</span>
+                )}
               </button>
             </div>
           </div>
@@ -246,6 +262,16 @@ export default function TopicDetailV5() {
             {wordCount > 0 && (
               <span className="text-xs text-slate-400 dark:text-[#5f637a] flex items-center gap-1">
                 <Clock className="w-3.5 h-3.5" /> ~{readTime} min
+              </span>
+            )}
+            {contentCounts?.flashcards > 0 && (
+              <span className="text-xs text-teal-500 flex items-center gap-1">
+                <Brain className="w-3.5 h-3.5" /> {contentCounts.flashcards} kartiček
+              </span>
+            )}
+            {contentCounts?.questions > 0 && (
+              <span className="text-xs text-blue-500 flex items-center gap-1">
+                <CheckCircle2 className="w-3.5 h-3.5" /> {contentCounts.questions} otázek
               </span>
             )}
           </div>
