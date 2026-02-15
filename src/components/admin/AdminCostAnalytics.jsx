@@ -15,40 +15,45 @@ export default function AdminCostAnalytics() {
   const { data: stats, isLoading } = useQuery({
     queryKey: ['admin-cost-stats'],
     queryFn: async () => {
-      // Get costs from topics (where batch generation stores them)
-      const { data: topics, error } = await supabase
-        .from('topics')
-        .select('ai_cost, ai_model, ai_generated_at')
-        .not('ai_cost', 'is', null)
-        .gt('ai_cost', 0);
+      // Primary source: batch_generation_queue results (most complete)
+      const { data: queue } = await supabase
+        .from('batch_generation_queue')
+        .select('result, completed_at, topics!inner(ai_model)')
+        .eq('status', 'completed')
+        .not('result', 'is', null);
 
-      if (error) throw error;
-
-      const totalCost = topics.reduce((sum, t) => sum + parseFloat(t.ai_cost || 0), 0);
-      
-      // Group by model
+      let totalCost = 0;
       const byModel = {};
-      topics.forEach(t => {
-        const model = t.ai_model || 'unknown';
-        if (!byModel[model]) byModel[model] = { count: 0, cost: 0 };
-        byModel[model].count++;
-        byModel[model].cost += parseFloat(t.ai_cost || 0);
-      });
-
-      // Group by date
       const byDate = {};
-      topics.forEach(t => {
-        if (!t.ai_generated_at) return;
-        const date = t.ai_generated_at.substring(0, 10);
-        if (!byDate[date]) byDate[date] = { count: 0, cost: 0 };
-        byDate[date].count++;
-        byDate[date].cost += parseFloat(t.ai_cost || 0);
+
+      (queue || []).forEach(item => {
+        if (!item.result) return;
+        const model = item.topics?.ai_model || 'unknown';
+        const shortModel = model.replace('claude-', '').replace('-20250514', '');
+        
+        let itemCost = 0;
+        Object.values(item.result).forEach(r => {
+          itemCost += parseFloat(r?.cost || 0);
+        });
+        
+        totalCost += itemCost;
+        
+        if (!byModel[shortModel]) byModel[shortModel] = { count: 0, cost: 0, fullModel: model };
+        byModel[shortModel].count++;
+        byModel[shortModel].cost += itemCost;
+
+        if (item.completed_at) {
+          const date = item.completed_at.substring(0, 10);
+          if (!byDate[date]) byDate[date] = { count: 0, cost: 0 };
+          byDate[date].count++;
+          byDate[date].cost += itemCost;
+        }
       });
 
       return {
         totalCost,
-        totalTopics: topics.length,
-        avgCost: topics.length > 0 ? totalCost / topics.length : 0,
+        totalTopics: (queue || []).length,
+        avgCost: (queue || []).length > 0 ? totalCost / (queue || []).length : 0,
         byModel,
         byDate: Object.entries(byDate)
           .sort(([a], [b]) => a.localeCompare(b))
@@ -143,11 +148,10 @@ export default function AdminCostAnalytics() {
         <CardContent>
           <div className="space-y-3">
             {Object.entries(s.byModel).map(([model, data]) => {
-              const shortName = model.replace('claude-', '').replace('-20250514', '');
               const pct = s.totalCost > 0 ? (data.cost / s.totalCost) * 100 : 0;
               return (
                 <div key={model} className="flex items-center gap-3">
-                  <Badge variant="outline" className="w-24 justify-center text-xs">{shortName}</Badge>
+                  <Badge variant="outline" className="w-24 justify-center text-xs">{model}</Badge>
                   <div className="flex-1">
                     <div className="flex justify-between text-sm mb-1">
                       <span>{data.count} topics</span>

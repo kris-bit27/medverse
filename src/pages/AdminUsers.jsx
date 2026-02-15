@@ -41,7 +41,21 @@ export default function AdminUsers() {
 
   const { data: users = [], isLoading } = useQuery({
     queryKey: ['users'],
-    queryFn: () => supabase.from('user_profiles').select('*').order('created_at', { ascending: false }).then(r => r.data || []),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('admin_users_view')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) {
+        // Fallback to user_profiles if view not accessible
+        const { data: profiles } = await supabase
+          .from('user_profiles')
+          .select('*')
+          .order('created_at', { ascending: false });
+        return (profiles || []).map(p => ({ ...p, email: null, full_name: p.display_name }));
+      }
+      return (data || []).map(u => ({ ...u, full_name: u.display_name }));
+    },
     enabled: canManageUsers(currentUser)
   });
 
