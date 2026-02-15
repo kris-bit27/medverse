@@ -29,6 +29,24 @@ export const AuthProvider = ({ children }) => {
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
   const [authError, setAuthError] = useState(null);
 
+  // Fetch role from user_profiles table to ensure DB role takes priority
+  const enrichWithDbRole = async (mappedUser) => {
+    if (!mappedUser) return mappedUser;
+    try {
+      const { data } = await supabase
+        .from('user_profiles')
+        .select('role, display_name')
+        .eq('user_id', mappedUser.id)
+        .single();
+      if (data?.role) {
+        return { ...mappedUser, role: data.role, display_name: data.display_name || mappedUser.full_name };
+      }
+    } catch (e) {
+      console.warn('Could not fetch user profile role:', e);
+    }
+    return mappedUser;
+  };
+
   useEffect(() => {
     let isMounted = true;
 
@@ -43,13 +61,16 @@ export const AuthProvider = ({ children }) => {
           setIsAuthenticated(false);
           setAuthError({ type: 'unknown', message: error.message });
         } else if (data?.session?.user) {
-          setUser(mapSupabaseUser(data.session.user));
+          const mapped = mapSupabaseUser(data.session.user);
+          const enriched = await enrichWithDbRole(mapped);
+          if (!isMounted) return;
+          setUser(enriched);
           setIsAuthenticated(true);
           setAuthError(null);
         } else {
           setUser(null);
           setIsAuthenticated(false);
-          setAuthError(null); // Don't set error - let routes handle public vs private
+          setAuthError(null);
         }
       } catch (error) {
         if (!isMounted) return;
@@ -65,16 +86,19 @@ export const AuthProvider = ({ children }) => {
 
     initAuth();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (!isMounted) return;
       if (session?.user) {
-        setUser(mapSupabaseUser(session.user));
+        const mapped = mapSupabaseUser(session.user);
+        const enriched = await enrichWithDbRole(mapped);
+        if (!isMounted) return;
+        setUser(enriched);
         setIsAuthenticated(true);
         setAuthError(null);
       } else {
         setUser(null);
         setIsAuthenticated(false);
-        setAuthError(null); // Don't set error - let routes handle public vs private
+        setAuthError(null);
       }
       setIsLoadingAuth(false);
     });
