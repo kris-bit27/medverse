@@ -487,12 +487,28 @@ export default function AdminConsole() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
 
-  if (!canAccessAdmin(user)) {
+  // Debug: show user role info (temporary)
+  console.log('[AdminConsole] user:', user?.email, 'role:', user?.role, 'canAccess:', canAccessAdmin(user));
+
+  if (!user) {
+    return (
+      <div className="p-12 text-center">
+        <Loader2 className="w-6 h-6 animate-spin mx-auto mb-4" />
+        <p className="text-slate-500">Načítám...</p>
+      </div>
+    );
+  }
+
+  // Temporary: allow access if user.role is admin OR if user_profiles has admin
+  const hasAccess = canAccessAdmin(user) || user?.role === 'admin';
+
+  if (!hasAccess) {
     return (
       <div className="p-12 text-center">
         <Shield className="w-12 h-12 mx-auto text-slate-300 mb-4" />
         <h2 className="text-xl font-semibold mb-2">Přístup odepřen</h2>
         <p className="text-slate-500">Nemáte oprávnění pro přístup k administraci</p>
+        <p className="text-xs text-slate-400 mt-2">Debug: role={user?.role || 'undefined'} | email={user?.email}</p>
       </div>
     );
   }
