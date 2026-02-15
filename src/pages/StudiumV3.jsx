@@ -51,16 +51,26 @@ function ContentDots({ topic }) {
 }
 
 /* ─── Topic Card ─── */
-function TopicCard({ topic }) {
+function TopicCard({ topic, mastery }) {
   const theme = getOborTheme(topic.obory?.name);
   const wordCount = topic.full_text_content ? Math.round(topic.full_text_content.split(/\s+/).length) : 0;
   const readTime = Math.max(1, Math.round(wordCount / 200));
+  const score = mastery ? Number(mastery.mastery_score) || 0 : 0;
 
   return (
     <Link to={`${createPageUrl('TopicDetailV2')}?id=${topic.id}`}>
       <div className={`group relative rounded-xl border ${theme.border} bg-white dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-800/70 transition-all duration-200 hover:shadow-lg hover:shadow-slate-200/50 dark:hover:shadow-black/20 hover:-translate-y-0.5 overflow-hidden`}>
-        {/* Top accent bar */}
-        <div className="h-0.5 w-full" style={{ background: `linear-gradient(90deg, ${theme.accent}, transparent)` }} />
+        {/* Top accent bar — shows mastery if studied */}
+        {score > 0 ? (
+          <div className="h-1 w-full bg-slate-200 dark:bg-slate-800">
+            <div className="h-full transition-all duration-500" style={{
+              width: `${score}%`,
+              background: score >= 80 ? '#22c55e' : score >= 50 ? '#a855f7' : score >= 20 ? '#f59e0b' : '#64748b'
+            }} />
+          </div>
+        ) : (
+          <div className="h-0.5 w-full" style={{ background: `linear-gradient(90deg, ${theme.accent}, transparent)` }} />
+        )}
         
         <div className="p-5">
           {/* Header row */}
@@ -68,7 +78,17 @@ function TopicCard({ topic }) {
             <Badge variant="outline" className={`text-[11px] ${theme.text} ${theme.border} ${theme.bg} border`}>
               {topic.obory?.name}
             </Badge>
-            <ContentDots topic={topic} />
+            <div className="flex items-center gap-2">
+              {score > 0 && (
+                <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded ${
+                  score >= 80 ? 'text-emerald-600 bg-emerald-500/10' :
+                  score >= 50 ? 'text-purple-600 bg-purple-500/10' :
+                  score >= 20 ? 'text-amber-600 bg-amber-500/10' :
+                  'text-slate-500 bg-slate-500/10'
+                }`}>{Math.round(score)}%</span>
+              )}
+              <ContentDots topic={topic} />
+            </div>
           </div>
 
           {/* Title */}
@@ -161,6 +181,22 @@ export default function StudiumV3() {
       if (error) throw error;
       return data || [];
     }
+  });
+
+  // Fetch user mastery for showing progress on topic cards
+  const { data: masteryMap = {} } = useQuery({
+    queryKey: ['user-mastery-map', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('user_topic_mastery')
+        .select('topic_id, mastery_score, confidence_level, last_studied_at')
+        .eq('user_id', user.id);
+      if (error) throw error;
+      const map = {};
+      (data || []).forEach(m => { map[m.topic_id] = m; });
+      return map;
+    },
+    enabled: !!user?.id
   });
 
   // Fetch obory & okruhy
@@ -414,7 +450,7 @@ export default function StudiumV3() {
           /* Grid View */
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredTopics.map(topic => (
-              <TopicCard key={topic.id} topic={topic} />
+              <TopicCard key={topic.id} topic={topic} mastery={masteryMap[topic.id]} />
             ))}
           </div>
         ) : (
@@ -433,7 +469,7 @@ export default function StudiumV3() {
                   </div>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {topics.map(topic => (
-                      <TopicCard key={topic.id} topic={topic} />
+                      <TopicCard key={topic.id} topic={topic} mastery={masteryMap[topic.id]} />
                     ))}
                   </div>
                 </div>
