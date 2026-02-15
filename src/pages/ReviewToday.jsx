@@ -33,6 +33,22 @@ export default function ReviewToday() {
   const [selectedObor, setSelectedObor] = useState('all');
   const [selectedOkruh, setSelectedOkruh] = useState('all');
   const [selectedTopic, setSelectedTopic] = useState('all');
+  const [dueOnly, setDueOnly] = useState(false);
+
+  // Fetch user's SRS progress for due filtering
+  const { data: srsProgress = {} } = useQuery({
+    queryKey: ['srsProgress', user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('user_flashcard_progress')
+        .select('flashcard_id, next_review')
+        .eq('user_id', user.id);
+      const map = {};
+      (data || []).forEach(p => { map[p.flashcard_id] = p.next_review; });
+      return map;
+    },
+    enabled: !!user?.id
+  });
 
   // Fetch flashcards with topic info
   const { data: flashcardsRaw = [], isLoading } = useQuery({
@@ -99,6 +115,7 @@ export default function ReviewToday() {
 
   // Filtered flashcards
   const flashcards = useMemo(() => {
+    const today = new Date().toISOString().split('T')[0];
     return flashcardsRaw.filter(card => {
       if (!card.topics) return false;
       
@@ -106,9 +123,12 @@ export default function ReviewToday() {
       const matchesOkruh = selectedOkruh === 'all' || card.topics.okruh_id === selectedOkruh;
       const matchesTopic = selectedTopic === 'all' || card.topics.id === selectedTopic;
       
-      return matchesObor && matchesOkruh && matchesTopic;
+      // Due-only filter: show cards that are due for review or never reviewed
+      const matchesDue = !dueOnly || !srsProgress[card.id] || srsProgress[card.id] <= today;
+      
+      return matchesObor && matchesOkruh && matchesTopic && matchesDue;
     });
-  }, [flashcardsRaw, selectedObor, selectedOkruh, selectedTopic]);
+  }, [flashcardsRaw, selectedObor, selectedOkruh, selectedTopic, dueOnly, srsProgress]);
 
   const handleAnswer = async (quality) => {
     const isCorrect = quality >= 3;
@@ -213,6 +233,18 @@ export default function ReviewToday() {
             <div className="flex items-center gap-2 mb-4">
               <Filter className="w-4 h-4" />
               <h3 className="font-semibold">Filtry</h3>
+              <div className="ml-auto">
+                <button
+                  onClick={() => setDueOnly(!dueOnly)}
+                  className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
+                    dueOnly 
+                      ? 'bg-purple-100 dark:bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-500/30'
+                      : 'text-slate-500 border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  {dueOnly ? '📅 Jen k opakování' : 'Všechny kartičky'}
+                </button>
+              </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -315,6 +347,18 @@ export default function ReviewToday() {
           <div className="flex items-center gap-2 mb-3">
             <Filter className="w-4 h-4" />
             <h3 className="font-semibold text-sm">Filtry</h3>
+            <div className="ml-auto">
+              <button
+                onClick={() => setDueOnly(!dueOnly)}
+                className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
+                  dueOnly 
+                    ? 'bg-purple-100 dark:bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-500/30'
+                    : 'text-slate-500 border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                {dueOnly ? '📅 Jen k opakování' : 'Všechny kartičky'}
+              </button>
+            </div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">

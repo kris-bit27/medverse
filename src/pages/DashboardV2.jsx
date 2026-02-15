@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import OnboardingWizard from '@/components/OnboardingWizard';
+import StudyTodayWidget from '@/components/StudyTodayWidget';
 import { 
   Zap,
   BookOpen,
@@ -215,6 +216,9 @@ export default function DashboardV2() {
           Zde je tvůj dnešní přehled
         </p>
       </div>
+
+      {/* Sprint 4: What to study today */}
+      <StudyTodayWidget />
 
       {/* Quick Stats */}
       <div className="grid md:grid-cols-4 gap-6">
