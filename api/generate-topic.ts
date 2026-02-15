@@ -31,7 +31,7 @@ const MODE_MODEL_MAP: Record<string, ModelKey> = {
 };
 
 const MODE_MAX_TOKENS: Record<string, number> = {
-  fulltext: 8192, deep_dive: 8192, high_yield: 2048,
+  fulltext: 12000, deep_dive: 10000, high_yield: 2048,
   flashcards: 2048, mcq: 2048, review: 4096,
 };
 
@@ -124,13 +124,22 @@ async function callAnthropic(modelKey: ModelKey, mode: string, ctx: any, userPro
   const client = getAnthropicClient();
   const systemBlocks = buildSystemBlocks(mode, ctx);
 
-  const response = await client.messages.create({
+  // Enable web search for fulltext and deep_dive to verify facts and guidelines
+  const useWebSearch = mode === 'fulltext' || mode === 'deep_dive';
+
+  const requestParams: any = {
     model: model.id,
     max_tokens: maxTokens,
     temperature: 0.3,
     system: systemBlocks,
     messages: [{ role: 'user', content: userPrompt }],
-  });
+  };
+
+  if (useWebSearch) {
+    requestParams.tools = [{ type: 'web_search_20250305', name: 'web_search' }];
+  }
+
+  const response = await client.messages.create(requestParams);
 
   const text = response.content.filter((b: any) => b.type === 'text').map((b: any) => b.text).join('');
   const usage: any = response.usage || {};

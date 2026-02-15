@@ -135,11 +135,11 @@ REŽIM: FULLTEXT — Kompletní atestační text
 POVINNÁ STRUKTURA (všech 8 sekcí, žádnou nevynechej):
 ## 1. Definice a klasifikace
   - Přesná definice, ICD-10/ICD-11 kód kde relevantní
-  - Aktuální klasifikační systém s vysvětlením
+  - Aktuální klasifikační systém s vysvětlením (tabulka kde existuje staging/grading)
 
 ## 2. Epidemiologie
-  - Incidence/prevalence (ideálně ČR i svět)
-  - Rizikové faktory, věková a pohlavní predilekce
+  - Incidence/prevalence (ČR i svět, uveď zdroj: ÚZIS, WHO, Eurostat)
+  - Rizikové faktory (modifikovatelné vs nemodifikovatelné), věková a pohlavní predilekce
 
 ## 3. Etiopatogeneze
   - Etiologie: přehledně (tabulka kde vhodné)
@@ -147,34 +147,41 @@ POVINNÁ STRUKTURA (všech 8 sekcí, žádnou nevynechej):
   - Patologicko-anatomický obraz
 
 ## 4. Klinický obraz
-  - Typická prezentace vs atypické formy
+  - Typická prezentace vs atypické formy (děti, staří, imunokompromitovaní)
   - Příznaky a symptomy (systematicky: subjektivní → objektivní)
-  - Red flags / alarmující příznaky
+  - Red flags / alarmující příznaky vyžadující urgentní intervenci
 
 ## 5. Diagnostika
-  - Anamnéza a fyzikální vyšetření — klíčové nálezy
-  - Laboratorní vyšetření (s referenčními hodnotami)
-  - Zobrazovací metody (indikace, typické nálezy)
-  - Speciální vyšetření a zlatý standard diagnózy
-  - Diferenciální diagnostika (tabulka: stav | klíčový rozlišující nález)
+  - Diagnostický algoritmus: anamnéza → fyzikální vyš. → laboratoř → zobrazovací → invazivní
+  - Laboratorní vyšetření (s referenčními hodnotami a senzitivitou/specificitou klíčových markerů)
+  - Zobrazovací metody (indikace, typické nálezy, srovnání CT vs MRI vs UZ)
+  - Zlatý standard diagnózy
+  - **Diferenciální diagnostika** — POVINNÁ TABULKA formátu:
+    | Diagnóza | Klíčový rozlišující nález | Vyšetření k odlišení |
+  - Diagnostická kritéria / skórovací systémy (např. Wells, CURB-65, Child-Pugh) — pokud existují
 
 ## 6. Terapie
-  - Algoritmus léčby (1. linie → 2. linie → záchranná)
-  - Konzervativní vs intervenční/chirurgická léčba
-  - Farmakoterapie: lék (INN), dávka, cesta, interval, délka, KI
-  - Speciální situace: těhotenství, děti, staří, renální insuficience
+  - Algoritmus léčby: 1. linie → 2. linie → záchranná terapie (+ volba u kontraindikací)
+  - Konzervativní vs intervenční/chirurgická léčba — indikace k chirurgii
+  - **Farmakoterapie** — POVINNÁ TABULKA formátu:
+    | Lék (INN) | Dávka | Cesta | Interval | KI / NÚ | Poznámka |
+  - Speciální situace: těhotenství, děti, staří, renální/hepatální insuficience
+  - Nefarmakologická opatření (režim, dieta, rehabilitace)
 
 ## 7. Prognóza a komplikace
-  - Časné a pozdní komplikace
+  - Časné a pozdní komplikace (s jejich frekvencí kde známo)
   - Prognostické faktory a skórovací systémy
-  - Follow-up a dispenzarizace
+  - Mortalita / 5leté přežití / rekurence
+  - Follow-up a dispenzarizace (co, kdy, jak často)
 
 ## 8. Klinické perly a atestační tipy
   - 5-7 bodů které zkouší u atestace
   - Nejčastější chyby v klinické praxi
   - Mnemotechnické pomůcky kde existují
+  - Klíčové rozdíly: co odlišuje toto téma od podobných diagnóz
 
 ROZSAH: 3000-5000 slov. Použij markdown tabulky kde zpřehledňují obsah.
+HLOUBKA: Odpovídá učebnicím Harrison's, Češka Interna, Zeman Chirurgie — ne populárně-naučný, ale klinicky orientovaný odborný text.
 
 VÝSTUPNÍ FORMÁT — vrať POUZE validní JSON:
 {
@@ -183,7 +190,9 @@ VÝSTUPNÍ FORMÁT — vrať POUZE validní JSON:
   "confidence": 0.85,
   "sources": ["(ESC, 2023)", "(Češka et al., 2020)"],
   "warnings": ["text kde je potřeba ověření odborníkem"]
-}`,
+}
+
+DŮLEŽITÉ: V JSON poli "full_text" escapuj newlines jako \\n. Celý markdown musí být v jednom stringu.`,
 
   deep_dive: `
 REŽIM: DEEP DIVE — Pokročilý obsah nad rámec základního fulltextu
