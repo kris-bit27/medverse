@@ -356,6 +356,54 @@ export default function DashboardV2() {
         </CardContent>
       </Card>
 
+
+      {/* ── Sprint 3: Weakness Dashboard ── */}
+      {masteryData.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-amber-500" />
+              Oblasti k procvičení
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {masteryData
+                .filter(m => Number(m.mastery_score) < 60)
+                .sort((a, b) => Number(a.mastery_score) - Number(b.mastery_score))
+                .slice(0, 6)
+                .map(m => {
+                  const score = Number(m.mastery_score) || 0;
+                  return (
+                    <Link key={m.id} to={`${createPageUrl('TopicDetailV2')}?id=${m.topic_id}`}>
+                      <div className="flex items-center justify-between p-3 rounded-lg border hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                        <div className="flex-1 min-w-0 mr-3">
+                          <p className="text-sm font-medium truncate">{m.topics?.title}</p>
+                          <p className="text-xs text-muted-foreground">{m.topics?.obory?.name}</p>
+                        </div>
+                        <div className="flex items-center gap-3 shrink-0">
+                          <div className="w-20 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                            <div className="h-full rounded-full transition-all" style={{
+                              width: `${score}%`,
+                              background: score >= 50 ? '#a855f7' : score >= 20 ? '#f59e0b' : '#ef4444'
+                            }} />
+                          </div>
+                          <span className="text-xs font-bold w-8 text-right text-muted-foreground">{Math.round(score)}%</span>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              {masteryData.filter(m => Number(m.mastery_score) < 60).length === 0 && (
+                <p className="text-sm text-muted-foreground text-center py-4">
+                  Všechna prostudovaná témata mají dobré zvládnutí! 🎉
+                </p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Recent Achievements */}
       {recentAchievements.length > 0 && (
         <Card>
