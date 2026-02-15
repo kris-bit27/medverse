@@ -15,10 +15,11 @@ const mapSupabaseUser = (user) => {
     id: user.id,
     email: user.email,
     full_name: user.user_metadata?.full_name || user.user_metadata?.name || '',
-    role: user.app_metadata?.role || user.user_metadata?.role || 'student',
     settings: user.user_metadata?.settings || null,
     clinical_disciplines,
     ...user.user_metadata,
+    // role MUST be after spread to prevent user_metadata from overwriting it
+    role: user.app_metadata?.role || user.user_metadata?.role || 'student',
     _supabase: user
   };
 };
