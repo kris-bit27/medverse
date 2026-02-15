@@ -3,400 +3,188 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import {
   DollarSign,
   TrendingUp,
-  Users,
   Zap,
   BarChart3,
-  AlertTriangle
+  Loader2
 } from 'lucide-react';
 
 export default function AdminCostAnalytics() {
-  const [timeRange, setTimeRange] = useState('30d');
-
-  // Overall stats
-  const { data: stats } = useQuery({
-    queryKey: ['admin-cost-stats', timeRange],
+  const { data: stats, isLoading } = useQuery({
+    queryKey: ['admin-cost-stats'],
     queryFn: async () => {
-      const daysAgo = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90;
-      const startDate = new Date();
-      startDate.setDate(startDate.getDate() - daysAgo);
-
-      const { data, error } = await supabase
-        .from('user_ai_usage')
-        .select('cost, tokens_used, user_id')
-        .gte('created_at', startDate.toISOString());
+      // Get costs from topics (where batch generation stores them)
+      const { data: topics, error } = await supabase
+        .from('topics')
+        .select('ai_cost, ai_model, ai_generated_at')
+        .not('ai_cost', 'is', null)
+        .gt('ai_cost', 0);
 
       if (error) throw error;
 
-      const totalCost = data.reduce((sum, item) => sum + parseFloat(item.cost), 0);
-      const totalTokens = data.reduce((sum, item) => sum + item.tokens_used, 0);
-      const uniqueUsers = new Set(data.map(item => item.user_id)).size;
-      const requestCount = data.length;
+      const totalCost = topics.reduce((sum, t) => sum + parseFloat(t.ai_cost || 0), 0);
+      
+      // Group by model
+      const byModel = {};
+      topics.forEach(t => {
+        const model = t.ai_model || 'unknown';
+        if (!byModel[model]) byModel[model] = { count: 0, cost: 0 };
+        byModel[model].count++;
+        byModel[model].cost += parseFloat(t.ai_cost || 0);
+      });
+
+      // Group by date
+      const byDate = {};
+      topics.forEach(t => {
+        if (!t.ai_generated_at) return;
+        const date = t.ai_generated_at.substring(0, 10);
+        if (!byDate[date]) byDate[date] = { count: 0, cost: 0 };
+        byDate[date].count++;
+        byDate[date].cost += parseFloat(t.ai_cost || 0);
+      });
 
       return {
         totalCost,
-        totalTokens,
-        uniqueUsers,
-        requestCount,
-        avgCostPerRequest: requestCount > 0 ? totalCost / requestCount : 0,
-        avgCostPerUser: uniqueUsers > 0 ? totalCost / uniqueUsers : 0
+        totalTopics: topics.length,
+        avgCost: topics.length > 0 ? totalCost / topics.length : 0,
+        byModel,
+        byDate: Object.entries(byDate)
+          .sort(([a], [b]) => a.localeCompare(b))
+          .map(([date, data]) => ({ date, ...data }))
       };
     },
-    refetchInterval: 60000 // Refresh every minute
+    refetchInterval: 30000
   });
 
-  // Top users by cost
-  const { data: topUsers } = useQuery({
-    queryKey: ['admin-top-users', timeRange],
+  // Get queue costs
+  const { data: queueStats } = useQuery({
+    queryKey: ['admin-queue-costs'],
     queryFn: async () => {
-      const daysAgo = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90;
-      const startDate = new Date();
-      startDate.setDate(startDate.getDate() - daysAgo);
-
       const { data, error } = await supabase
-        .rpc('get_top_users_by_cost', {
-          days: daysAgo,
-          limit_count: 10
-        });
-
-      if (error) {
-        // Fallback if RPC doesn't exist
-        const { data: usageData, error: err2 } = await supabase
-          .from('user_ai_usage')
-          .select('user_id, cost')
-          .gte('created_at', startDate.toISOString());
-
-        if (err2) throw err2;
-
-        // Group by user
-        const userCosts = {};
-        usageData.forEach(item => {
-          if (!userCosts[item.user_id]) {
-            userCosts[item.user_id] = { total: 0, count: 0 };
-          }
-          userCosts[item.user_id].total += parseFloat(item.cost);
-          userCosts[item.user_id].count += 1;
-        });
-
-        // Convert to array and sort
-        return Object.entries(userCosts)
-          .map(([user_id, data]) => ({
-            user_id,
-            total_cost: data.total,
-            request_count: data.count
-          }))
-          .sort((a, b) => b.total_cost - a.total_cost)
-          .slice(0, 10);
-      }
-
-      return data || [];
-    }
-  });
-
-  // Cost by model
-  const { data: modelStats } = useQuery({
-    queryKey: ['admin-model-stats', timeRange],
-    queryFn: async () => {
-      const daysAgo = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90;
-      const startDate = new Date();
-      startDate.setDate(startDate.getDate() - daysAgo);
-
-      const { data, error } = await supabase
-        .from('user_ai_usage')
-        .select('model, cost, tokens_used')
-        .gte('created_at', startDate.toISOString());
-
+        .from('batch_generation_queue')
+        .select('status, result')
+        .eq('status', 'completed');
+      
       if (error) throw error;
 
-      // Group by model
-      const models = {};
-      data.forEach(item => {
-        if (!models[item.model]) {
-          models[item.model] = { cost: 0, tokens: 0, count: 0 };
+      let totalQueueCost = 0;
+      (data || []).forEach(item => {
+        if (item.result) {
+          Object.values(item.result).forEach(r => {
+            totalQueueCost += parseFloat(r?.cost || 0);
+          });
         }
-        models[item.model].cost += parseFloat(item.cost);
-        models[item.model].tokens += item.tokens_used;
-        models[item.model].count += 1;
       });
 
-      return Object.entries(models).map(([model, stats]) => ({
-        model,
-        ...stats,
-        avgCost: stats.count > 0 ? stats.cost / stats.count : 0
-      })).sort((a, b) => b.cost - a.cost);
+      return { totalQueueCost, completedItems: (data || []).length };
     }
   });
 
-  // Cost by mode
-  const { data: modeStats } = useQuery({
-    queryKey: ['admin-mode-stats', timeRange],
+  // Remaining topics estimate
+  const { data: remaining } = useQuery({
+    queryKey: ['admin-remaining-estimate'],
     queryFn: async () => {
-      const daysAgo = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90;
-      const startDate = new Date();
-      startDate.setDate(startDate.getDate() - daysAgo);
-
-      const { data, error } = await supabase
-        .from('user_ai_usage')
-        .select('mode, cost')
-        .gte('created_at', startDate.toISOString());
-
-      if (error) throw error;
-
-      // Group by mode
-      const modes = {};
-      data.forEach(item => {
-        const mode = item.mode || 'unknown';
-        if (!modes[mode]) {
-          modes[mode] = { cost: 0, count: 0 };
-        }
-        modes[mode].cost += parseFloat(item.cost);
-        modes[mode].count += 1;
-      });
-
-      return Object.entries(modes).map(([mode, stats]) => ({
-        mode,
-        ...stats,
-        avgCost: stats.count > 0 ? stats.cost / stats.count : 0
-      })).sort((a, b) => b.cost - a.cost);
+      const { count } = await supabase
+        .from('topics')
+        .select('id', { count: 'exact', head: true })
+        .is('full_text_content', null);
+      
+      return count || 0;
     }
   });
+
+  if (isLoading) {
+    return <div className="p-12 text-center"><Loader2 className="w-6 h-6 animate-spin mx-auto" /></div>;
+  }
+
+  const s = stats || { totalCost: 0, totalTopics: 0, avgCost: 0, byModel: {}, byDate: [] };
+  const q = queueStats || { totalQueueCost: 0, completedItems: 0 };
+  const estRemaining = (remaining || 0) * s.avgCost;
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold">AI Cost Analytics</h2>
-          <p className="text-muted-foreground">
-            Platform-wide AI usage and cost monitoring
-          </p>
-        </div>
-        <Select value={timeRange} onValueChange={setTimeRange}>
-          <SelectTrigger className="w-32">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="7d">Last 7 days</SelectItem>
-            <SelectItem value="30d">Last 30 days</SelectItem>
-            <SelectItem value="90d">Last 90 days</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Overview Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Cost</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              ${stats?.totalCost?.toFixed(2) || '0.00'}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Avg ${stats?.avgCostPerRequest?.toFixed(2) || '0.00'}/request
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Requests</CardTitle>
-            <Zap className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {stats?.requestCount?.toLocaleString() || '0'}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              AI generations
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Active Users</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {stats?.uniqueUsers || '0'}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Avg ${stats?.avgCostPerUser?.toFixed(2) || '0.00'}/user
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Tokens</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {((stats?.totalTokens || 0) / 1000000).toFixed(2)}M
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              total tokens
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Detailed Analytics */}
-      <Tabs defaultValue="users" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="users">Top Users</TabsTrigger>
-          <TabsTrigger value="models">By Model</TabsTrigger>
-          <TabsTrigger value="modes">By Mode</TabsTrigger>
-        </TabsList>
-
-        {/* Top Users Tab */}
-        <TabsContent value="users" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Top 10 Users by Cost</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {topUsers?.map((user, index) => (
-                  <div 
-                    key={user.user_id}
-                    className="flex items-center justify-between p-3 rounded-lg border"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Badge variant="outline" className="w-8 h-8 flex items-center justify-center">
-                        #{index + 1}
-                      </Badge>
-                      <div>
-                        <div className="font-mono text-sm">
-                          {user.user_id.slice(0, 8)}...
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {user.request_count} requests
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-semibold text-lg">
-                        ${parseFloat(user.total_cost).toFixed(2)}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        ${(parseFloat(user.total_cost) / user.request_count).toFixed(2)}/req
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Models Tab */}
-        <TabsContent value="models" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Cost by AI Model</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {modelStats?.map((model) => (
-                  <div 
-                    key={model.model}
-                    className="flex items-center justify-between p-3 rounded-lg border"
-                  >
-                    <div className="flex-1">
-                      <div className="font-semibold">
-                        {model.model === 'claude-opus-4' ? '🧠 Claude Opus 4' :
-                         model.model === 'claude-sonnet-4' ? '⚡ Claude Sonnet 4' :
-                         model.model === 'gemini-1.5-flash' ? '✨ Gemini Flash' :
-                         model.model}
-                      </div>
-                      <div className="text-xs text-muted-foreground mt-1">
-                        {model.count} requests · {(model.tokens / 1000000).toFixed(2)}M tokens
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-semibold text-lg">
-                        ${model.cost.toFixed(2)}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        Avg ${model.avgCost.toFixed(3)}/req
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Modes Tab */}
-        <TabsContent value="modes" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Cost by Generation Mode</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {modeStats?.map((mode) => (
-                  <div 
-                    key={mode.mode}
-                    className="flex items-center justify-between p-3 rounded-lg border"
-                  >
-                    <div className="flex-1">
-                      <div className="font-semibold capitalize">
-                        {mode.mode?.replace('topic_generate_', '').replace(/_/g, ' ') || 'Unknown'}
-                      </div>
-                      <div className="text-xs text-muted-foreground mt-1">
-                        {mode.count} requests
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-semibold text-lg">
-                        ${mode.cost.toFixed(2)}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        Avg ${mode.avgCost.toFixed(3)}/req
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-
-      {/* Alerts */}
-      {stats && stats.totalCost > 100 && (
-        <Card className="bg-amber-50 dark:bg-amber-950/20 border-amber-200">
-          <CardContent className="p-4">
-            <div className="flex items-start gap-3">
-              <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5" />
+      {/* Summary cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {[
+          { label: 'Celkové náklady', value: `$${s.totalCost.toFixed(2)}`, icon: DollarSign, color: 'text-green-600' },
+          { label: 'Topics generováno', value: s.totalTopics, icon: Zap, color: 'text-blue-600' },
+          { label: 'Průměr/topic', value: `$${s.avgCost.toFixed(4)}`, icon: TrendingUp, color: 'text-purple-600' },
+          { label: 'Odhad zbývajících', value: `$${estRemaining.toFixed(2)}`, icon: BarChart3, color: 'text-amber-600' },
+        ].map((m, i) => (
+          <Card key={i}><CardContent className="p-4">
+            <div className="flex items-center justify-between">
               <div>
-                <h4 className="font-semibold text-amber-900 dark:text-amber-100">
-                  High cost alert
-                </h4>
-                <p className="text-sm text-amber-800 dark:text-amber-200 mt-1">
-                  Total AI costs for this period: ${stats.totalCost.toFixed(2)}. 
-                  Consider reviewing usage patterns and implementing stricter budgets.
-                </p>
+                <p className="text-sm text-slate-500">{m.label}</p>
+                <p className={`text-xl font-bold ${m.color}`}>{m.value}</p>
               </div>
+              <m.icon className="w-7 h-7 opacity-20" />
             </div>
+          </CardContent></Card>
+        ))}
+      </div>
+
+      {/* Remaining info */}
+      {remaining > 0 && (
+        <Card className="border-amber-200 dark:border-amber-800">
+          <CardContent className="p-4">
+            <p className="text-sm">
+              <span className="font-medium">{remaining} topics</span> bez obsahu × <span className="font-medium">${s.avgCost.toFixed(4)}</span> průměr = 
+              <span className="font-bold text-amber-600"> ~${estRemaining.toFixed(2)}</span> odhadované zbývající náklady
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* By model */}
+      <Card>
+        <CardHeader className="pb-3"><CardTitle className="text-base">Náklady podle modelu</CardTitle></CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {Object.entries(s.byModel).map(([model, data]) => {
+              const shortName = model.replace('claude-', '').replace('-20250514', '');
+              const pct = s.totalCost > 0 ? (data.cost / s.totalCost) * 100 : 0;
+              return (
+                <div key={model} className="flex items-center gap-3">
+                  <Badge variant="outline" className="w-24 justify-center text-xs">{shortName}</Badge>
+                  <div className="flex-1">
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>{data.count} topics</span>
+                      <span className="font-medium">${data.cost.toFixed(4)}</span>
+                    </div>
+                    <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                      <div className={`h-2 rounded-full ${model.includes('opus') ? 'bg-purple-500' : 'bg-blue-500'}`}
+                        style={{ width: `${pct}%` }} />
+                    </div>
+                  </div>
+                  <span className="text-xs text-slate-500 w-16 text-right">${(data.cost / data.count).toFixed(4)}/t</span>
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* By date */}
+      {s.byDate.length > 0 && (
+        <Card>
+          <CardHeader className="pb-3"><CardTitle className="text-base">Náklady podle dne</CardTitle></CardHeader>
+          <CardContent>
+            <table className="w-full text-sm">
+              <thead className="border-b text-xs text-slate-500">
+                <tr><th className="text-left py-2">Datum</th><th className="text-center py-2">Topics</th><th className="text-right py-2">Náklady</th></tr>
+              </thead>
+              <tbody className="divide-y">
+                {s.byDate.map(d => (
+                  <tr key={d.date}>
+                    <td className="py-2">{d.date}</td>
+                    <td className="py-2 text-center">{d.count}</td>
+                    <td className="py-2 text-right font-medium">${d.cost.toFixed(4)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </CardContent>
         </Card>
       )}
