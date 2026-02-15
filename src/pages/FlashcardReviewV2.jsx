@@ -154,6 +154,26 @@ export default function FlashcardReviewV2() {
         setCurrentIndex(prev => prev + 1);
         setIsFlipped(false);
       } else {
+        // Save flashcard review session
+        const duration = Math.round((Date.now() - sessionStats.startTime.getTime()) / 1000);
+        supabase.from('flashcard_review_sessions').insert({
+          user_id: user.id,
+          cards_reviewed: sessionStats.reviewed + 1,
+          cards_correct: variables.quality >= 3 ? sessionStats.correct + 1 : sessionStats.correct,
+          duration_seconds: duration,
+        }).then(() => {
+          // Also log analytics event
+          supabase.from('analytics_events').insert({
+            user_id: user.id,
+            event_type: 'flashcard_session_completed',
+            event_data: {
+              cards_reviewed: sessionStats.reviewed + 1,
+              cards_correct: variables.quality >= 3 ? sessionStats.correct + 1 : sessionStats.correct,
+              duration_seconds: duration,
+              accuracy: Math.round(((variables.quality >= 3 ? sessionStats.correct + 1 : sessionStats.correct) / (sessionStats.reviewed + 1)) * 100),
+            },
+          });
+        });
         toast.success(`Session complete! ${sessionStats.reviewed + 1} cards`);
         navigate('/Dashboard');
       }

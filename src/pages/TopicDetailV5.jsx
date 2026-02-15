@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
+import { useStudyTracking } from '@/hooks/useStudyTracking';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import TopicNotes from '@/components/TopicNotes';
@@ -110,6 +111,15 @@ export default function TopicDetailV5() {
   const [showToc, setShowToc] = useState(true);
 
   const activeId = useActiveTocId();
+
+  // Study tracking — auto-records session open/close + duration
+  const { trackEvent, trackTabSwitch } = useStudyTracking(topicId);
+
+  // Track tab switches
+  const handleTabSwitch = (tabId) => {
+    setActiveTab(tabId);
+    trackTabSwitch(tabId);
+  };
 
   const { data: topic, isLoading } = useQuery({
     queryKey: ['topic-v5', topicId],
@@ -253,7 +263,7 @@ export default function TopicDetailV5() {
               const active = activeTab === tab.id;
               const Icon = tab.icon;
               return (
-                <button key={tab.id} onClick={() => has && setActiveTab(tab.id)} disabled={!has}
+                <button key={tab.id} onClick={() => has && handleTabSwitch(tab.id)} disabled={!has}
                   className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all mn-ui-font ${
                     active ? 'bg-white dark:bg-[#1f2333] text-slate-900 dark:text-[#e8eaef] shadow-sm'
                     : has ? 'text-slate-500 dark:text-[#5f637a] hover:text-slate-700 dark:hover:text-[#9498b0]'

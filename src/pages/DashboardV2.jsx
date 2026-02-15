@@ -159,6 +159,42 @@ export default function DashboardV2() {
     enabled: !!user?.id
   });
 
+  // Fetch topic mastery data (Sprint 1)
+  const { data: masteryData = [] } = useQuery({
+    queryKey: ['topicMastery', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('user_topic_mastery')
+        .select('*, topics:topic_id(title, slug, obory:obor_id(name))')
+        .eq('user_id', user.id)
+        .order('last_studied_at', { ascending: false })
+        .limit(10);
+      
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!user?.id
+  });
+
+  // Fetch total study time (Sprint 1)
+  const { data: studyStats } = useQuery({
+    queryKey: ['studyStats', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('study_sessions')
+        .select('duration_seconds')
+        .eq('user_id', user.id);
+      
+      if (error) throw error;
+      const totalSeconds = (data || []).reduce((sum, s) => sum + (s.duration_seconds || 0), 0);
+      return {
+        totalMinutes: Math.round(totalSeconds / 60),
+        sessionCount: data?.length || 0,
+      };
+    },
+    enabled: !!user?.id
+  });
+
   const tokenPercentage = tokens 
     ? ((tokens.current_tokens / tokens.monthly_limit) * 100)
     : 0;
