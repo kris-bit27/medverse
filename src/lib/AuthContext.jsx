@@ -29,32 +29,6 @@ export const AuthProvider = ({ children }) => {
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
   const [authError, setAuthError] = useState(null);
 
-  // Fetch role from user_profiles table to ensure DB role takes priority
-  const enrichWithDbRole = async (mappedUser) => {
-    if (!mappedUser) return mappedUser;
-    try {
-      const profilePromise = supabase
-        .from('user_profiles')
-        .select('role, display_name')
-        .eq('user_id', mappedUser.id)
-        .single();
-      
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('timeout')), 3000)
-      );
-      
-      const { data, error } = await Promise.race([profilePromise, timeoutPromise]);
-      
-      if (!error && data?.role) {
-        return { ...mappedUser, role: data.role, display_name: data.display_name || mappedUser.full_name };
-      }
-    } catch (e) {
-      // Never block auth - just use metadata role
-      console.warn('enrichWithDbRole skipped:', e?.message);
-    }
-    return mappedUser;
-  };
-
   useEffect(() => {
     let isMounted = true;
 
@@ -69,10 +43,7 @@ export const AuthProvider = ({ children }) => {
           setIsAuthenticated(false);
           setAuthError({ type: 'unknown', message: error.message });
         } else if (data?.session?.user) {
-          const mapped = mapSupabaseUser(data.session.user);
-          const enriched = await enrichWithDbRole(mapped);
-          if (!isMounted) return;
-          setUser(enriched);
+          setUser(mapSupabaseUser(data.session.user));
           setIsAuthenticated(true);
           setAuthError(null);
         } else {
@@ -94,13 +65,10 @@ export const AuthProvider = ({ children }) => {
 
     initAuth();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!isMounted) return;
       if (session?.user) {
-        const mapped = mapSupabaseUser(session.user);
-        const enriched = await enrichWithDbRole(mapped);
-        if (!isMounted) return;
-        setUser(enriched);
+        setUser(mapSupabaseUser(session.user));
         setIsAuthenticated(true);
         setAuthError(null);
       } else {
