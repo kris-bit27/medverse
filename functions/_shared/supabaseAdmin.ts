@@ -56,9 +56,11 @@ export async function getUserFromRequest(
 /**
  * Standard CORS headers for edge functions
  */
-export function corsHeaders(): Record<string, string> {
+export function corsHeaders(origin?: string): Record<string, string> {
+  const ALLOWED_ORIGINS = ['https://medverse-gilt.vercel.app', 'https://medverse.cz', 'https://www.medverse.cz', 'http://localhost:3000', 'http://localhost:5173'];
+  const allowedOrigin = origin && ALLOWED_ORIGINS.includes(origin) ? origin : 'https://medverse.cz';
   return {
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': allowedOrigin,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Authorization, Content-Type, x-client-info, apikey',
   };

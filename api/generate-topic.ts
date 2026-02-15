@@ -210,7 +210,7 @@ async function trackUsage(userId: string | null, model: string, tokens: number, 
   try { if (!userId) return; await supabaseAdmin.from('user_ai_usage').insert({ user_id: userId, model, tokens_used: tokens, cost, mode: `topic_generate_${mode}` }); } catch (e) { console.error('[Usage tracking]', e); }
 }
 
-const ALLOWED_ORIGINS = ['https://medverse-gilt.vercel.app', 'https://medverse.com', 'https://www.medverse.com', 'http://localhost:3000', 'http://localhost:5173'];
+const ALLOWED_ORIGINS = ['https://medverse-gilt.vercel.app', 'https://medverse.cz', 'https://www.medverse.cz', 'http://localhost:3000', 'http://localhost:5173'];
 
 // ─── Main Handler ───────────────────────────────────────────────
 export default async function handler(req: any, res: any) {
