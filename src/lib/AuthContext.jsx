@@ -33,16 +33,24 @@ export const AuthProvider = ({ children }) => {
   const enrichWithDbRole = async (mappedUser) => {
     if (!mappedUser) return mappedUser;
     try {
-      const { data } = await supabase
+      const profilePromise = supabase
         .from('user_profiles')
         .select('role, display_name')
         .eq('user_id', mappedUser.id)
         .single();
-      if (data?.role) {
+      
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('timeout')), 3000)
+      );
+      
+      const { data, error } = await Promise.race([profilePromise, timeoutPromise]);
+      
+      if (!error && data?.role) {
         return { ...mappedUser, role: data.role, display_name: data.display_name || mappedUser.full_name };
       }
     } catch (e) {
-      console.warn('Could not fetch user profile role:', e);
+      // Never block auth - just use metadata role
+      console.warn('enrichWithDbRole skipped:', e?.message);
     }
     return mappedUser;
   };
