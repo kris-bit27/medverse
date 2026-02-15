@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import OnboardingWizard from '@/components/OnboardingWizard';
 import StudyTodayWidget from '@/components/StudyTodayWidget';
+import AttestationProgress from '@/components/AttestationProgress';
 import { 
   Zap,
   BookOpen,
@@ -218,7 +219,10 @@ export default function DashboardV2() {
       </div>
 
       {/* Sprint 4: What to study today */}
-      <StudyTodayWidget />
+      <div className="grid lg:grid-cols-2 gap-6">
+        <StudyTodayWidget />
+        <AttestationProgress />
+      </div>
 
       {/* Quick Stats */}
       <div className="grid md:grid-cols-4 gap-6">

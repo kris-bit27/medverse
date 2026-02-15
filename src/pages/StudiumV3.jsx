@@ -243,6 +243,8 @@ export default function StudiumV3() {
       case 'oldest': filtered.sort((a, b) => new Date(a.created_at) - new Date(b.created_at)); break;
       case 'alpha': filtered.sort((a, b) => a.title.localeCompare(b.title, 'cs')); break;
       case 'obor': filtered.sort((a, b) => (a.obory?.name || '').localeCompare(b.obory?.name || '', 'cs')); break;
+      case 'mastery_asc': filtered.sort((a, b) => (Number(masteryMap[a.id]?.mastery_score) || 0) - (Number(masteryMap[b.id]?.mastery_score) || 0)); break;
+      case 'mastery_desc': filtered.sort((a, b) => (Number(masteryMap[b.id]?.mastery_score) || 0) - (Number(masteryMap[a.id]?.mastery_score) || 0)); break;
     }
 
     return filtered;
@@ -363,6 +365,8 @@ export default function StudiumV3() {
               <SelectItem value="oldest">Nejstarší</SelectItem>
               <SelectItem value="alpha">Abecedně</SelectItem>
               <SelectItem value="obor">Dle oboru</SelectItem>
+              <SelectItem value="mastery_asc">Nejslabší první</SelectItem>
+              <SelectItem value="mastery_desc">Nejsilnější první</SelectItem>
             </SelectContent>
           </Select>
         </div>

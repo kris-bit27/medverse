@@ -107,7 +107,7 @@ export const SearchTopics = () => {
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <Link
-                      to={`/admin/topics/${result.id}`}
+                      to={`/TopicDetailV2?id=${result.id}`}
                       className="hover:underline"
                     >
                       <h3 className="font-semibold text-lg mb-2">
@@ -136,10 +136,16 @@ export const SearchTopics = () => {
                     </div>
                   </div>
 
-                  <div className="ml-4">
-                    <Badge variant="default" className="bg-blue-100 text-blue-700">
-                      Rank: {(result.rank * 100).toFixed(0)}%
-                    </Badge>
+                  <div className="ml-4 flex flex-col gap-1 items-end">
+                    {result.has_content ? (
+                      <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-[10px]">
+                        Obsah ✓
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="text-[10px] text-slate-400">
+                        Připravujeme
+                      </Badge>
+                    )}
                   </div>
                 </div>
               </CardContent>
