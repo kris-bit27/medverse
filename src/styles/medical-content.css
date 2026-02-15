@@ -686,3 +686,160 @@ html:not(.dark) .mn-article-body mark {
 .mn-mono-font {
   font-family: var(--mn-font-mono);
 }
+
+/* ============================================================
+   v3 ADDITIONS — Callout headers, Abbreviation tooltips, Accordion
+   ============================================================ */
+
+/* ---- CALLOUT v3: header + body layout ---- */
+.mn-callout-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.mn-callout-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.mn-callout-label {
+  font-family: var(--mn-font-sans);
+  font-size: 0.78em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.mn-callout-body p:first-child {
+  margin-top: 0;
+}
+
+.mn-callout-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* Callout type colors — icon + label */
+.mn-callout-danger .mn-callout-icon,
+.mn-callout-danger .mn-callout-label { color: var(--mn-c-danger); }
+.mn-callout-warning .mn-callout-icon,
+.mn-callout-warning .mn-callout-label { color: var(--mn-c-pearl); }
+.mn-callout-pearl .mn-callout-icon,
+.mn-callout-pearl .mn-callout-label { color: var(--mn-c-pearl); }
+.mn-callout-info .mn-callout-icon,
+.mn-callout-info .mn-callout-label { color: var(--mn-c-info); }
+.mn-callout-success .mn-callout-icon,
+.mn-callout-success .mn-callout-label { color: var(--mn-c-success); }
+
+/* Warning callout — amber tones */
+.mn-callout-warning {
+  border-color: #d97706;
+  background: rgba(217, 119, 6, 0.06);
+}
+html.dark .mn-callout-warning {
+  background: rgba(245, 158, 11, 0.06);
+}
+
+/* ---- ABBREVIATION TOOLTIPS ---- */
+.mn-abbr {
+  position: relative;
+  display: inline;
+  border-bottom: 1px dotted var(--mn-c-accent);
+  cursor: help;
+  font-weight: inherit;
+}
+
+.mn-abbr-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--mn-c-elevated);
+  color: var(--mn-c-text);
+  border: 1px solid var(--mn-c-border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-family: var(--mn-font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+  z-index: 100;
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  animation: mn-tooltip-in 0.15s ease-out;
+}
+
+.mn-abbr-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--mn-c-border);
+}
+
+@keyframes mn-tooltip-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ---- ACCORDION ---- */
+.mn-accordion {
+  margin: 1.4em 0;
+  border: 1px solid var(--mn-c-border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.mn-accordion-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 18px;
+  background: var(--mn-c-surface2);
+  border: none;
+  cursor: pointer;
+  font-family: var(--mn-font-sans);
+  font-size: 0.92em;
+  font-weight: 600;
+  color: var(--mn-c-text);
+  transition: background 0.15s;
+  text-align: left;
+}
+
+.mn-accordion-trigger:hover {
+  background: var(--mn-c-elevated);
+}
+
+.mn-accordion-chevron {
+  width: 18px;
+  height: 18px;
+  color: var(--mn-c-text-muted);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.mn-accordion-chevron-open {
+  transform: rotate(180deg);
+}
+
+.mn-accordion-content {
+  padding: 16px 18px;
+  border-top: 1px solid var(--mn-c-border-subtle);
+}
+
+/* ---- FLOATING TOOLBAR: active bookmark ---- */
+.mn-float-btn-active {
+  background: var(--mn-c-accent-subtle);
+  color: var(--mn-c-accent-light);
+  border-color: var(--mn-c-accent-dim);
+}
+
+.mn-float-btn-active:hover {
+  background: var(--mn-c-accent-subtle);
+}
