@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/lib/AuthContext';
 import { createPageUrl } from '@/utils';
 import { supabase } from '@/lib/supabase';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -45,10 +46,7 @@ export default function AdminQuestions() {
   const [selectedIds, setSelectedIds] = useState([]);
   const queryClient = useQueryClient();
 
-  const { data: user } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; }
-  });
+  const { user } = useAuth();
 
   const { data: questions = [], isLoading } = useQuery({
     queryKey: ['questions'],

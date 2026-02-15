@@ -15,10 +15,8 @@ import AdminCostAnalyticsComponent from '@/components/admin/AdminCostAnalytics';
 import AdminBudgetSettingsComponent from '@/components/admin/AdminBudgetSettings';
 
 export default function AdminCostAnalytics() {
-  const { data: user, isLoading } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; }
-  });
+  const { user } = useAuth();
+  const isLoading = false;
 
   if (isLoading) {
     return (
