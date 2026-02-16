@@ -4,12 +4,12 @@ import { supabase } from '@/lib/supabase';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
-  Sparkles, PlayCircle, RefreshCw, Clock, DollarSign,
+  Sparkles, RefreshCw, Clock, DollarSign,
   CheckCircle2, XCircle, Loader2, AlertTriangle,
-  Zap, Database, BarChart3, ArrowRight, Trash2
+  Zap, Database, BarChart3, Trash2, ShieldAlert, Send, Search
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 const STATUS_CONFIG = {
   pending: { label: 'Čeká', color: 'bg-amber-500', badge: 'bg-amber-500/20 text-amber-300 border-amber-500/30' },
@@ -20,7 +20,7 @@ const STATUS_CONFIG = {
 
 function StatBox({ icon: Icon, label, value, sub, accent }) {
   return (
-    <div className={`p-4 rounded-xl bg-slate-900/70 border border-slate-800`}>
+    <div className="p-4 rounded-xl bg-slate-900/70 border border-slate-800">
       <div className="flex items-center gap-3">
         <div className={`p-2 rounded-lg ${accent || 'bg-slate-800'}`}>
           <Icon className="w-4 h-4 text-slate-300" />
@@ -37,7 +37,6 @@ function StatBox({ icon: Icon, label, value, sub, accent }) {
 
 export default function AdminBatchMonitor() {
   const queryClient = useQueryClient();
-  const [generating, setGenerating] = useState(false);
 
   // Fetch queue
   const { data: queue = [], isLoading, refetch } = useQuery({
@@ -45,29 +44,35 @@ export default function AdminBatchMonitor() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('batch_generation_queue')
-        .select(`
-          *,
-          topics!inner(id, title, full_text_content, bullet_points_summary, deep_dive_content, ai_model, ai_cost, ai_generated_at,
-            obory!inner(name), okruhy!inner(name))
-        `)
+        .select(`*, topics!inner(id, title, full_text_content, bullet_points_summary, ai_model, ai_cost, ai_generated_at, obory!inner(name), okruhy!inner(name))`)
         .order('priority', { ascending: false })
         .order('created_at', { ascending: true });
       if (error) throw error;
       return data || [];
     },
-    refetchInterval: generating ? 10000 : false // Auto-refresh during generation
   });
 
-  // Fetch all topics for adding to queue
-  const { data: allTopics = [] } = useQuery({
-    queryKey: ['all-topics-admin'],
+  // Fetch active batches
+  const { data: batches = [] } = useQuery({
+    queryKey: ['anthropic-batches'],
     queryFn: async () => {
       const { data } = await supabase
-        .from('topics')
-        .select('id, title, full_text_content, bullet_points_summary, obory!inner(name), okruhy!inner(name)')
-        .order('title');
+        .from('anthropic_batches')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(10);
       return data || [];
-    }
+    },
+    refetchInterval: 30000,
+  });
+
+  // Fetch cost tracking
+  const { data: dailyCosts = [] } = useQuery({
+    queryKey: ['daily-costs'],
+    queryFn: async () => {
+      const { data } = await supabase.rpc('get_daily_costs', { days_back: 7 });
+      return data || [];
+    },
   });
 
   // Stats
@@ -76,38 +81,62 @@ export default function AdminBatchMonitor() {
     processing: queue.filter(q => q.status === 'processing').length,
     completed: queue.filter(q => q.status === 'completed').length,
     failed: queue.filter(q => q.status === 'failed').length,
-    totalCost: queue.reduce((sum, q) => sum + (q.topics?.ai_cost || 0), 0),
-    avgCost: queue.filter(q => q.topics?.ai_cost > 0).length > 0
-      ? queue.reduce((sum, q) => sum + (q.topics?.ai_cost || 0), 0) / queue.filter(q => q.topics?.ai_cost > 0).length
-      : 0
   };
+
+  const totalTrackedCost = dailyCosts.reduce((sum, d) => sum + Number(d.total_cost || 0), 0);
+  const estimatedBatchCost = stats.pending * 0.064;
 
   // Reset stuck items
   const resetStuck = useMutation({
     mutationFn: async () => {
       const { error } = await supabase
         .from('batch_generation_queue')
-        .update({ status: 'pending', started_at: null })
+        .update({ status: 'pending', started_at: null, error_message: 'Manual reset' })
         .eq('status', 'processing');
       if (error) throw error;
     },
-    onSuccess: () => { queryClient.invalidateQueries(['batch-queue']); }
+    onSuccess: () => {
+      toast.success('Zaseklé items resetovány');
+      queryClient.invalidateQueries(['batch-queue']);
+    }
   });
 
-  // Trigger async generation via DB function
-  const triggerGeneration = useMutation({
-    mutationFn: async (count = 3) => {
-      setGenerating(true);
-      const { data, error } = await supabase.rpc('process_batch_queue', { p_limit: count });
-      if (error) throw error;
-      return data;
+  // Submit to Anthropic Batch API (SAFE - no real-time API calls)
+  const submitBatch = useMutation({
+    mutationFn: async (limit) => {
+      const resp = await supabase.functions.invoke('batch-api-submit', {
+        body: { limit, modes: ['fulltext', 'high_yield'] }
+      });
+      if (resp.error) throw new Error(resp.error.message);
+      return resp.data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['batch-queue']);
-      // Keep auto-refresh running
-      setTimeout(() => setGenerating(false), 180000); // Stop after 3min
+    onSuccess: (data) => {
+      toast.success(`Batch odeslán! ID: ${data.batch_id?.substring(0, 20)}... | ${data.total_requests} requestů | Est: $${data.cost_estimate?.toFixed(2)}`);
+      queryClient.invalidateQueries(['batch-queue', 'anthropic-batches']);
     },
-    onError: () => setGenerating(false)
+    onError: (err) => toast.error(`Batch submit failed: ${err.message}`)
+  });
+
+  // Poll batch results
+  const pollBatch = useMutation({
+    mutationFn: async () => {
+      const resp = await supabase.functions.invoke('batch-api-poll', {
+        body: { mode: 'auto' }
+      });
+      if (resp.error) throw new Error(resp.error.message);
+      return resp.data;
+    },
+    onSuccess: (data) => {
+      if (data.status === 'ended' && data.processed) {
+        toast.success(`Batch zpracován! ${data.succeeded} úspěšných, ${data.errored} chyb | $${data.actual_cost?.toFixed(2)}`);
+      } else if (data.status === 'in_progress') {
+        toast.info(`Batch stále probíhá... ${JSON.stringify(data.request_counts || {})}`);
+      } else {
+        toast.info(`Batch status: ${data.status || 'unknown'}`);
+      }
+      queryClient.invalidateQueries(['batch-queue', 'anthropic-batches']);
+    },
+    onError: (err) => toast.error(`Poll failed: ${err.message}`)
   });
 
   // Delete queue item
@@ -119,29 +148,23 @@ export default function AdminBatchMonitor() {
     onSuccess: () => queryClient.invalidateQueries(['batch-queue'])
   });
 
-  // Add topic to queue
-  const [addTopicId, setAddTopicId] = useState('');
-  const addToQueue = useMutation({
-    mutationFn: async (topicId) => {
-      const { data: userData } = await supabase.auth.getUser();
-      const { error } = await supabase.from('batch_generation_queue').insert({
-        topic_id: topicId,
-        modes: ['fulltext', 'high_yield'],
-        status: 'pending',
-        priority: 5,
-        created_by: userData.user?.id
-      });
-      if (error) throw error;
+  // Generate single topic via Edge Function (SAFE - only 1 at a time)
+  const generateSingle = useMutation({
+    mutationFn: async () => {
+      const resp = await supabase.functions.invoke('batch-generate', { body: {} });
+      if (resp.error) throw new Error(resp.error.message);
+      return resp.data;
     },
-    onSuccess: () => {
-      setAddTopicId('');
+    onSuccess: (data) => {
+      if (data.processed === 0) {
+        toast.info('Fronta je prázdná');
+      } else {
+        toast.success(`✅ "${data.title}" | $${data.cost}`);
+      }
       queryClient.invalidateQueries(['batch-queue']);
-    }
+    },
+    onError: (err) => toast.error(`Generace selhala: ${err.message}`)
   });
-
-  // Topics not yet in queue
-  const queuedTopicIds = new Set(queue.map(q => q.topic_id));
-  const availableTopics = allTopics.filter(t => !queuedTopicIds.has(t.id) && (!t.full_text_content || t.full_text_content.length < 100));
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6">
@@ -155,14 +178,12 @@ export default function AdminBatchMonitor() {
               Batch Generation Monitor
             </h1>
             <p className="text-sm text-slate-500 mt-1">
-              Sledování a řízení AI generace obsahu
+              Bezpečná generace přes Anthropic Batch API (50% sleva, bez waste)
             </p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => refetch()} className="border-slate-700 text-slate-400">
-              <RefreshCw className="w-4 h-4 mr-1" /> Obnovit
-            </Button>
-          </div>
+          <Button variant="outline" size="sm" onClick={() => refetch()} className="border-slate-700 text-slate-400">
+            <RefreshCw className="w-4 h-4 mr-1" /> Obnovit
+          </Button>
         </div>
 
         {/* Stats */}
@@ -171,33 +192,63 @@ export default function AdminBatchMonitor() {
           <StatBox icon={Loader2} label="Probíhá" value={stats.processing} accent="bg-blue-500/20" />
           <StatBox icon={CheckCircle2} label="Hotovo" value={stats.completed} accent="bg-emerald-500/20" />
           <StatBox icon={XCircle} label="Chyby" value={stats.failed} accent="bg-red-500/20" />
-          <StatBox icon={DollarSign} label="Celkem" value={`$${stats.totalCost.toFixed(2)}`} accent="bg-teal-500/20" />
-          <StatBox icon={BarChart3} label="Ø na téma" value={`$${stats.avgCost.toFixed(2)}`} accent="bg-cyan-500/20" />
+          <StatBox icon={DollarSign} label="API cost (7d)" value={`$${totalTrackedCost.toFixed(2)}`} accent="bg-teal-500/20" />
+          <StatBox icon={BarChart3} label="Odhad zbytku" value={`$${estimatedBatchCost.toFixed(0)}`} sub="Batch API 50%" accent="bg-cyan-500/20" />
+        </div>
+
+        {/* SAFETY WARNING */}
+        <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4 flex items-start gap-3">
+          <ShieldAlert className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+          <div className="text-sm">
+            <p className="font-medium text-amber-300">Bezpečnostní režim aktivní</p>
+            <p className="text-slate-400 mt-1">
+              Masová generace je dostupná POUZE přes Anthropic Batch API (50% sleva, žádné retries/waste).
+              Tlačítko "Generovat 1 topic" volá Messages API pro testování — max 1 topic najednou.
+            </p>
+          </div>
         </div>
 
         {/* Actions */}
         <Card className="bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800">
-          <CardContent className="p-4">
+          <CardContent className="p-4 space-y-4">
             <div className="flex flex-wrap items-center gap-3">
-              {/* Trigger generation */}
+              {/* Batch API Submit */}
               <Button
-                onClick={() => triggerGeneration.mutate(3)}
-                disabled={triggerGeneration.isPending || stats.pending === 0}
+                onClick={() => submitBatch.mutate(stats.pending)}
+                disabled={submitBatch.isPending || stats.pending === 0}
                 className="bg-teal-600 hover:bg-teal-500 text-white"
               >
-                {triggerGeneration.isPending ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  <PlayCircle className="w-4 h-4 mr-2" />
-                )}
-                Spustit generaci ({Math.min(3, stats.pending)})
+                {submitBatch.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Send className="w-4 h-4 mr-2" />}
+                Odeslat Batch API ({stats.pending} topics, ~${estimatedBatchCost.toFixed(0)})
+              </Button>
+
+              {/* Poll results */}
+              <Button
+                variant="outline"
+                onClick={() => pollBatch.mutate()}
+                disabled={pollBatch.isPending}
+                className="border-slate-700 text-slate-300"
+              >
+                {pollBatch.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Search className="w-4 h-4 mr-2" />}
+                Zkontrolovat výsledky
+              </Button>
+
+              {/* Single topic test */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => generateSingle.mutate()}
+                disabled={generateSingle.isPending || stats.pending === 0}
+                className="border-slate-700 text-slate-400"
+              >
+                {generateSingle.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Zap className="w-4 h-4 mr-2" />}
+                Test: Generovat 1 topic
               </Button>
 
               {/* Reset stuck */}
               {stats.processing > 0 && (
                 <Button
-                  variant="outline"
-                  size="sm"
+                  variant="outline" size="sm"
                   onClick={() => resetStuck.mutate()}
                   className="border-amber-500/30 text-amber-400 hover:bg-amber-500/10"
                 >
@@ -205,43 +256,36 @@ export default function AdminBatchMonitor() {
                   Reset zaseklých ({stats.processing})
                 </Button>
               )}
-
-              {/* Add to queue */}
-              <div className="flex items-center gap-2 ml-auto">
-                <Select value={addTopicId} onValueChange={setAddTopicId}>
-                  <SelectTrigger className="w-[250px] bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-300 text-sm h-9">
-                    <SelectValue placeholder="Přidat téma do fronty..." />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 max-h-64">
-                    {availableTopics.map(t => (
-                      <SelectItem key={t.id} value={t.id} className="text-sm">
-                        <span className="text-slate-500 mr-1">{t.obory?.name?.substring(0, 3)}:</span> {t.title}
-                      </SelectItem>
-                    ))}
-                    {availableTopics.length === 0 && (
-                      <div className="p-2 text-xs text-slate-500 text-center">Všechna témata jsou ve frontě nebo mají obsah</div>
-                    )}
-                  </SelectContent>
-                </Select>
-                <Button
-                  size="sm"
-                  disabled={!addTopicId || addToQueue.isPending}
-                  onClick={() => addToQueue.mutate(addTopicId)}
-                  className="bg-slate-800 hover:bg-slate-700 text-slate-300 h-9"
-                >
-                  Přidat
-                </Button>
-              </div>
             </div>
-
-            {generating && (
-              <div className="mt-3 flex items-center gap-2 text-sm text-blue-400">
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Generace probíhá na pozadí... automaticky obnovuji stav
-              </div>
-            )}
           </CardContent>
         </Card>
+
+        {/* Active Batches */}
+        {batches.length > 0 && (
+          <Card className="bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-slate-300 text-lg">📦 Anthropic Batches</CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="divide-y divide-slate-800">
+                {batches.map(b => (
+                  <div key={b.id} className="flex items-center gap-4 px-5 py-3">
+                    <Badge variant="outline" className={
+                      b.status === 'processed' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' :
+                      b.status === 'in_progress' ? 'bg-blue-500/20 text-blue-300 border-blue-500/30 animate-pulse' :
+                      'bg-slate-500/20 text-slate-300'
+                    }>{b.status}</Badge>
+                    <span className="text-sm text-slate-400 font-mono">{b.batch_id?.substring(0, 25)}...</span>
+                    <span className="text-sm text-slate-500">{b.total_requests} req</span>
+                    {b.actual_cost && <span className="text-sm text-emerald-400">${Number(b.actual_cost).toFixed(2)}</span>}
+                    {b.cost_estimate && !b.actual_cost && <span className="text-sm text-amber-400">~${Number(b.cost_estimate).toFixed(2)}</span>}
+                    <span className="text-xs text-slate-600 ml-auto">{new Date(b.created_at).toLocaleString('cs')}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Queue Table */}
         <Card className="bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800">
@@ -254,12 +298,10 @@ export default function AdminBatchMonitor() {
             {isLoading ? (
               <div className="p-8 text-center text-slate-500">Načítám...</div>
             ) : queue.length === 0 ? (
-              <div className="p-8 text-center text-slate-500">
-                Fronta je prázdná. Přidejte témata výše.
-              </div>
+              <div className="p-8 text-center text-slate-500">Fronta je prázdná.</div>
             ) : (
-              <div className="divide-y divide-slate-800">
-                {queue.map(item => {
+              <div className="divide-y divide-slate-800 max-h-[500px] overflow-y-auto">
+                {queue.slice(0, 100).map(item => {
                   const sc = STATUS_CONFIG[item.status] || STATUS_CONFIG.pending;
                   const topic = item.topics;
                   const hasFulltext = topic?.full_text_content?.length > 100;
@@ -267,51 +309,35 @@ export default function AdminBatchMonitor() {
 
                   return (
                     <div key={item.id} className="flex items-center gap-4 px-5 py-3 hover:bg-slate-800/30 transition-colors">
-                      {/* Priority */}
                       <span className="text-xs text-slate-600 font-mono w-6 text-center">{item.priority}</span>
-
-                      {/* Status dot */}
                       <div className={`w-2.5 h-2.5 rounded-full ${sc.color} ${item.status === 'processing' ? 'animate-pulse' : ''}`} />
-
-                      {/* Topic info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">{topic?.title}</span>
-                          <Badge variant="outline" className={`text-[10px] ${sc.badge} border`}>
-                            {sc.label}
-                          </Badge>
+                          <Badge variant="outline" className={`text-[10px] ${sc.badge} border`}>{sc.label}</Badge>
                         </div>
                         <div className="flex items-center gap-3 mt-0.5 text-[11px] text-slate-500">
-                          <span>{topic?.obory?.name} → {topic?.okruhy?.name}</span>
+                          <span>{topic?.obory?.name}</span>
                           <span>Modes: {item.modes?.join(', ')}</span>
-                          {topic?.ai_cost > 0 && <span className="text-emerald-500">${Number(topic.ai_cost).toFixed(2)}</span>}
+                          {topic?.ai_cost > 0 && <span className="text-emerald-500">${Number(topic.ai_cost).toFixed(3)}</span>}
                         </div>
                       </div>
-
-                      {/* Content indicators */}
                       <div className="flex items-center gap-1.5">
                         <div className={`w-2 h-2 rounded-full ${hasFulltext ? 'bg-emerald-400' : 'bg-slate-700'}`} title="Fulltext" />
                         <div className={`w-2 h-2 rounded-full ${hasHY ? 'bg-emerald-400' : 'bg-slate-700'}`} title="High-Yield" />
                       </div>
-
-                      {/* Error */}
                       {item.error_message && (
-                        <span className="text-xs text-red-400 max-w-[200px] truncate" title={item.error_message}>
-                          {item.error_message}
-                        </span>
+                        <span className="text-xs text-red-400 max-w-[200px] truncate" title={item.error_message}>{item.error_message}</span>
                       )}
-
-                      {/* Delete */}
-                      <button
-                        onClick={() => deleteItem.mutate(item.id)}
-                        className="text-slate-600 hover:text-red-400 transition-colors p-1"
-                        title="Odstranit z fronty"
-                      >
+                      <button onClick={() => deleteItem.mutate(item.id)} className="text-slate-600 hover:text-red-400 transition-colors p-1" title="Odstranit">
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   );
                 })}
+                {queue.length > 100 && (
+                  <div className="p-3 text-center text-xs text-slate-500">... a dalších {queue.length - 100} položek</div>
+                )}
               </div>
             )}
           </CardContent>

@@ -21,7 +21,7 @@ import {
 import { toast } from 'sonner';
 
 const MODE_LABELS = {
-  fulltext: { label: 'Fulltext (Opus)', icon: '📝', color: 'bg-teal-100 text-teal-700' },
+  fulltext: { label: 'Fulltext (Sonnet)', icon: '📝', color: 'bg-teal-100 text-teal-700' },
   high_yield: { label: 'High-Yield (Sonnet)', icon: '⚡', color: 'bg-yellow-100 text-yellow-700' },
   flashcards: { label: 'Flashcards (Haiku)', icon: '🃏', color: 'bg-blue-100 text-blue-700' },
   mcq: { label: 'MCQ (Sonnet)', icon: '❓', color: 'bg-green-100 text-green-700' },
