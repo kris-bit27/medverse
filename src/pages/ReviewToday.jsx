@@ -240,7 +240,7 @@ export default function ReviewToday() {
     return (
       <div className="container max-w-3xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
         {/* Filters */}
-        <Card className="bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800">
+        <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
           <CardContent className="p-6">
             <div className="flex items-center gap-2 mb-4">
               <Filter className="w-4 h-4" />
@@ -354,7 +354,7 @@ export default function ReviewToday() {
       </div>
 
       {/* Filters */}
-      <Card className="bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800">
+      <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
         <CardContent className="p-4">
           <div className="flex items-center gap-2 mb-3">
             <Filter className="w-4 h-4" />
@@ -442,7 +442,7 @@ export default function ReviewToday() {
         onClick={() => setIsFlipped(!isFlipped)}
         className="cursor-pointer"
       >
-        <Card className="min-h-[400px] hover:shadow-lg transition-shadow bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800">
+        <Card className="min-h-[400px] hover:shadow-lg transition-shadow bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
           <CardContent className="p-12 flex items-center justify-center">
             <div className="text-center w-full">
               {!isFlipped ? (
@@ -510,7 +510,7 @@ export default function ReviewToday() {
       )}
 
       {/* Stats */}
-      <Card className="bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800">
+      <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
         <CardContent className="p-4">
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center gap-2">

@@ -96,14 +96,14 @@ export default function StudyTodayWidget() {
   }
 
   return (
-    <Card className="border-purple-200 dark:border-purple-500/20 bg-gradient-to-br from-purple-50/50 to-white dark:from-purple-950/10 dark:to-slate-900/50">
+    <Card className="border-teal-200 dark:border-teal-500/20 bg-gradient-to-br from-teal-50/50 to-white dark:from-teal-950/10 dark:to-slate-900/50">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between">
           <span className="flex items-center gap-2 text-lg">
-            <Sparkles className="w-5 h-5 text-purple-500" />
+            <Sparkles className="w-5 h-5 text-teal-500" />
             Co studovat dnes
           </span>
-          <Badge variant="outline" className="text-purple-600 border-purple-300 dark:border-purple-500/30">
+          <Badge variant="outline" className="text-teal-600 border-teal-300 dark:border-teal-500/30">
             {totalActions} akcí
           </Badge>
         </CardTitle>

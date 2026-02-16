@@ -122,7 +122,7 @@ export default function StudyProgressCard() {
           <div className="flex-1">
             <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1">Celkový pokrok</h3>
             <p className="text-xs text-slate-500">{studiedCount} z {totalTopics} témat otevřeno</p>
-            {avgMastery > 0 && <p className="text-xs text-purple-500 mt-0.5">Průměrné zvládnutí: {Math.round(avgMastery)}%</p>}
+            {avgMastery > 0 && <p className="text-xs text-teal-500 mt-0.5">Průměrné zvládnutí: {Math.round(avgMastery)}%</p>}
           </div>
           <div className="flex items-center gap-1 px-3 py-1.5 bg-orange-500/10 border border-orange-500/20 rounded-lg">
             <Flame className="w-4 h-4 text-orange-400" />
@@ -167,7 +167,7 @@ export default function StudyProgressCard() {
                   <span className="text-sm text-slate-700 dark:text-slate-300 truncate mr-3 flex-1">{m.topics?.title}</span>
                   <div className="flex items-center gap-2 shrink-0">
                     <div className="w-12 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                      <div className="h-full rounded-full bg-purple-500" style={{ width: `${score}%` }} />
+                      <div className="h-full rounded-full bg-teal-500" style={{ width: `${score}%` }} />
                     </div>
                     <span className={`text-xs font-mono font-bold ${color} w-7 text-right`}>{Math.round(score)}</span>
                   </div>

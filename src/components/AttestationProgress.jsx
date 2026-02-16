@@ -91,7 +91,7 @@ export default function AttestationProgress() {
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between">
           <span className="flex items-center gap-2 text-base">
-            <GraduationCap className="w-5 h-5 text-purple-500" />
+            <GraduationCap className="w-5 h-5 text-teal-500" />
             Pokrok k atestaci
           </span>
           <Badge variant="outline" className="text-xs">
@@ -104,7 +104,7 @@ export default function AttestationProgress() {
         <div>
           <div className="flex justify-between text-sm mb-1.5">
             <span className="text-muted-foreground">Celkový pokrok</span>
-            <span className="font-bold text-purple-600 dark:text-purple-400">{overallPct}%</span>
+            <span className="font-bold text-teal-600 dark:text-teal-400">{overallPct}%</span>
           </div>
           <Progress value={overallPct} className="h-2.5" />
           <div className="flex justify-between text-[10px] text-muted-foreground mt-1">

@@ -65,7 +65,7 @@ Najdi 5-8 nejrelevantnějších článků z renomovaných zdrojů.`,
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-6 lg:p-8">
+    <div className="min-h-screen p-6 lg:p-8">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-8">

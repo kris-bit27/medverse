@@ -242,7 +242,7 @@ export default function OnboardingWizard({ onComplete }) {
   })();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-purple-950 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
         {/* Progress dots */}
         <div className="flex items-center justify-center gap-2 mb-8">
@@ -252,9 +252,9 @@ export default function OnboardingWizard({ onComplete }) {
               onClick={() => i < step && setStep(i)}
               className={`transition-all duration-300 rounded-full ${
                 i === step
-                  ? 'w-10 h-3 bg-purple-500'
+                  ? 'w-10 h-3 bg-teal-500'
                   : i < step
-                  ? 'w-3 h-3 bg-purple-400 cursor-pointer hover:bg-purple-300'
+                  ? 'w-3 h-3 bg-teal-400 cursor-pointer hover:bg-teal-300'
                   : 'w-3 h-3 bg-slate-700'
               }`}
             />
@@ -267,7 +267,7 @@ export default function OnboardingWizard({ onComplete }) {
             {/* ===== STEP: WELCOME ===== */}
             {STEPS[step].id === 'welcome' && (
               <div className="text-center space-y-6">
-                <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/20">
+                <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-teal-500/20">
                   <Sparkles className="w-10 h-10 text-white" />
                 </div>
                 <div>
@@ -284,7 +284,7 @@ export default function OnboardingWizard({ onComplete }) {
                     { icon: Building2, label: 'Pracoviště' },
                   ].map(({ icon: Icon, label }) => (
                     <div key={label} className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
-                      <Icon className="w-6 h-6 text-purple-400 mx-auto mb-2" />
+                      <Icon className="w-6 h-6 text-teal-400 mx-auto mb-2" />
                       <p className="text-sm text-slate-300">{label}</p>
                     </div>
                   ))}
@@ -334,8 +334,8 @@ export default function OnboardingWizard({ onComplete }) {
                   </div>
 
                   {selectedObor && (
-                    <div className="p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
-                      <div className="flex items-center gap-2 text-purple-400 mb-1">
+                    <div className="p-4 rounded-xl bg-teal-500/10 border border-teal-500/20">
+                      <div className="flex items-center gap-2 text-teal-400 mb-1">
                         <CheckCircle className="w-4 h-4" />
                         <span className="font-medium">{selectedObor.name}</span>
                       </div>
@@ -374,7 +374,7 @@ export default function OnboardingWizard({ onComplete }) {
                       value: 'specializace',
                       title: 'Jsem ve specializačním výcviku',
                       desc: 'Kmen mám hotový, pracuji na specializaci',
-                      color: 'purple',
+                      color: 'teal',
                     },
                   ].map(opt => (
                     <button
@@ -392,7 +392,7 @@ export default function OnboardingWizard({ onComplete }) {
                           <p className="text-sm text-slate-400 mt-1">{opt.desc}</p>
                         </div>
                         {form.phase === opt.value && (
-                          <CheckCircle className="w-6 h-6 text-purple-400 flex-shrink-0" />
+                          <CheckCircle className="w-6 h-6 text-teal-400 flex-shrink-0" />
                         )}
                       </div>
                     </button>
@@ -473,8 +473,8 @@ export default function OnboardingWizard({ onComplete }) {
                   </div>
 
                   {estimatedEndDate && (
-                    <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20">
-                      <p className="text-sm text-indigo-300">
+                    <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20">
+                      <p className="text-sm text-cyan-300">
                         📅 Odhadovaný konec přípravy: <strong>{estimatedEndDate}</strong>
                       </p>
                       <p className="text-xs text-slate-500 mt-1">
@@ -671,7 +671,7 @@ export default function OnboardingWizard({ onComplete }) {
               <Button
                 onClick={goNext}
                 disabled={!canGoNext() || isSubmitting}
-                className="bg-purple-600 hover:bg-purple-700 text-white min-w-[140px]"
+                className="bg-teal-600 hover:bg-teal-700 text-white min-w-[140px]"
               >
                 {isSubmitting ? (
                   <Loader2 className="w-4 h-4 animate-spin" />

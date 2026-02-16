@@ -40,7 +40,7 @@ function ContentDots({ topic }) {
     <div className="flex items-center gap-1.5">
       {dots.map(d => (
         <div key={d.key} className="group relative flex items-center gap-1">
-          <div className={`w-2 h-2 rounded-full transition-all ${d.has ? 'bg-emerald-400 shadow-sm shadow-emerald-400/50' : 'bg-slate-300 dark:bg-slate-600'}`} />
+          <div className={`w-2 h-2 rounded-full transition-all ${d.has ? 'bg-emerald-400 shadow-sm shadow-emerald-400/50' : 'bg-slate-300 dark:bg-slate-700'}`} />
           <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-0.5 text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
             {d.label}: {d.has ? '✓' : '—'}
           </span>
@@ -82,7 +82,7 @@ function TopicCard({ topic, mastery }) {
               {score > 0 && (
                 <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded ${
                   score >= 80 ? 'text-emerald-600 bg-emerald-500/10' :
-                  score >= 50 ? 'text-purple-600 bg-purple-500/10' :
+                  score >= 50 ? 'text-amber-600 bg-amber-500/10' :
                   score >= 20 ? 'text-amber-600 bg-amber-500/10' :
                   'text-slate-500 bg-slate-500/10'
                 }`}>{Math.round(score)}%</span>
@@ -302,7 +302,7 @@ export default function StudiumV3() {
   }, [okruhy, selectedObor, allTopics]);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-gradient-to-b dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
+    <div className="min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
 
         {/* Header */}
@@ -335,7 +335,7 @@ export default function StudiumV3() {
               placeholder="Hledat témata, obory, okruhy..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-slate-50 dark:bg-slate-900/70 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 placeholder:text-slate-500 focus:border-teal-500/50 focus:ring-teal-500/20"
+              className="pl-10 bg-slate-50 dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 placeholder:text-slate-500 focus:border-teal-500/50 focus:ring-teal-500/20"
             />
             {searchQuery && (
               <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 dark:text-slate-300">
@@ -348,7 +348,7 @@ export default function StudiumV3() {
           <Button
             variant="outline"
             onClick={() => setShowFilters(!showFilters)}
-            className={`gap-2 border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/70 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 ${showFilters ? 'border-teal-500/50 text-teal-700 dark:text-teal-300' : ''}`}
+            className={`gap-2 border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 ${showFilters ? 'border-teal-500/50 text-teal-700 dark:text-teal-300' : ''}`}
           >
             <SlidersHorizontal className="w-4 h-4" />
             Filtry
@@ -363,13 +363,13 @@ export default function StudiumV3() {
           <div className="flex border border-slate-300 dark:border-slate-700 rounded-md overflow-hidden">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-2 ${viewMode === 'grid' ? 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white' : 'bg-slate-50 dark:bg-slate-900/70 text-slate-400 hover:text-slate-700 dark:text-slate-300'}`}
+              className={`p-2 ${viewMode === 'grid' ? 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white' : 'bg-slate-50 dark:bg-slate-900 text-slate-400 hover:text-slate-700 dark:text-slate-300'}`}
             >
               <LayoutGrid className="w-4 h-4" />
             </button>
             <button
               onClick={() => setViewMode('grouped')}
-              className={`p-2 ${viewMode === 'grouped' ? 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white' : 'bg-slate-50 dark:bg-slate-900/70 text-slate-400 hover:text-slate-700 dark:text-slate-300'}`}
+              className={`p-2 ${viewMode === 'grouped' ? 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white' : 'bg-slate-50 dark:bg-slate-900 text-slate-400 hover:text-slate-700 dark:text-slate-300'}`}
             >
               <Layers className="w-4 h-4" />
             </button>
@@ -381,7 +381,7 @@ export default function StudiumV3() {
             className={`px-3 py-2 rounded-lg text-xs font-medium border transition-all ${
               contentOnly 
                 ? 'bg-teal-50 dark:bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-300 dark:border-teal-500/30' 
-                : 'bg-slate-50 dark:bg-slate-900/70 text-slate-500 dark:text-slate-400 border-slate-300 dark:border-slate-700'
+                : 'bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 border-slate-300 dark:border-slate-700'
             }`}
           >
             {contentOnly ? '✓ Pouze s obsahem' : 'Pouze s obsahem'}
@@ -389,7 +389,7 @@ export default function StudiumV3() {
 
           {/* Sort */}
           <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-[160px] bg-slate-50 dark:bg-slate-900/70 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300">
+            <SelectTrigger className="w-[160px] bg-slate-50 dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300">
               <SelectValue />
             </SelectTrigger>
             <SelectContent className="bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700">

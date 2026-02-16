@@ -314,13 +314,13 @@ export default function TestSession() {
               const isSelected = selectedAnswer === key;
               const isCorrectOption = key === currentQuestion.correct_answer;
               
-              let style = 'border-slate-200 dark:border-slate-700 hover:border-purple-300 dark:hover:border-purple-600';
+              let style = 'border-slate-200 dark:border-slate-700 hover:border-teal-300 dark:hover:border-teal-600';
               if (isRevealed) {
                 if (isCorrectOption) style = 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20';
                 else if (isSelected && !isCorrectOption) style = 'border-red-500 bg-red-50 dark:bg-red-900/20';
                 else style = 'border-slate-200 dark:border-slate-700 opacity-60';
               } else if (isSelected) {
-                style = 'border-purple-500 bg-purple-50 dark:bg-purple-900/20 ring-2 ring-purple-500/30';
+                style = 'border-teal-500 bg-teal-50 dark:bg-teal-900/20 ring-2 ring-teal-500/30';
               }
 
               return (
@@ -334,7 +334,7 @@ export default function TestSession() {
                     <span className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 ${
                       isRevealed && isCorrectOption ? 'bg-emerald-500 text-white border-emerald-500' :
                       isRevealed && isSelected && !isCorrectOption ? 'bg-red-500 text-white border-red-500' :
-                      isSelected ? 'bg-purple-500 text-white border-purple-500' :
+                      isSelected ? 'bg-teal-500 text-white border-teal-500' :
                       'border-slate-300 dark:border-slate-600 text-slate-500'
                     }`}>
                       {key}
@@ -370,7 +370,7 @@ export default function TestSession() {
               <Button
                 onClick={handleConfirm}
                 disabled={!selectedAnswer}
-                className="flex-1 h-12 bg-purple-600 hover:bg-purple-700"
+                className="flex-1 h-12 bg-teal-600 hover:bg-teal-700"
               >
                 Potvrdit odpověď
               </Button>

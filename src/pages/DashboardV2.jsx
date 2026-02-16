@@ -291,7 +291,7 @@ export default function DashboardV2() {
             <Link to={createPageUrl("Studium")}>
               <Card className="hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors cursor-pointer border-2">
                 <CardContent className="p-6 flex items-start gap-4">
-                  <div className="p-3 rounded-lg bg-teal-100 dark:bg-teal-900">
+                  <div className="p-3 rounded-lg bg-teal-100 dark:bg-teal-900/20">
                     <Brain className="w-6 h-6 text-teal-600 dark:text-teal-300" />
                   </div>
                   <div className="flex-1">
@@ -308,7 +308,7 @@ export default function DashboardV2() {
             <Link to={createPageUrl("FlashcardReviewV2")}>
               <Card className="hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors cursor-pointer border-2">
                 <CardContent className="p-6 flex items-start gap-4">
-                  <div className="p-3 rounded-lg bg-orange-100 dark:bg-orange-900">
+                  <div className="p-3 rounded-lg bg-orange-100 dark:bg-amber-900/20">
                     <Zap className="w-6 h-6 text-orange-600 dark:text-orange-300" />
                   </div>
                   <div className="flex-1">
@@ -325,7 +325,7 @@ export default function DashboardV2() {
             <Link to={createPageUrl("TestGeneratorV2")}>
               <Card className="hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors cursor-pointer border-2">
                 <CardContent className="p-6 flex items-start gap-4">
-                  <div className="p-3 rounded-lg bg-blue-100 dark:bg-blue-900">
+                  <div className="p-3 rounded-lg bg-blue-100 dark:bg-blue-900/20">
                     <Target className="w-6 h-6 text-blue-600 dark:text-blue-300" />
                   </div>
                   <div className="flex-1">
@@ -407,7 +407,7 @@ export default function DashboardV2() {
                   className="flex items-center justify-between p-3 rounded-lg border"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-yellow-100 dark:bg-amber-900/20 flex items-center justify-center">
                       <Award className="w-5 h-5 text-yellow-600 dark:text-yellow-300" />
                     </div>
                     <div>

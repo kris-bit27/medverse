@@ -3,27 +3,13 @@ import { useMutation } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
 import { callApi } from '@/lib/api';
-import { X, Send, Loader2, Minimize2, Maximize2, Trash2, Brain, Zap, HelpCircle, StickyNote, Check } from 'lucide-react';
+import { X, Send, Loader2, Minimize2, Maximize2, Trash2, Brain, Zap, HelpCircle, StickyNote, Check, Activity } from 'lucide-react';
 import { toast } from 'sonner';
 
-/* Hippo AI Logo — Medical cross + pulse line */
-const HippoLogo = ({ size = 28, className = '' }) => (
-  <svg viewBox="0 0 32 32" width={size} height={size} className={className} fill="none">
-    <defs>
-      <linearGradient id="hippo-grad" x1="0" y1="0" x2="32" y2="32">
-        <stop offset="0%" stopColor="#14b8a6" />
-        <stop offset="100%" stopColor="#06b6d4" />
-      </linearGradient>
-    </defs>
-    <rect x="2" y="2" width="28" height="28" rx="8" fill="url(#hippo-grad)" opacity="0.15" />
-    {/* Cross */}
-    <rect x="13" y="7" width="6" height="18" rx="1.5" fill="url(#hippo-grad)" />
-    <rect x="7" y="13" width="18" height="6" rx="1.5" fill="url(#hippo-grad)" />
-    {/* Pulse line overlay */}
-    <polyline 
-      points="5,16 10,16 12,11 14,20 16,14 18,18 20,16 27,16" 
-      stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" opacity="0.9"
-    />
+/* Hippo AI logo — stylized H with pulse line */
+const HippoLogo = ({ size = 20 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 6v12M20 6v12M4 12h4l2-3 2 6 2-6 2 3h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 );
 
@@ -74,16 +60,16 @@ export const FloatingCopilot = ({ topicContent, topicTitle, topicId }) => {
         .slice(-6)
         .map(m => `${m.role === 'user' ? 'Student' : 'Hippo'}: ${m.content}`)
         .join('\n');
-      const conversationContext = recentHistory
-        ? `\n\n=== PŘEDCHOZÍ KONVERZACE ===\n${recentHistory}\n=== KONEC ===` : '';
+      const ctx = recentHistory ? `\n\n=== PŘEDCHOZÍ KONVERZACE ===\n${recentHistory}\n=== KONEC ===` : '';
 
       const data = await callApi('invokeEduLLM', {
         mode: 'copilot',
         entityContext: { entityType: 'topic', topic: { title: topicTitle } },
-        userPrompt: `${text}${conversationContext}`,
+        userPrompt: `${text}${ctx}`,
         pageContext: topicContent ? topicContent.substring(0, 6000) : '',
         allowWeb: false,
       });
+
       const answer = data.text || data.answer || (typeof data === 'string' ? data : 'Omlouvám se, nepodařilo se vygenerovat odpověď.');
       setMessages(prev => [...prev, { role: 'assistant', content: answer, timestamp: Date.now() }]);
     } catch (err) {
@@ -109,7 +95,7 @@ export const FloatingCopilot = ({ topicContent, topicTitle, topicId }) => {
     },
     onSuccess: (_, msgIndex) => {
       setSavedIdx(prev => new Set([...prev, msgIndex]));
-      toast.success('Uloženo do poznámek!');
+      toast.success('Uloženo do poznámek');
     },
     onError: () => toast.error('Chyba při ukládání'),
   });
@@ -118,47 +104,49 @@ export const FloatingCopilot = ({ topicContent, topicTitle, topicId }) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(input); }
   };
 
-  // Floating button
+  /* ─── Closed: floating button ─── */
   if (!isOpen) {
     return (
-      <button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-7 right-44 z-[170] h-12 w-12 rounded-xl
-          bg-gradient-to-br from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500
-          shadow-lg shadow-teal-500/20 hover:shadow-teal-500/40
+      <button onClick={() => setIsOpen(true)}
+        className="fixed bottom-7 right-44 z-[170] h-11 w-11 rounded-xl
+          bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent-2))]
+          shadow-[var(--mn-shadow-1)] hover:shadow-[var(--mn-shadow-2)]
           flex items-center justify-center transition-all hover:scale-105 active:scale-95
-          border border-teal-500/30"
+          border border-[hsl(var(--mn-accent)/0.3)] text-white"
         title="Hippo AI — studijní asistent"
       >
-        <HippoLogo size={26} />
+        <HippoLogo size={18} />
       </button>
     );
   }
 
+  /* ─── Open: chat panel ─── */
   return (
     <div className={`fixed z-[200] transition-all duration-200 ${
-      isMinimized ? 'bottom-7 right-44 w-64 h-12' : 'bottom-5 right-5 w-[370px] h-[520px] sm:right-44'
+      isMinimized ? 'bottom-7 right-44 w-56 h-11' : 'bottom-5 right-5 w-[370px] h-[520px] sm:right-44'
     }`}>
-      <div className="h-full flex flex-col rounded-2xl border border-slate-700/80 bg-slate-900 shadow-2xl shadow-black/50 overflow-hidden">
+      <div className="h-full flex flex-col rounded-[var(--mn-radius)] border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface))] shadow-[var(--mn-shadow-2)] overflow-hidden">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-3.5 py-2.5 bg-gradient-to-r from-teal-900/30 to-cyan-900/20 border-b border-slate-800 shrink-0">
+        <div className="flex items-center justify-between px-3.5 py-2.5 bg-[hsl(var(--mn-surface-2))] border-b border-[hsl(var(--mn-border))] shrink-0">
           <div className="flex items-center gap-2">
-            <HippoLogo size={28} />
+            <div className="h-7 w-7 rounded-lg bg-[hsl(var(--mn-accent))] text-white flex items-center justify-center">
+              <HippoLogo size={16} />
+            </div>
             <div>
-              <p className="text-xs font-bold text-white leading-none tracking-wide">HIPPO AI</p>
+              <p className="text-xs font-bold text-[hsl(var(--mn-text))] leading-none tracking-wide">HIPPO AI</p>
               {!isMinimized && topicTitle && (
-                <p className="text-[9px] text-slate-500 mt-0.5 truncate max-w-[170px]">{topicTitle}</p>
+                <p className="text-[9px] text-[hsl(var(--mn-muted))] mt-0.5 truncate max-w-[170px]">{topicTitle}</p>
               )}
             </div>
           </div>
           <div className="flex items-center gap-0.5">
             <button onClick={() => setIsMinimized(!isMinimized)}
-              className="p-1.5 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-slate-800 transition-colors">
+              className="p-1.5 rounded-lg text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))] hover:bg-[hsl(var(--mn-elevated))] transition-colors">
               {isMinimized ? <Maximize2 className="h-3.5 w-3.5" /> : <Minimize2 className="h-3.5 w-3.5" />}
             </button>
             <button onClick={() => setIsOpen(false)}
-              className="p-1.5 rounded-lg text-slate-500 hover:text-red-400 hover:bg-slate-800 transition-colors">
+              className="p-1.5 rounded-lg text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-danger))] hover:bg-[hsl(var(--mn-elevated))] transition-colors">
               <X className="h-3.5 w-3.5" />
             </button>
           </div>
@@ -173,11 +161,13 @@ export const FloatingCopilot = ({ topicContent, topicTitle, topicId }) => {
                   <div className="relative group max-w-[88%]">
                     <div className={`rounded-2xl px-3 py-2 text-[13px] leading-relaxed ${
                       msg.role === 'user'
-                        ? 'bg-teal-600 text-white rounded-br-sm'
-                        : 'bg-slate-800/80 text-slate-200 border border-slate-700/60 rounded-bl-sm'
+                        ? 'bg-[hsl(var(--mn-accent))] text-white rounded-br-sm'
+                        : 'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-text))] border border-[hsl(var(--mn-border))] rounded-bl-sm'
                     }`}>
                       <p className="whitespace-pre-wrap">{msg.content}</p>
                     </div>
+                    
+                    {/* Save to notes */}
                     {msg.role === 'assistant' && i > 0 && user && topicId && (
                       <button
                         onClick={() => !savedIdx.has(i) && saveToNotes.mutate(i)}
@@ -185,8 +175,8 @@ export const FloatingCopilot = ({ topicContent, topicTitle, topicId }) => {
                         className={`absolute -bottom-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity
                           flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium
                           ${savedIdx.has(i) 
-                            ? 'bg-green-500/20 text-green-400 cursor-default' 
-                            : 'bg-slate-700 text-slate-400 hover:text-teal-300 hover:bg-slate-600 cursor-pointer'
+                            ? 'bg-[hsl(var(--mn-success)/0.15)] text-[hsl(var(--mn-success))] cursor-default' 
+                            : 'bg-[hsl(var(--mn-elevated))] text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-accent))] cursor-pointer border border-[hsl(var(--mn-border))]'
                           }`}
                         title="Uložit do poznámek"
                       >
@@ -197,14 +187,16 @@ export const FloatingCopilot = ({ topicContent, topicTitle, topicId }) => {
                 </div>
               ))}
 
+              {/* Quick actions */}
               {messages.length === 1 && !loading && (
                 <div className="flex flex-wrap gap-1.5 mt-1">
                   {QUICK_ACTIONS.map((a, i) => {
                     const Icon = a.icon;
                     return (
                       <button key={i} onClick={() => sendMessage(a.prompt)}
-                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-800/60 border border-slate-700/60 text-[11px] text-slate-400 hover:text-teal-300 hover:border-teal-600/40 transition-colors">
-                        <Icon className="w-3 h-3" /> {a.label}
+                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[hsl(var(--mn-surface-2))] border border-[hsl(var(--mn-border))] text-[11px] text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-accent))] hover:border-[hsl(var(--mn-accent)/0.4)] transition-colors">
+                        <Icon className="w-3 h-3" />
+                        {a.label}
                       </button>
                     );
                   })}
@@ -213,14 +205,14 @@ export const FloatingCopilot = ({ topicContent, topicTitle, topicId }) => {
 
               {loading && (
                 <div className="flex justify-start">
-                  <div className="bg-slate-800/80 border border-slate-700/60 rounded-2xl rounded-bl-sm px-3 py-2.5">
+                  <div className="bg-[hsl(var(--mn-surface-2))] border border-[hsl(var(--mn-border))] rounded-2xl rounded-bl-sm px-3 py-2.5">
                     <div className="flex items-center gap-2">
                       <div className="flex gap-1">
-                        <div className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce" style={{animationDelay:'0ms'}} />
-                        <div className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce" style={{animationDelay:'150ms'}} />
-                        <div className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce" style={{animationDelay:'300ms'}} />
+                        <div className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--mn-accent))] animate-bounce" style={{animationDelay:'0ms'}} />
+                        <div className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--mn-accent))] animate-bounce" style={{animationDelay:'150ms'}} />
+                        <div className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--mn-accent))] animate-bounce" style={{animationDelay:'300ms'}} />
                       </div>
-                      <span className="text-[11px] text-slate-500">Hippo přemýšlí...</span>
+                      <span className="text-[11px] text-[hsl(var(--mn-muted))]">Hippo přemýšlí...</span>
                     </div>
                   </div>
                 </div>
@@ -229,7 +221,7 @@ export const FloatingCopilot = ({ topicContent, topicTitle, topicId }) => {
             </div>
 
             {/* Input */}
-            <div className="shrink-0 p-2.5 border-t border-slate-800 bg-slate-950">
+            <div className="shrink-0 p-2.5 border-t border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface))]">
               <div className="flex gap-1.5">
                 <input
                   ref={inputRef}
@@ -238,16 +230,16 @@ export const FloatingCopilot = ({ topicContent, topicTitle, topicId }) => {
                   onKeyDown={handleKeyDown}
                   placeholder="Zeptej se Hippo..."
                   disabled={loading}
-                  className="flex-1 bg-slate-800/80 border border-slate-700/60 rounded-xl px-3 py-2 text-[13px] text-slate-200 placeholder-slate-500 focus:ring-1 focus:ring-teal-500/40 focus:border-teal-500/40 outline-none disabled:opacity-50"
+                  className="flex-1 bg-[hsl(var(--mn-surface-2))] border border-[hsl(var(--mn-border))] rounded-xl px-3 py-2 text-[13px] text-[hsl(var(--mn-text))] placeholder-[hsl(var(--mn-muted))] focus:ring-1 focus:ring-[hsl(var(--mn-accent)/0.4)] focus:border-[hsl(var(--mn-accent)/0.4)] outline-none disabled:opacity-50"
                 />
                 <button onClick={() => sendMessage(input)} disabled={!input.trim() || loading}
-                  className="px-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white disabled:opacity-30 transition-colors">
+                  className="px-2.5 rounded-xl bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent-2))] text-white disabled:opacity-30 transition-colors">
                   {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
                 </button>
               </div>
               {messages.length > 2 && (
-                <button onClick={() => { setMessages([{ role: 'assistant', content: `Chat vymazán! ✨\nZeptej se mě na cokoliv o **${topicTitle}**.`, timestamp: Date.now() }]); setSavedIdx(new Set()); }}
-                  className="flex items-center gap-1 text-[10px] text-slate-600 hover:text-slate-400 mt-1.5 transition-colors">
+                <button onClick={() => { setMessages([{ role: 'assistant', content: `Chat vymazán!\nZeptej se mě na cokoliv o **${topicTitle}**.`, timestamp: Date.now() }]); setSavedIdx(new Set()); }}
+                  className="flex items-center gap-1 text-[10px] text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))] mt-1.5 transition-colors">
                   <Trash2 className="w-2.5 h-2.5" /> Vymazat
                 </button>
               )}
