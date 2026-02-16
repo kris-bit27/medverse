@@ -59,9 +59,11 @@ export const PAGES = {
   "Tools":              L(() => import('./pages/Tools')),
 
   // === Social ===
-  "Forum":              L(() => import('./pages/Forum')),
+  "Community":          L(() => import('./pages/Community')),
+  "Forum":              L(() => import('./pages/Community')),          // alias → Community
   "ForumThread":        L(() => import('./pages/ForumThread')),
-  "StudyGroups":        L(() => import('./pages/StudyGroups')),
+  "StudyGroup":         L(() => import('./pages/StudyGroup')),
+  "StudyGroups":        L(() => import('./pages/Community')),          // alias → Community
   "Leaderboards":       L(() => import('./pages/Leaderboards')),
 
   // === User (consolidated) ===

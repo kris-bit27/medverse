@@ -52,6 +52,7 @@ const navItems = [
   { name: 'Opakování', page: 'ReviewToday', icon: RefreshCw },
   { name: 'Testy', page: 'TestGeneratorV2', icon: Zap },
   { name: 'Studijní balíčky', page: 'StudyPackages', icon: Package },
+  { name: 'Komunita', page: 'Community', icon: Users },
   { name: 'Logbook', page: 'Logbook', icon: ClipboardList },
   { name: 'Články', page: 'Articles', icon: BookOpen },
   { 
@@ -64,6 +65,7 @@ const navItems = [
     ]
   },
   { name: 'Plánovač', page: 'StudyPlansV2', icon: CalendarIcon },
+  { name: 'Komunita', page: 'Community', icon: Users },
   { name: 'Vyhledávání', page: 'ScholarSearch', icon: Search },
 ];
 
@@ -247,7 +249,7 @@ export default function Layout({ children, currentPageName }) {
               // Regular nav items
               const isActive = currentPageName === item.page ||
                 (item.page === 'StudiumV2' && ['Okruhy', 'OkruhDetail', 'QuestionDetail', 'TestGenerator', 'TopicDetail', 'TopicDetailV2', 'Studium'].includes(currentPageName)) ||
-                (item.page === 'Forum' && ['Forum', 'ForumThread'].includes(currentPageName)) ||
+                (item.page === 'Community' && ['Community', 'Forum', 'ForumThread', 'StudyGroup', 'StudyGroups'].includes(currentPageName)) ||
                 (item.page === 'StudyPackages' && ['StudyPackages', 'StudyPackageCreate', 'StudyPackageDetail'].includes(currentPageName)) ||
                 (item.page === 'StudyPlanner' && ['StudyPlanner', 'StudyPlanCreate', 'StudyPlanDetail'].includes(currentPageName));
               const Icon = item.icon;
