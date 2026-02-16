@@ -330,7 +330,11 @@ export default function TopicDetailV5() {
             ) : (
               <div className="rounded-xl border border-slate-200 dark:border-[#2a2f42] bg-white dark:bg-[#131620] p-12 text-center">
                 <BookOpen className="w-12 h-12 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
-                <p className="text-slate-400 dark:text-[#5f637a]">Obsah zatím není k dispozici</p>
+                <p className="text-slate-500 dark:text-[#7a7f95] font-medium mb-1">Obsah se připravuje</p>
+                <p className="text-sm text-slate-400 dark:text-[#5f637a] mb-4">Toto téma bude brzy dostupné s plným textem, kartičkami a testovými otázkami.</p>
+                {contentCounts?.flashcards > 0 && (
+                  <p className="text-xs text-teal-500">✓ {contentCounts.flashcards} kartiček už je připraveno</p>
+                )}
               </div>
             )}
 

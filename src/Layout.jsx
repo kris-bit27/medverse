@@ -48,9 +48,12 @@ const publicPages = ['Landing', 'Pricing', 'Demo'];
 
 const navItems = [
   { name: 'Dashboard', page: 'Dashboard', icon: LayoutDashboard },
-  { name: 'Studium', page: 'StudiumV2', icon: GraduationCap },
+  { name: 'Studium', page: 'Studium', icon: GraduationCap },
   { name: 'Opakování', page: 'ReviewToday', icon: RefreshCw },
+  { name: 'Testy', page: 'TestGeneratorV2', icon: Zap },
   { name: 'Studijní balíčky', page: 'StudyPackages', icon: Package },
+  { name: 'Logbook', page: 'Logbook', icon: ClipboardList },
+  { name: 'Atestace', page: 'Atestace', icon: Crown },
   { name: 'Články', page: 'Articles', icon: BookOpen },
   { 
     name: 'Nástroje', 
@@ -62,9 +65,6 @@ const navItems = [
     ]
   },
   { name: 'Plánovač', page: 'StudyPlansV2', icon: CalendarIcon },
-  { name: 'Logbook', page: 'Logbook', icon: ClipboardList },
-  { name: 'Studijní skupiny', page: 'StudyGroups', icon: Users },
-  { name: 'Žebříčky', page: 'Leaderboards', icon: Trophy },
   { name: 'Vyhledávání', page: 'ScholarSearch', icon: Search },
 ];
 

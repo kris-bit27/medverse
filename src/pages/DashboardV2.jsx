@@ -258,12 +258,12 @@ export default function DashboardV2() {
           <CardContent>
             <p className="text-2xl font-bold">{dueCardsCount}</p>
             <p className="text-xs text-muted-foreground mt-2">
-              {dueCardsCount === 0 ? 'All done!' : 'cards waiting'}
+              {dueCardsCount === 0 ? 'Vše hotovo!' : 'kartiček čeká'}
             </p>
             {dueCardsCount > 0 && (
               <Button size="sm" className="mt-3 w-full" asChild>
                 <Link to={createPageUrl("FlashcardReviewV2")}>
-                  Start Review
+                  Začít opakování
                 </Link>
               </Button>
             )}
