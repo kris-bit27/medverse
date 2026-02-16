@@ -42,18 +42,33 @@ export default function TestGeneratorV2() {
   const [timeLimit, setTimeLimit] = useState(30); // minutes
   const [mode, setMode] = useState('practice'); // practice or timed
 
-  // Fetch obory
+  // Fetch obory with question counts
   const { data: obory = [] } = useQuery({
-    queryKey: ['obory'],
+    queryKey: ['obory-with-questions'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data: allObory, error } = await supabase
         .from('obory')
         .select('*')
         .eq('is_active', true)
-        .order('order_index');
+        .order('name');
       
       if (error) throw error;
-      return data || [];
+      
+      // Get question counts per obor
+      const { data: qCounts } = await supabase
+        .from('questions')
+        .select('topics!inner(obor_id)');
+      
+      const countMap = {};
+      (qCounts || []).forEach(q => {
+        const oborId = q.topics?.obor_id;
+        if (oborId) countMap[oborId] = (countMap[oborId] || 0) + 1;
+      });
+      
+      return (allObory || []).map(o => ({
+        ...o,
+        question_count: countMap[o.id] || 0
+      })).sort((a, b) => b.question_count - a.question_count);
     }
   });
 
@@ -218,9 +233,19 @@ export default function TestGeneratorV2() {
                   <SelectValue placeholder="Vyberte obor..." />
                 </SelectTrigger>
                 <SelectContent>
-                  {obory.map((obor) => (
+                  {obory.filter(o => o.question_count > 0).map((obor) => (
                     <SelectItem key={obor.id} value={obor.id}>
-                      {obor.name}
+                      {obor.name} ({obor.question_count} otázek)
+                    </SelectItem>
+                  ))}
+                  {obory.filter(o => o.question_count === 0).length > 0 && (
+                    <SelectItem value="__disabled__" disabled>
+                      ── Bez otázek ──
+                    </SelectItem>
+                  )}
+                  {obory.filter(o => o.question_count === 0).map((obor) => (
+                    <SelectItem key={obor.id} value={obor.id} disabled>
+                      {obor.name} (připravujeme)
                     </SelectItem>
                   ))}
                 </SelectContent>
