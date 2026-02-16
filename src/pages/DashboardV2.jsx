@@ -106,43 +106,17 @@ export default function DashboardV2() {
   });
 
   // Fetch study streak
-  const { data: studyStreak = 0 } = useQuery({
+  const { data: streakData = { current_streak: 0, today_active: false, total_study_days: 0 } } = useQuery({
     queryKey: ['studyStreak', user?.id],
     queryFn: async () => {
-      // Calculate streak from flashcard_review_sessions
-      const { data, error } = await supabase
-        .from('flashcard_review_sessions')
-        .select('created_at')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(30);
-      
+      const { data, error } = await supabase.rpc('get_study_streak', { p_user_id: user.id });
       if (error) throw error;
-      
-      if (!data || data.length === 0) return 0;
-      
-      // Calculate consecutive days
-      let streak = 0;
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      
-      for (let i = 0; i < data.length; i++) {
-        const sessionDate = new Date(data[i].created_at);
-        sessionDate.setHours(0, 0, 0, 0);
-        
-        const daysDiff = Math.floor((today - sessionDate) / (1000 * 60 * 60 * 24));
-        
-        if (daysDiff === streak) {
-          streak++;
-        } else {
-          break;
-        }
-      }
-      
-      return streak;
+      return data || { current_streak: 0, today_active: false, total_study_days: 0 };
     },
     enabled: !!user?.id
   });
+  const studyStreak = streakData.current_streak;
+  const todayActive = streakData.today_active;
 
   // Fetch recent test sessions
   const { data: recentTests = [] } = useQuery({
@@ -271,17 +245,17 @@ export default function DashboardV2() {
         </Card>
 
         {/* Study Streak */}
-        <Card>
+        <Card className={studyStreak >= 3 ? 'border-orange-200 bg-orange-50/50 dark:bg-orange-950/20' : ''}>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Flame className="w-4 h-4 text-orange-500" />
-              Study Streak
+              <Flame className={`w-4 h-4 ${studyStreak >= 3 ? 'text-orange-500' : 'text-muted-foreground'}`} />
+              Série
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">{studyStreak} dní</p>
+            <p className="text-2xl font-bold">{studyStreak} {studyStreak === 1 ? 'den' : studyStreak >= 2 && studyStreak <= 4 ? 'dny' : 'dní'} 🔥</p>
             <p className="text-xs text-muted-foreground mt-2">
-              Keep it going!
+              {todayActive ? '✅ Dnes aktivní' : studyStreak > 0 ? '⏰ Dnes ještě ne — udrž sérii!' : 'Začni studovat!'}
             </p>
           </CardContent>
         </Card>
@@ -291,13 +265,13 @@ export default function DashboardV2() {
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Award className="w-4 h-4 text-yellow-600" />
-              Achievementy
+              Úspěchy
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{recentAchievements.length}</p>
             <p className="text-xs text-muted-foreground mt-2">
-              unlocked
+              odemčeno
             </p>
           </CardContent>
         </Card>
