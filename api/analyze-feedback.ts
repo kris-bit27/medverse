@@ -105,54 +105,18 @@ ${content.substring(0, 8000)}`
         usage_type: 'message'
       });
 
-      // Update feedback with analysis
-      const newStatus = analysis.valid && analysis.auto_apply_safe ? 'approved' : 
-                        analysis.valid ? 'approved' : 'rejected';
+      // AI analyzes but NEVER auto-applies — admin must approve all changes
+      const newStatus = analysis.valid ? 'approved' : 'rejected';
 
       await supabase.from('content_feedback').update({
         status: newStatus,
         ai_analysis: analysis,
         ai_analyzed_at: new Date().toISOString(),
         severity: analysis.severity || fb.severity,
+        admin_notes: analysis.valid 
+          ? 'AI doporučuje opravu — čeká na schválení adminem.' 
+          : 'AI zamítl — feedback pravděpodobně neoprávněný.',
       }).eq('id', fb.id);
-
-      // Auto-apply if safe
-      if (analysis.valid && analysis.auto_apply_safe && analysis.suggested_fix && analysis.confidence >= 0.9) {
-        const currentContent = topic.full_text_content || '';
-        let updatedContent = currentContent;
-
-        // Try to find and replace the quoted text
-        if (fb.quoted_text && currentContent.includes(fb.quoted_text)) {
-          updatedContent = currentContent.replace(fb.quoted_text, analysis.suggested_fix);
-        }
-        // If no direct match but we have a fix, append a correction note
-        else if (analysis.suggested_fix && analysis.fix_location) {
-          // Don't auto-replace if we can't find exact match — mark for manual review
-          await supabase.from('content_feedback').update({
-            status: 'approved', // approved but not auto-applied
-            admin_notes: 'Auto-apply failed: exact text not found. Manual review needed.'
-          }).eq('id', fb.id);
-          
-          results.push({ id: fb.id, topic: topic.title, status: 'approved_manual', analysis });
-          continue;
-        }
-
-        if (updatedContent !== currentContent) {
-          await supabase.from('topics').update({
-            full_text_content: updatedContent,
-            updated_at: new Date().toISOString(),
-          }).eq('id', topic.id);
-
-          await supabase.from('content_feedback').update({
-            status: 'applied',
-            applied_at: new Date().toISOString(),
-            applied_by: 'auto',
-          }).eq('id', fb.id);
-
-          results.push({ id: fb.id, topic: topic.title, status: 'auto_applied', analysis });
-          continue;
-        }
-      }
 
       results.push({ id: fb.id, topic: topic.title, status: newStatus, analysis });
     }

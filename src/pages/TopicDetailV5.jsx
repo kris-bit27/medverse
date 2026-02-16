@@ -431,7 +431,8 @@ export default function TopicDetailV5() {
       {/* Floating AI Copilot */}
       <FloatingCopilot 
         topicContent={topic.full_text_content || topic.bullet_points_summary || ''} 
-        topicTitle={topic.title} 
+        topicTitle={topic.title}
+        topicId={topicId}
       />
     </div>
   );
