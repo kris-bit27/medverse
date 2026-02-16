@@ -65,7 +65,6 @@ const navItems = [
     ]
   },
   { name: 'Plánovač', page: 'StudyPlansV2', icon: CalendarIcon },
-  { name: 'Komunita', page: 'Community', icon: Users },
   { name: 'Vyhledávání', page: 'ScholarSearch', icon: Search },
 ];
 
