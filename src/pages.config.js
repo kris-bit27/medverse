@@ -31,7 +31,7 @@ export const PAGES = {
   // === Study ===
   "OkruhDetail":        L(() => import('./pages/OkruhDetail')),
   "QuestionDetail":     L(() => import('./pages/QuestionDetail')),
-  "FlashcardReviewV2":  L(() => import('./pages/FlashcardReviewV2')),
+  "FlashcardReviewV2":  L(() => import('./pages/ReviewToday')),
   "StudyPackages":      L(() => import('./pages/StudyPackages')),
   "StudyPackageDetail": L(() => import('./pages/StudyPackageDetail')),
   "StudyPackageCreate": L(() => import('./pages/StudyPackageCreate')),

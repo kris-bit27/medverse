@@ -1,8 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -21,6 +21,7 @@ import { toast } from 'sonner';
 export default function ReviewToday() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -29,11 +30,22 @@ export default function ReviewToday() {
     correct: 0
   });
   
-  // Filters
+  // Filters — pre-populate from URL params
   const [selectedObor, setSelectedObor] = useState('all');
   const [selectedOkruh, setSelectedOkruh] = useState('all');
   const [selectedTopic, setSelectedTopic] = useState('all');
   const [dueOnly, setDueOnly] = useState(false);
+  const [urlApplied, setUrlApplied] = useState(false);
+
+  // Apply URL params on mount
+  useEffect(() => {
+    if (urlApplied) return;
+    const topicParam = searchParams.get('topic');
+    if (topicParam) {
+      setSelectedTopic(topicParam);
+      setUrlApplied(true);
+    }
+  }, [searchParams, urlApplied]);
 
   // Fetch user's SRS progress for due filtering
   const { data: srsProgress = {} } = useQuery({

@@ -139,13 +139,13 @@ export default function Login() {
                     key={p.id}
                     type="button"
                     onClick={() => handleOAuth(p.id)}
-                    className="group flex w-full items-center justify-between rounded-xl border border-slate-800 bg-slate-900/40 px-4 py-3 text-left text-sm font-medium text-slate-100 transition hover:border-teal-500/40 hover:bg-slate-900"
+                    className="group flex w-full items-center justify-between rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40 px-4 py-3 text-left text-sm font-medium text-slate-700 dark:text-slate-100 transition hover:border-teal-500/40 hover:bg-teal-50 dark:hover:bg-slate-900"
                   >
                     <span className="flex items-center gap-3">
                       <span className={`h-2.5 w-2.5 rounded-full ${p.accent}`} />
                       Pokračovat přes {p.label}
                     </span>
-                    <span className="text-xs text-slate-500 group-hover:text-teal-300">OAuth</span>
+                    <span className="text-xs text-slate-400 dark:text-slate-500 group-hover:text-teal-500 dark:group-hover:text-teal-300">OAuth</span>
                   </button>
                 ))
               )}
@@ -153,22 +153,22 @@ export default function Login() {
 
             {showEmail && (
               <>
-                <div className="my-6 flex items-center gap-3 text-xs text-slate-500">
-                  <div className="h-px flex-1 bg-slate-800" />
+                <div className="my-6 flex items-center gap-3 text-xs text-slate-400 dark:text-slate-500">
+                  <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
                   nebo e-mail
-                  <div className="h-px flex-1 bg-slate-800" />
+                  <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
                 </div>
 
                 <form onSubmit={handleEmail} className="space-y-3">
                   <div className="space-y-1">
-                    <Label htmlFor="email" className="text-slate-300">E-mail</Label>
+                    <Label htmlFor="email" className="text-slate-600 dark:text-slate-300">E-mail</Label>
                     <Input
                       id="email"
                       type="email"
                       placeholder="name@example.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="border-slate-800 bg-slate-900/40 text-slate-100 placeholder:text-slate-600"
+                      className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-600"
                     />
                   </div>
                   <Button type="submit" className="w-full" disabled={submitting}>
@@ -179,7 +179,7 @@ export default function Login() {
             )}
 
             <div className="pt-6">
-              <Button variant="ghost" className="w-full text-slate-300" onClick={() => navigate('/')}>
+              <Button variant="ghost" className="w-full text-slate-500 dark:text-slate-300" onClick={() => navigate('/')}>
                 Zpět na web
               </Button>
             </div>
