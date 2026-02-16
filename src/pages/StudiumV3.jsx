@@ -171,6 +171,7 @@ export default function StudiumV3() {
   const [contentOnly, setContentOnly] = useState(false);
   const [viewMode, setViewMode] = useState('grid');
   const [showFilters, setShowFilters] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(60);
 
   // Fetch topics
   const { data: allTopics = [], isLoading } = useQuery({
@@ -261,6 +262,13 @@ export default function StudiumV3() {
 
     return filtered;
   }, [allTopics, searchQuery, selectedObor, selectedOkruh, sortBy, contentOnly, masteryMap]);
+
+  // Paginated visible topics for grid view
+  const visibleTopics = useMemo(() => filteredTopics.slice(0, visibleCount), [filteredTopics, visibleCount]);
+  const hasMore = filteredTopics.length > visibleCount;
+
+  // Reset pagination on filter change
+  React.useEffect(() => { setVisibleCount(60); }, [searchQuery, selectedObor, selectedOkruh, sortBy, contentOnly]);
 
   // Group by obor for grouped view
   const groupedByObor = useMemo(() => {
@@ -476,10 +484,23 @@ export default function StudiumV3() {
           </div>
         ) : viewMode === 'grid' ? (
           /* Grid View */
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredTopics.map(topic => (
-              <TopicCard key={topic.id} topic={topic} mastery={masteryMap[topic.id]} />
-            ))}
+          <div className="space-y-4">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {visibleTopics.map(topic => (
+                <TopicCard key={topic.id} topic={topic} mastery={masteryMap[topic.id]} />
+              ))}
+            </div>
+            {hasMore && (
+              <div className="flex justify-center pt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setVisibleCount(v => v + 60)}
+                  className="border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300"
+                >
+                  Načíst dalších 60 ({filteredTopics.length - visibleCount} zbývá)
+                </Button>
+              </div>
+            )}
           </div>
         ) : (
           /* Grouped View */
