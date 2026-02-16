@@ -38,7 +38,7 @@ const TABS = [
 function WarningsBanner({ warnings }) {
   if (!warnings?.length) return null;
   return (
-    <div className="rounded-xl border border-amber-300/40 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-500/5 p-4 mb-4">
+    <div className="rounded-xl border border-amber-300/40 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-500/5 p-4 mt-4">
       <div className="flex items-start gap-3">
         <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
         <div>
@@ -305,8 +305,6 @@ export default function TopicDetailV5() {
           </div>
         </div>
 
-        <WarningsBanner warnings={topic.warnings} />
-
         {/* ── Main grid: TOC | Content | Sidebar ── */}
         <div className="flex gap-6 items-start">
 
@@ -338,6 +336,9 @@ export default function TopicDetailV5() {
                 )}
               </div>
             )}
+
+            {/* Warnings / Verification needed */}
+            {currentContent && <WarningsBanner warnings={topic.warnings} />}
 
             {/* Sources */}
             {currentContent && topic.sources?.length > 0 && (
