@@ -26,7 +26,7 @@ const MODELS = {
 type ModelKey = keyof typeof MODELS;
 
 const MODE_MODEL_MAP: Record<string, ModelKey> = {
-  fulltext: 'opus', deep_dive: 'opus', high_yield: 'sonnet',
+  fulltext: 'sonnet', deep_dive: 'sonnet', high_yield: 'sonnet',
   flashcards: 'haiku', mcq: 'sonnet', review: 'gpt4o',
 };
 

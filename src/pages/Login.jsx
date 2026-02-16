@@ -8,11 +8,42 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft, CheckCircle2, Loader2 } from 'lucide-react';
 
+/* ── Official OAuth provider SVG logos ── */
+const GoogleLogo = () => (
+  <svg viewBox="0 0 24 24" className="w-5 h-5" xmlns="http://www.w3.org/2000/svg">
+    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+  </svg>
+);
+
+const AppleLogo = () => (
+  <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+  </svg>
+);
+
+const FacebookLogo = () => (
+  <svg viewBox="0 0 24 24" className="w-5 h-5" xmlns="http://www.w3.org/2000/svg">
+    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="#1877F2"/>
+  </svg>
+);
+
+const MicrosoftLogo = () => (
+  <svg viewBox="0 0 24 24" className="w-5 h-5" xmlns="http://www.w3.org/2000/svg">
+    <path d="M1 1h10.5v10.5H1z" fill="#F25022"/>
+    <path d="M12.5 1H23v10.5H12.5z" fill="#7FBA00"/>
+    <path d="M1 12.5h10.5V23H1z" fill="#00A4EF"/>
+    <path d="M12.5 12.5H23V23H12.5z" fill="#FFB900"/>
+  </svg>
+);
+
 const PROVIDER_META = [
-  { id: 'google', label: 'Google', icon: '🔵' },
-  { id: 'apple', label: 'Apple', icon: '🍎' },
-  { id: 'facebook', label: 'Facebook', icon: '🔷' },
-  { id: 'azure', label: 'Microsoft', icon: '🟢' }
+  { id: 'google', label: 'Google', Logo: GoogleLogo },
+  { id: 'apple', label: 'Apple', Logo: AppleLogo },
+  { id: 'facebook', label: 'Facebook', Logo: FacebookLogo },
+  { id: 'azure', label: 'Microsoft', Logo: MicrosoftLogo }
 ];
 
 const getRedirectTo = () => {
@@ -38,6 +69,7 @@ const PASSWORD_RULES = [
 
 export default function Login() {
   const navigate = useNavigate();
+  // 'login' | 'register' | 'reset' | 'reset-sent' | 'register-confirm'
   const [mode, setMode] = useState('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -92,16 +124,6 @@ export default function Login() {
     setSubmitting(false);
   };
 
-  const handleMagicLink = async (e) => {
-    e.preventDefault();
-    if (!email) { toast.error('Zadejte e-mail'); return; }
-    setSubmitting(true);
-    const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: getRedirectTo() } });
-    if (error) toast.error(error.message);
-    else setMode('magic-sent');
-    setSubmitting(false);
-  };
-
   const handleReset = async (e) => {
     e.preventDefault();
     if (!email) { toast.error('Zadejte e-mail'); return; }
@@ -112,7 +134,7 @@ export default function Login() {
     setSubmitting(false);
   };
 
-  if (mode === 'magic-sent' || mode === 'reset-sent' || mode === 'register-confirm') {
+  if (mode === 'reset-sent' || mode === 'register-confirm') {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-6">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(15,118,110,0.25),transparent_55%)]" />
@@ -122,14 +144,12 @@ export default function Login() {
               <CheckCircle2 className="w-8 h-8 text-teal-500" />
             </div>
             <h2 className="text-xl font-semibold">
-              {mode === 'magic-sent' && 'Odkaz odeslán!'}
-              {mode === 'reset-sent' && 'Odkaz pro reset odeslán!'}
-              {mode === 'register-confirm' && 'Registrace dokončena!'}
+              {mode === 'reset-sent' ? 'Odkaz pro reset odeslán!' : 'Registrace dokončena!'}
             </h2>
             <p className="text-sm text-muted-foreground">
-              {mode === 'magic-sent' && `Poslali jsme přihlašovací odkaz na ${email}. Zkontrolujte e-mail (i spam).`}
-              {mode === 'reset-sent' && `Odkaz pro obnovení hesla jsme poslali na ${email}. Platí 24 hodin.`}
-              {mode === 'register-confirm' && `Potvrzovací e-mail jsme poslali na ${email}. Klikněte na odkaz pro aktivaci účtu.`}
+              {mode === 'reset-sent'
+                ? `Odkaz pro obnovení hesla jsme poslali na ${email}. Platí 24 hodin.`
+                : `Potvrzovací e-mail jsme poslali na ${email}. Klikněte na odkaz pro aktivaci účtu.`}
             </p>
             <Button variant="outline" onClick={() => { setMode('login'); setPassword(''); setConfirmPassword(''); }}>
               <ArrowLeft className="w-4 h-4 mr-2" />Zpět na přihlášení
@@ -157,13 +177,11 @@ export default function Login() {
               <h1 className="text-3xl font-semibold leading-tight">
                 {mode === 'login' && 'Přihlášení'}
                 {mode === 'register' && 'Registrace'}
-                {mode === 'magic' && 'Přihlášení odkazem'}
                 {mode === 'reset' && 'Obnovení hesla'}
               </h1>
               <p className="text-sm text-muted-foreground">
-                {mode === 'login' && 'Pokračujte do studijního prostoru. Přihlaste se heslem, odkazem, nebo přes OAuth.'}
+                {mode === 'login' && 'Pokračujte do studijního prostoru. Přihlaste se heslem nebo přes OAuth.'}
                 {mode === 'register' && 'Vytvořte si účet a začněte se připravovat na atestaci.'}
-                {mode === 'magic' && 'Pošleme vám bezpečný jednorázový přihlašovací odkaz na e-mail.'}
                 {mode === 'reset' && 'Pošleme odkaz pro nastavení nového hesla.'}
               </p>
               <div className="mt-8 grid grid-cols-2 gap-3 text-xs text-muted-foreground">
@@ -175,6 +193,7 @@ export default function Login() {
           </div>
 
           <div className="p-8 md:p-10 bg-white/70 dark:bg-slate-950/70">
+            {/* ═══ LOGIN ═══ */}
             {mode === 'login' && (<>
               <div className="text-sm uppercase tracking-[0.25em] text-muted-foreground">Přihlášení</div>
               <div className="mt-1 text-2xl font-semibold">Vítejte zpět</div>
@@ -183,8 +202,11 @@ export default function Login() {
                   {providers.map((p) => (
                     <button key={p.id} type="button" onClick={() => handleOAuth(p.id)}
                       className="group flex w-full items-center justify-between rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40 px-4 py-3 text-left text-sm font-medium transition hover:border-teal-500/40 hover:bg-teal-50 dark:hover:bg-slate-900">
-                      <span className="flex items-center gap-3"><span>{p.icon}</span>Pokračovat přes {p.label}</span>
-                      <span className="text-xs text-muted-foreground group-hover:text-teal-500">OAuth</span>
+                      <span className="flex items-center gap-3">
+                        <p.Logo />
+                        Pokračovat přes {p.label}
+                      </span>
+                      <span className="text-xs text-muted-foreground group-hover:text-teal-500">→</span>
                     </button>
                   ))}
                 </div>
@@ -217,14 +239,12 @@ export default function Login() {
                   {submitting ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Přihlašuji...</> : 'Přihlásit se'}
                 </Button>
               </form>
-              <div className="mt-4 flex flex-col gap-2">
-                <button type="button" className="text-sm text-teal-600 hover:text-teal-500 text-center" onClick={() => setMode('magic')}>Přihlásit se bez hesla (magic link)</button>
-                <div className="text-center text-sm text-muted-foreground">
-                  Nemáte účet?{' '}<button type="button" className="text-teal-600 hover:text-teal-500 font-medium" onClick={() => { setMode('register'); setPassword(''); setConfirmPassword(''); }}>Zaregistrujte se</button>
-                </div>
+              <div className="mt-4 text-center text-sm text-muted-foreground">
+                Nemáte účet?{' '}<button type="button" className="text-teal-600 hover:text-teal-500 font-medium" onClick={() => { setMode('register'); setPassword(''); setConfirmPassword(''); }}>Zaregistrujte se</button>
               </div>
             </>)}
 
+            {/* ═══ REGISTER ═══ */}
             {mode === 'register' && (<>
               <div className="text-sm uppercase tracking-[0.25em] text-muted-foreground">Registrace</div>
               <div className="mt-1 text-2xl font-semibold">Vytvořit účet</div>
@@ -277,28 +297,7 @@ export default function Login() {
               </div>
             </>)}
 
-            {mode === 'magic' && (<>
-              <div className="text-sm uppercase tracking-[0.25em] text-muted-foreground">Magic Link</div>
-              <div className="mt-1 text-2xl font-semibold">Přihlášení bez hesla</div>
-              <form onSubmit={handleMagicLink} className="mt-6 space-y-3">
-                <div className="space-y-1">
-                  <Label htmlFor="magic-email">E-mail</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input id="magic-email" type="email" placeholder="vas@email.cz" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-9" autoComplete="email" />
-                  </div>
-                </div>
-                <Button type="submit" className="w-full" disabled={submitting}>
-                  {submitting ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Odesílám...</> : 'Poslat přihlašovací odkaz'}
-                </Button>
-              </form>
-              <div className="mt-4">
-                <button type="button" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setMode('login')}>
-                  <ArrowLeft className="w-3.5 h-3.5" />Zpět na přihlášení heslem
-                </button>
-              </div>
-            </>)}
-
+            {/* ═══ RESET ═══ */}
             {mode === 'reset' && (<>
               <div className="text-sm uppercase tracking-[0.25em] text-muted-foreground">Reset hesla</div>
               <div className="mt-1 text-2xl font-semibold">Obnovení hesla</div>

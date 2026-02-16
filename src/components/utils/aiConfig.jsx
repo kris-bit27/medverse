@@ -1,14 +1,16 @@
 /**
  * AI Model Configuration — Multi-model strategy
  * 
- * Opus 4.5    → fulltext, deep_dive (highest medical accuracy)
- * Sonnet 4    → high_yield, mcq, study plans (good balance)
+ * Sonnet 4    → fulltext, deep_dive, high_yield, mcq, study plans (cost-effective)
  * Haiku 4.5   → flashcards, copilot (fast & cheap)
  * GPT-4o      → content review (independent cross-model)
  * Gemini Flash → data analytics only (no medical content)
+ * 
+ * NOTE: Opus removed from production to control costs.
+ * Sonnet 4 provides comparable quality at 40% the price.
  */
 
-export const AI_VERSION_TAG = "medverse_multimodel_v2";
+export const AI_VERSION_TAG = "medverse_multimodel_v3";
 
 export const AI_MODELS = {
   OPUS:    { id: 'claude-opus-4-20250514',   label: 'Claude Opus 4.5',   provider: 'anthropic', inputPer1M: 5,    outputPer1M: 25 },
@@ -19,14 +21,14 @@ export const AI_MODELS = {
   // Legacy
   PRIMARY: 'claude-sonnet-4-20250514',
   FALLBACK: 'gemini-1.5-pro-002',
-  VERSION_TAG: "medverse_multimodel_v2",
+  VERSION_TAG: "medverse_multimodel_v3",
 };
 
 // Which model handles which task
 export const MODEL_ASSIGNMENTS = {
-  fulltext:    'opus',     // Best medical accuracy, web search
-  deep_dive:   'opus',     // Deep content needs best model
-  high_yield:  'sonnet',   // Extraction from fulltext, Sonnet is enough
+  fulltext:    'sonnet',   // Good accuracy, cost-effective ($3/$15 vs Opus $5/$25)
+  deep_dive:   'sonnet',   // Sonnet handles well, no need for Opus premium
+  high_yield:  'sonnet',   // Extraction from fulltext
   flashcards:  'haiku',    // Simple Q&A, fast & cheap
   mcq:         'sonnet',   // Needs clinical reasoning for distractors
   review:      'gpt4o',    // Independent cross-model review
