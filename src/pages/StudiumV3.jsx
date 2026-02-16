@@ -96,6 +96,13 @@ function TopicCard({ topic, mastery }) {
             {topic.title}
           </h3>
 
+          {/* No content indicator */}
+          {wordCount === 0 && (
+            <span className="inline-block text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 mb-2">
+              ⏳ Připravujeme obsah
+            </span>
+          )}
+
           {/* Okruh */}
           <p className="text-xs text-slate-500 mb-3">
             {topic.okruhy?.name}
@@ -161,6 +168,7 @@ export default function StudiumV3() {
   const [selectedObor, setSelectedObor] = useState('all');
   const [selectedOkruh, setSelectedOkruh] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
+  const [contentOnly, setContentOnly] = useState(false);
   const [viewMode, setViewMode] = useState('grid');
   const [showFilters, setShowFilters] = useState(false);
 
@@ -220,6 +228,10 @@ export default function StudiumV3() {
   const filteredTopics = useMemo(() => {
     let filtered = allTopics;
 
+    if (contentOnly) {
+      filtered = filtered.filter(t => t.full_text_content?.length > 100);
+    }
+
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       filtered = filtered.filter(t =>
@@ -248,7 +260,7 @@ export default function StudiumV3() {
     }
 
     return filtered;
-  }, [allTopics, searchQuery, selectedObor, selectedOkruh, sortBy]);
+  }, [allTopics, searchQuery, selectedObor, selectedOkruh, sortBy, contentOnly, masteryMap]);
 
   // Group by obor for grouped view
   const groupedByObor = useMemo(() => {
@@ -354,6 +366,18 @@ export default function StudiumV3() {
               <Layers className="w-4 h-4" />
             </button>
           </div>
+
+          {/* Content filter */}
+          <button
+            onClick={() => setContentOnly(!contentOnly)}
+            className={`px-3 py-2 rounded-lg text-xs font-medium border transition-all ${
+              contentOnly 
+                ? 'bg-teal-50 dark:bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-300 dark:border-teal-500/30' 
+                : 'bg-slate-50 dark:bg-slate-900/70 text-slate-500 dark:text-slate-400 border-slate-300 dark:border-slate-700'
+            }`}
+          >
+            {contentOnly ? '✓ Pouze s obsahem' : 'Pouze s obsahem'}
+          </button>
 
           {/* Sort */}
           <Select value={sortBy} onValueChange={setSortBy}>

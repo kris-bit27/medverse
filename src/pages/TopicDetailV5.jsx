@@ -13,7 +13,7 @@ import {
   ArrowLeft, ChevronRight, Clock, FileText, AlertTriangle,
   Brain, CheckCircle2, Copy, Check, List, PanelLeftClose
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 
 /* ─── Obor colors ─── */
@@ -270,9 +270,10 @@ export default function TopicDetailV5() {
               </span>
             )}
             {contentCounts?.questions > 0 && (
-              <span className="text-xs text-blue-500 flex items-center gap-1">
+              <Link to={`${createPageUrl('TestGeneratorV2')}`} 
+                className="text-xs text-blue-500 hover:text-blue-600 flex items-center gap-1 transition-colors">
                 <CheckCircle2 className="w-3.5 h-3.5" /> {contentCounts.questions} otázek
-              </span>
+              </Link>
             )}
           </div>
         </div>
@@ -374,9 +375,17 @@ export default function TopicDetailV5() {
               )}
               {showFlashcards && (
                 <div className="rounded-xl border border-teal-200 dark:border-teal-500/20 bg-white dark:bg-[#131620] p-5">
-                  <h3 className="text-sm font-semibold text-teal-700 dark:text-teal-300 mb-3 flex items-center gap-2 mn-ui-font">
-                    <Brain className="w-4 h-4" /> AI Kartičky
-                  </h3>
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-sm font-semibold text-teal-700 dark:text-teal-300 flex items-center gap-2 mn-ui-font">
+                      <Brain className="w-4 h-4" /> AI Kartičky
+                    </h3>
+                    {contentCounts?.flashcards > 0 && (
+                      <Link to={`${createPageUrl('ReviewToday')}?topic=${topicId}`}
+                        className="text-[11px] text-teal-600 dark:text-teal-400 hover:underline font-medium">
+                        Procvičit →
+                      </Link>
+                    )}
+                  </div>
                   <FlashcardGenerator topicId={topicId} topicContent={topic.full_text_content || topic.bullet_points_summary} />
                 </div>
               )}
@@ -397,9 +406,17 @@ export default function TopicDetailV5() {
             )}
             {showFlashcards && (
               <div className="rounded-xl border border-teal-200 dark:border-teal-500/20 bg-white dark:bg-[#131620] p-5">
-                <h3 className="text-sm font-semibold text-teal-700 dark:text-teal-300 mb-3 flex items-center gap-2 mn-ui-font">
-                  <Brain className="w-4 h-4" /> AI Kartičky
-                </h3>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-semibold text-teal-700 dark:text-teal-300 flex items-center gap-2 mn-ui-font">
+                    <Brain className="w-4 h-4" /> AI Kartičky
+                  </h3>
+                  {contentCounts?.flashcards > 0 && (
+                    <Link to={`${createPageUrl('ReviewToday')}?topic=${topicId}`}
+                      className="text-[11px] text-teal-600 dark:text-teal-400 hover:underline font-medium">
+                      Procvičit →
+                    </Link>
+                  )}
+                </div>
                 <FlashcardGenerator topicId={topicId} topicContent={topic.full_text_content || topic.bullet_points_summary} />
               </div>
             )}
