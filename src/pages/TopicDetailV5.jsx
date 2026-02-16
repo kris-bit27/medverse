@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import TopicNotes from '@/components/TopicNotes';
 import FlashcardGenerator from '@/components/FlashcardGenerator';
+import ContentFeedback from '@/components/ContentFeedback';
+import { FloatingCopilot } from '@/components/FloatingCopilot';
 import MedicalContent, { extractToc, TableOfContents, useActiveTocId } from '@/components/MedicalContent';
 import {
   BookOpen, Zap, Layers, StickyNote, Sparkles,
@@ -282,8 +284,8 @@ export default function TopicDetailV5() {
       {/* ── Content Area ── */}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-6">
 
-        {/* Tabs */}
-        <div className="flex items-center gap-2 mb-5">
+        {/* Tabs + Feedback */}
+        <div className="flex items-center justify-between gap-2 mb-5">
           <div className="inline-flex gap-1 p-1 rounded-xl bg-slate-100 dark:bg-[#191d29] border border-slate-200 dark:border-[#2a2f42]">
             {TABS.map(tab => {
               const has = topic[tab.field]?.length > 50;
@@ -303,6 +305,7 @@ export default function TopicDetailV5() {
               );
             })}
           </div>
+          <ContentFeedback topicId={topicId} topicTitle={topic.title} />
         </div>
 
         {/* ── Main grid: TOC | Content | Sidebar ── */}
@@ -424,6 +427,12 @@ export default function TopicDetailV5() {
           </div>
         )}
       </div>
+
+      {/* Floating AI Copilot */}
+      <FloatingCopilot 
+        topicContent={topic.full_text_content || topic.bullet_points_summary || ''} 
+        topicTitle={topic.title} 
+      />
     </div>
   );
 }

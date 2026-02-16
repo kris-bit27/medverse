@@ -11,6 +11,7 @@ import { Progress } from '@/components/ui/progress';
 import OnboardingWizard from '@/components/OnboardingWizard';
 import StudyTodayWidget from '@/components/StudyTodayWidget';
 import AttestationProgress from '@/components/AttestationProgress';
+import WeakSpotsWidget from '@/components/dashboard/WeakSpotsWidget';
 import { 
   Zap,
   BookOpen,
@@ -197,6 +198,9 @@ export default function DashboardV2() {
         <StudyTodayWidget />
         <AttestationProgress />
       </div>
+
+      {/* Weak spots */}
+      <WeakSpotsWidget />
 
       {/* Quick Stats */}
       <div className="grid md:grid-cols-4 gap-6">

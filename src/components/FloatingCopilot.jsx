@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { callApi } from '@/lib/api';
-import { MessageCircle, X, Send, Loader2, Minimize2, Maximize2, Trash2 } from 'lucide-react';
+import { X, Send, Loader2, Minimize2, Maximize2, Trash2, Sparkles, Brain, Zap, HelpCircle } from 'lucide-react';
+
+const QUICK_ACTIONS = [
+  { label: 'Shrň klíčové body', icon: Zap, prompt: 'Shrň mi nejdůležitější body z tohoto tématu ve 5 bodech.' },
+  { label: 'Vysvětli jednodušeji', icon: HelpCircle, prompt: 'Vysvětli mi toto téma jednoduše, jako bych byl student 3. ročníku.' },
+  { label: 'Atestační otázky', icon: Brain, prompt: 'Jaké otázky by mohly padnout u atestace z tohoto tématu?' },
+];
 
 export const FloatingCopilot = ({ topicContent, topicTitle }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,41 +15,34 @@ export const FloatingCopilot = ({ topicContent, topicTitle }) => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const inputRef = useRef(null);
 
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Load welcome message on first open
   useEffect(() => {
     if (isOpen && messages.length === 0) {
       setMessages([{
         role: 'assistant',
-        content: `👋 Ahoj! Jsem tvůj Copilot pro studium.\n\nZeptej se mě na cokoliv o tématu "${topicTitle}"!\n\nNapříklad:\n• Jaké jsou hlavní příznaky?\n• Vysvětli mi patofyziologii\n• Co je důležité si zapamatovat?`,
-        timestamp: new Date().toISOString()
+        content: `Ahoj! 👋 Jsem tvůj AI Copilot.\n\nPomohu ti s tématem **${topicTitle}**.\nZeptej se mě na cokoliv nebo použij rychlou akci níže.`,
+        timestamp: Date.now()
       }]);
+    }
+    if (isOpen && !isMinimized) {
+      setTimeout(() => inputRef.current?.focus(), 100);
     }
   }, [isOpen, topicTitle]);
 
-  const handleSend = async () => {
-    if (!input.trim() || loading) return;
+  const sendMessage = async (text) => {
+    if (!text?.trim() || loading) return;
 
-    const userMessage = {
-      role: 'user',
-      content: input.trim(),
-      timestamp: new Date().toISOString()
-    };
-
-    setMessages(prev => [...prev, userMessage]);
+    const userMsg = { role: 'user', content: text.trim(), timestamp: Date.now() };
+    setMessages(prev => [...prev, userMsg]);
     setInput('');
     setLoading(true);
 
     try {
-      // Build conversation history for context (last 6 messages = 3 exchanges)
       const recentHistory = messages
         .filter(m => m.role === 'user' || m.role === 'assistant')
         .slice(-6)
@@ -55,231 +50,173 @@ export const FloatingCopilot = ({ topicContent, topicTitle }) => {
         .join('\n');
 
       const conversationContext = recentHistory
-        ? `\n\n=== PŘEDCHOZÍ KONVERZACE ===\n${recentHistory}\n=== KONEC KONVERZACE ===`
+        ? `\n\n=== PŘEDCHOZÍ KONVERZACE ===\n${recentHistory}\n=== KONEC ===`
         : '';
 
       const data = await callApi('invokeEduLLM', {
         mode: 'copilot',
-        entityContext: {
-          entityType: 'topic',
-          topic: { title: topicTitle },
-        },
-        userPrompt: `${userMessage.content}${conversationContext}`,
+        entityContext: { entityType: 'topic', topic: { title: topicTitle } },
+        userPrompt: `${text}${conversationContext}`,
         pageContext: topicContent ? topicContent.substring(0, 6000) : '',
         allowWeb: false,
       });
 
-      const answerText = data.text || data.answer || (typeof data === 'string' ? data : 'Omlouvám se, nepodařilo se mi vygenerovat odpověď.');
-
-      const assistantMessage = {
+      const answer = data.text || data.answer || (typeof data === 'string' ? data : 'Omlouvám se, nepodařilo se vygenerovat odpověď.');
+      setMessages(prev => [...prev, { role: 'assistant', content: answer, timestamp: Date.now() }]);
+    } catch (err) {
+      console.error('[Copilot]', err);
+      setMessages(prev => [...prev, {
         role: 'assistant',
-        content: answerText,
-        metadata: data.metadata,
-        timestamp: new Date().toISOString()
-      };
-
-      setMessages(prev => [...prev, assistantMessage]);
-
-    } catch (error) {
-      console.error('[Copilot] Error:', error);
-
-      const errorMessage = {
-        role: 'assistant',
-        content: '❌ Omlouvám se, něco se pokazilo. Zkus to prosím znovu nebo se zeptej jinak.',
-        timestamp: new Date().toISOString()
-      };
-
-      setMessages(prev => [...prev, errorMessage]);
+        content: '❌ Nastala chyba. Zkus to znovu.',
+        timestamp: Date.now()
+      }]);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSend();
+      sendMessage(input);
     }
   };
 
-  const clearChat = () => {
-    setMessages([{
-      role: 'assistant',
-      content: `Chat vymazán! ✨\n\nZeptej se mě na cokoliv o tématu "${topicTitle}".`,
-      timestamp: new Date().toISOString()
-    }]);
-  };
-
-  // Floating button (closed state)
+  // Floating button
   if (!isOpen) {
     return (
-      <div className="fixed bottom-6 right-6 z-50">
-        <Button
-          onClick={() => setIsOpen(true)}
-          size="lg"
-          className="rounded-full h-16 w-16 shadow-lg hover:shadow-xl transition-all bg-gradient-to-br from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700"
-          title="Otevřít Copilot"
-        >
-          <MessageCircle className="h-7 w-7" />
-        </Button>
+      <button
+        onClick={() => setIsOpen(true)}
+        className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full 
+          bg-gradient-to-br from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500
+          shadow-lg shadow-teal-500/25 hover:shadow-teal-500/40
+          flex items-center justify-center transition-all hover:scale-105 active:scale-95"
+        title="AI Copilot"
+      >
+        <Sparkles className="h-6 w-6 text-white" />
         {messages.length > 1 && (
-          <Badge
-            variant="destructive"
-            className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 flex items-center justify-center"
-          >
-            {messages.length - 1}
-          </Badge>
+          <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">
+            {messages.filter(m => m.role === 'assistant').length - 1}
+          </span>
         )}
-      </div>
+      </button>
     );
   }
 
-  // Chat widget (open state)
+  // Chat widget
   return (
-    <div
-      className={`fixed bottom-6 right-6 z-50 transition-all ${
-        isMinimized ? 'w-80 h-16' : 'w-96 h-[600px]'
-      }`}
-    >
-      <Card className="h-full flex flex-col shadow-2xl border-2">
+    <div className={`fixed bottom-6 right-6 z-50 transition-all duration-200 ${
+      isMinimized ? 'w-72 h-14' : 'w-[380px] h-[560px]'
+    }`}>
+      <div className="h-full flex flex-col rounded-2xl border border-slate-700 bg-[#131620] shadow-2xl shadow-black/50 overflow-hidden">
+        
         {/* Header */}
-        <CardHeader className="flex-shrink-0 pb-3 bg-gradient-to-r from-blue-50 to-teal-50">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-600 to-teal-600 flex items-center justify-center">
-                <MessageCircle className="h-5 w-5 text-white" />
-              </div>
-              <div>
-                <CardTitle className="text-base">
-                  Copilot
-                </CardTitle>
-                <p className="text-xs text-muted-foreground">
-                  Claude Haiku 4
-                </p>
-              </div>
+        <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-[#131620] to-[#161a28] border-b border-slate-800 shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center">
+              <Sparkles className="h-4 w-4 text-white" />
             </div>
-            <div className="flex gap-1">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsMinimized(!isMinimized)}
-                className="h-8 w-8 p-0"
-                title={isMinimized ? "Rozbalit" : "Minimalizovat"}
-              >
-                {isMinimized ? (
-                  <Maximize2 className="h-4 w-4" />
-                ) : (
-                  <Minimize2 className="h-4 w-4" />
-                )}
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsOpen(false)}
-                className="h-8 w-8 p-0"
-                title="Zavřít"
-              >
-                <X className="h-4 w-4" />
-              </Button>
+            <div>
+              <p className="text-sm font-semibold text-white leading-none">AI Copilot</p>
+              {!isMinimized && topicTitle && (
+                <p className="text-[10px] text-slate-500 mt-0.5 truncate max-w-[180px]">📚 {topicTitle}</p>
+              )}
             </div>
           </div>
-          {!isMinimized && topicTitle && (
-            <p className="text-xs text-muted-foreground mt-2 line-clamp-1">
-              📚 {topicTitle}
-            </p>
-          )}
-        </CardHeader>
+          <div className="flex items-center gap-0.5">
+            <button onClick={() => setIsMinimized(!isMinimized)}
+              className="p-1.5 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-slate-800 transition-colors">
+              {isMinimized ? <Maximize2 className="h-3.5 w-3.5" /> : <Minimize2 className="h-3.5 w-3.5" />}
+            </button>
+            <button onClick={() => setIsOpen(false)}
+              className="p-1.5 rounded-lg text-slate-500 hover:text-red-400 hover:bg-slate-800 transition-colors">
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </div>
 
         {!isMinimized && (
           <>
             {/* Messages */}
-            <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {messages.map((msg, i) => (
-                <div
-                  key={i}
-                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div
-                    className={`max-w-[85%] rounded-2xl px-4 py-2.5 ${
-                      msg.role === 'user'
-                        ? 'bg-gradient-to-br from-blue-600 to-teal-600 text-white'
-                        : 'bg-gray-100 text-gray-900 border border-gray-200'
-                    }`}
-                  >
-                    <p className="text-sm whitespace-pre-wrap leading-relaxed">
-                      {msg.content}
-                    </p>
-                    {msg.metadata?.cost && (
-                      <p className="text-xs opacity-70 mt-1.5 flex items-center gap-1">
-                        💰 ${msg.metadata.cost.total}
-                        <span className="opacity-50">•</span>
-                        <span className="opacity-70">
-                          {msg.metadata.tokensUsed?.input_tokens + msg.metadata.tokensUsed?.output_tokens || 0} tokens
-                        </span>
-                      </p>
-                    )}
+                <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
+                    msg.role === 'user'
+                      ? 'bg-teal-600 text-white rounded-br-md'
+                      : 'bg-slate-800 text-slate-200 border border-slate-700 rounded-bl-md'
+                  }`}>
+                    <p className="whitespace-pre-wrap">{msg.content}</p>
                   </div>
                 </div>
               ))}
 
+              {/* Quick actions on first message */}
+              {messages.length === 1 && !loading && (
+                <div className="flex flex-wrap gap-1.5 mt-2">
+                  {QUICK_ACTIONS.map((a, i) => {
+                    const Icon = a.icon;
+                    return (
+                      <button key={i} onClick={() => sendMessage(a.prompt)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-xs text-slate-300 hover:text-teal-300 hover:border-teal-600/50 transition-colors">
+                        <Icon className="w-3 h-3" />
+                        {a.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
               {loading && (
                 <div className="flex justify-start">
-                  <div className="bg-gray-100 rounded-2xl px-4 py-2.5 border border-gray-200">
+                  <div className="bg-slate-800 border border-slate-700 rounded-2xl rounded-bl-md px-3.5 py-2.5">
                     <div className="flex items-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
-                      <span className="text-sm text-gray-600">Přemýšlím...</span>
+                      <div className="flex gap-1">
+                        <div className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce" style={{animationDelay:'0ms'}} />
+                        <div className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce" style={{animationDelay:'150ms'}} />
+                        <div className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce" style={{animationDelay:'300ms'}} />
+                      </div>
+                      <span className="text-xs text-slate-500">Přemýšlím...</span>
                     </div>
                   </div>
                 </div>
               )}
 
               <div ref={messagesEndRef} />
-            </CardContent>
+            </div>
 
             {/* Input */}
-            <div className="flex-shrink-0 p-4 border-t bg-gray-50">
+            <div className="shrink-0 p-3 border-t border-slate-800 bg-[#0e1118]">
               <div className="flex gap-2">
-                <Input
+                <input
+                  ref={inputRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Zeptej se..."
+                  onKeyDown={handleKeyDown}
+                  placeholder="Zeptej se mě..."
                   disabled={loading}
-                  className="flex-1 bg-white"
+                  className="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:ring-1 focus:ring-teal-500/50 focus:border-teal-500/50 outline-none disabled:opacity-50"
                 />
-                <Button
-                  onClick={handleSend}
+                <button
+                  onClick={() => sendMessage(input)}
                   disabled={!input.trim() || loading}
-                  size="sm"
-                  className="bg-gradient-to-br from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700"
+                  className="px-3 rounded-xl bg-teal-600 hover:bg-teal-500 text-white disabled:opacity-30 disabled:hover:bg-teal-600 transition-colors"
                 >
-                  {loading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Send className="h-4 w-4" />
-                  )}
-                </Button>
+                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                </button>
               </div>
-              {messages.length > 1 && (
-                <div className="flex gap-2 mt-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={clearChat}
-                    className="flex-1 text-xs h-8"
-                  >
-                    <Trash2 className="h-3 w-3 mr-1" />
-                    Vymazat chat
-                  </Button>
-                  <div className="text-xs text-muted-foreground flex items-center">
-                    {messages.length} zpráv
-                  </div>
-                </div>
+              {messages.length > 2 && (
+                <button onClick={() => {
+                  setMessages([{ role: 'assistant', content: `Chat vymazán! ✨\nZeptej se mě na cokoliv o **${topicTitle}**.`, timestamp: Date.now() }]);
+                }}
+                  className="flex items-center gap-1 text-[10px] text-slate-600 hover:text-slate-400 mt-2 transition-colors">
+                  <Trash2 className="w-3 h-3" /> Vymazat chat
+                </button>
               )}
             </div>
           </>
         )}
-      </Card>
+      </div>
     </div>
   );
 };
