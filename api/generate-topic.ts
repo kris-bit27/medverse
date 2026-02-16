@@ -273,6 +273,24 @@ export default async function handler(req: any, res: any) {
     if (authHeader?.startsWith('Bearer ')) { try { const { data } = await supabaseAdmin.auth.getUser(authHeader.replace('Bearer ', '')); userId = data?.user?.id || null; } catch {} }
     await trackUsage(userId, result.modelId, (result.usage.input_tokens || 0) + (result.usage.output_tokens || 0), result.cost.total, mode);
 
+    // Log to api_call_log for centralized cost tracking
+    try {
+      await supabaseAdmin.from('api_call_log').insert({
+        source: 'vercel-api',
+        model: result.modelId,
+        mode,
+        topic_title: ctx.title,
+        input_tokens: result.usage.input_tokens || 0,
+        output_tokens: result.usage.output_tokens || 0,
+        cache_read_tokens: result.usage.cache_read || 0,
+        cache_write_tokens: result.usage.cache_write || 0,
+        cost_usd: result.cost.total,
+        success: true,
+        elapsed_ms: Date.now() - startTime,
+        usage_type: 'message'
+      });
+    } catch (e) { console.error('[api_call_log]', e); }
+
     await setCache(mode, cacheContext, output);
 
     console.log(`[generate-topic] ✅ ${mode} done in ${Date.now() - startTime}ms cost=$${result.cost.total.toFixed(4)}`);
@@ -281,6 +299,19 @@ export default async function handler(req: any, res: any) {
   } catch (error: any) {
     const errorId = Math.random().toString(36).substring(7);
     console.error(`[generate-topic ERROR ${errorId}]`, error.message, error.stack?.substring(0, 300));
+    // Log failed call
+    try {
+      const mode = req.body?.mode ? normalizeMode(req.body.mode) : 'unknown';
+      const modelKey = req.body?.model_override || MODE_MODEL_MAP[mode] || 'sonnet';
+      await supabaseAdmin.from('api_call_log').insert({
+        source: 'vercel-api', model: MODELS[modelKey as ModelKey]?.id || 'unknown', mode,
+        topic_title: req.body?.context?.title,
+        input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, cache_write_tokens: 0,
+        cost_usd: 0, success: false,
+        error_message: error.message?.substring(0, 500),
+        elapsed_ms: Date.now() - startTime, usage_type: 'message'
+      });
+    } catch {}
     return res.status(500).json({ error: 'Generation failed', errorId, message: process.env.NODE_ENV === 'development' ? error.message : 'Please try again.' });
   }
 }
