@@ -227,7 +227,7 @@ export default function QuestionDetail() {
     <div className="p-6 lg:p-8 max-w-4xl mx-auto">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-6">
-        <Link to={createPageUrl('Atestace')} className="hover:text-teal-600 transition-colors">
+        <Link to={createPageUrl('Studium')} className="hover:text-teal-600 transition-colors">
           Studium
         </Link>
         {okruh && (
@@ -362,7 +362,7 @@ export default function QuestionDetail() {
       {/* Back button */}
       <div className="mt-8">
         <Button variant="ghost" asChild>
-          <Link to={okruh ? createPageUrl('OkruhDetail') + `?id=${okruh.id}` : createPageUrl('Atestace')}>
+          <Link to={okruh ? createPageUrl('OkruhDetail') + `?id=${okruh.id}` : createPageUrl('Studium')}>
             <ChevronLeft className="w-4 h-4 mr-2" />
             Zpět na {okruh?.title || 'Studium'}
           </Link>

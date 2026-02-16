@@ -35,7 +35,7 @@ export default function RecentActivity({
             <Clock className="w-8 h-8 mx-auto mb-2 opacity-50" />
             <p>Zatím žádná aktivita</p>
             <Button asChild className="mt-4" variant="outline">
-              <Link to={createPageUrl('Atestace')}>
+              <Link to={createPageUrl('Studium')}>
                 Začít se učit
               </Link>
             </Button>

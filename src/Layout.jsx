@@ -53,7 +53,6 @@ const navItems = [
   { name: 'Testy', page: 'TestGeneratorV2', icon: Zap },
   { name: 'Studijní balíčky', page: 'StudyPackages', icon: Package },
   { name: 'Logbook', page: 'Logbook', icon: ClipboardList },
-  { name: 'Atestace', page: 'Atestace', icon: Crown },
   { name: 'Články', page: 'Articles', icon: BookOpen },
   { 
     name: 'Nástroje', 

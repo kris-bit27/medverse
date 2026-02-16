@@ -71,9 +71,9 @@ export const PAGES = {
   "UserSettings":       L(() => import('./pages/AccountSettings')), // alias → AccountSettings
   "AICredits":          L(() => import('./pages/AICredits')),
 
-  // === Logbook / Atestace ===
+  // === Logbook ===
   "Logbook":            L(() => import('./pages/LogbookV2')),
-  "Atestace":           L(() => import('./pages/Atestace')),
+  "Atestace":           L(() => import('./pages/StudiumV3')),  // deprecated → redirect to Studium
 
   // === Search ===
   "Search":             L(() => import('./pages/Search')),

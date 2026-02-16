@@ -103,7 +103,7 @@ export default function OkruhDetail() {
     <div className="p-6 lg:p-8 max-w-6xl mx-auto">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-6">
-        <Link to={createPageUrl('Atestace')} className="hover:text-teal-600 transition-colors flex items-center gap-1">
+        <Link to={createPageUrl('Studium')} className="hover:text-teal-600 transition-colors flex items-center gap-1">
           <ChevronLeft className="w-4 h-4" />
           Studium
         </Link>
