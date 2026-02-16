@@ -26,7 +26,7 @@ export default function WeakSpotsWidget() {
 
   if (isLoading) {
     return (
-      <Card className="p-5 bg-slate-900/50 border-slate-800">
+      <Card className="p-5 border-slate-800">
         <div className="flex items-center gap-2 text-slate-400 text-sm">
           <Loader2 className="w-4 h-4 animate-spin" /> Načítám...
         </div>
@@ -36,7 +36,7 @@ export default function WeakSpotsWidget() {
 
   if (!weakSpots?.length) {
     return (
-      <Card className="p-5 bg-slate-900/50 border-slate-800">
+      <Card className="p-5 border-slate-800">
         <div className="flex items-center gap-2 mb-2">
           <Target className="w-4 h-4 text-amber-400" />
           <h3 className="text-sm font-semibold text-white">Slabá místa</h3>
@@ -49,7 +49,7 @@ export default function WeakSpotsWidget() {
   }
 
   return (
-    <Card className="p-5 bg-slate-900/50 border-slate-800">
+    <Card className="p-5 border-slate-800">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <TrendingDown className="w-4 h-4 text-amber-400" />
@@ -66,7 +66,7 @@ export default function WeakSpotsWidget() {
             <Link
               key={spot.topic_id}
               to={`${createPageUrl('TopicDetailV5')}?id=${spot.topic_id}`}
-              className="flex items-center gap-3 p-2.5 rounded-lg bg-slate-800/50 hover:bg-slate-800 transition-colors group"
+              className="flex items-center gap-3 p-2.5 rounded-lg bg-slate-800/40 hover:bg-slate-800/60 transition-colors group"
             >
               {/* Rank */}
               <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${

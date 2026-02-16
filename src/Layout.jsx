@@ -32,6 +32,7 @@ import {
   Shield,
   ClipboardList,
   MessageSquare,
+  Flag,
   Package,
   Calendar as CalendarIcon,
   Zap,
@@ -302,6 +303,19 @@ export default function Layout({ children, currentPageName }) {
                 >
                   <Zap className="w-5 h-5" />
                   Batch Generace
+                </Link>
+                <Link
+                  to={createPageUrl('AdminFeedback')}
+                  onClick={() => setSidebarOpen(false)}
+                  className={cn(
+                    "mn-sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
+                    currentPageName === 'AdminFeedback'
+                      ? "is-active"
+                      : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  )}
+                >
+                  <Flag className="w-5 h-5" />
+                  Content Feedback
                 </Link>
               </>
             )}

@@ -6,11 +6,24 @@ import { callApi } from '@/lib/api';
 import { X, Send, Loader2, Minimize2, Maximize2, Trash2, Brain, Zap, HelpCircle, StickyNote, Check } from 'lucide-react';
 import { toast } from 'sonner';
 
-/* 🦛 Hippo icon (inline SVG for performance) */
-const HippoIcon = ({ className = 'w-5 h-5' }) => (
-  <svg viewBox="0 0 24 24" fill="none" className={className} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="9" fill="currentColor" opacity="0.15" />
-    <text x="12" y="16" textAnchor="middle" fontSize="12" fill="currentColor" stroke="none" fontWeight="bold">🦛</text>
+/* Hippo AI Logo — Medical cross + pulse line */
+const HippoLogo = ({ size = 28, className = '' }) => (
+  <svg viewBox="0 0 32 32" width={size} height={size} className={className} fill="none">
+    <defs>
+      <linearGradient id="hippo-grad" x1="0" y1="0" x2="32" y2="32">
+        <stop offset="0%" stopColor="#14b8a6" />
+        <stop offset="100%" stopColor="#06b6d4" />
+      </linearGradient>
+    </defs>
+    <rect x="2" y="2" width="28" height="28" rx="8" fill="url(#hippo-grad)" opacity="0.15" />
+    {/* Cross */}
+    <rect x="13" y="7" width="6" height="18" rx="1.5" fill="url(#hippo-grad)" />
+    <rect x="7" y="13" width="18" height="6" rx="1.5" fill="url(#hippo-grad)" />
+    {/* Pulse line overlay */}
+    <polyline 
+      points="5,16 10,16 12,11 14,20 16,14 18,18 20,16 27,16" 
+      stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" opacity="0.9"
+    />
   </svg>
 );
 
@@ -39,7 +52,7 @@ export const FloatingCopilot = ({ topicContent, topicTitle, topicId }) => {
     if (isOpen && messages.length === 0) {
       setMessages([{
         role: 'assistant',
-        content: `Ahoj! 👋 Jsem **Hippo AI** — tvůj studijní asistent.\n\nPomohu ti s tématem **${topicTitle}**.\nZeptej se mě na cokoliv nebo vyber rychlou akci.`,
+        content: `Ahoj! Jsem **Hippo AI** — tvůj studijní asistent.\n\nPomohu ti s tématem **${topicTitle}**.\nZeptej se mě na cokoliv nebo vyber rychlou akci.`,
         timestamp: Date.now()
       }]);
     }
@@ -50,7 +63,6 @@ export const FloatingCopilot = ({ topicContent, topicTitle, topicId }) => {
 
   const sendMessage = async (text) => {
     if (!text?.trim() || loading) return;
-
     const userMsg = { role: 'user', content: text.trim(), timestamp: Date.now() };
     setMessages(prev => [...prev, userMsg]);
     setInput('');
@@ -62,10 +74,8 @@ export const FloatingCopilot = ({ topicContent, topicTitle, topicId }) => {
         .slice(-6)
         .map(m => `${m.role === 'user' ? 'Student' : 'Hippo'}: ${m.content}`)
         .join('\n');
-
       const conversationContext = recentHistory
-        ? `\n\n=== PŘEDCHOZÍ KONVERZACE ===\n${recentHistory}\n=== KONEC ===`
-        : '';
+        ? `\n\n=== PŘEDCHOZÍ KONVERZACE ===\n${recentHistory}\n=== KONEC ===` : '';
 
       const data = await callApi('invokeEduLLM', {
         mode: 'copilot',
@@ -74,16 +84,11 @@ export const FloatingCopilot = ({ topicContent, topicTitle, topicId }) => {
         pageContext: topicContent ? topicContent.substring(0, 6000) : '',
         allowWeb: false,
       });
-
       const answer = data.text || data.answer || (typeof data === 'string' ? data : 'Omlouvám se, nepodařilo se vygenerovat odpověď.');
       setMessages(prev => [...prev, { role: 'assistant', content: answer, timestamp: Date.now() }]);
     } catch (err) {
       console.error('[Hippo]', err);
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: '❌ Nastala chyba. Zkus to znovu.',
-        timestamp: Date.now()
-      }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: '❌ Nastala chyba. Zkus to znovu.', timestamp: Date.now() }]);
     } finally {
       setLoading(false);
     }
@@ -94,17 +99,11 @@ export const FloatingCopilot = ({ topicContent, topicTitle, topicId }) => {
       if (!user?.id || !topicId) throw new Error('Missing user/topic');
       const msg = messages[msgIndex];
       if (!msg) return;
-
       const question = messages[msgIndex - 1]?.content || '';
       const noteText = `**Hippo AI — ${new Date().toLocaleDateString('cs-CZ')}**\n\n` +
-        (question ? `> ${question}\n\n` : '') +
-        msg.content;
-
+        (question ? `> ${question}\n\n` : '') + msg.content;
       const { error } = await supabase.from('topic_notes').insert({
-        user_id: user.id,
-        topic_id: topicId,
-        content: noteText,
-        is_private: true,
+        user_id: user.id, topic_id: topicId, content: noteText, is_private: true,
       });
       if (error) throw error;
     },
@@ -116,13 +115,10 @@ export const FloatingCopilot = ({ topicContent, topicTitle, topicId }) => {
   });
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage(input);
-    }
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(input); }
   };
 
-  // Floating button — positioned LEFT of the float toolbar (which is at right:28px)
+  // Floating button
   if (!isOpen) {
     return (
       <button
@@ -134,26 +130,21 @@ export const FloatingCopilot = ({ topicContent, topicTitle, topicId }) => {
           border border-teal-500/30"
         title="Hippo AI — studijní asistent"
       >
-        <span className="text-xl">🦛</span>
+        <HippoLogo size={26} />
       </button>
     );
   }
 
-  // Chat widget — positioned to not overlap float toolbar
   return (
     <div className={`fixed z-[200] transition-all duration-200 ${
-      isMinimized 
-        ? 'bottom-7 right-44 w-64 h-12' 
-        : 'bottom-5 right-5 w-[370px] h-[520px] sm:right-44'
+      isMinimized ? 'bottom-7 right-44 w-64 h-12' : 'bottom-5 right-5 w-[370px] h-[520px] sm:right-44'
     }`}>
-      <div className="h-full flex flex-col rounded-2xl border border-slate-700/80 bg-[#131620] shadow-2xl shadow-black/50 overflow-hidden">
+      <div className="h-full flex flex-col rounded-2xl border border-slate-700/80 bg-slate-900 shadow-2xl shadow-black/50 overflow-hidden">
         
         {/* Header */}
         <div className="flex items-center justify-between px-3.5 py-2.5 bg-gradient-to-r from-teal-900/30 to-cyan-900/20 border-b border-slate-800 shrink-0">
           <div className="flex items-center gap-2">
-            <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center text-sm">
-              🦛
-            </div>
+            <HippoLogo size={28} />
             <div>
               <p className="text-xs font-bold text-white leading-none tracking-wide">HIPPO AI</p>
               {!isMinimized && topicTitle && (
@@ -187,8 +178,6 @@ export const FloatingCopilot = ({ topicContent, topicTitle, topicId }) => {
                     }`}>
                       <p className="whitespace-pre-wrap">{msg.content}</p>
                     </div>
-                    
-                    {/* Save to notes button — only on assistant messages, not the welcome */}
                     {msg.role === 'assistant' && i > 0 && user && topicId && (
                       <button
                         onClick={() => !savedIdx.has(i) && saveToNotes.mutate(i)}
@@ -201,18 +190,13 @@ export const FloatingCopilot = ({ topicContent, topicTitle, topicId }) => {
                           }`}
                         title="Uložit do poznámek"
                       >
-                        {savedIdx.has(i) ? (
-                          <><Check className="w-2.5 h-2.5" /> Uloženo</>
-                        ) : (
-                          <><StickyNote className="w-2.5 h-2.5" /> Poznámka</>
-                        )}
+                        {savedIdx.has(i) ? <><Check className="w-2.5 h-2.5" /> Uloženo</> : <><StickyNote className="w-2.5 h-2.5" /> Poznámka</>}
                       </button>
                     )}
                   </div>
                 </div>
               ))}
 
-              {/* Quick actions on first message */}
               {messages.length === 1 && !loading && (
                 <div className="flex flex-wrap gap-1.5 mt-1">
                   {QUICK_ACTIONS.map((a, i) => {
@@ -220,8 +204,7 @@ export const FloatingCopilot = ({ topicContent, topicTitle, topicId }) => {
                     return (
                       <button key={i} onClick={() => sendMessage(a.prompt)}
                         className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-800/60 border border-slate-700/60 text-[11px] text-slate-400 hover:text-teal-300 hover:border-teal-600/40 transition-colors">
-                        <Icon className="w-3 h-3" />
-                        {a.label}
+                        <Icon className="w-3 h-3" /> {a.label}
                       </button>
                     );
                   })}
@@ -242,12 +225,11 @@ export const FloatingCopilot = ({ topicContent, topicTitle, topicId }) => {
                   </div>
                 </div>
               )}
-
               <div ref={messagesEndRef} />
             </div>
 
             {/* Input */}
-            <div className="shrink-0 p-2.5 border-t border-slate-800 bg-[#0e1118]">
+            <div className="shrink-0 p-2.5 border-t border-slate-800 bg-slate-950">
               <div className="flex gap-1.5">
                 <input
                   ref={inputRef}
@@ -258,19 +240,13 @@ export const FloatingCopilot = ({ topicContent, topicTitle, topicId }) => {
                   disabled={loading}
                   className="flex-1 bg-slate-800/80 border border-slate-700/60 rounded-xl px-3 py-2 text-[13px] text-slate-200 placeholder-slate-500 focus:ring-1 focus:ring-teal-500/40 focus:border-teal-500/40 outline-none disabled:opacity-50"
                 />
-                <button
-                  onClick={() => sendMessage(input)}
-                  disabled={!input.trim() || loading}
-                  className="px-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white disabled:opacity-30 disabled:hover:bg-teal-600 transition-colors"
-                >
+                <button onClick={() => sendMessage(input)} disabled={!input.trim() || loading}
+                  className="px-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white disabled:opacity-30 transition-colors">
                   {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
                 </button>
               </div>
               {messages.length > 2 && (
-                <button onClick={() => {
-                  setMessages([{ role: 'assistant', content: `Chat vymazán! ✨\nZeptej se mě na cokoliv o **${topicTitle}**.`, timestamp: Date.now() }]);
-                  setSavedIdx(new Set());
-                }}
+                <button onClick={() => { setMessages([{ role: 'assistant', content: `Chat vymazán! ✨\nZeptej se mě na cokoliv o **${topicTitle}**.`, timestamp: Date.now() }]); setSavedIdx(new Set()); }}
                   className="flex items-center gap-1 text-[10px] text-slate-600 hover:text-slate-400 mt-1.5 transition-colors">
                   <Trash2 className="w-2.5 h-2.5" /> Vymazat
                 </button>

@@ -94,6 +94,7 @@ export const PAGES = {
   "AdminBatchMonitor":  L(() => import('./pages/AdminBatchMonitor')),
   "AdminConsole":       L(() => import('./pages/AdminConsole')),
   "AdminCostAnalytics": L(() => import('./pages/AdminCostAnalytics')),
+  "AdminFeedback":      L(() => import('./pages/AdminFeedback')),
   "AdminQuestionEdit":  L(() => import('./pages/AdminQuestionEdit')),
   "AdminQuestions":     L(() => import('./pages/AdminQuestions')),
   "AdminTaxonomy":      L(() => import('./pages/AdminTaxonomy')),

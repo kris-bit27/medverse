@@ -15,6 +15,7 @@ import {
   FileText,
   ChevronRight,
   Shield,
+  Flag,
   Plus
 } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
@@ -117,6 +118,14 @@ export default function Admin() {
       icon: BarChart3,
       href: createPageUrl('AdminCostAnalytics'),
       color: 'from-emerald-500 to-teal-600'
+    },
+    {
+      title: 'Content Feedback',
+      description: 'Nahlášené chyby v obsahu',
+      count: null,
+      icon: Flag,
+      href: createPageUrl('AdminFeedback'),
+      color: 'from-amber-500 to-red-500'
     }
   ];
 
