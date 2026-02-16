@@ -73,7 +73,6 @@ export const PAGES = {
 
   // === Logbook ===
   "Logbook":            L(() => import('./pages/LogbookV2')),
-  "Atestace":           L(() => import('./pages/StudiumV3')),  // deprecated → redirect to Studium
 
   // === Search ===
   "Search":             L(() => import('./pages/Search')),
