@@ -186,7 +186,7 @@ export default function TestSession() {
   if (questions.length === 0) {
     return (
       <div className="text-center py-20">
-        <BookOpen className="w-12 h-12 mx-auto text-slate-400 mb-4" />
+        <BookOpen className="w-12 h-12 mx-auto text-[hsl(var(--mn-muted))] mb-4" />
         <h2 className="text-xl font-bold mb-2">Žádné otázky</h2>
         <p className="text-muted-foreground mb-4">Pro vybraná témata nejsou dostupné otázky.</p>
         <Button asChild><Link to={createPageUrl('TestGeneratorV2')}>Zpět na generátor</Link></Button>
@@ -210,7 +210,7 @@ export default function TestSession() {
             score >= 60 ? 'bg-gradient-to-br from-amber-400 to-orange-500' :
             'bg-gradient-to-br from-red-400 to-pink-500'
           }`}>
-            <Trophy className="w-12 h-12 text-white" />
+            <Trophy className="w-12 h-12 text-[hsl(var(--mn-text))]" />
           </div>
           <h1 className="text-3xl font-bold mb-2">Test dokončen!</h1>
           <p className="text-5xl font-bold text-teal-600 mb-2">{score}%</p>
@@ -314,11 +314,11 @@ export default function TestSession() {
               const isSelected = selectedAnswer === key;
               const isCorrectOption = key === currentQuestion.correct_answer;
               
-              let style = 'border-slate-200 dark:border-slate-700 hover:border-teal-300 dark:hover:border-teal-600';
+              let style = 'border-[hsl(var(--mn-border))] hover:border-teal-300 dark:hover:border-teal-600';
               if (isRevealed) {
                 if (isCorrectOption) style = 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20';
                 else if (isSelected && !isCorrectOption) style = 'border-red-500 bg-red-50 dark:bg-red-900/20';
-                else style = 'border-slate-200 dark:border-slate-700 opacity-60';
+                else style = 'border-[hsl(var(--mn-border))] opacity-60';
               } else if (isSelected) {
                 style = 'border-teal-500 bg-teal-50 dark:bg-teal-900/20 ring-2 ring-teal-500/30';
               }
@@ -335,7 +335,7 @@ export default function TestSession() {
                       isRevealed && isCorrectOption ? 'bg-emerald-500 text-white border-emerald-500' :
                       isRevealed && isSelected && !isCorrectOption ? 'bg-red-500 text-white border-red-500' :
                       isSelected ? 'bg-teal-500 text-white border-teal-500' :
-                      'border-slate-300 dark:border-slate-600 text-slate-500'
+                      'border-[hsl(var(--mn-border))] dark:border-slate-600 text-[hsl(var(--mn-muted))]'
                     }`}>
                       {key}
                     </span>
@@ -357,7 +357,7 @@ export default function TestSession() {
             <Card className="mb-6 border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/10">
               <CardContent className="p-4">
                 <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-1">Vysvětlení</p>
-                <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                <p className="text-sm text-[hsl(var(--mn-muted))] leading-relaxed">
                   {currentQuestion.explanation}
                 </p>
               </CardContent>

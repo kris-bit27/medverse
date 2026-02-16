@@ -106,12 +106,12 @@ export default function TopicContentReviewPanel({ topic, aiResponse, onContentIm
           {/* Chybějící témata */}
           {aiResponse.missing_topics && aiResponse.missing_topics.length > 0 && (
             <div>
-              <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+              <p className="text-sm font-semibold text-[hsl(var(--mn-muted))] mb-2">
                 Chybějící témata:
               </p>
               <div className="flex flex-wrap gap-2">
                 {aiResponse.missing_topics.map((topic, idx) => (
-                  <Badge key={idx} variant="outline" className="bg-white dark:bg-slate-800">
+                  <Badge key={idx} variant="outline" className="bg-[hsl(var(--mn-elevated))]">
                     {topic}
                   </Badge>
                 ))}
@@ -121,7 +121,7 @@ export default function TopicContentReviewPanel({ topic, aiResponse, onContentIm
 
           {/* Akce pro zlepšení */}
           <div>
-            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
+            <p className="text-sm font-semibold text-[hsl(var(--mn-muted))] mb-3">
               Hippo může pomoci zlepšit text:
             </p>
             <div className="grid gap-2">
@@ -263,7 +263,7 @@ export default function TopicContentReviewPanel({ topic, aiResponse, onContentIm
 
             {improvedContent.missing_topics && improvedContent.missing_topics.length > 0 && (
               <div className="pt-3 border-t">
-                <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                <p className="text-sm font-semibold text-[hsl(var(--mn-muted))] mb-2">
                   Stále chybí:
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -277,7 +277,7 @@ export default function TopicContentReviewPanel({ topic, aiResponse, onContentIm
             )}
 
             <Alert>
-              <AlertDescription className="text-xs text-slate-600 dark:text-slate-400">
+              <AlertDescription className="text-xs text-[hsl(var(--mn-muted))]">
                 💡 Zkopírujte vylepšený obsah do editoru a případně ho dále upravte ručně.
               </AlertDescription>
             </Alert>

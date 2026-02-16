@@ -109,16 +109,16 @@ export default function Demo() {
   const [showAnswer, setShowAnswer] = useState(false);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950">
+    <div className="min-h-screen bg-[hsl(var(--mn-bg))]">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[hsl(var(--mn-bg)/0.8)] backdrop-blur-xl border-b border-[hsl(var(--mn-border))]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link to={createPageUrl('Landing')} className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-teal-500/20">
-                <Stethoscope className="w-6 h-6 text-white" />
+                <Stethoscope className="w-6 h-6 text-[hsl(var(--mn-text))]" />
               </div>
-              <span className="font-bold text-xl text-slate-900 dark:text-white">MedVerse</span>
+              <span className="font-bold text-xl text-[hsl(var(--mn-text))]">MedVerse</span>
             </Link>
 
             <div className="flex items-center gap-3">
@@ -135,16 +135,16 @@ export default function Demo() {
       </nav>
 
       {/* Header */}
-      <section className="pt-24 pb-8 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-slate-900/50">
+      <section className="pt-24 pb-8 px-4 sm:px-6 lg:px-8 bg-[hsl(var(--mn-surface))]/50">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-4">
+          <div className="flex items-center gap-2 text-sm text-[hsl(var(--mn-muted))] mb-4">
             <Play className="w-4 h-4" />
             Demo obsah
           </div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+          <h1 className="text-3xl font-bold text-[hsl(var(--mn-text))] mb-2">
             Vyzkoušejte MedVerse
           </h1>
-          <p className="text-slate-600 dark:text-slate-400">
+          <p className="text-[hsl(var(--mn-muted))]">
             Ukázka obsahu a funkcí platformy
           </p>
         </div>
@@ -154,7 +154,7 @@ export default function Demo() {
       <section className="py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <Tabs defaultValue="questions" className="space-y-6">
-            <TabsList className="bg-slate-100 dark:bg-slate-800 p-1">
+            <TabsList className="bg-[hsl(var(--mn-surface-2))] p-1">
               <TabsTrigger value="questions" className="flex items-center gap-2">
                 <GraduationCap className="w-4 h-4" />
                 Otázky
@@ -185,7 +185,7 @@ export default function Demo() {
                       onClick={() => { setSelectedQuestion(q); setShowAnswer(false); }}
                     >
                       <CardContent className="p-4">
-                        <h3 className="font-medium text-slate-900 dark:text-white mb-2">
+                        <h3 className="font-medium text-[hsl(var(--mn-text))] mb-2">
                           {q.title}
                         </h3>
                         <DifficultyIndicator level={q.difficulty} />
@@ -207,8 +207,8 @@ export default function Demo() {
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                      <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
-                        <p className="text-slate-700 dark:text-slate-300">
+                      <div className="p-4 bg-[hsl(var(--mn-surface-2))]/50 rounded-lg">
+                        <p className="text-[hsl(var(--mn-muted))]">
                           {selectedQuestion.question_text}
                         </p>
                       </div>
@@ -229,8 +229,8 @@ export default function Demo() {
                           className="space-y-4"
                         >
                           {Object.entries(selectedQuestion.answer_structured).map(([key, value]) => (
-                            <div key={key} className="p-4 border rounded-lg dark:border-slate-700">
-                              <h4 className="font-semibold text-slate-900 dark:text-white capitalize mb-2">
+                            <div key={key} className="p-4 border rounded-lg dark:border-[hsl(var(--mn-border))]">
+                              <h4 className="font-semibold text-[hsl(var(--mn-text))] capitalize mb-2">
                                 {key === 'pearls' ? '💡 Klinické perly' : key}
                               </h4>
                               <div className="prose prose-sm dark:prose-invert max-w-none">
@@ -255,7 +255,7 @@ export default function Demo() {
                     <Badge variant="outline">{demoArticle.read_time} min čtení</Badge>
                   </div>
                   <CardTitle className="text-2xl">{demoArticle.title}</CardTitle>
-                  <p className="text-slate-600 dark:text-slate-400">{demoArticle.summary}</p>
+                  <p className="text-[hsl(var(--mn-muted))]">{demoArticle.summary}</p>
                 </CardHeader>
                 <CardContent>
                   <div className="prose prose-slate dark:prose-invert max-w-none">
@@ -271,7 +271,7 @@ export default function Demo() {
                 <CardHeader>
                   <Badge variant="secondary" className="w-fit mb-2">Demo algoritmus</Badge>
                   <CardTitle className="text-2xl">{demoAlgorithm.title}</CardTitle>
-                  <p className="text-slate-600 dark:text-slate-400">{demoAlgorithm.description}</p>
+                  <p className="text-[hsl(var(--mn-muted))]">{demoAlgorithm.description}</p>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -282,20 +282,20 @@ export default function Demo() {
                           <div className={`p-4 rounded-lg border-2 ${
                             node.type === 'start' ? 'bg-teal-50 dark:bg-teal-900/20 border-teal-300 dark:border-teal-700' :
                             node.type === 'decision' ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-300 dark:border-amber-700 rounded-xl' :
-                            node.type === 'end' ? 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-600' :
-                            'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700'
+                            node.type === 'end' ? 'bg-[hsl(var(--mn-surface-2))] border-[hsl(var(--mn-border))] dark:border-slate-600' :
+                            'bg-[hsl(var(--mn-surface))] border-[hsl(var(--mn-border))]'
                           }`}>
-                            <h4 className="font-semibold text-slate-900 dark:text-white mb-1">
+                            <h4 className="font-semibold text-[hsl(var(--mn-text))] mb-1">
                               {node.title}
                             </h4>
-                            <p className="text-sm text-slate-600 dark:text-slate-400">
+                            <p className="text-sm text-[hsl(var(--mn-muted))]">
                               {node.text}
                             </p>
                           </div>
                           {nodeEdges.length > 0 && (
                             <div className="flex justify-center gap-8 py-2">
                               {nodeEdges.map((edge, j) => (
-                                <div key={j} className="flex flex-col items-center text-sm text-slate-500">
+                                <div key={j} className="flex flex-col items-center text-sm text-[hsl(var(--mn-muted))]">
                                   <ChevronRight className="w-4 h-4 rotate-90" />
                                   {edge.label && <span className="text-xs font-medium">{edge.label}</span>}
                                 </div>
@@ -312,7 +312,7 @@ export default function Demo() {
           </Tabs>
 
           {/* CTA */}
-          <Card className="mt-12 p-8 bg-gradient-to-br from-teal-600 to-cyan-700 border-0 text-center text-white">
+          <Card className="mt-12 p-8 bg-gradient-to-br from-teal-600 to-cyan-700 border-0 text-center text-[hsl(var(--mn-text))]">
             <h2 className="text-2xl font-bold mb-4">
               Líbí se vám ukázka?
             </h2>
@@ -321,7 +321,7 @@ export default function Demo() {
             </p>
             <Button 
               size="lg"
-              className="bg-white text-teal-700 hover:bg-teal-50"
+              className="bg-[hsl(var(--mn-surface))] text-teal-700 hover:bg-teal-50"
               onClick={() => { window.location.href = `/login?redirectTo=${encodeURIComponent(createPageUrl('Dashboard'))}`; }}
             >
               Začít zdarma

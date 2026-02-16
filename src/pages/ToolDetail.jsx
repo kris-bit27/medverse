@@ -86,7 +86,7 @@ export default function ToolDetail() {
   if (!tool) {
     return (
       <div className="p-6 text-center">
-        <p className="text-slate-500">Nástroj nenalezen</p>
+        <p className="text-[hsl(var(--mn-muted))]">Nástroj nenalezen</p>
       </div>
     );
   }
@@ -96,7 +96,7 @@ export default function ToolDetail() {
   return (
     <div className="p-6 lg:p-8 max-w-4xl mx-auto">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-6">
+      <div className="flex items-center gap-2 text-sm text-[hsl(var(--mn-muted))] mb-6">
         <Link to={createPageUrl('Tools')} className="hover:text-teal-600 transition-colors flex items-center gap-1">
           <ChevronLeft className="w-4 h-4" />
           Nástroje
@@ -115,7 +115,7 @@ export default function ToolDetail() {
                 {topic && <Badge variant="outline">{topic.title}</Badge>}
                 <VisibilityBadge visibility={tool.visibility} />
               </div>
-              <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white">
+              <h1 className="text-2xl lg:text-3xl font-bold text-[hsl(var(--mn-text))]">
                 {tool.title}
               </h1>
             </div>
@@ -124,14 +124,14 @@ export default function ToolDetail() {
             variant="ghost"
             size="icon"
             onClick={() => bookmarkMutation.mutate()}
-            className={bookmark ? 'text-amber-500' : 'text-slate-400'}
+            className={bookmark ? 'text-amber-500' : 'text-[hsl(var(--mn-muted))]'}
           >
             {bookmark ? <BookmarkCheck className="w-5 h-5" /> : <Bookmark className="w-5 h-5" />}
           </Button>
         </div>
 
         {tool.description && (
-          <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
+          <p className="text-lg text-[hsl(var(--mn-muted))] leading-relaxed">
             {tool.description}
           </p>
         )}
@@ -151,10 +151,10 @@ export default function ToolDetail() {
         </Card>
       ) : (
         <Card className="p-8 text-center bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+          <h3 className="text-lg font-semibold text-[hsl(var(--mn-text))] mb-2">
             Premium obsah
           </h3>
-          <p className="text-slate-600 dark:text-slate-400 mb-4">
+          <p className="text-[hsl(var(--mn-muted))] mb-4">
             Tento nástroj je dostupný pouze pro Premium uživatele
           </p>
           <Button asChild className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600">

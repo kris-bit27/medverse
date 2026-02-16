@@ -129,10 +129,10 @@ export default function StudyPackageCreate() {
   return (
     <div className="p-6 lg:p-8 max-w-6xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+        <h1 className="text-3xl font-bold text-[hsl(var(--mn-text))] mb-2">
           Vytvořit studijní balíček
         </h1>
-        <p className="text-slate-600 dark:text-slate-400">
+        <p className="text-[hsl(var(--mn-muted))]">
           Sestavte personalizovanou kolekci studijních materiálů
         </p>
       </div>
@@ -238,10 +238,10 @@ export default function StudyPackageCreate() {
                   )}
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                <div className="flex items-center justify-between p-4 bg-[hsl(var(--mn-surface-2))] rounded-lg">
                   <div>
                     <Label htmlFor="public">Veřejný balíček</Label>
-                    <p className="text-sm text-slate-500">Sdílet s celou komunitou</p>
+                    <p className="text-sm text-[hsl(var(--mn-muted))]">Sdílet s celou komunitou</p>
                   </div>
                   <Switch
                     id="public"
@@ -357,7 +357,7 @@ export default function StudyPackageCreate() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+              <p className="text-sm text-[hsl(var(--mn-muted))] mb-4">
                 Požádejte AI Copilota o pomoc s vytvořením balíčku. Stačí popsat, co potřebujete!
               </p>
               <Button 

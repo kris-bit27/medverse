@@ -25,10 +25,10 @@ export default function ProgressWidget({
         <div className="flex items-center justify-center">
           <ProgressRing progress={overallProgress} size={140} strokeWidth={10}>
             <div className="text-center">
-              <span className="text-3xl font-bold text-slate-900 dark:text-white">
+              <span className="text-3xl font-bold text-[hsl(var(--mn-text))]">
                 {overallProgress}%
               </span>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-[hsl(var(--mn-muted))]">
                 celkově
               </p>
             </div>
@@ -46,10 +46,10 @@ export default function ProgressWidget({
             return (
               <div key={okruh.id} className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="font-medium text-slate-700 dark:text-slate-300 truncate pr-2">
+                  <span className="font-medium text-[hsl(var(--mn-muted))] truncate pr-2">
                     {okruh.title}
                   </span>
-                  <span className="text-slate-500 dark:text-slate-400 flex-shrink-0">
+                  <span className="text-[hsl(var(--mn-muted))] flex-shrink-0">
                     {progress.mastered}/{progress.total}
                   </span>
                 </div>

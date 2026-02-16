@@ -109,7 +109,7 @@ export default function DrugDatabase() {
                 <Card
                   key={drug.id}
                   className={`cursor-pointer transition-colors ${
-                    isSelected ? 'border-teal-600 bg-teal-50 dark:bg-teal-950/20' : 'hover:bg-slate-50 dark:hover:bg-slate-900'
+                    isSelected ? 'border-teal-600 bg-teal-50 dark:bg-teal-950/20' : 'hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900'
                   }`}
                   onClick={() => setSelectedDrug(drug)}
                 >
@@ -224,7 +224,7 @@ export default function DrugDatabase() {
                   </CardHeader>
                   <CardContent className="space-y-2">
                     {Object.entries(selectedDrug.dosage).map(([key, value]) => (
-                      <div key={key} className="p-3 rounded-lg bg-slate-50 dark:bg-slate-900">
+                      <div key={key} className="p-3 rounded-lg bg-[hsl(var(--mn-surface))]">
                         <p className="font-semibold text-sm capitalize mb-1">{key}</p>
                         <p className="text-sm">{value}</p>
                       </div>

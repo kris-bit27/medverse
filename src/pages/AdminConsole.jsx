@@ -64,7 +64,7 @@ function DashboardTab() {
           { label: 'Uživatelé', value: s.users, icon: Users, color: 'text-purple-600' },
         ].map((m, i) => (
           <Card key={i}><CardContent className="p-4 flex items-center justify-between">
-            <div><p className="text-sm text-slate-500">{m.label}</p><p className={`text-2xl font-bold ${m.color}`}>{m.value}</p></div>
+            <div><p className="text-sm text-[hsl(var(--mn-muted))]">{m.label}</p><p className={`text-2xl font-bold ${m.color}`}>{m.value}</p></div>
             <m.icon className="w-8 h-8 opacity-20" />
           </CardContent></Card>
         ))}
@@ -73,15 +73,15 @@ function DashboardTab() {
       <Card><CardContent className="p-5">
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-semibold">Pokrytí obsahem</h3>
-          <span className="text-sm text-slate-500">{pct}%</span>
+          <span className="text-sm text-[hsl(var(--mn-muted))]">{pct}%</span>
         </div>
         <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3 mb-4">
           <div className="bg-gradient-to-r from-blue-500 to-green-500 h-3 rounded-full transition-all" style={{ width: `${pct}%` }} />
         </div>
         <div className="grid grid-cols-3 gap-4 text-center text-sm">
-          <div><p className="font-bold text-blue-600">{s.topics.withFt}</p><p className="text-slate-500">fulltext</p></div>
-          <div><p className="font-bold text-purple-600">{s.topics.withHy}</p><p className="text-slate-500">high-yield</p></div>
-          <div><p className="font-bold text-slate-400">{s.topics.total - s.topics.withFt}</p><p className="text-slate-500">bez obsahu</p></div>
+          <div><p className="font-bold text-blue-600">{s.topics.withFt}</p><p className="text-[hsl(var(--mn-muted))]">fulltext</p></div>
+          <div><p className="font-bold text-purple-600">{s.topics.withHy}</p><p className="text-[hsl(var(--mn-muted))]">high-yield</p></div>
+          <div><p className="font-bold text-[hsl(var(--mn-muted))]">{s.topics.total - s.topics.withFt}</p><p className="text-[hsl(var(--mn-muted))]">bez obsahu</p></div>
         </div>
       </CardContent></Card>
 
@@ -89,7 +89,7 @@ function DashboardTab() {
         <Card className="border-blue-200 dark:border-blue-800"><CardContent className="p-4 flex items-center gap-3">
           <Loader2 className="w-5 h-5 text-blue-500 animate-spin" />
           <div><p className="font-medium">Generování běží</p>
-          <p className="text-sm text-slate-500">{s.queue.processing} zpracovává · {s.queue.pending} čeká · {s.queue.completed} hotovo</p></div>
+          <p className="text-sm text-[hsl(var(--mn-muted))]">{s.queue.processing} zpracovává · {s.queue.pending} čeká · {s.queue.completed} hotovo</p></div>
         </CardContent></Card>
       )}
 
@@ -105,11 +105,11 @@ function DashboardTab() {
               <Card className="hover:shadow-md transition-all group cursor-pointer h-full">
                 <CardContent className="p-4 flex items-center gap-3">
                   <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${a.color} flex items-center justify-center shrink-0`}>
-                    <a.icon className="w-5 h-5 text-white" />
+                    <a.icon className="w-5 h-5 text-[hsl(var(--mn-text))]" />
                   </div>
                   <div className="min-w-0"><p className="font-medium group-hover:text-teal-600 transition-colors">{a.label}</p>
-                  <p className="text-xs text-slate-500">{a.desc}</p></div>
-                  <ChevronRight className="w-4 h-4 text-slate-300 ml-auto shrink-0" />
+                  <p className="text-xs text-[hsl(var(--mn-muted))]">{a.desc}</p></div>
+                  <ChevronRight className="w-4 h-4 text-[hsl(var(--mn-muted))] ml-auto shrink-0" />
                 </CardContent>
               </Card>
             </Link>
@@ -129,11 +129,11 @@ function DashboardTab() {
               <Card className="hover:shadow-md transition-all group cursor-pointer h-full">
                 <CardContent className="p-4 flex items-center gap-3">
                   <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${a.color} flex items-center justify-center shrink-0`}>
-                    <a.icon className="w-5 h-5 text-white" />
+                    <a.icon className="w-5 h-5 text-[hsl(var(--mn-text))]" />
                   </div>
                   <div className="min-w-0"><p className="font-medium group-hover:text-teal-600 transition-colors">{a.label}</p>
-                  <p className="text-xs text-slate-500">{a.desc}</p></div>
-                  <ChevronRight className="w-4 h-4 text-slate-300 ml-auto shrink-0" />
+                  <p className="text-xs text-[hsl(var(--mn-muted))]">{a.desc}</p></div>
+                  <ChevronRight className="w-4 h-4 text-[hsl(var(--mn-muted))] ml-auto shrink-0" />
                 </CardContent>
               </Card>
             </Link>
@@ -233,10 +233,10 @@ function AIGenerationTab() {
 
   return (
     <div className="space-y-5">
-      <div className="flex gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg p-1 w-fit">
+      <div className="flex gap-1 bg-[hsl(var(--mn-surface-2))] rounded-lg p-1 w-fit">
         {[{ id: 'monitor', label: 'Monitoring' }, { id: 'add', label: 'Přidat do fronty' }].map(t => (
           <button key={t.id} onClick={() => setSubTab(t.id)}
-            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${subTab === t.id ? 'bg-white dark:bg-slate-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
+            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${subTab === t.id ? 'bg-[hsl(var(--mn-surface))] dark:bg-slate-700 shadow-sm' : 'text-[hsl(var(--mn-muted))] hover:text-slate-700'}`}>
             {t.label}
           </button>
         ))}
@@ -251,7 +251,7 @@ function AIGenerationTab() {
             { l: 'Failed', v: st.failed, c: 'text-red-600', I: XCircle },
           ].map((m, i) => (
             <Card key={i}><CardContent className="p-3 flex items-center justify-between">
-              <div><p className="text-xs text-slate-500">{m.l}</p><p className={`text-xl font-bold ${m.c}`}>{m.v}</p></div>
+              <div><p className="text-xs text-[hsl(var(--mn-muted))]">{m.l}</p><p className={`text-xl font-bold ${m.c}`}>{m.v}</p></div>
               <m.I className={`w-6 h-6 opacity-20 ${m.spin ? 'animate-spin' : ''}`} />
             </CardContent></Card>
           ))}
@@ -261,7 +261,7 @@ function AIGenerationTab() {
           <div className="flex-1 bg-slate-200 dark:bg-slate-700 rounded-full h-2">
             <div className="bg-green-500 h-2 rounded-full transition-all" style={{ width: `${pct}%` }} />
           </div>
-          <span className="text-sm text-slate-500 w-12 text-right">{pct}%</span>
+          <span className="text-sm text-[hsl(var(--mn-muted))] w-12 text-right">{pct}%</span>
         </div>
 
         <div className="flex gap-2 flex-wrap">
@@ -275,7 +275,7 @@ function AIGenerationTab() {
         <Card><CardHeader className="pb-2"><CardTitle className="text-sm">Poslední zpracované</CardTitle></CardHeader>
           <CardContent className="p-0"><div className="max-h-72 overflow-y-auto">
             <table className="w-full text-sm">
-              <thead className="border-b bg-slate-50 dark:bg-slate-800 sticky top-0 text-xs">
+              <thead className="border-b bg-[hsl(var(--mn-surface-2))] sticky top-0 text-xs">
                 <tr><th className="text-left p-2.5">Topic</th><th className="text-left p-2.5 hidden md:table-cell">Obor</th>
                 <th className="text-center p-2.5">Status</th><th className="text-right p-2.5 hidden md:table-cell">Cost</th></tr>
               </thead>
@@ -283,19 +283,19 @@ function AIGenerationTab() {
                 {recent.map(item => {
                   const cost = item.result ? Object.values(item.result).reduce((s, r) => s + parseFloat(r?.cost || 0), 0) : 0;
                   return (
-                    <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                    <tr key={item.id} className="hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))]/50">
                       <td className="p-2.5 max-w-xs truncate">{item.topics?.title}</td>
-                      <td className="p-2.5 hidden md:table-cell text-slate-500 text-xs">{item.topics?.obory?.name}</td>
+                      <td className="p-2.5 hidden md:table-cell text-[hsl(var(--mn-muted))] text-xs">{item.topics?.obory?.name}</td>
                       <td className="p-2.5 text-center">
                         <Badge variant={item.status === 'completed' ? 'default' : item.status === 'failed' ? 'destructive' : 'outline'}
                           className={item.status === 'completed' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : ''}>
                           {item.status}
                         </Badge>
                       </td>
-                      <td className="p-2.5 text-right hidden md:table-cell text-slate-500 text-xs">{cost > 0 ? `$${cost.toFixed(3)}` : '—'}</td>
+                      <td className="p-2.5 text-right hidden md:table-cell text-[hsl(var(--mn-muted))] text-xs">{cost > 0 ? `$${cost.toFixed(3)}` : '—'}</td>
                     </tr>);
                 })}
-                {recent.length === 0 && <tr><td colSpan={4} className="p-6 text-center text-slate-400">Fronta je prázdná</td></tr>}
+                {recent.length === 0 && <tr><td colSpan={4} className="p-6 text-center text-[hsl(var(--mn-muted))]">Fronta je prázdná</td></tr>}
               </tbody>
             </table>
           </div></CardContent>
@@ -320,7 +320,7 @@ function AIGenerationTab() {
           </Select>
         </div>
 
-        <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-800 rounded-lg p-3">
+        <div className="flex items-center justify-between bg-[hsl(var(--mn-surface-2))] rounded-lg p-3">
           <div className="flex items-center gap-3">
             <Checkbox checked={avail.length > 0 && selIds.size === avail.length}
               onCheckedChange={() => setSelIds(p => p.size === avail.length ? new Set() : new Set(avail.map(t => t.id)))} />
@@ -335,19 +335,19 @@ function AIGenerationTab() {
 
         <Card><CardContent className="p-0"><div className="max-h-80 overflow-y-auto">
           {tLoad ? <div className="p-8 text-center"><Loader2 className="w-5 h-5 animate-spin mx-auto" /></div>
-          : avail.length === 0 ? <div className="p-8 text-center text-slate-400"><CheckCircle2 className="w-6 h-6 mx-auto mb-2 text-green-500" />Vše má obsah nebo je ve frontě</div>
+          : avail.length === 0 ? <div className="p-8 text-center text-[hsl(var(--mn-muted))]"><CheckCircle2 className="w-6 h-6 mx-auto mb-2 text-green-500" />Vše má obsah nebo je ve frontě</div>
           : <table className="w-full text-sm">
-              <thead className="border-b bg-slate-50 dark:bg-slate-800 sticky top-0 text-xs">
+              <thead className="border-b bg-[hsl(var(--mn-surface-2))] sticky top-0 text-xs">
                 <tr><th className="w-10 p-2.5"></th><th className="text-left p-2.5">Topic</th><th className="text-left p-2.5 hidden md:table-cell">Obor</th></tr>
               </thead>
               <tbody className="divide-y">
                 {avail.map(t => (
-                  <tr key={t.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                  <tr key={t.id} className="hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))]/30">
                     <td className="p-2.5 text-center">
                       <Checkbox checked={selIds.has(t.id)} onCheckedChange={ch => setSelIds(p => { const n = new Set(p); ch ? n.add(t.id) : n.delete(t.id); return n; })} />
                     </td>
                     <td className="p-2.5 max-w-xs truncate">{t.title}</td>
-                    <td className="p-2.5 hidden md:table-cell text-slate-500 text-xs">{t.obory?.name}</td>
+                    <td className="p-2.5 hidden md:table-cell text-[hsl(var(--mn-muted))] text-xs">{t.obory?.name}</td>
                   </tr>
                 ))}
               </tbody>
@@ -407,11 +407,11 @@ function ContentOverviewTab() {
           { v: totals.published, l: 'Published', c: 'text-green-600' },
           { v: totals.withFt, l: 'Fulltext', c: 'text-blue-600' },
           { v: totals.withHy, l: 'High-yield', c: 'text-purple-600' },
-          { v: totals.empty, l: 'Bez obsahu', c: 'text-slate-400' },
+          { v: totals.empty, l: 'Bez obsahu', c: 'text-[hsl(var(--mn-muted))]' },
         ].map((m, i) => (
           <Card key={i}><CardContent className="p-3 text-center">
             <p className={`text-xl font-bold ${m.c}`}>{m.v}</p>
-            <p className="text-xs text-slate-500">{m.l}</p>
+            <p className="text-xs text-[hsl(var(--mn-muted))]">{m.l}</p>
           </CardContent></Card>
         ))}
       </div>
@@ -424,8 +424,8 @@ function ContentOverviewTab() {
             <Card key={obor.id} className={isExp ? 'ring-2 ring-purple-500/40' : ''}>
               <CardContent className="p-0">
                 <button onClick={() => setExpandedObor(isExp ? null : obor.id)}
-                  className="w-full p-3 flex items-center gap-3 text-left hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                  <ChevronRight className={`w-4 h-4 text-slate-400 transition-transform ${isExp ? 'rotate-90' : ''}`} />
+                  className="w-full p-3 flex items-center gap-3 text-left hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))]/50 transition-colors">
+                  <ChevronRight className={`w-4 h-4 text-[hsl(var(--mn-muted))] transition-transform ${isExp ? 'rotate-90' : ''}`} />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-medium text-sm truncate">{obor.name}</span>
@@ -436,7 +436,7 @@ function ContentOverviewTab() {
                         style={{ width: `${pct}%` }} />
                     </div>
                   </div>
-                  <div className="hidden md:flex gap-3 text-[11px] text-slate-500 shrink-0">
+                  <div className="hidden md:flex gap-3 text-[11px] text-[hsl(var(--mn-muted))] shrink-0">
                     <span className="text-green-600">{obor.published} pub</span>
                     <span className="text-blue-600">{obor.withFt} ft</span>
                     <span className="text-purple-600">{obor.withHy} hy</span>
@@ -445,7 +445,7 @@ function ContentOverviewTab() {
                 {isExp && (
                   <div className="border-t px-3 pb-3 max-h-60 overflow-y-auto">
                     <table className="w-full text-xs mt-1">
-                      <thead className="text-slate-400 border-b">
+                      <thead className="text-[hsl(var(--mn-muted))] border-b">
                         <tr><th className="text-left py-1.5">Topic</th><th className="text-center py-1.5 w-14">Status</th>
                         <th className="text-center py-1.5 w-8">FT</th><th className="text-center py-1.5 w-8">HY</th></tr>
                       </thead>
@@ -495,7 +495,7 @@ export default function AdminConsole() {
     return (
       <div className="p-12 text-center">
         <Loader2 className="w-6 h-6 animate-spin mx-auto mb-4" />
-        <p className="text-slate-500">Načítám...</p>
+        <p className="text-[hsl(var(--mn-muted))]">Načítám...</p>
       </div>
     );
   }
@@ -506,10 +506,10 @@ export default function AdminConsole() {
   if (!hasAccess) {
     return (
       <div className="p-12 text-center">
-        <Shield className="w-12 h-12 mx-auto text-slate-300 mb-4" />
+        <Shield className="w-12 h-12 mx-auto text-[hsl(var(--mn-muted))] mb-4" />
         <h2 className="text-xl font-semibold mb-2">Přístup odepřen</h2>
-        <p className="text-slate-500">Nemáte oprávnění pro přístup k administraci</p>
-        <p className="text-xs text-slate-400 mt-2">Debug: role={user?.role || 'undefined'} | email={user?.email}</p>
+        <p className="text-[hsl(var(--mn-muted))]">Nemáte oprávnění pro přístup k administraci</p>
+        <p className="text-xs text-[hsl(var(--mn-muted))] mt-2">Debug: role={user?.role || 'undefined'} | email={user?.email}</p>
       </div>
     );
   }
@@ -519,24 +519,24 @@ export default function AdminConsole() {
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-1">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center">
-            <Shield className="w-5 h-5 text-white" />
+            <Shield className="w-5 h-5 text-[hsl(var(--mn-text))]" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Administrace</h1>
-            <p className="text-sm text-slate-500">MedVerse Admin Console</p>
+            <h1 className="text-2xl font-bold text-[hsl(var(--mn-text))]">Administrace</h1>
+            <p className="text-sm text-[hsl(var(--mn-muted))]">MedVerse Admin Console</p>
           </div>
         </div>
       </div>
 
-      <div className="flex gap-1 mb-6 bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
+      <div className="flex gap-1 mb-6 bg-[hsl(var(--mn-surface-2))] rounded-lg p-1">
         {TABS.map(tab => {
           const Icon = tab.icon;
           return (
             <button key={tab.id} onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
                 activeTab === tab.id
-                  ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
-                  : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                  ? 'bg-[hsl(var(--mn-surface))] dark:bg-slate-700 text-[hsl(var(--mn-text))] shadow-sm'
+                  : 'text-[hsl(var(--mn-muted))] hover:text-slate-700 dark:hover:text-[hsl(var(--mn-text))]'
               }`}>
               <Icon className="w-4 h-4" />
               {tab.label}

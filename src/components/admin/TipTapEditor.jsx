@@ -64,18 +64,18 @@ export default function TipTapEditor({ content, onChange, placeholder = 'Začně
       Table.configure({
         resizable: true,
         HTMLAttributes: {
-          class: 'border-collapse border border-slate-300 dark:border-slate-700 w-full my-4'
+          class: 'border-collapse border border-[hsl(var(--mn-border))] w-full my-4'
         }
       }),
       TableRow,
       TableHeader.configure({
         HTMLAttributes: {
-          class: 'bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 p-2 font-semibold'
+          class: 'bg-[hsl(var(--mn-surface-2))] border border-[hsl(var(--mn-border))] p-2 font-semibold'
         }
       }),
       TableCell.configure({
         HTMLAttributes: {
-          class: 'border border-slate-300 dark:border-slate-700 p-2'
+          class: 'border border-[hsl(var(--mn-border))] p-2'
         }
       }),
       Highlight.configure({
@@ -122,9 +122,9 @@ export default function TipTapEditor({ content, onChange, placeholder = 'Začně
   };
 
   return (
-    <div className="border rounded-lg overflow-hidden bg-white dark:bg-slate-900">
+    <div className="border rounded-lg overflow-hidden bg-[hsl(var(--mn-surface))]">
       {/* Toolbar */}
-      <div className="flex flex-wrap gap-1 p-2 border-b bg-slate-50 dark:bg-slate-800">
+      <div className="flex flex-wrap gap-1 p-2 border-b bg-[hsl(var(--mn-surface-2))]">
         <Button
           size="sm"
           variant="ghost"

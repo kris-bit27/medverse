@@ -72,14 +72,14 @@ export default function AuthCallback() {
   }, []);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-[hsl(var(--mn-bg))] p-6">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Přihlašování</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {!error ? (
-            <div className="flex items-center gap-2 text-sm text-slate-600">
+            <div className="flex items-center gap-2 text-sm text-[hsl(var(--mn-muted))]">
               <Loader2 className="w-4 h-4 animate-spin" />
               Dokončujeme přihlášení...
             </div>

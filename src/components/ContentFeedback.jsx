@@ -51,7 +51,7 @@ export default function ContentFeedback({ topicId, topicTitle }) {
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-amber-400 transition-colors"
+        className="flex items-center gap-1.5 text-xs text-[hsl(var(--mn-muted))] hover:text-amber-400 transition-colors"
         title="Nahlásit nepřesnost"
       >
         <Flag className="w-3.5 h-3.5" />
@@ -59,17 +59,17 @@ export default function ContentFeedback({ topicId, topicTitle }) {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-8 z-50 w-[360px] bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-4 animate-in fade-in slide-in-from-top-2">
+        <div className="absolute right-0 top-8 z-50 w-[360px] bg-[hsl(var(--mn-surface))] border border-[hsl(var(--mn-border))] rounded-xl shadow-2xl p-4 animate-in fade-in slide-in-from-top-2">
           {submitted ? (
             <div className="text-center py-6">
               <CheckCircle2 className="w-10 h-10 text-green-400 mx-auto mb-2" />
-              <p className="text-sm text-slate-300">Odesláno! AI analyzuje vaši zpětnou vazbu.</p>
+              <p className="text-sm text-[hsl(var(--mn-muted))]">Odesláno! AI analyzuje vaši zpětnou vazbu.</p>
             </div>
           ) : (
             <>
               <div className="flex items-center justify-between mb-3">
-                <h4 className="text-sm font-semibold text-white">Nahlásit problém</h4>
-                <button onClick={() => setOpen(false)} className="text-slate-500 hover:text-slate-300">
+                <h4 className="text-sm font-semibold text-[hsl(var(--mn-text))]">Nahlásit problém</h4>
+                <button onClick={() => setOpen(false)} className="text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))]">
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -84,7 +84,7 @@ export default function ContentFeedback({ topicId, topicTitle }) {
                       className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
                         type === t.id
                           ? 'bg-slate-700 text-white ring-1 ring-teal-500/50'
-                          : 'bg-slate-800 text-slate-400 hover:bg-slate-750'
+                          : 'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))] hover:bg-slate-750'
                       }`}>
                       <Icon className={`w-3 h-3 ${type === t.id ? t.color : ''}`} />
                       {t.label}
@@ -99,7 +99,7 @@ export default function ContentFeedback({ topicId, topicTitle }) {
                 placeholder="Citace problematického textu (volitelné)"
                 value={quotedText}
                 onChange={e => setQuotedText(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-300 placeholder-slate-500 mb-2 focus:ring-1 focus:ring-teal-500/50 focus:border-teal-500/50 outline-none"
+                className="w-full bg-[hsl(var(--mn-surface-2))] border border-[hsl(var(--mn-border))] rounded-lg px-3 py-2 text-xs text-[hsl(var(--mn-muted))] placeholder-[hsl(var(--mn-muted))] mb-2 focus:ring-1 focus:ring-teal-500/50 focus:border-teal-500/50 outline-none"
               />
 
               {/* Description */}
@@ -108,11 +108,11 @@ export default function ContentFeedback({ topicId, topicTitle }) {
                 value={description}
                 onChange={e => setDescription(e.target.value)}
                 rows={3}
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-300 placeholder-slate-500 mb-3 resize-none focus:ring-1 focus:ring-teal-500/50 focus:border-teal-500/50 outline-none"
+                className="w-full bg-[hsl(var(--mn-surface-2))] border border-[hsl(var(--mn-border))] rounded-lg px-3 py-2 text-xs text-[hsl(var(--mn-muted))] placeholder-[hsl(var(--mn-muted))] mb-3 resize-none focus:ring-1 focus:ring-teal-500/50 focus:border-teal-500/50 outline-none"
               />
 
               <div className="flex items-center justify-between">
-                <p className="text-[10px] text-slate-500">AI automaticky ověří a navrhne opravu</p>
+                <p className="text-[10px] text-[hsl(var(--mn-muted))]">AI automaticky ověří a navrhne opravu</p>
                 <Button
                   size="sm"
                   disabled={!description.trim() || submit.isPending}

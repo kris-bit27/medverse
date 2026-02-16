@@ -106,7 +106,7 @@ export default function FlashcardLauncher({ topicId, user }) {
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-3">
                 <Brain className="w-5 h-5 text-teal-600" />
-                <h3 className="font-semibold text-slate-900 dark:text-white">
+                <h3 className="font-semibold text-[hsl(var(--mn-text))]">
                   Procvičování s kartičkami
                 </h3>
                 {hasDueCards && (
@@ -118,7 +118,7 @@ export default function FlashcardLauncher({ topicId, user }) {
 
               {hasCards ? (
                 <div className="space-y-3">
-                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                  <p className="text-sm text-[hsl(var(--mn-muted))]">
                     {hasDueCards 
                       ? `Máte ${dueCount} kartiček připravených k procvičení` 
                       : 'Skvělá práce! Žádné kartičky k procvičení'}
@@ -168,7 +168,7 @@ export default function FlashcardLauncher({ topicId, user }) {
                   )}
                 </div>
               ) : (
-                <p className="text-sm text-slate-600 dark:text-slate-400">
+                <p className="text-sm text-[hsl(var(--mn-muted))]">
                   Pro toto téma zatím nejsou připravené kartičky. Generujte je pomocí AI.
                 </p>
               )}

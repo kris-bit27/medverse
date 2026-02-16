@@ -59,8 +59,8 @@ function WarningsBanner({ warnings }) {
 function SourcesList({ sources }) {
   if (!sources?.length) return null;
   return (
-    <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 p-4">
-      <h4 className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-3 flex items-center gap-2 mn-ui-font">
+    <div className="rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface))]/50 p-4">
+      <h4 className="text-sm font-medium text-[hsl(var(--mn-muted))] mb-3 flex items-center gap-2 mn-ui-font">
         <FileText className="w-4 h-4" /> Zdroje ({sources.length})
       </h4>
       <div className="flex flex-wrap gap-2">
@@ -78,7 +78,7 @@ function AIMetadata({ topic }) {
   if (!topic.ai_model) return null;
   const name = topic.ai_model.includes('opus') ? 'Opus 4' : topic.ai_model.includes('sonnet') ? 'Sonnet 4' : topic.ai_model;
   return (
-    <span className="text-xs text-slate-400 dark:text-slate-500 flex items-center gap-1.5">
+    <span className="text-xs text-[hsl(var(--mn-muted))] flex items-center gap-1.5">
       <Sparkles className="w-3.5 h-3.5 text-teal-500/60" />
       {name}
       {topic.ai_confidence > 0 && <span>• {Math.round(topic.ai_confidence * 100)}%</span>}
@@ -91,7 +91,7 @@ function CopyBtn({ content }) {
   return (
     <button
       onClick={() => { navigator.clipboard.writeText(content); setOk(true); setTimeout(() => setOk(false), 2000); }}
-      className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800/80 text-slate-400 hover:text-slate-700 dark:hover:text-white opacity-0 group-hover:opacity-100 transition-opacity"
+      className="p-2 rounded-lg bg-[hsl(var(--mn-surface-2))]/80 text-[hsl(var(--mn-muted))] hover:text-slate-700 dark:hover:text-[hsl(var(--mn-text))] opacity-0 group-hover:opacity-100 transition-opacity"
       title="Kopírovat"
     >
       {ok ? <Check className="w-4 h-4 text-teal-500" /> : <Copy className="w-4 h-4" />}
@@ -169,16 +169,16 @@ export default function TopicDetailV5() {
   // Loading / not found
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white dark:bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-[hsl(var(--mn-bg))] flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
   if (!topic) {
     return (
-      <div className="min-h-screen bg-white dark:bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-[hsl(var(--mn-bg))] flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl text-slate-600 dark:text-slate-300 mb-2">Téma nenalezeno</h2>
+          <h2 className="text-xl text-[hsl(var(--mn-muted))] dark:text-[hsl(var(--mn-muted))] mb-2">Téma nenalezeno</h2>
           <Button variant="outline" onClick={() => navigate(-1)}><ArrowLeft className="w-4 h-4 mr-2" /> Zpět</Button>
         </div>
       </div>
@@ -191,21 +191,21 @@ export default function TopicDetailV5() {
   const sidebarOpen = showNotes || showFlashcards;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="min-h-screen bg-[hsl(var(--mn-bg))]">
 
       {/* ── Sticky Header ── */}
-      <div className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-0 z-30">
+      <div className="border-b border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface))] sticky top-0 z-30">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-3">
           <div className="flex items-center justify-between">
             {/* Left: breadcrumb */}
-            <div className="flex items-center gap-2 text-sm text-slate-400 dark:text-slate-500 mn-ui-font min-w-0">
+            <div className="flex items-center gap-2 text-sm text-[hsl(var(--mn-muted))] mn-ui-font min-w-0">
               <button onClick={() => navigate(createPageUrl('StudiumV2'))} className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors shrink-0">
                 Studium
               </button>
               <ChevronRight className="w-3.5 h-3.5 shrink-0" />
               <span className={`${theme.text} shrink-0`}>{topic.obory?.name}</span>
               <ChevronRight className="w-3.5 h-3.5 shrink-0 hidden sm:block" />
-              <span className="text-slate-600 dark:text-slate-400 truncate hidden sm:block">{topic.okruhy?.name}</span>
+              <span className="text-[hsl(var(--mn-muted))] truncate hidden sm:block">{topic.okruhy?.name}</span>
             </div>
 
             {/* Right: actions */}
@@ -217,7 +217,7 @@ export default function TopicDetailV5() {
                   className={`p-2 rounded-lg border transition-all mn-ui-font text-sm ${
                     showToc
                       ? 'bg-teal-50 dark:bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-200 dark:border-teal-500/30'
-                      : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-500 border-slate-200 dark:border-slate-800'
+                      : 'bg-[hsl(var(--mn-elevated))] text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))]'
                   }`}
                   title={showToc ? 'Skrýt obsah' : 'Zobrazit obsah'}
                 >
@@ -228,7 +228,7 @@ export default function TopicDetailV5() {
               <button onClick={() => { setShowNotes(!showNotes); setShowFlashcards(false); }}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm border transition-all mn-ui-font ${
                   showNotes ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-500/30'
-                  : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-500 border-slate-200 dark:border-slate-800'
+                  : 'bg-[hsl(var(--mn-elevated))] text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))]'
                 }`}>
                 <StickyNote className="w-4 h-4" />
                 <span className="hidden sm:inline">Poznámky</span>
@@ -236,7 +236,7 @@ export default function TopicDetailV5() {
               <button onClick={() => { setShowFlashcards(!showFlashcards); setShowNotes(false); }}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm border transition-all mn-ui-font ${
                   showFlashcards ? 'bg-teal-50 dark:bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-200 dark:border-teal-500/30'
-                  : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-500 border-slate-200 dark:border-slate-800'
+                  : 'bg-[hsl(var(--mn-elevated))] text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))]'
                 }`}>
                 <Brain className="w-4 h-4" />
                 <span className="hidden sm:inline">Kartičky</span>
@@ -250,19 +250,19 @@ export default function TopicDetailV5() {
       </div>
 
       {/* ── Title section ── */}
-      <div className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
+      <div className="bg-[hsl(var(--mn-surface))] border-b border-slate-100 dark:border-[hsl(var(--mn-border))]">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-5">
           <div className="flex items-center gap-2 mb-2">
             <Badge variant="outline" className={`text-xs ${theme.text} border-current/30 ${theme.bg}`}>{topic.obory?.name}</Badge>
-            <Badge variant="outline" className="text-xs text-slate-500 dark:text-slate-400 border-slate-300 dark:border-slate-700">{topic.okruhy?.name}</Badge>
+            <Badge variant="outline" className="text-xs text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))]">{topic.okruhy?.name}</Badge>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2 mn-serif-font" style={{ letterSpacing: '-0.02em' }}>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[hsl(var(--mn-text))] mb-2 mn-serif-font" style={{ letterSpacing: '-0.02em' }}>
             {topic.title}
           </h1>
           <div className="flex flex-wrap items-center gap-4 mn-ui-font">
             <AIMetadata topic={topic} />
             {wordCount > 0 && (
-              <span className="text-xs text-slate-400 dark:text-slate-500 flex items-center gap-1">
+              <span className="text-xs text-[hsl(var(--mn-muted))] flex items-center gap-1">
                 <Clock className="w-3.5 h-3.5" /> ~{readTime} min
               </span>
             )}
@@ -286,7 +286,7 @@ export default function TopicDetailV5() {
 
         {/* Tabs + Feedback */}
         <div className="flex items-center justify-between gap-2 mb-5">
-          <div className="inline-flex gap-1 p-1 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-800">
+          <div className="inline-flex gap-1 p-1 rounded-xl bg-[hsl(var(--mn-surface-2))] border border-[hsl(var(--mn-border))]">
             {TABS.map(tab => {
               const has = topic[tab.field]?.length > 50;
               const active = activeTab === tab.id;
@@ -294,9 +294,9 @@ export default function TopicDetailV5() {
               return (
                 <button key={tab.id} onClick={() => has && handleTabSwitch(tab.id)} disabled={!has}
                   className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all mn-ui-font ${
-                    active ? 'bg-white dark:bg-slate-800/80 text-slate-900 dark:text-slate-100 shadow-sm'
-                    : has ? 'text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-400'
-                    : 'text-slate-300 dark:text-slate-700 cursor-not-allowed'
+                    active ? 'bg-[hsl(var(--mn-elevated))]/80 text-[hsl(var(--mn-text))] shadow-sm'
+                    : has ? 'text-[hsl(var(--mn-muted))] hover:text-slate-700 dark:hover:text-slate-400'
+                    : 'text-[hsl(var(--mn-muted))] dark:text-slate-700 cursor-not-allowed'
                   }`}>
                   <Icon className="w-4 h-4" />
                   <span className="hidden sm:inline">{tab.label}</span>
@@ -321,7 +321,7 @@ export default function TopicDetailV5() {
           {/* Content — flexible center */}
           <div className="flex-1 min-w-0">
             {currentContent ? (
-              <div className="group relative rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
+              <div className="group relative rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface))] shadow-sm">
                 <div className="absolute top-4 right-4 z-10">
                   <CopyBtn content={currentContent} />
                 </div>
@@ -330,10 +330,10 @@ export default function TopicDetailV5() {
                 </div>
               </div>
             ) : (
-              <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-12 text-center">
-                <BookOpen className="w-12 h-12 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
-                <p className="text-slate-500 dark:text-slate-400 font-medium mb-1">Obsah se připravuje</p>
-                <p className="text-sm text-slate-400 dark:text-slate-500 mb-4">Toto téma bude brzy dostupné s plným textem, kartičkami a testovými otázkami.</p>
+              <div className="rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface))] p-12 text-center">
+                <BookOpen className="w-12 h-12 text-[hsl(var(--mn-muted))] dark:text-slate-700 mx-auto mb-3" />
+                <p className="text-[hsl(var(--mn-muted))] font-medium mb-1">Obsah se připravuje</p>
+                <p className="text-sm text-[hsl(var(--mn-muted))] mb-4">Toto téma bude brzy dostupné s plným textem, kartičkami a testovými otázkami.</p>
                 {contentCounts?.flashcards > 0 && (
                   <p className="text-xs text-teal-500">✓ {contentCounts.flashcards} kartiček už je připraveno</p>
                 )}
@@ -356,7 +356,7 @@ export default function TopicDetailV5() {
                 </h3>
                 <ul className="space-y-2">
                   {topic.learning_objectives.map((obj, i) => (
-                    <li key={i} className="flex items-start gap-3 text-sm text-slate-700 dark:text-slate-300">
+                    <li key={i} className="flex items-start gap-3 text-sm text-[hsl(var(--mn-muted))]">
                       <span className="flex-shrink-0 w-5 h-5 rounded-full bg-teal-600 text-white text-xs font-bold flex items-center justify-center mt-0.5">{i + 1}</span>
                       {obj}
                     </li>
@@ -370,7 +370,7 @@ export default function TopicDetailV5() {
           {sidebarOpen && (
             <div className="hidden lg:block w-80 xl:w-96 shrink-0 sticky top-[120px] max-h-[calc(100vh-140px)] overflow-y-auto">
               {showNotes && (
-                <div className="rounded-xl border border-amber-200 dark:border-amber-500/20 bg-white dark:bg-slate-900 p-5">
+                <div className="rounded-xl border border-amber-200 dark:border-amber-500/20 bg-[hsl(var(--mn-surface))] p-5">
                   <h3 className="text-sm font-semibold text-amber-700 dark:text-amber-300 mb-3 flex items-center gap-2 mn-ui-font">
                     <StickyNote className="w-4 h-4" /> Moje poznámky
                   </h3>
@@ -378,7 +378,7 @@ export default function TopicDetailV5() {
                 </div>
               )}
               {showFlashcards && (
-                <div className="rounded-xl border border-teal-200 dark:border-teal-500/20 bg-white dark:bg-slate-900 p-5">
+                <div className="rounded-xl border border-teal-200 dark:border-teal-500/20 bg-[hsl(var(--mn-surface))] p-5">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-sm font-semibold text-teal-700 dark:text-teal-300 flex items-center gap-2 mn-ui-font">
                       <Brain className="w-4 h-4" /> AI Kartičky
@@ -401,7 +401,7 @@ export default function TopicDetailV5() {
         {sidebarOpen && (
           <div className="lg:hidden mt-6">
             {showNotes && (
-              <div className="rounded-xl border border-amber-200 dark:border-amber-500/20 bg-white dark:bg-slate-900 p-5">
+              <div className="rounded-xl border border-amber-200 dark:border-amber-500/20 bg-[hsl(var(--mn-surface))] p-5">
                 <h3 className="text-sm font-semibold text-amber-700 dark:text-amber-300 mb-3 flex items-center gap-2 mn-ui-font">
                   <StickyNote className="w-4 h-4" /> Moje poznámky
                 </h3>
@@ -409,7 +409,7 @@ export default function TopicDetailV5() {
               </div>
             )}
             {showFlashcards && (
-              <div className="rounded-xl border border-teal-200 dark:border-teal-500/20 bg-white dark:bg-slate-900 p-5">
+              <div className="rounded-xl border border-teal-200 dark:border-teal-500/20 bg-[hsl(var(--mn-surface))] p-5">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-sm font-semibold text-teal-700 dark:text-teal-300 flex items-center gap-2 mn-ui-font">
                     <Brain className="w-4 h-4" /> AI Kartičky

@@ -13,10 +13,10 @@ export default function OfficialAnswerTab({ question }) {
       <Card className="bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
         <CardContent className="p-8 text-center">
           <AlertCircle className="w-12 h-12 mx-auto mb-4 text-amber-600" />
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+          <h3 className="text-lg font-semibold text-[hsl(var(--mn-text))] mb-2">
             Oficiální odpověď zatím není k dispozici
           </h3>
-          <p className="text-slate-600 dark:text-slate-400 text-sm">
+          <p className="text-[hsl(var(--mn-muted))] text-sm">
             Odpověď na tuto otázku je v přípravě. Můžete využít AI asistenta pro okamžitou pomoc.
           </p>
         </CardContent>
@@ -33,7 +33,7 @@ export default function OfficialAnswerTab({ question }) {
             <Badge className="bg-teal-600 hover:bg-teal-700">
               Oficiální odpověď
             </Badge>
-            <span className="text-xs text-slate-500 dark:text-slate-400">
+            <span className="text-xs text-[hsl(var(--mn-muted))]">
               Prověřeno editorem
             </span>
           </div>
@@ -54,26 +54,26 @@ export default function OfficialAnswerTab({ question }) {
           <CardContent className="space-y-4">
             {question.answer_structured.definice && (
               <div>
-                <h4 className="font-semibold text-slate-900 dark:text-white mb-2">Definice</h4>
-                <p className="text-slate-700 dark:text-slate-300">{question.answer_structured.definice}</p>
+                <h4 className="font-semibold text-[hsl(var(--mn-text))] mb-2">Definice</h4>
+                <p className="text-[hsl(var(--mn-muted))]">{question.answer_structured.definice}</p>
               </div>
             )}
             {question.answer_structured.diagnostika && (
               <div>
-                <h4 className="font-semibold text-slate-900 dark:text-white mb-2">Diagnostika</h4>
-                <p className="text-slate-700 dark:text-slate-300">{question.answer_structured.diagnostika}</p>
+                <h4 className="font-semibold text-[hsl(var(--mn-text))] mb-2">Diagnostika</h4>
+                <p className="text-[hsl(var(--mn-muted))]">{question.answer_structured.diagnostika}</p>
               </div>
             )}
             {question.answer_structured.lecba && (
               <div>
-                <h4 className="font-semibold text-slate-900 dark:text-white mb-2">Léčba</h4>
-                <p className="text-slate-700 dark:text-slate-300">{question.answer_structured.lecba}</p>
+                <h4 className="font-semibold text-[hsl(var(--mn-text))] mb-2">Léčba</h4>
+                <p className="text-[hsl(var(--mn-muted))]">{question.answer_structured.lecba}</p>
               </div>
             )}
             {question.answer_structured.komplikace && (
               <div>
-                <h4 className="font-semibold text-slate-900 dark:text-white mb-2">Komplikace</h4>
-                <p className="text-slate-700 dark:text-slate-300">{question.answer_structured.komplikace}</p>
+                <h4 className="font-semibold text-[hsl(var(--mn-text))] mb-2">Komplikace</h4>
+                <p className="text-[hsl(var(--mn-muted))]">{question.answer_structured.komplikace}</p>
               </div>
             )}
           </CardContent>

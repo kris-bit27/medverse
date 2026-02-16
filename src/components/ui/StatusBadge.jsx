@@ -6,7 +6,7 @@ const statusConfig = {
   new: {
     label: 'Nová',
     icon: Circle,
-    className: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+    className: 'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))] dark:bg-slate-800 dark:text-[hsl(var(--mn-muted))]'
   },
   learning: {
     label: 'Učím se',

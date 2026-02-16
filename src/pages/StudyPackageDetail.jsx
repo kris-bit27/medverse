@@ -153,7 +153,7 @@ export default function StudyPackageDetail() {
   if (!pkg) {
     return (
       <div className="p-6 lg:p-8 text-center">
-        <p className="text-slate-600">Balíček nenalezen</p>
+        <p className="text-[hsl(var(--mn-muted))]">Balíček nenalezen</p>
       </div>
     );
   }
@@ -244,7 +244,7 @@ export default function StudyPackageDetail() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-6 text-sm text-slate-600 dark:text-slate-400">
+            <div className="flex items-center gap-6 text-sm text-[hsl(var(--mn-muted))]">
               {pkg.estimated_hours && (
                 <span className="flex items-center gap-1">
                   <Clock className="w-4 h-4" />
@@ -288,7 +288,7 @@ export default function StudyPackageDetail() {
                   <Link
                     key={q.id}
                     to={createPageUrl('QuestionDetail') + `?id=${q.id}`}
-                    className="block p-3 rounded-lg border hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                    className="block p-3 rounded-lg border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))] transition-colors"
                   >
                     <p className="text-sm font-medium">{q.title}</p>
                   </Link>
@@ -312,11 +312,11 @@ export default function StudyPackageDetail() {
                   <Link
                     key={a.id}
                     to={createPageUrl('ArticleDetail') + `?id=${a.id}`}
-                    className="block p-3 rounded-lg border hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                    className="block p-3 rounded-lg border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))] transition-colors"
                   >
                     <p className="text-sm font-medium">{a.title}</p>
                     {a.summary && (
-                      <p className="text-xs text-slate-500 mt-1">{a.summary}</p>
+                      <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">{a.summary}</p>
                     )}
                   </Link>
                 ))}
@@ -339,11 +339,11 @@ export default function StudyPackageDetail() {
                   <Link
                     key={t.id}
                     to={createPageUrl('ToolDetail') + `?id=${t.id}`}
-                    className="block p-3 rounded-lg border hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                    className="block p-3 rounded-lg border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))] transition-colors"
                   >
                     <p className="text-sm font-medium">{t.title}</p>
                     {t.description && (
-                      <p className="text-xs text-slate-500 mt-1">{t.description}</p>
+                      <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">{t.description}</p>
                     )}
                   </Link>
                 ))}

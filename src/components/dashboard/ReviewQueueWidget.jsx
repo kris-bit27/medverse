@@ -23,10 +23,10 @@ export default function ReviewQueueWidget({
               <CheckCircle2 className="w-8 h-8 text-emerald-600" />
             ) : (
               <div className="text-center">
-                <span className="text-2xl font-bold text-slate-900 dark:text-white">
+                <span className="text-2xl font-bold text-[hsl(var(--mn-text))]">
                   {completedToday}
                 </span>
-                <span className="text-sm text-slate-500 dark:text-slate-400">
+                <span className="text-sm text-[hsl(var(--mn-muted))]">
                   /{dailyGoal}
                 </span>
               </div>
@@ -34,10 +34,10 @@ export default function ReviewQueueWidget({
           </ProgressRing>
 
           <div className="flex-1">
-            <h3 className="font-semibold text-slate-900 dark:text-white mb-1">
+            <h3 className="font-semibold text-[hsl(var(--mn-text))] mb-1">
               {isComplete ? 'Denní cíl splněn! 🎉' : 'Dnešní opakování'}
             </h3>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+            <p className="text-sm text-[hsl(var(--mn-muted))] mb-4">
               {isComplete 
                 ? `Dokončili jste ${completedToday} otázek` 
                 : `${dueToday} otázek čeká na opakování`

@@ -117,9 +117,9 @@ export default function TopicDetail() {
   const togglePanel = (panel) => setSidebarPanel(prev => prev === panel ? null : panel);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="min-h-screen bg-[hsl(var(--mn-bg))]">
       {/* Sticky Top Bar */}
-      <div className="bg-white dark:bg-slate-900 border-b sticky top-0 z-10">
+      <div className="bg-[hsl(var(--mn-surface))] border-b sticky top-0 z-10">
         <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-3">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div className="flex items-center gap-2 text-sm text-muted-foreground min-w-0">
@@ -176,7 +176,7 @@ export default function TopicDetail() {
           <div className={sidebarPanel ? 'lg:col-span-2' : ''}>
             <div className="space-y-6">
               {/* Header */}
-              <div className="bg-white dark:bg-slate-900 rounded-xl p-8 shadow-sm">
+              <div className="bg-[hsl(var(--mn-surface))] rounded-xl p-8 shadow-sm">
                 <h1 className="text-3xl font-bold mb-3 leading-tight">{topic.title}</h1>
                 {topic.description && (
                   <p className="text-muted-foreground mb-4">{topic.description}</p>
@@ -214,7 +214,7 @@ export default function TopicDetail() {
               )}
 
               {/* Content Tabs */}
-              <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm overflow-hidden">
+              <div className="bg-[hsl(var(--mn-surface))] rounded-xl shadow-sm overflow-hidden">
                 <div className="border-b flex">
                   {contentViews.map(view => {
                     const Icon = view.icon;
@@ -226,7 +226,7 @@ export default function TopicDetail() {
                         className={`flex-1 px-6 py-4 font-medium transition-colors flex items-center justify-center gap-2 ${
                           isActive
                             ? 'bg-teal-50 dark:bg-teal-950/20 text-teal-600 border-b-2 border-teal-600'
-                            : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
+                            : 'text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))]'
                         }`}
                       >
                         <Icon className="w-4 h-4" />
@@ -271,7 +271,7 @@ export default function TopicDetail() {
                         <span className="flex-shrink-0 w-6 h-6 rounded-full bg-teal-600 text-white text-xs font-bold flex items-center justify-center mt-0.5">
                           {idx + 1}
                         </span>
-                        <span className="text-slate-700 dark:text-slate-300 leading-relaxed">{obj}</span>
+                        <span className="text-[hsl(var(--mn-muted))] leading-relaxed">{obj}</span>
                       </li>
                     ))}
                   </ul>
@@ -280,14 +280,14 @@ export default function TopicDetail() {
 
               {/* Related Topics */}
               {relatedTopics.length > 0 && (
-                <div className="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm">
+                <div className="bg-[hsl(var(--mn-surface))] rounded-xl p-6 shadow-sm">
                   <h3 className="font-bold text-lg mb-4">Příbuzná témata</h3>
                   <div className="grid sm:grid-cols-2 gap-3">
                     {relatedTopics.map(related => (
                       <Link
                         key={related.id}
                         to={`/TopicDetail/${related.id}`}
-                        className="block p-3 rounded-lg border hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                        className="block p-3 rounded-lg border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))] transition-colors"
                       >
                         <p className="font-medium">{related.title}</p>
                       </Link>
@@ -304,7 +304,7 @@ export default function TopicDetail() {
               <div className="sticky top-24 space-y-4">
                 {/* Notes Panel */}
                 {sidebarPanel === 'notes' && (
-                  <div className="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm">
+                  <div className="bg-[hsl(var(--mn-surface))] rounded-xl p-6 shadow-sm">
                     <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
                       <StickyNote className="w-5 h-5 text-orange-400" /> Moje poznámky
                     </h3>
@@ -314,7 +314,7 @@ export default function TopicDetail() {
 
                 {/* Flashcards Panel */}
                 {sidebarPanel === 'flashcards' && (
-                  <div className="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm space-y-4">
+                  <div className="bg-[hsl(var(--mn-surface))] rounded-xl p-6 shadow-sm space-y-4">
                     <h3 className="font-bold text-lg flex items-center gap-2">
                       <Sparkles className="w-5 h-5 text-teal-400" /> Kartičky
                     </h3>
@@ -322,7 +322,7 @@ export default function TopicDetail() {
                     {/* Progress summary */}
                     {flashcards.length > 0 && (
                       <div className="grid grid-cols-3 gap-2 text-center text-sm">
-                        <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-2">
+                        <div className="bg-[hsl(var(--mn-surface-2))] rounded-lg p-2">
                           <div className="font-bold text-lg">{flashcards.length}</div>
                           <div className="text-muted-foreground text-xs">Celkem</div>
                         </div>
@@ -355,7 +355,7 @@ export default function TopicDetail() {
 
                 {/* Sources Panel */}
                 {sidebarPanel === 'sources' && (
-                  <div className="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm">
+                  <div className="bg-[hsl(var(--mn-surface))] rounded-xl p-6 shadow-sm">
                     <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
                       <LinkIcon className="w-5 h-5 text-blue-400" /> Zdroje
                     </h3>

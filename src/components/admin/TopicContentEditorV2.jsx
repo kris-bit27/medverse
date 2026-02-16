@@ -478,7 +478,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
 
   const getStatusBadge = (status) => {
     const variants = {
-      draft: { color: 'bg-slate-100 text-slate-700', icon: AlertTriangle },
+      draft: { color: 'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))]', icon: AlertTriangle },
       in_review: { color: 'bg-amber-100 text-amber-700', icon: Eye },
       published: { color: 'bg-green-100 text-green-700', icon: CheckCircle }
     };
@@ -786,11 +786,11 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
 
       {/* Sources */}
       {content.source_pack && (content.source_pack.internal_refs?.length > 0 || content.source_pack.external_refs?.length > 0) && (
-        <div className="space-y-2 p-4 bg-slate-50 dark:bg-slate-800 rounded-lg">
+        <div className="space-y-2 p-4 bg-[hsl(var(--mn-surface-2))] rounded-lg">
           <Label className="text-sm font-semibold">Zdroje a citace</Label>
           {content.source_pack.internal_refs?.length > 0 && (
             <div>
-              <div className="text-xs text-slate-500 mb-1">Interní:</div>
+              <div className="text-xs text-[hsl(var(--mn-muted))] mb-1">Interní:</div>
               {content.source_pack.internal_refs.map((ref, i) => (
                 <Badge key={i} variant="secondary" className="mr-1 mb-1">{ref.title}</Badge>
               ))}
@@ -798,9 +798,9 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
           )}
           {content.source_pack.external_refs?.length > 0 && (
             <div>
-              <div className="text-xs text-slate-500 mb-1">Externí:</div>
+              <div className="text-xs text-[hsl(var(--mn-muted))] mb-1">Externí:</div>
               {content.source_pack.external_refs.map((ref, i) => (
-                <div key={i} className="text-xs text-slate-600">
+                <div key={i} className="text-xs text-[hsl(var(--mn-muted))]">
                   • {ref.title} {ref.publisher && `(${ref.publisher})`}
                 </div>
               ))}
@@ -824,7 +824,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
               </div>
               <div className="space-y-1">
                 {content.sources.map((source, i) => (
-                  <div key={i} className="text-sm text-slate-700 dark:text-slate-300 pl-3 border-l-2 border-blue-300">
+                  <div key={i} className="text-sm text-[hsl(var(--mn-muted))] pl-3 border-l-2 border-blue-300">
                     {typeof source === 'string' ? source : source.title || source.citation || JSON.stringify(source)}
                   </div>
                 ))}

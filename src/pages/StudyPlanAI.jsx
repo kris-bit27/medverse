@@ -252,11 +252,11 @@ Vrať JSON s týdenním rozpisu úkolů.`;
       </Button>
 
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3">
+        <h1 className="text-3xl font-bold text-[hsl(var(--mn-text))] mb-2 flex items-center gap-3">
           <Sparkles className="w-8 h-8 text-teal-500" />
           AI Personalizovaný studijní plán
         </h1>
-        <p className="text-slate-600 dark:text-slate-400">
+        <p className="text-[hsl(var(--mn-muted))]">
           AI analyzuje váš pokrok a vytvoří optimalizovaný plán přípravy
         </p>
       </div>
@@ -324,7 +324,7 @@ Vrať JSON s týdenním rozpisu úkolů.`;
                 {disciplines.map(d => (
                   <div 
                     key={d.id}
-                    className="flex items-center space-x-2 p-3 rounded-lg border hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                    className="flex items-center space-x-2 p-3 rounded-lg border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))] transition-colors"
                   >
                     <Checkbox
                       id={`disc-${d.id}`}
@@ -388,30 +388,30 @@ Vrať JSON s týdenním rozpisu úkolů.`;
                 <div className="flex items-center gap-2 text-sm">
                   <Target className="w-4 h-4 text-teal-600" />
                   <span className="font-medium">Cíl:</span>
-                  <span className="text-slate-600 dark:text-slate-400">{generatedPlan.plan.goal}</span>
+                  <span className="text-[hsl(var(--mn-muted))]">{generatedPlan.plan.goal}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Calendar className="w-4 h-4 text-teal-600" />
                   <span className="font-medium">Do:</span>
-                  <span className="text-slate-600 dark:text-slate-400">
+                  <span className="text-[hsl(var(--mn-muted))]">
                     {format(new Date(generatedPlan.plan.target_date), 'd. MMMM yyyy', { locale: cs })}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <BookOpen className="w-4 h-4 text-teal-600" />
                   <span className="font-medium">Úkolů:</span>
-                  <span className="text-slate-600 dark:text-slate-400">{generatedPlan.tasks.length}</span>
+                  <span className="text-[hsl(var(--mn-muted))]">{generatedPlan.tasks.length}</span>
                 </div>
               </div>
 
               {generatedPlan.recommendations && generatedPlan.recommendations.length > 0 && (
                 <div className="mt-4">
-                  <h4 className="font-semibold text-sm text-slate-900 dark:text-white mb-2">
+                  <h4 className="font-semibold text-sm text-[hsl(var(--mn-text))] mb-2">
                     Doporučení AI:
                   </h4>
                   <ul className="space-y-1">
                     {generatedPlan.recommendations.map((rec, i) => (
-                      <li key={i} className="text-sm text-slate-600 dark:text-slate-400 flex items-start gap-2">
+                      <li key={i} className="text-sm text-[hsl(var(--mn-muted))] flex items-start gap-2">
                         <span className="text-teal-600 mt-0.5">•</span>
                         {rec}
                       </li>
@@ -429,13 +429,13 @@ Vrať JSON s týdenním rozpisu úkolů.`;
             <CardContent>
               <div className="space-y-3 max-h-96 overflow-y-auto">
                 {generatedPlan.tasks.slice(0, 20).map((task, i) => (
-                  <div key={i} className="p-3 rounded-lg border bg-slate-50 dark:bg-slate-800/50">
+                  <div key={i} className="p-3 rounded-lg border bg-[hsl(var(--mn-surface-2))]/50">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
-                        <p className="font-medium text-sm text-slate-900 dark:text-white mb-1">
+                        <p className="font-medium text-sm text-[hsl(var(--mn-text))] mb-1">
                           {task.title}
                         </p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                        <p className="text-xs text-[hsl(var(--mn-muted))]">
                           {task.description}
                         </p>
                       </div>
@@ -443,7 +443,7 @@ Vrať JSON s týdenním rozpisu úkolů.`;
                         <Badge variant="outline" className="text-xs">
                           {format(new Date(task.scheduled_date), 'd. MMM', { locale: cs })}
                         </Badge>
-                        <span className="text-xs text-slate-500">
+                        <span className="text-xs text-[hsl(var(--mn-muted))]">
                           ~{task.estimated_minutes} min
                         </span>
                       </div>
@@ -451,7 +451,7 @@ Vrať JSON s týdenním rozpisu úkolů.`;
                   </div>
                 ))}
                 {generatedPlan.tasks.length > 20 && (
-                  <p className="text-center text-sm text-slate-500 py-2">
+                  <p className="text-center text-sm text-[hsl(var(--mn-muted))] py-2">
                     ...a dalších {generatedPlan.tasks.length - 20} úkolů
                   </p>
                 )}

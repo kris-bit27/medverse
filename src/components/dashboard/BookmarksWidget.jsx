@@ -48,7 +48,7 @@ export default function BookmarksWidget({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-6 text-slate-500 dark:text-slate-400">
+          <div className="text-center py-6 text-[hsl(var(--mn-muted))]">
             <Bookmark className="w-8 h-8 mx-auto mb-2 opacity-50" />
             <p className="text-sm">Zatím žádné záložky</p>
           </div>
@@ -79,12 +79,12 @@ export default function BookmarksWidget({
               <Link
                 key={item.id}
                 to={createPageUrl(item.config.page) + `?${item.config.param}=${item.entity_id}`}
-                className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group"
+                className="flex items-center gap-3 p-2 rounded-lg hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))]/50 transition-colors group"
               >
-                <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center flex-shrink-0">
-                  <Icon className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                <div className="w-8 h-8 rounded-lg bg-[hsl(var(--mn-surface-2))] flex items-center justify-center flex-shrink-0">
+                  <Icon className="w-4 h-4 text-[hsl(var(--mn-muted))]" />
                 </div>
-                <span className="text-sm font-medium text-slate-700 dark:text-slate-300 truncate group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                <span className="text-sm font-medium text-[hsl(var(--mn-muted))] truncate group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
                   {item.entity?.title}
                 </span>
               </Link>

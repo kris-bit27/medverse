@@ -42,7 +42,7 @@ export default function ExistingFlashcards({ topicId }) {
   };
 
   return (
-    <div className="pt-4 border-t border-slate-800">
+    <div className="pt-4 border-t border-[hsl(var(--mn-border))]">
       <div className="flex items-center gap-2 mb-3">
         <Sparkles className="w-4 h-4 text-teal-400" />
         <h4 className="font-semibold text-sm">
@@ -52,7 +52,7 @@ export default function ExistingFlashcards({ topicId }) {
 
       <div className="space-y-2 max-h-96 overflow-y-auto">
         {flashcards.map((card) => (
-          <Card key={card.id} className="bg-slate-800/50 border-slate-700">
+          <Card key={card.id} className="bg-[hsl(var(--mn-surface-2)/0.5)] border-[hsl(var(--mn-border))]">
             <CardContent className="p-3">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">

@@ -283,7 +283,7 @@ export default function TestGeneratorV2() {
                     {okruhy.map((okruh) => (
                       <div
                         key={okruh.id}
-                        className="flex items-center space-x-2 p-3 rounded-lg border hover:bg-slate-50 dark:hover:bg-slate-900 cursor-pointer"
+                        className="flex items-center space-x-2 p-3 rounded-lg border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900 cursor-pointer"
                         onClick={() => handleOkruhToggle(okruh.id)}
                       >
                         <Checkbox
@@ -331,7 +331,7 @@ export default function TestGeneratorV2() {
                     {topics.map((topic) => (
                       <div
                         key={topic.id}
-                        className="flex items-center space-x-2 p-3 rounded-lg border hover:bg-slate-50 dark:hover:bg-slate-900 cursor-pointer"
+                        className="flex items-center space-x-2 p-3 rounded-lg border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900 cursor-pointer"
                         onClick={() => handleTopicToggle(topic.id)}
                       >
                         <Checkbox

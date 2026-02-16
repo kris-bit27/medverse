@@ -109,11 +109,11 @@ export default function ContentCoverage() {
             { icon: FileQuestion, label: 'Questions', value: s.qCount, sub: `${s.qTopics}/${s.totalTopics} topics` },
             { icon: Lightbulb, label: 'Concepts', value: s.cCount, sub: `${s.cTopics}/${s.totalTopics} topics` },
           ].map((item, i) => (
-            <div key={i} className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border">
-              <item.icon className="w-5 h-5 text-slate-400 mb-2" />
+            <div key={i} className="p-4 rounded-xl bg-[hsl(var(--mn-surface-2))]/50 border">
+              <item.icon className="w-5 h-5 text-[hsl(var(--mn-muted))] mb-2" />
               <p className="text-2xl font-bold">{item.value}</p>
               <p className="text-xs text-muted-foreground">{item.label}</p>
-              <p className="text-[10px] text-slate-500 mt-1">{item.sub}</p>
+              <p className="text-[10px] text-[hsl(var(--mn-muted))] mt-1">{item.sub}</p>
             </div>
           ))}
         </div>
@@ -131,8 +131,8 @@ export default function ContentCoverage() {
         <div className="space-y-2">
           <p className="text-sm font-medium text-muted-foreground">Coverage dle oborů</p>
           {Object.entries(s.byObor).sort(([,a],[,b]) => b.total - a.total).map(([name, d]) => (
-            <div key={name} className="flex items-center justify-between text-sm py-1.5 border-b border-slate-100 dark:border-slate-800">
-              <span className="text-slate-700 dark:text-slate-300">{name}</span>
+            <div key={name} className="flex items-center justify-between text-sm py-1.5 border-b border-slate-100 dark:border-[hsl(var(--mn-border))]">
+              <span className="text-[hsl(var(--mn-muted))]">{name}</span>
               <div className="flex items-center gap-3">
                 <Badge variant="outline" className="text-[10px]">{d.total} topics</Badge>
                 <span className={`text-xs ${d.fc === d.total ? 'text-emerald-500' : 'text-amber-500'}`}>FC:{d.fc}/{d.total}</span>
@@ -149,7 +149,7 @@ export default function ContentCoverage() {
             <p className="text-sm font-medium text-amber-500 mb-2">Neúplné topics ({s.incomplete.length})</p>
             <div className="text-xs space-y-1 max-h-32 overflow-y-auto">
               {s.incomplete.map(t => (
-                <div key={t.id} className="text-slate-500">{t.title}</div>
+                <div key={t.id} className="text-[hsl(var(--mn-muted))]">{t.title}</div>
               ))}
             </div>
           </div>

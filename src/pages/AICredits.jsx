@@ -88,7 +88,7 @@ export default function AICredits() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-teal-600 rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-[hsl(var(--mn-border))] border-t-teal-600 rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -245,7 +245,7 @@ export default function AICredits() {
                 return (
                   <div 
                     key={transaction.id}
-                    className="flex items-center justify-between p-3 rounded-lg border hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+                    className="flex items-center justify-between p-3 rounded-lg border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900 transition-colors"
                   >
                     <div className="flex-1">
                       <div className="font-medium">{transaction.type}</div>
@@ -263,7 +263,7 @@ export default function AICredits() {
                         </p>
                       )}
                     </div>
-                    <div className={`font-semibold ${isPositive ? 'text-green-600' : 'text-slate-900 dark:text-slate-100'}`}>
+                    <div className={`font-semibold ${isPositive ? 'text-green-600' : 'text-[hsl(var(--mn-text))]'}`}>
                       {isPositive ? '+' : ''}{transaction.amount} 💎
                     </div>
                   </div>
@@ -293,7 +293,7 @@ export default function AICredits() {
                 {tokens.monthly_limit?.toLocaleString() || 1000} 💎/měsíc • {tokens.plan_price_czk || 250} Kč
               </p>
             </div>
-            <button className="px-4 py-2 border rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+            <button className="px-4 py-2 border rounded-lg hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900 transition-colors">
               Změnit plán
             </button>
           </div>

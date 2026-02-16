@@ -91,7 +91,7 @@ export default function AdminToolEdit() {
         </Button>
       </div>
 
-      <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-8">
+      <h1 className="text-2xl font-bold text-[hsl(var(--mn-text))] mb-8">
         {isEdit ? 'Upravit nástroj' : 'Nový nástroj'}
       </h1>
 

@@ -94,7 +94,7 @@ export default function OkruhDetail() {
   if (!okruh) {
     return (
       <div className="p-6 text-center">
-        <p className="text-slate-500">Okruh nenalezen</p>
+        <p className="text-[hsl(var(--mn-muted))]">Okruh nenalezen</p>
       </div>
     );
   }
@@ -102,23 +102,23 @@ export default function OkruhDetail() {
   return (
     <div className="p-6 lg:p-8 max-w-6xl mx-auto">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-6">
+      <div className="flex items-center gap-2 text-sm text-[hsl(var(--mn-muted))] mb-6">
         <Link to={createPageUrl('Studium')} className="hover:text-teal-600 transition-colors flex items-center gap-1">
           <ChevronLeft className="w-4 h-4" />
           Studium
         </Link>
         <span>/</span>
-        <span className="text-slate-900 dark:text-white font-medium">{okruh.title}</span>
+        <span className="text-[hsl(var(--mn-text))] font-medium">{okruh.title}</span>
       </div>
 
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-8">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white mb-2">
+          <h1 className="text-2xl lg:text-3xl font-bold text-[hsl(var(--mn-text))] mb-2">
             {okruh.title}
           </h1>
           {okruh.description && (
-            <p className="text-slate-600 dark:text-slate-400 max-w-2xl">
+            <p className="text-[hsl(var(--mn-muted))] max-w-2xl">
               {okruh.description}
             </p>
           )}
@@ -145,18 +145,18 @@ export default function OkruhDetail() {
       {/* Overall progress */}
       <Card className="mb-8 p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-slate-900 dark:text-white">Celkový pokrok</h3>
+          <h3 className="font-semibold text-[hsl(var(--mn-text))]">Celkový pokrok</h3>
           <span className="text-2xl font-bold text-teal-600">{overallPercentage}%</span>
         </div>
         <Progress value={overallPercentage} className="h-3" />
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
+        <p className="text-sm text-[hsl(var(--mn-muted))] mt-2">
           {overallMastered} z {questions.length} otázek zvládnuto
         </p>
       </Card>
 
       {/* Topics list */}
       <div className="space-y-4">
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+        <h2 className="text-lg font-semibold text-[hsl(var(--mn-text))]">
           Témata
         </h2>
 
@@ -179,15 +179,15 @@ export default function OkruhDetail() {
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-slate-900 dark:text-white mb-2 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                    <h3 className="font-semibold text-[hsl(var(--mn-text))] mb-2 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
                       {topic.title}
                     </h3>
-                    <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-2">
+                    <div className="flex items-center gap-3 text-xs sm:text-sm text-[hsl(var(--mn-muted))] mb-2">
                       <span className="flex items-center gap-1">
                         <Target className="w-3.5 h-3.5" />
                         {topic.questionsCount} otázek
                       </span>
-                      <span className="text-slate-300 dark:text-slate-600">•</span>
+                      <span className="text-[hsl(var(--mn-muted))] dark:text-slate-600">•</span>
                       <span className="flex items-center gap-1">
                         <CheckCircle2 className="w-3.5 h-3.5 text-teal-600" />
                         {topic.mastered} zvládnuto
@@ -215,7 +215,7 @@ export default function OkruhDetail() {
 
         {topicStats.length === 0 && (
           <Card className="p-8 text-center">
-            <p className="text-slate-500">Zatím žádná témata</p>
+            <p className="text-[hsl(var(--mn-muted))]">Zatím žádná témata</p>
           </Card>
         )}
       </div>
@@ -224,7 +224,7 @@ export default function OkruhDetail() {
       {questions.length > 0 && (
         <div className="mt-8">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+            <h2 className="text-lg font-semibold text-[hsl(var(--mn-text))]">
               Otázky ({questions.length})
             </h2>
           </div>
@@ -236,22 +236,22 @@ export default function OkruhDetail() {
                 <Link
                   key={question.id}
                   to={createPageUrl('QuestionDetail') + `?id=${question.id}`}
-                  className="flex items-center gap-4 p-4 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 hover:border-teal-300 dark:hover:border-teal-700 transition-colors group"
+                  className="flex items-center gap-4 p-4 bg-[hsl(var(--mn-surface))] rounded-lg border border-[hsl(var(--mn-border))] hover:border-teal-300 dark:hover:border-teal-700 transition-colors group"
                 >
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors truncate">
+                    <p className="font-medium text-[hsl(var(--mn-text))] group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors truncate">
                       {question.title}
                     </p>
                     <DifficultyIndicator level={question.difficulty || 1} />
                   </div>
                   <StatusBadge status={questionProgress?.status || 'new'} size="sm" />
-                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-teal-600 transition-colors" />
+                  <ChevronRight className="w-4 h-4 text-[hsl(var(--mn-muted))] group-hover:text-teal-600 transition-colors" />
                 </Link>
               );
             })}
             
             {questions.length > 10 && (
-              <p className="text-center text-sm text-slate-500 py-4">
+              <p className="text-center text-sm text-[hsl(var(--mn-muted))] py-4">
                 ...a dalších {questions.length - 10} otázek
               </p>
             )}

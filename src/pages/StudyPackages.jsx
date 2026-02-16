@@ -265,7 +265,7 @@ export default function StudyPackages() {
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
-          <div className="flex items-center gap-4 text-sm text-slate-600 dark:text-slate-400">
+          <div className="flex items-center gap-4 text-sm text-[hsl(var(--mn-muted))]">
             <span className="flex items-center gap-1">
               <HelpCircle className="w-4 h-4" />
               {pkg.question_ids?.length || 0} otázek
@@ -287,7 +287,7 @@ export default function StudyPackages() {
           )}
 
           {pkg.estimated_hours && (
-            <div className="flex items-center gap-1 text-sm text-slate-500">
+            <div className="flex items-center gap-1 text-sm text-[hsl(var(--mn-muted))]">
               <Clock className="w-4 h-4" />
               ~{pkg.estimated_hours}h studia
             </div>
@@ -360,11 +360,11 @@ export default function StudyPackages() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-[hsl(var(--mn-text))] flex items-center gap-3">
             <Package className="w-8 h-8 text-teal-600" />
             Studijní balíčky
           </h1>
-          <p className="text-slate-600 dark:text-slate-400 mt-1">
+          <p className="text-[hsl(var(--mn-muted))] mt-1">
             Kurátorované kolekce materiálů pro efektivní studium
           </p>
         </div>
@@ -378,7 +378,7 @@ export default function StudyPackages() {
 
       {/* Search */}
       <div className="relative mb-6">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[hsl(var(--mn-muted))]" />
         <Input
           placeholder="Hledat balíčky..."
           value={searchQuery}
@@ -425,7 +425,7 @@ export default function StudyPackages() {
                   onChange={(e) => setAiFocus(e.target.value)}
                   placeholder="Např. Akutní appendicitida"
                 />
-                <div className="text-xs text-slate-500">
+                <div className="text-xs text-[hsl(var(--mn-muted))]">
                   AI vyfiltruje relevantní části z dokumentu.
                 </div>
               </div>
@@ -437,7 +437,7 @@ export default function StudyPackages() {
                   onChange={(e) => setAiFile(e.target.files?.[0] || null)}
                 />
                 {aiFile && (
-                  <div className="text-xs text-slate-500 flex items-center gap-2">
+                  <div className="text-xs text-[hsl(var(--mn-muted))] flex items-center gap-2">
                     <FileText className="w-4 h-4" />
                     {aiFile.name}
                   </div>
@@ -465,7 +465,7 @@ export default function StudyPackages() {
                 <div className="text-sm font-medium">Moje AI balíčky</div>
                 <div className="space-y-2 max-h-64 overflow-auto">
                   {aiPacks.length === 0 && (
-                    <div className="text-sm text-slate-500">Zatím žádné balíčky</div>
+                    <div className="text-sm text-[hsl(var(--mn-muted))]">Zatím žádné balíčky</div>
                   )}
                   {aiPacks.map((pack) => (
                     <button
@@ -475,11 +475,11 @@ export default function StudyPackages() {
                       className={`w-full text-left p-2 rounded-md border transition ${
                         selectedPackId === pack.id
                           ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20'
-                          : 'border-slate-200 dark:border-slate-700'
+                          : 'border-[hsl(var(--mn-border))]'
                       }`}
                     >
                       <div className="text-sm font-medium">{pack.title}</div>
-                      <div className="text-xs text-slate-500 flex items-center gap-2">
+                      <div className="text-xs text-[hsl(var(--mn-muted))] flex items-center gap-2">
                         <FileCheck className="w-3 h-3" />
                         {statusLabel(pack.status).label}
                       </div>
@@ -491,7 +491,7 @@ export default function StudyPackages() {
 
             <div className="space-y-4">
               {!aiPackDetail?.pack ? (
-                <div className="border rounded-lg p-6 text-sm text-slate-500">
+                <div className="border rounded-lg p-6 text-sm text-[hsl(var(--mn-muted))]">
                   Vyberte balíček pro zobrazení výstupů.
                 </div>
               ) : (
@@ -518,7 +518,7 @@ export default function StudyPackages() {
                       </TabsList>
                     </Tabs>
                     {processMode === 'HIGH_YIELD' && (
-                      <div className="text-xs text-slate-500">
+                      <div className="text-xs text-[hsl(var(--mn-muted))]">
                         High-yield se generuje z plného textu (může trvat déle).
                       </div>
                     )}
@@ -545,14 +545,14 @@ export default function StudyPackages() {
                       {fullOutput ? (
                         <HTMLContent content={fullOutput.content_html || ''} />
                       ) : (
-                        <div className="text-sm text-slate-500">Zatím bez výstupu.</div>
+                        <div className="text-sm text-[hsl(var(--mn-muted))]">Zatím bez výstupu.</div>
                       )}
                     </TabsContent>
                     <TabsContent value="high" className="mt-4">
                       {highOutput ? (
                         <HTMLContent content={highOutput.content_html || ''} />
                       ) : (
-                        <div className="text-sm text-slate-500">Zatím bez výstupu.</div>
+                        <div className="text-sm text-[hsl(var(--mn-muted))]">Zatím bez výstupu.</div>
                       )}
                     </TabsContent>
                   </Tabs>
@@ -564,7 +564,7 @@ export default function StudyPackages() {
                         {citations.map((c, idx) => (
                           <div key={idx} className="border rounded-md p-3">
                             <div className="font-medium">{c.sectionTitle}</div>
-                            <div className="text-xs text-slate-500">
+                            <div className="text-xs text-[hsl(var(--mn-muted))]">
                               Chunky: {(c.chunkIds || []).join(', ')}
                             </div>
                             {(c.quoteSnippets || []).length > 0 && (

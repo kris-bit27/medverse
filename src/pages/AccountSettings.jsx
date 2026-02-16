@@ -202,7 +202,7 @@ export default function AccountSettings() {
               id="email"
               value={user?.email || ''}
               disabled
-              className="bg-slate-50 dark:bg-slate-900"
+              className="bg-[hsl(var(--mn-surface))]"
             />
           </div>
 
@@ -213,7 +213,7 @@ export default function AccountSettings() {
                 type="password"
                 value="••••••••"
                 disabled
-                className="bg-slate-50 dark:bg-slate-900"
+                className="bg-[hsl(var(--mn-surface))]"
               />
               <Button variant="outline">Změnit heslo</Button>
             </div>

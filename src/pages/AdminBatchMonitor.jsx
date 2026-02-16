@@ -20,15 +20,15 @@ const STATUS_CONFIG = {
 
 function StatBox({ icon: Icon, label, value, sub, accent }) {
   return (
-    <div className="p-4 rounded-xl bg-slate-900/70 border border-slate-800">
+    <div className="p-4 rounded-xl bg-slate-900/70 border border-[hsl(var(--mn-border))]">
       <div className="flex items-center gap-3">
-        <div className={`p-2 rounded-lg ${accent || 'bg-slate-800'}`}>
-          <Icon className="w-4 h-4 text-slate-300" />
+        <div className={`p-2 rounded-lg ${accent || 'bg-[hsl(var(--mn-surface-2))]'}`}>
+          <Icon className="w-4 h-4 text-[hsl(var(--mn-muted))]" />
         </div>
         <div>
-          <p className="text-lg font-bold text-slate-900 dark:text-white">{value}</p>
-          <p className="text-xs text-slate-500">{label}</p>
-          {sub && <p className="text-[10px] text-slate-600 mt-0.5">{sub}</p>}
+          <p className="text-lg font-bold text-[hsl(var(--mn-text))]">{value}</p>
+          <p className="text-xs text-[hsl(var(--mn-muted))]">{label}</p>
+          {sub && <p className="text-[10px] text-[hsl(var(--mn-muted))] mt-0.5">{sub}</p>}
         </div>
       </div>
     </div>
@@ -173,15 +173,15 @@ export default function AdminBatchMonitor() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-[hsl(var(--mn-text))] flex items-center gap-2">
               <Database className="w-6 h-6 text-teal-400" />
               Batch Generation Monitor
             </h1>
-            <p className="text-sm text-slate-500 mt-1">
+            <p className="text-sm text-[hsl(var(--mn-muted))] mt-1">
               Bezpečná generace přes Anthropic Batch API (50% sleva, bez waste)
             </p>
           </div>
-          <Button variant="outline" size="sm" onClick={() => refetch()} className="border-slate-700 text-slate-400">
+          <Button variant="outline" size="sm" onClick={() => refetch()} className="border-[hsl(var(--mn-border))] text-[hsl(var(--mn-muted))]">
             <RefreshCw className="w-4 h-4 mr-1" /> Obnovit
           </Button>
         </div>
@@ -201,7 +201,7 @@ export default function AdminBatchMonitor() {
           <ShieldAlert className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
           <div className="text-sm">
             <p className="font-medium text-amber-300">Bezpečnostní režim aktivní</p>
-            <p className="text-slate-400 mt-1">
+            <p className="text-[hsl(var(--mn-muted))] mt-1">
               Masová generace je dostupná POUZE přes Anthropic Batch API (50% sleva, žádné retries/waste).
               Tlačítko "Generovat 1 topic" volá Messages API pro testování — max 1 topic najednou.
             </p>
@@ -209,14 +209,14 @@ export default function AdminBatchMonitor() {
         </div>
 
         {/* Actions */}
-        <Card className="bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800">
+        <Card className="bg-[hsl(var(--mn-surface))]/50 border-[hsl(var(--mn-border))]">
           <CardContent className="p-4 space-y-4">
             <div className="flex flex-wrap items-center gap-3">
               {/* Batch API Submit */}
               <Button
                 onClick={() => submitBatch.mutate(stats.pending)}
                 disabled={submitBatch.isPending || stats.pending === 0}
-                className="bg-teal-600 hover:bg-teal-500 text-white"
+                className="bg-teal-600 hover:bg-teal-500 text-[hsl(var(--mn-text))]"
               >
                 {submitBatch.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Send className="w-4 h-4 mr-2" />}
                 Odeslat Batch API ({stats.pending} topics, ~${estimatedBatchCost.toFixed(0)})
@@ -227,7 +227,7 @@ export default function AdminBatchMonitor() {
                 variant="outline"
                 onClick={() => pollBatch.mutate()}
                 disabled={pollBatch.isPending}
-                className="border-slate-700 text-slate-300"
+                className="border-[hsl(var(--mn-border))] text-[hsl(var(--mn-muted))]"
               >
                 {pollBatch.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Search className="w-4 h-4 mr-2" />}
                 Zkontrolovat výsledky
@@ -239,7 +239,7 @@ export default function AdminBatchMonitor() {
                 size="sm"
                 onClick={() => generateSingle.mutate()}
                 disabled={generateSingle.isPending || stats.pending === 0}
-                className="border-slate-700 text-slate-400"
+                className="border-[hsl(var(--mn-border))] text-[hsl(var(--mn-muted))]"
               >
                 {generateSingle.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Zap className="w-4 h-4 mr-2" />}
                 Test: Generovat 1 topic
@@ -262,9 +262,9 @@ export default function AdminBatchMonitor() {
 
         {/* Active Batches */}
         {batches.length > 0 && (
-          <Card className="bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800">
+          <Card className="bg-[hsl(var(--mn-surface))]/50 border-[hsl(var(--mn-border))]">
             <CardHeader className="pb-3">
-              <CardTitle className="text-slate-300 text-lg">📦 Anthropic Batches</CardTitle>
+              <CardTitle className="text-[hsl(var(--mn-muted))] text-lg">📦 Anthropic Batches</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               <div className="divide-y divide-slate-800">
@@ -273,13 +273,13 @@ export default function AdminBatchMonitor() {
                     <Badge variant="outline" className={
                       b.status === 'processed' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' :
                       b.status === 'in_progress' ? 'bg-blue-500/20 text-blue-300 border-blue-500/30 animate-pulse' :
-                      'bg-slate-500/20 text-slate-300'
+                      'bg-slate-500/20 text-[hsl(var(--mn-muted))]'
                     }>{b.status}</Badge>
-                    <span className="text-sm text-slate-400 font-mono">{b.batch_id?.substring(0, 25)}...</span>
-                    <span className="text-sm text-slate-500">{b.total_requests} req</span>
+                    <span className="text-sm text-[hsl(var(--mn-muted))] font-mono">{b.batch_id?.substring(0, 25)}...</span>
+                    <span className="text-sm text-[hsl(var(--mn-muted))]">{b.total_requests} req</span>
                     {b.actual_cost && <span className="text-sm text-emerald-400">${Number(b.actual_cost).toFixed(2)}</span>}
                     {b.cost_estimate && !b.actual_cost && <span className="text-sm text-amber-400">~${Number(b.cost_estimate).toFixed(2)}</span>}
-                    <span className="text-xs text-slate-600 ml-auto">{new Date(b.created_at).toLocaleString('cs')}</span>
+                    <span className="text-xs text-[hsl(var(--mn-muted))] ml-auto">{new Date(b.created_at).toLocaleString('cs')}</span>
                   </div>
                 ))}
               </div>
@@ -288,17 +288,17 @@ export default function AdminBatchMonitor() {
         )}
 
         {/* Queue Table */}
-        <Card className="bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800">
+        <Card className="bg-[hsl(var(--mn-surface))]/50 border-[hsl(var(--mn-border))]">
           <CardHeader className="pb-3">
-            <CardTitle className="text-slate-300 text-lg">
+            <CardTitle className="text-[hsl(var(--mn-muted))] text-lg">
               Fronta generace ({queue.length})
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
             {isLoading ? (
-              <div className="p-8 text-center text-slate-500">Načítám...</div>
+              <div className="p-8 text-center text-[hsl(var(--mn-muted))]">Načítám...</div>
             ) : queue.length === 0 ? (
-              <div className="p-8 text-center text-slate-500">Fronta je prázdná.</div>
+              <div className="p-8 text-center text-[hsl(var(--mn-muted))]">Fronta je prázdná.</div>
             ) : (
               <div className="divide-y divide-slate-800 max-h-[500px] overflow-y-auto">
                 {queue.slice(0, 100).map(item => {
@@ -308,15 +308,15 @@ export default function AdminBatchMonitor() {
                   const hasHY = topic?.bullet_points_summary?.length > 50;
 
                   return (
-                    <div key={item.id} className="flex items-center gap-4 px-5 py-3 hover:bg-slate-800/30 transition-colors">
-                      <span className="text-xs text-slate-600 font-mono w-6 text-center">{item.priority}</span>
+                    <div key={item.id} className="flex items-center gap-4 px-5 py-3 hover:bg-[hsl(var(--mn-surface-2))]/30 transition-colors">
+                      <span className="text-xs text-[hsl(var(--mn-muted))] font-mono w-6 text-center">{item.priority}</span>
                       <div className={`w-2.5 h-2.5 rounded-full ${sc.color} ${item.status === 'processing' ? 'animate-pulse' : ''}`} />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">{topic?.title}</span>
+                          <span className="text-sm font-medium text-[hsl(var(--mn-text))] dark:text-[hsl(var(--mn-text))] truncate">{topic?.title}</span>
                           <Badge variant="outline" className={`text-[10px] ${sc.badge} border`}>{sc.label}</Badge>
                         </div>
-                        <div className="flex items-center gap-3 mt-0.5 text-[11px] text-slate-500">
+                        <div className="flex items-center gap-3 mt-0.5 text-[11px] text-[hsl(var(--mn-muted))]">
                           <span>{topic?.obory?.name}</span>
                           <span>Modes: {item.modes?.join(', ')}</span>
                           {topic?.ai_cost > 0 && <span className="text-emerald-500">${Number(topic.ai_cost).toFixed(3)}</span>}
@@ -329,14 +329,14 @@ export default function AdminBatchMonitor() {
                       {item.error_message && (
                         <span className="text-xs text-red-400 max-w-[200px] truncate" title={item.error_message}>{item.error_message}</span>
                       )}
-                      <button onClick={() => deleteItem.mutate(item.id)} className="text-slate-600 hover:text-red-400 transition-colors p-1" title="Odstranit">
+                      <button onClick={() => deleteItem.mutate(item.id)} className="text-[hsl(var(--mn-muted))] hover:text-red-400 transition-colors p-1" title="Odstranit">
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   );
                 })}
                 {queue.length > 100 && (
-                  <div className="p-3 text-center text-xs text-slate-500">... a dalších {queue.length - 100} položek</div>
+                  <div className="p-3 text-center text-xs text-[hsl(var(--mn-muted))]">... a dalších {queue.length - 100} položek</div>
                 )}
               </div>
             )}

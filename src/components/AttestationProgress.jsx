@@ -87,7 +87,7 @@ export default function AttestationProgress() {
   });
 
   return (
-    <Card className="bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800">
+    <Card className="bg-[hsl(var(--mn-surface))]/50 border-[hsl(var(--mn-border))]">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between">
           <span className="flex items-center gap-2 text-base">
@@ -134,7 +134,7 @@ export default function AttestationProgress() {
                     <span className="text-xs text-muted-foreground w-24 truncate">
                       {CATEGORY_LABELS[item.category] || item.category}
                     </span>
-                    <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div className="flex-1 h-1.5 bg-[hsl(var(--mn-surface-2))] rounded-full overflow-hidden">
                       <div className="h-full rounded-full transition-all" style={{
                         width: `${pct}%`,
                         background: pct >= 80 ? '#22c55e' : pct >= 40 ? '#a855f7' : pct > 0 ? '#f59e0b' : '#94a3b8'
@@ -152,7 +152,7 @@ export default function AttestationProgress() {
 
         {progress.length === 0 && (
           <div className="text-center py-3">
-            <AlertCircle className="w-6 h-6 mx-auto text-slate-300 dark:text-slate-600 mb-2" />
+            <AlertCircle className="w-6 h-6 mx-auto text-[hsl(var(--mn-muted))] dark:text-slate-600 mb-2" />
             <p className="text-xs text-muted-foreground">VP požadavky se propojují s tématy studia</p>
           </div>
         )}

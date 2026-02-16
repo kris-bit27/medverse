@@ -151,7 +151,7 @@ export default function OrganizationManagement() {
               <Card
                 key={org.id}
                 className={`cursor-pointer transition-colors ${
-                  isSelected ? 'border-teal-600 bg-teal-50 dark:bg-teal-950/20' : 'hover:bg-slate-50 dark:hover:bg-slate-900'
+                  isSelected ? 'border-teal-600 bg-teal-50 dark:bg-teal-950/20' : 'hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900'
                 }`}
                 onClick={() => setSelectedOrg(org)}
               >
@@ -207,7 +207,7 @@ export default function OrganizationManagement() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid md:grid-cols-3 gap-4">
-                    <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-900">
+                    <div className="p-4 rounded-lg bg-[hsl(var(--mn-surface))]">
                       <div className="flex items-center gap-2 mb-1">
                         <Users className="w-4 h-4 text-muted-foreground" />
                         <span className="text-sm text-muted-foreground">Členové</span>
@@ -218,7 +218,7 @@ export default function OrganizationManagement() {
 
                     {orgStats && (
                       <>
-                        <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-900">
+                        <div className="p-4 rounded-lg bg-[hsl(var(--mn-surface))]">
                           <div className="flex items-center gap-2 mb-1">
                             <TrendingUp className="w-4 h-4 text-muted-foreground" />
                             <span className="text-sm text-muted-foreground">Průměrné skóre</span>
@@ -227,7 +227,7 @@ export default function OrganizationManagement() {
                           <p className="text-xs text-muted-foreground">za posledních 30 dní</p>
                         </div>
 
-                        <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-900">
+                        <div className="p-4 rounded-lg bg-[hsl(var(--mn-surface))]">
                           <div className="flex items-center gap-2 mb-1">
                             <Shield className="w-4 h-4 text-muted-foreground" />
                             <span className="text-sm text-muted-foreground">Testů dokončeno</span>
@@ -259,7 +259,7 @@ export default function OrganizationManagement() {
                     {orgMembers.map((member) => (
                       <div
                         key={member.id}
-                        className="flex items-center justify-between p-3 rounded-lg border hover:bg-slate-50 dark:hover:bg-slate-900"
+                        className="flex items-center justify-between p-3 rounded-lg border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900"
                       >
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-full bg-teal-100 dark:bg-teal-900 flex items-center justify-center">

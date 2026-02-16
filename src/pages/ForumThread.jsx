@@ -99,7 +99,7 @@ export default function ForumThread() {
   if (!thread) {
     return (
       <div className="p-6 max-w-4xl mx-auto text-center">
-        <p className="text-slate-600 dark:text-slate-400">Vlákno nenalezeno</p>
+        <p className="text-[hsl(var(--mn-muted))]">Vlákno nenalezeno</p>
         <Link to={createPageUrl('Forum')}>
           <Button variant="outline" className="mt-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -123,11 +123,11 @@ export default function ForumThread() {
       {/* Thread header */}
       <Card className="mb-6">
         <CardContent className="pt-6">
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">
+          <h1 className="text-2xl font-bold text-[hsl(var(--mn-text))] mb-3">
             {thread.title}
           </h1>
           {thread.description && (
-            <p className="text-slate-600 dark:text-slate-400 mb-4">
+            <p className="text-[hsl(var(--mn-muted))] mb-4">
               {thread.description}
             </p>
           )}
@@ -137,7 +137,7 @@ export default function ForumThread() {
                 {tag}
               </Badge>
             ))}
-            <span className="text-sm text-slate-500">
+            <span className="text-sm text-[hsl(var(--mn-muted))]">
               Vytvořil {thread.created_by?.split('@')[0]} •{' '}
               {formatDistanceToNow(new Date(thread.created_date), {
                 addSuffix: true,
@@ -167,7 +167,7 @@ export default function ForumThread() {
                   
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="font-medium text-slate-900 dark:text-white">
+                      <span className="font-medium text-[hsl(var(--mn-text))]">
                         {post.created_by?.split('@')[0]}
                       </span>
                       {isThreadAuthor && (
@@ -181,7 +181,7 @@ export default function ForumThread() {
                           Řešení
                         </Badge>
                       )}
-                      <span className="text-sm text-slate-500">
+                      <span className="text-sm text-[hsl(var(--mn-muted))]">
                         {formatDistanceToNow(new Date(post.created_date), {
                           addSuffix: true,
                           locale: cs
@@ -225,9 +225,9 @@ export default function ForumThread() {
         <Card>
           <CardContent className="pt-6">
             {replyingTo && (
-              <div className="mb-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+              <div className="mb-3 p-3 bg-[hsl(var(--mn-surface-2))] rounded-lg">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <span className="text-sm font-medium text-[hsl(var(--mn-muted))]">
                     Odpověď na příspěvek od {replyingTo.created_by?.split('@')[0]}
                   </span>
                   <Button

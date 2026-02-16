@@ -400,7 +400,7 @@ export default function MedicalContent({ content, className = '', onBookmark, is
   if (!content) {
     return (
       <div className="text-center py-12">
-        <p className="text-slate-500 dark:text-slate-400">Obsah neni k dispozici</p>
+        <p className="text-[hsl(var(--mn-muted))]">Obsah neni k dispozici</p>
       </div>
     );
   }

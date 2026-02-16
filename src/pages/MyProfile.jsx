@@ -349,7 +349,7 @@ export default function MyProfile() {
                         className={`w-5 h-5 ${
                           star <= subject.level
                             ? 'fill-yellow-400 text-yellow-400'
-                            : 'text-slate-300'
+                            : 'text-[hsl(var(--mn-muted))]'
                         }`}
                       />
                     ))}
@@ -378,7 +378,7 @@ function AchievementBadge({ icon, label, tokens, earned }) {
       flex flex-col items-center p-2 rounded-lg border-2 transition-all
       ${earned 
         ? 'bg-green-50 border-green-300 dark:bg-green-950/20' 
-        : 'bg-slate-50 border-slate-200 dark:bg-slate-900/50 opacity-60'
+        : 'bg-[hsl(var(--mn-bg))] border-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-surface)/0.5)] opacity-60'
       }
     `}>
       <span className="text-2xl mb-1">{earned ? '✅' : icon}</span>
@@ -451,7 +451,7 @@ function ProfileForm({ profile, user, isEditing, onSave, isSaving }) {
                 id="email"
                 value={user?.email || ''}
                 disabled
-                className="bg-slate-50 dark:bg-slate-900"
+                className="bg-[hsl(var(--mn-surface))]"
               />
             </div>
           </div>
@@ -573,7 +573,7 @@ function ProfileForm({ profile, user, isEditing, onSave, isSaving }) {
                     p-3 rounded-lg border-2 text-left transition-all
                     ${formData.career_paths.includes(path.value)
                       ? 'border-teal-500 bg-teal-50 dark:bg-teal-950/20'
-                      : 'border-slate-200 hover:border-slate-300'
+                      : 'border-[hsl(var(--mn-border))] hover:border-[hsl(var(--mn-border))]'
                     }
                     ${!isEditing && 'opacity-60 cursor-not-allowed'}
                   `}
@@ -612,8 +612,8 @@ function ProfileForm({ profile, user, isEditing, onSave, isSaving }) {
                 className={`
                   px-3 py-1 rounded-full text-sm transition-all
                   ${formData.areas_of_interest.includes(field)
-                    ? 'bg-teal-500 text-white'
-                    : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200'
+                    ? 'bg-teal-500 text-[hsl(var(--mn-text))]'
+                    : 'bg-[hsl(var(--mn-surface-2))] hover:bg-slate-200'
                   }
                   ${!isEditing && 'opacity-60 cursor-not-allowed'}
                 `}

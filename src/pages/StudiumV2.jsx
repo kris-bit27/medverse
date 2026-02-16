@@ -374,7 +374,7 @@ export default function StudiumV2() {
       {/* Topics List */}
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="w-8 h-8 border-4 border-slate-200 border-t-teal-600 rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-4 border-[hsl(var(--mn-border))] border-t-teal-600 rounded-full animate-spin"></div>
         </div>
       ) : filteredTopics.length === 0 ? (
         <Card>

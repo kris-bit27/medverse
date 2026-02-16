@@ -133,7 +133,7 @@ export default function TopicNotes({ topicId, user }) {
     return (
       <Card>
         <CardContent className="p-6 flex items-center justify-center">
-          <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+          <Loader2 className="w-6 h-6 animate-spin text-[hsl(var(--mn-muted))]" />
         </CardContent>
       </Card>
     );
@@ -153,7 +153,7 @@ export default function TopicNotes({ topicId, user }) {
         </CardHeader>
         <CardContent>
           {myNotes.length === 0 ? (
-            <p className="text-sm text-slate-500 text-center py-4">
+            <p className="text-sm text-[hsl(var(--mn-muted))] text-center py-4">
               Nemáte zatím žádné poznámky. Označte text v materiálu pro vytvoření poznámky.
             </p>
           ) : (
@@ -161,12 +161,12 @@ export default function TopicNotes({ topicId, user }) {
               {myNotes.map((note) => (
                 <div
                   key={note.id}
-                  className="p-4 rounded-lg border bg-slate-50 dark:bg-slate-800/50 space-y-3"
+                  className="p-4 rounded-lg border bg-[hsl(var(--mn-surface-2))]/50 space-y-3"
                 >
                   {note.highlighted_text && (
                     <div className="flex items-start gap-2">
                       <Highlighter className="w-4 h-4 text-amber-600 mt-1 flex-shrink-0" />
-                      <p className="text-sm text-slate-700 dark:text-slate-300 bg-amber-50 dark:bg-amber-900/20 p-2 rounded border border-amber-200 dark:border-amber-800">
+                      <p className="text-sm text-[hsl(var(--mn-muted))] bg-amber-50 dark:bg-amber-900/20 p-2 rounded border border-amber-200 dark:border-amber-800">
                         "{note.highlighted_text.slice(0, 200)}
                         {note.highlighted_text.length > 200 && '..."'}
                       </p>
@@ -196,7 +196,7 @@ export default function TopicNotes({ topicId, user }) {
                       </div>
                     </div>
                   ) : (
-                    <p className="text-sm text-slate-600 dark:text-slate-400">
+                    <p className="text-sm text-[hsl(var(--mn-muted))]">
                       {note.content}
                     </p>
                   )}
@@ -278,13 +278,13 @@ export default function TopicNotes({ topicId, user }) {
                   {note.highlighted_text && (
                     <div className="flex items-start gap-2">
                       <Highlighter className="w-4 h-4 text-amber-600 mt-1 flex-shrink-0" />
-                      <p className="text-sm text-slate-700 dark:text-slate-300 bg-amber-50 dark:bg-amber-900/20 p-2 rounded border border-amber-200 dark:border-amber-800">
+                      <p className="text-sm text-[hsl(var(--mn-muted))] bg-amber-50 dark:bg-amber-900/20 p-2 rounded border border-amber-200 dark:border-amber-800">
                         "{note.highlighted_text.slice(0, 200)}
                         {note.highlighted_text.length > 200 && '..."'}
                       </p>
                     </div>
                   )}
-                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                  <p className="text-sm text-[hsl(var(--mn-muted))]">
                     {note.content}
                   </p>
                   <Badge variant="outline" className="text-xs">

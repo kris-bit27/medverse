@@ -89,16 +89,16 @@ export default function Tools() {
     <div className="p-6 lg:p-8 max-w-6xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white mb-2">
+        <h1 className="text-2xl lg:text-3xl font-bold text-[hsl(var(--mn-text))] mb-2">
           Klinické nástroje
         </h1>
-        <p className="text-slate-600 dark:text-slate-400">
+        <p className="text-[hsl(var(--mn-muted))]">
           AI asistenti, rozhodovací algoritmy a klinické kalkulátory
         </p>
       </div>
 
       <Tabs defaultValue="ai" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
+        <TabsList className="grid w-full grid-cols-3 p-1 bg-[hsl(var(--mn-surface-2))] rounded-xl">
           <TabsTrigger value="ai" className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:shadow-md transition-all">
             <Brain className="w-4 h-4" />
             <span className="hidden sm:inline">AI Asistenti</span>
@@ -127,13 +127,13 @@ export default function Tools() {
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
                     <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-teal-500/30 group-hover:scale-110 transition-transform">
-                      <Brain className="w-7 h-7 text-white" />
+                      <Brain className="w-7 h-7 text-[hsl(var(--mn-text))]" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-lg text-slate-900 dark:text-white mb-2">
+                      <h3 className="font-semibold text-lg text-[hsl(var(--mn-text))] mb-2">
                         Diferenciální diagnóza
                       </h3>
-                      <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                      <p className="text-sm text-[hsl(var(--mn-muted))] leading-relaxed">
                         AI asistent pro vytvoření seznamu možných diagnóz na základě symptomů
                       </p>
                     </div>
@@ -147,13 +147,13 @@ export default function Tools() {
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
                     <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-teal-500/30 group-hover:scale-110 transition-transform">
-                      <Pill className="w-7 h-7 text-white" />
+                      <Pill className="w-7 h-7 text-[hsl(var(--mn-text))]" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-lg text-slate-900 dark:text-white mb-2">
+                      <h3 className="font-semibold text-lg text-[hsl(var(--mn-text))] mb-2">
                         Léčebný plán
                       </h3>
-                      <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                      <p className="text-sm text-[hsl(var(--mn-muted))] leading-relaxed">
                         AI návrh komplexního léčebného plánu dle aktuálních doporučení
                       </p>
                     </div>
@@ -189,7 +189,7 @@ export default function Tools() {
           {/* Filters */}
           <div className="flex flex-col sm:flex-row gap-4 mb-8">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[hsl(var(--mn-muted))]" />
               <Input
                 placeholder="Hledat nástroje..."
                 value={searchQuery}
@@ -226,7 +226,7 @@ export default function Tools() {
                     transition={{ delay: i * 0.05 }}
                   >
                     <Link to={createPageUrl('ToolDetail') + `?id=${tool.id}`}>
-                      <Card className="h-full hover:shadow-lg transition-all hover:border-teal-200 dark:hover:border-teal-800 group">
+                      <Card className="h-full hover:shadow-lg transition-all hover:border-teal-200 dark:hover:border-[hsl(var(--mn-accent)/0.4)] group">
                         <CardContent className="p-6">
                           <div className="flex items-start gap-4">
                             <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-teal-500/10 to-cyan-500/10 flex items-center justify-center flex-shrink-0">
@@ -235,7 +235,7 @@ export default function Tools() {
 
                             <div className="flex-1 min-w-0">
                               <div className="flex items-start justify-between gap-2 mb-2">
-                                <h3 className="font-semibold text-lg text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                                <h3 className="font-semibold text-lg text-[hsl(var(--mn-text))] group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
                                   {tool.title}
                                 </h3>
                                 {tool.visibility && tool.visibility !== 'public' && (
@@ -244,7 +244,7 @@ export default function Tools() {
                               </div>
 
                               {tool.description && (
-                                <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2">
+                                <p className="text-sm text-[hsl(var(--mn-muted))] mb-4 line-clamp-2">
                                   {tool.description}
                                 </p>
                               )}
@@ -256,11 +256,11 @@ export default function Tools() {
                                       {topic.title}
                                     </Badge>
                                   )}
-                                  <span className="text-xs text-slate-500">
+                                  <span className="text-xs text-[hsl(var(--mn-muted))]">
                                     {nodeCount} kroků
                                   </span>
                                 </div>
-                                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-teal-600 transition-colors" />
+                                <ChevronRight className="w-4 h-4 text-[hsl(var(--mn-muted))] group-hover:text-teal-600 transition-colors" />
                               </div>
                             </div>
                           </div>
@@ -348,18 +348,18 @@ function SavedCases() {
               <CardContent className="p-6">
                 <div className="flex items-start gap-4">
                   <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${bgColor} flex items-center justify-center flex-shrink-0`}>
-                    <IconComponent className="w-6 h-6 text-white" />
+                    <IconComponent className="w-6 h-6 text-[hsl(var(--mn-text))]" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2 mb-2">
-                      <h3 className="font-semibold text-lg text-slate-900 dark:text-white">
+                      <h3 className="font-semibold text-lg text-[hsl(var(--mn-text))]">
                         {caseLog.title}
                       </h3>
                       <Badge variant="outline">
                         {isAIDifferential ? 'Diferenciální DG' : 'Léčebný plán'}
                       </Badge>
                     </div>
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
+                    <p className="text-sm text-[hsl(var(--mn-muted))] mb-3">
                       <strong>Dotaz:</strong> {caseLog.initial_query}
                     </p>
                     {caseLog.tags && caseLog.tags.length > 0 && (

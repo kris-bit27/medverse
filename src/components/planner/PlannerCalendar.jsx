@@ -47,17 +47,17 @@ export default function PlannerCalendar({ tasks, selectedDate, onSelectDate }) {
 
       {selectedDateTasks.length > 0 && (
         <div className="space-y-2">
-          <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
+          <p className="text-sm font-medium text-[hsl(var(--mn-muted))]">
             {isToday(selectedDate) ? 'Dnes' : format(selectedDate, 'd. MMMM', { locale: cs })}
           </p>
           <div className="space-y-2">
             {selectedDateTasks.map(task => (
               <div 
                 key={task.id}
-                className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"
+                className="p-2 rounded-lg border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))]"
               >
                 <div className="flex items-start justify-between gap-2">
-                  <p className="text-xs font-medium text-slate-700 dark:text-slate-300 line-clamp-2">
+                  <p className="text-xs font-medium text-[hsl(var(--mn-muted))] line-clamp-2">
                     {task.title}
                   </p>
                   {task.is_completed && (
@@ -67,7 +67,7 @@ export default function PlannerCalendar({ tasks, selectedDate, onSelectDate }) {
                   )}
                 </div>
                 {task.scheduled_time && (
-                  <p className="text-xs text-slate-500 mt-1">
+                  <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">
                     {task.scheduled_time}
                   </p>
                 )}

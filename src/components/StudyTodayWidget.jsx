@@ -129,7 +129,7 @@ export default function StudyTodayWidget() {
         {/* Weak topics */}
         {reviewTopics.length > 0 && (
           <div>
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1">
+            <p className="text-xs font-medium text-[hsl(var(--mn-muted))] uppercase tracking-wider mb-2 flex items-center gap-1">
               <Target className="w-3 h-3" /> Slabé oblasti
             </p>
             <div className="space-y-2">
@@ -138,19 +138,19 @@ export default function StudyTodayWidget() {
                 const isStale = new Date(m.last_studied_at) < new Date(Date.now() - 7 * 86400000);
                 return (
                   <Link key={m.id} to={`${createPageUrl('TopicDetailV2')}?id=${m.topic_id}`}>
-                    <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors">
-                      <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
+                    <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]/50 transition-colors">
+                      <div className="w-8 h-8 rounded-lg bg-[hsl(var(--mn-surface-2))] flex items-center justify-center shrink-0">
                         <span className={`text-xs font-bold ${
                           score < 20 ? 'text-red-500' : score < 40 ? 'text-orange-500' : 'text-amber-500'
                         }`}>{Math.round(score)}</span>
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">{m.topics?.title}</p>
-                        <p className="text-[11px] text-slate-500">
+                        <p className="text-[11px] text-[hsl(var(--mn-muted))]">
                           {isStale ? 'Nestudováno 7+ dní' : `Mastery: ${Math.round(score)}%`}
                         </p>
                       </div>
-                      <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />
+                      <ChevronRight className="w-4 h-4 text-[hsl(var(--mn-muted))] shrink-0" />
                     </div>
                   </Link>
                 );
@@ -162,21 +162,21 @@ export default function StudyTodayWidget() {
         {/* New topics to explore */}
         {newTopics.length > 0 && (
           <div>
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1">
+            <p className="text-xs font-medium text-[hsl(var(--mn-muted))] uppercase tracking-wider mb-2 flex items-center gap-1">
               <BookOpen className="w-3 h-3" /> Nová témata
             </p>
             <div className="space-y-2">
               {newTopics.map(t => (
                 <Link key={t.id} to={`${createPageUrl('TopicDetailV2')}?id=${t.id}`}>
-                  <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors">
+                  <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]/50 transition-colors">
                     <div className="w-8 h-8 rounded-lg bg-teal-50 dark:bg-teal-500/10 flex items-center justify-center shrink-0">
                       <Zap className="w-4 h-4 text-teal-500" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{t.title}</p>
-                      <p className="text-[11px] text-slate-500">{t.obory?.name}</p>
+                      <p className="text-[11px] text-[hsl(var(--mn-muted))]">{t.obory?.name}</p>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />
+                    <ChevronRight className="w-4 h-4 text-[hsl(var(--mn-muted))] shrink-0" />
                   </div>
                 </Link>
               ))}

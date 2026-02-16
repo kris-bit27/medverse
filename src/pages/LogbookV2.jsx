@@ -61,7 +61,7 @@ function Onboarding({ obor, onComplete, onCancel }) {
           {[{ v: true, l: 'Ano, mám hotový kmen', desc: 'Kmenové požadavky se automaticky splní', ic: '✅' },
             { v: false, l: 'Ne, jsem v kmeni', desc: 'Uvidíš i kmenové požadavky', ic: '📖' }].map(o => (
             <button key={String(o.v)} onClick={() => setD(x => ({ ...x, kmenDone: o.v }))}
-              className={`p-4 rounded-xl border text-left transition-all ${d.kmenDone === o.v ? 'border-teal-500/50 bg-teal-500/5' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'}`}>
+              className={`p-4 rounded-xl border text-left transition-all ${d.kmenDone === o.v ? 'border-teal-500/50 bg-teal-500/5' : 'border-[hsl(var(--mn-border))] hover:border-[hsl(var(--mn-border))] dark:hover:border-[hsl(var(--mn-accent)/0.3)]'}`}>
               <div className="text-xl mb-2">{o.ic}</div>
               <div className={`text-sm font-semibold ${d.kmenDone === o.v ? 'text-teal-600 dark:text-teal-400' : ''}`}>{o.l}</div>
               <div className="text-xs text-muted-foreground mt-1">{o.desc}</div>
@@ -82,7 +82,7 @@ function Onboarding({ obor, onComplete, onCancel }) {
         <div><h3 className="text-lg font-bold">Přerušení přípravy</h3><p className="text-sm text-muted-foreground">Mateřská, PN apod. — doba se připočte k celkovému času.</p></div>
         {d.ints.length > 0 && <div className="space-y-2">
           {d.ints.map(int => { const it = INT_TYPES.find(t => t.id === int.type) || INT_TYPES[3]; const Ic = it.icon; return (
-            <div key={int.id} className="flex items-center gap-3 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+            <div key={int.id} className="flex items-center gap-3 p-3 rounded-lg border border-[hsl(var(--mn-border))]">
               <Ic className="w-4 h-4 text-muted-foreground" /><div className="flex-1"><div className="text-sm font-medium">{it.label}</div><div className="text-xs text-muted-foreground">{fD(int.from)} – {fD(int.to)} · {mBetween(int.from, int.to)} měs.</div></div>
               <button onClick={() => setD(x => ({ ...x, ints: x.ints.filter(i => i.id !== int.id) }))} className="text-muted-foreground hover:text-red-500 text-sm">×</button>
             </div>); })}
@@ -92,7 +92,7 @@ function Onboarding({ obor, onComplete, onCancel }) {
           <Card><CardContent className="p-4 space-y-3">
             <div className="flex gap-2 flex-wrap">{INT_TYPES.map(it => { const Ic = it.icon; return (
               <button key={it.id} onClick={() => setD(x => ({ ...x, tmp: { ...x.tmp, type: it.id } }))}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium ${d.tmp.type === it.id ? 'border-teal-500/50 bg-teal-500/10 text-teal-600 dark:text-teal-400' : 'border-slate-200 dark:border-slate-700'}`}><Ic className="w-3 h-3" />{it.label}</button>); })}</div>
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium ${d.tmp.type === it.id ? 'border-teal-500/50 bg-teal-500/10 text-teal-600 dark:text-teal-400' : 'border-[hsl(var(--mn-border))]'}`}><Ic className="w-3 h-3" />{it.label}</button>); })}</div>
             <div className="flex gap-3"><div className="flex-1"><Label className="text-xs">Od</Label><Input type="date" value={d.tmp.from} onChange={e => setD(x => ({ ...x, tmp: { ...x.tmp, from: e.target.value } }))} className="mt-1" /></div>
               <div className="flex-1"><Label className="text-xs">Do</Label><Input type="date" value={d.tmp.to} onChange={e => setD(x => ({ ...x, tmp: { ...x.tmp, to: e.target.value } }))} className="mt-1" /></div></div>
             <div className="flex gap-2 justify-end"><Button variant="ghost" size="sm" onClick={() => setD(x => ({ ...x, adding: false }))}>Zrušit</Button><Button size="sm" onClick={addInt} disabled={!d.tmp.from || !d.tmp.to}>Přidat</Button></div>
@@ -138,10 +138,10 @@ function ReqCard({ req, done, auto, onToggle }) {
   const Icon = TYPE_ICONS[req.requirement_type] || FileText;
   const det = []; if (req.duration_months) det.push(`${req.duration_months} měs.`); if (req.hours) det.push(`${req.hours} hod.`); if (req.min_count) det.push(`min. ${req.min_count}×`);
   return (
-    <div className={`rounded-xl border transition-all ${done ? 'border-teal-500/20 bg-teal-500/5' : 'border-slate-200 dark:border-slate-700'} ${auto ? 'opacity-50' : ''}`}>
+    <div className={`rounded-xl border transition-all ${done ? 'border-teal-500/20 bg-teal-500/5' : 'border-[hsl(var(--mn-border))]'} ${auto ? 'opacity-50' : ''}`}>
       <div className="flex items-center gap-3 p-3 cursor-pointer" onClick={() => setExp(!exp)}>
-        <button onClick={e => { e.stopPropagation(); onToggle(); }} className={`w-5 h-5 rounded-md border-2 flex-shrink-0 flex items-center justify-center transition-all ${done ? 'border-teal-500 bg-teal-500' : 'border-slate-300 dark:border-slate-600'}`}>
-          {done && <Check className="w-3 h-3 text-white" />}</button>
+        <button onClick={e => { e.stopPropagation(); onToggle(); }} className={`w-5 h-5 rounded-md border-2 flex-shrink-0 flex items-center justify-center transition-all ${done ? 'border-teal-500 bg-teal-500' : 'border-[hsl(var(--mn-border))] dark:border-slate-600'}`}>
+          {done && <Check className="w-3 h-3 text-[hsl(var(--mn-text))]" />}</button>
         <Icon className="w-4 h-4 text-muted-foreground flex-shrink-0" />
         <div className="flex-1 min-w-0">
           <div className={`text-sm font-medium truncate ${done ? 'line-through text-muted-foreground' : ''}`}>{req.title}</div>
@@ -150,7 +150,7 @@ function ReqCard({ req, done, auto, onToggle }) {
         <Badge variant="outline" className="text-[10px] px-1.5 py-0 flex-shrink-0">{PHASE_LABELS[req.phase] || 'SPEC'}</Badge>
         {exp ? <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" /> : <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />}
       </div>
-      {exp && <div className="px-3 pb-3 border-t border-slate-100 dark:border-slate-800"><div className="pt-2 space-y-1 text-xs text-muted-foreground">
+      {exp && <div className="px-3 pb-3 border-t border-slate-100 dark:border-[hsl(var(--mn-border))]"><div className="pt-2 space-y-1 text-xs text-muted-foreground">
         {req.description && <p>{req.description}</p>}
         {req.workplace_type && <p>📍 {req.workplace_type}</p>}
         {req.min_supervised > 0 && <p>👨‍⚕️ Min. pod dohledem: {req.min_supervised}×</p>}
@@ -167,7 +167,7 @@ function CustCard({ entry }) {
   return (
     <div className="rounded-xl border border-emerald-500/15 bg-emerald-500/5">
       <div className="flex items-center gap-3 p-3 cursor-pointer" onClick={() => setExp(!exp)}>
-        <div className="w-5 h-5 rounded-md border-2 border-emerald-500 bg-emerald-500 flex-shrink-0 flex items-center justify-center"><Check className="w-3 h-3 text-white" /></div>
+        <div className="w-5 h-5 rounded-md border-2 border-emerald-500 bg-emerald-500 flex-shrink-0 flex items-center justify-center"><Check className="w-3 h-3 text-[hsl(var(--mn-text))]" /></div>
         <FileText className="w-4 h-4 text-emerald-500 flex-shrink-0" />
         <div className="flex-1 min-w-0"><div className="text-sm font-medium truncate">{entry.procedure_name}</div><div className="text-xs text-muted-foreground">{fD(entry.date)}</div></div>
         <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 text-[10px]">VLASTNÍ</Badge>
@@ -260,7 +260,7 @@ export default function LogbookV2() {
       <Onboarding obor={obor} onComplete={data => { setProfiles(p => ({ ...p, [sel]: data })); setShowOB(false); }} onCancel={() => { setSel(null); setShowOB(false); }} />
     </div>
   );
-  if (sel && !profile && obor) { if (!showOB) setTimeout(() => setShowOB(true), 0); return <div className="flex items-center justify-center min-h-[50vh]"><div className="w-8 h-8 border-4 border-slate-200 border-t-teal-500 rounded-full animate-spin" /></div>; }
+  if (sel && !profile && obor) { if (!showOB) setTimeout(() => setShowOB(true), 0); return <div className="flex items-center justify-center min-h-[50vh]"><div className="w-8 h-8 border-4 border-[hsl(var(--mn-border))] border-t-teal-500 rounded-full animate-spin" /></div>; }
 
   // Overview
   if (!sel) return (
@@ -269,7 +269,7 @@ export default function LogbookV2() {
         <p className="text-sm text-muted-foreground mt-1">Sleduj plnění vzdělávacího programu dle MZČR 2019.</p></div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {obory.map(o => { const has = !!profiles[o.id]; return (
-          <button key={o.id} onClick={() => setSel(o.id)} className={`flex items-center gap-3 p-3.5 rounded-xl border text-left transition-all hover:border-teal-500/30 hover:bg-teal-500/5 ${has ? 'border-teal-500/20 bg-teal-500/5' : 'border-slate-200 dark:border-slate-700'}`}>
+          <button key={o.id} onClick={() => setSel(o.id)} className={`flex items-center gap-3 p-3.5 rounded-xl border text-left transition-all hover:border-teal-500/30 hover:bg-teal-500/5 ${has ? 'border-teal-500/20 bg-teal-500/5' : 'border-[hsl(var(--mn-border))]'}`}>
             <div className="w-9 h-9 rounded-lg bg-teal-500/10 flex items-center justify-center flex-shrink-0"><Award className="w-4 h-4 text-teal-500" /></div>
             <div className="flex-1 min-w-0"><div className="text-sm font-semibold truncate">{o.name}</div><div className="text-xs text-muted-foreground">{o.min_years} let · {o.kmen_type || '—'} kmen{has && ' · ✅'}</div></div>
             <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />

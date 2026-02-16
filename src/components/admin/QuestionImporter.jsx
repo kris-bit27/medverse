@@ -388,7 +388,7 @@ Otázky musí být relevantní pro české lékařské atestace a odpovídat bě
       <Alert>
         <AlertDescription className="text-xs">
           <strong>Příklad {importMode === 'json' ? 'JSON' : 'CSV'}:</strong>
-          <pre className="mt-2 p-2 bg-slate-100 dark:bg-slate-800 rounded text-xs overflow-x-auto">
+          <pre className="mt-2 p-2 bg-[hsl(var(--mn-surface-2))] rounded text-xs overflow-x-auto">
             {importMode === 'json' ? jsonExample : csvExample}
           </pre>
         </AlertDescription>

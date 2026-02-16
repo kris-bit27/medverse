@@ -32,7 +32,7 @@ function ConfidenceBadge({ confidence }) {
         Confidence: {label}
       </span>
       {confidence?.reason ? (
-        <span className="text-xs text-slate-500 dark:text-slate-400">
+        <span className="text-xs text-[hsl(var(--mn-muted))]">
           {confidence.reason}
         </span>
       ) : null}
@@ -49,21 +49,21 @@ function SourcesBlock({ citations }) {
   }
 
   return (
-    <div className="mt-3 rounded-lg border border-slate-200 dark:border-slate-700 p-3">
-      <div className="text-xs font-semibold text-slate-700 dark:text-slate-200 mb-2">
+    <div className="mt-3 rounded-lg border border-[hsl(var(--mn-border))] p-3">
+      <div className="text-xs font-semibold text-[hsl(var(--mn-muted))] dark:text-[hsl(var(--mn-text))] mb-2">
         Zdroje
       </div>
 
       {internal?.length > 0 && (
         <div className="mb-2">
-          <div className="text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">
+          <div className="text-xs font-medium text-[hsl(var(--mn-muted))] dark:text-[hsl(var(--mn-muted))] mb-1">
             Interní
           </div>
           <ul className="list-disc pl-5 space-y-1">
             {internal.map((c, idx) => (
-              <li key={`i-${idx}`} className="text-xs text-slate-600 dark:text-slate-300">
+              <li key={`i-${idx}`} className="text-xs text-[hsl(var(--mn-muted))] dark:text-[hsl(var(--mn-muted))]">
                 {c.title || c.name || c.id || 'Interní zdroj'}
-                {c.section_hint ? <span className="text-slate-400"> — {c.section_hint}</span> : null}
+                {c.section_hint ? <span className="text-[hsl(var(--mn-muted))]"> — {c.section_hint}</span> : null}
               </li>
             ))}
           </ul>
@@ -72,12 +72,12 @@ function SourcesBlock({ citations }) {
 
       {external?.length > 0 && (
         <div>
-          <div className="text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">
+          <div className="text-xs font-medium text-[hsl(var(--mn-muted))] dark:text-[hsl(var(--mn-muted))] mb-1">
             Externí
           </div>
           <ul className="list-disc pl-5 space-y-1">
             {external.map((c, idx) => (
-              <li key={`e-${idx}`} className="text-xs text-slate-600 dark:text-slate-300">
+              <li key={`e-${idx}`} className="text-xs text-[hsl(var(--mn-muted))] dark:text-[hsl(var(--mn-muted))]">
                 {c.url ? (
                   <a
                     href={c.url}
@@ -170,13 +170,13 @@ export default function AIExamTab({ question, user, topic, onNoteSaved }) {
       <Card className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800">
         <CardContent className="p-8 text-center">
           <AlertCircle className="w-12 h-12 mx-auto mb-4 text-amber-600" />
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+          <h3 className="text-lg font-semibold text-[hsl(var(--mn-text))] mb-2">
             {upsell.title}
           </h3>
-          <p className="text-slate-600 dark:text-slate-400 mb-2 text-sm">
+          <p className="text-[hsl(var(--mn-muted))] mb-2 text-sm">
             {featureCheck.reason}
           </p>
-          <p className="text-slate-600 dark:text-slate-400 mb-4 text-sm">
+          <p className="text-[hsl(var(--mn-muted))] mb-4 text-sm">
             {upsell.description}
           </p>
           <Button asChild className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600">
@@ -195,14 +195,14 @@ export default function AIExamTab({ question, user, topic, onNoteSaved }) {
         <Card>
           <CardContent className="p-8 text-center">
             <Sparkles className="w-12 h-12 mx-auto mb-4 text-teal-600" />
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+            <h3 className="text-lg font-semibold text-[hsl(var(--mn-text))] mb-2">
               Hippo ti pomůže porozumět
             </h3>
-            <p className="text-slate-600 dark:text-slate-400 mb-4 text-sm">
+            <p className="text-[hsl(var(--mn-muted))] mb-4 text-sm">
               Hippo vysvětlí téma strukturovaně a pomůže ti pochopit souvislosti na základě dostupných zdrojů.
             </p>
             {user.plan === 'free' && remainingCredits !== Infinity && (
-              <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+              <p className="text-xs text-[hsl(var(--mn-muted))] mb-4">
                 Zbývá dnes: {remainingCredits} / {10} dotazů pro Hippa
               </p>
             )}
@@ -231,7 +231,7 @@ export default function AIExamTab({ question, user, topic, onNoteSaved }) {
                     Hippo vysvětluje
                   </Badge>
                   {hippoResponse.cache?.hit && (
-                    <span className="text-xs text-slate-500">🔄 Cached</span>
+                    <span className="text-xs text-[hsl(var(--mn-muted))]">🔄 Cached</span>
                   )}
                 </div>
                 <Button
@@ -261,7 +261,7 @@ export default function AIExamTab({ question, user, topic, onNoteSaved }) {
           </Card>
 
           <Alert>
-            <AlertDescription className="text-xs text-slate-600 dark:text-slate-400">
+            <AlertDescription className="text-xs text-[hsl(var(--mn-muted))]">
               💡 Hippo je vzdělávací průvodce. Vždy zkontrolujte oficiální odpověď a zdroje.
             </AlertDescription>
           </Alert>

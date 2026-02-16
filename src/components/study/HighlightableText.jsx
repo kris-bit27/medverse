@@ -67,10 +67,10 @@ export default function HighlightableText({
             <div className="flex items-start gap-2">
               <Highlighter className="w-4 h-4 text-amber-600 mt-1 flex-shrink-0" />
               <div className="flex-1 text-sm">
-                <p className="font-medium text-slate-900 dark:text-white mb-1">
+                <p className="font-medium text-[hsl(var(--mn-text))] mb-1">
                   Označený text:
                 </p>
-                <p className="text-xs text-slate-600 dark:text-slate-400 bg-amber-50 dark:bg-amber-900/20 p-2 rounded border border-amber-200 dark:border-amber-800">
+                <p className="text-xs text-[hsl(var(--mn-muted))] bg-amber-50 dark:bg-amber-900/20 p-2 rounded border border-amber-200 dark:border-amber-800">
                   {selection?.slice(0, 150)}
                   {selection?.length > 150 && '...'}
                 </p>
@@ -78,7 +78,7 @@ export default function HighlightableText({
             </div>
             
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+              <label className="text-sm font-medium text-[hsl(var(--mn-muted))]">
                 Vaše poznámka (volitelné)
               </label>
               <Textarea

@@ -124,11 +124,11 @@ export default function StudyPlanner() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-[hsl(var(--mn-text))] flex items-center gap-3">
             <CalendarIcon className="w-8 h-8 text-teal-600" />
             Studijní plánovač
           </h1>
-          <p className="text-slate-600 dark:text-slate-400 mt-1">
+          <p className="text-[hsl(var(--mn-muted))] mt-1">
             Organizujte své studium s pomocí AI asistenta
           </p>
         </div>
@@ -156,7 +156,7 @@ export default function StudyPlanner() {
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
                   <Target className="w-5 h-5 text-teal-600" />
-                  <h3 className="font-semibold text-slate-900 dark:text-white">
+                  <h3 className="font-semibold text-[hsl(var(--mn-text))]">
                     {activePlan.title}
                   </h3>
                   {activePlan.is_ai_generated && (
@@ -166,11 +166,11 @@ export default function StudyPlanner() {
                     </Badge>
                   )}
                 </div>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
+                <p className="text-sm text-[hsl(var(--mn-muted))] mb-2">
                   Cíl: {activePlan.goal} • Do: {format(new Date(activePlan.target_date), 'd. MMMM yyyy', { locale: cs })}
                 </p>
                 <div className="flex items-center gap-4">
-                  <div className="flex-1 bg-white dark:bg-slate-800 rounded-full h-2 overflow-hidden">
+                  <div className="flex-1 bg-[hsl(var(--mn-elevated))] rounded-full h-2 overflow-hidden">
                     <div 
                       className="h-full bg-teal-600 transition-all"
                       style={{ width: `${activePlan.progress_percentage || 0}%` }}
@@ -197,8 +197,8 @@ export default function StudyPlanner() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-500">Dnešní úkoly</p>
-                <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+                <p className="text-sm text-[hsl(var(--mn-muted))]">Dnešní úkoly</p>
+                <p className="text-2xl font-bold text-[hsl(var(--mn-text))] mt-1">
                   {completedTodayCount}/{totalTodayCount}
                 </p>
               </div>
@@ -216,8 +216,8 @@ export default function StudyPlanner() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-500">Nadcházející</p>
-                <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+                <p className="text-sm text-[hsl(var(--mn-muted))]">Nadcházející</p>
+                <p className="text-2xl font-bold text-[hsl(var(--mn-text))] mt-1">
                   {upcomingTasks.length}
                 </p>
               </div>
@@ -232,8 +232,8 @@ export default function StudyPlanner() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-500">Po termínu</p>
-                <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+                <p className="text-sm text-[hsl(var(--mn-muted))]">Po termínu</p>
+                <p className="text-2xl font-bold text-[hsl(var(--mn-text))] mt-1">
                   {overdueTasks.length}
                 </p>
               </div>
@@ -248,8 +248,8 @@ export default function StudyPlanner() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-500">Aktivní plány</p>
-                <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+                <p className="text-sm text-[hsl(var(--mn-muted))]">Aktivní plány</p>
+                <p className="text-2xl font-bold text-[hsl(var(--mn-text))] mt-1">
                   {plans.filter(p => p.is_active).length}
                 </p>
               </div>

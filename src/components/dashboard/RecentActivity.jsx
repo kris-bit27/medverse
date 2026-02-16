@@ -31,7 +31,7 @@ export default function RecentActivity({
           <CardTitle className="text-lg">Nedávná aktivita</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8 text-slate-500 dark:text-slate-400">
+          <div className="text-center py-8 text-[hsl(var(--mn-muted))]">
             <Clock className="w-8 h-8 mx-auto mb-2 opacity-50" />
             <p>Zatím žádná aktivita</p>
             <Button asChild className="mt-4" variant="outline">
@@ -62,15 +62,15 @@ export default function RecentActivity({
             <Link
               key={item.id}
               to={createPageUrl('QuestionDetail') + `?id=${item.question_id}`}
-              className="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group"
+              className="flex items-center justify-between p-3 rounded-lg hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))]/50 transition-colors group"
             >
               <div className="flex-1 min-w-0 pr-4">
-                <p className="font-medium text-slate-900 dark:text-white truncate group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                <p className="font-medium text-[hsl(var(--mn-text))] truncate group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
                   {item.question?.title}
                 </p>
                 <div className="flex items-center gap-3 mt-1">
                   <DifficultyIndicator level={item.question?.difficulty || 1} showLabel={false} />
-                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                  <span className="text-xs text-[hsl(var(--mn-muted))]">
                     {format(new Date(item.last_reviewed_at), 'd. MMM', { locale: cs })}
                   </span>
                 </div>

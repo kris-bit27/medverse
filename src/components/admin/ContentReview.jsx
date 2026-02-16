@@ -161,19 +161,19 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
         <CardContent className="space-y-4">
           {/* Scores */}
           <div className="grid grid-cols-3 gap-3">
-            <div className="text-center p-3 bg-gray-50 rounded">
+            <div className="text-center p-3 bg-[hsl(var(--mn-bg))] rounded">
               <div className={`text-2xl font-bold ${getScoreColor(review.confidence * 100)}`}>
                 {(review.confidence * 100).toFixed(0)}%
               </div>
               <div className="text-xs text-muted-foreground">Confidence</div>
             </div>
-            <div className="text-center p-3 bg-gray-50 rounded">
+            <div className="text-center p-3 bg-[hsl(var(--mn-bg))] rounded">
               <div className={`text-2xl font-bold ${getScoreColor(review.safety_score)}`}>
                 {review.safety_score}
               </div>
               <div className="text-xs text-muted-foreground">Safety</div>
             </div>
-            <div className="text-center p-3 bg-gray-50 rounded">
+            <div className="text-center p-3 bg-[hsl(var(--mn-bg))] rounded">
               <div className={`text-2xl font-bold ${getScoreColor(review.completeness_score)}`}>
                 {review.completeness_score}
               </div>
@@ -196,8 +196,8 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
                       </div>
                       <AlertDescription className="text-sm mb-2">{issue.description}</AlertDescription>
                       {issue.line && (
-                        <div className="text-xs bg-white p-2 rounded border mb-2">
-                          <span className="text-slate-500">Kontext:</span> „{issue.line}"
+                        <div className="text-xs bg-[hsl(var(--mn-surface))] p-2 rounded border mb-2">
+                          <span className="text-[hsl(var(--mn-muted))]">Kontext:</span> „{issue.line}"
                         </div>
                       )}
                       {issue.suggestion && (

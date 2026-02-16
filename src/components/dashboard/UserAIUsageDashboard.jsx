@@ -182,7 +182,7 @@ export default function UserAIUsageDashboard({ user }) {
               {history.map((item) => (
                 <div 
                   key={item.id} 
-                  className="flex items-center justify-between p-3 rounded-lg border bg-slate-50 dark:bg-slate-900"
+                  className="flex items-center justify-between p-3 rounded-lg border bg-[hsl(var(--mn-surface))]"
                 >
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
@@ -221,9 +221,9 @@ export default function UserAIUsageDashboard({ user }) {
       {(!history || history.length === 0) && (
         <Card>
           <CardContent className="p-8 text-center">
-            <Zap className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-            <p className="text-slate-500 mb-2">No AI usage yet</p>
-            <p className="text-sm text-slate-400">
+            <Zap className="w-12 h-12 text-[hsl(var(--mn-muted))] mx-auto mb-3" />
+            <p className="text-[hsl(var(--mn-muted))] mb-2">No AI usage yet</p>
+            <p className="text-sm text-[hsl(var(--mn-muted))]">
               Start generating content to see your usage statistics here
             </p>
           </CardContent>

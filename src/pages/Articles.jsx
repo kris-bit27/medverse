@@ -85,10 +85,10 @@ export default function Articles() {
     <div className="p-6 lg:p-8 max-w-6xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white mb-2">
+        <h1 className="text-2xl lg:text-3xl font-bold text-[hsl(var(--mn-text))] mb-2">
           Články
         </h1>
-        <p className="text-slate-600 dark:text-slate-400">
+        <p className="text-[hsl(var(--mn-muted))]">
           Klinické přehledy a doporučené postupy
         </p>
       </div>
@@ -100,7 +100,7 @@ export default function Articles() {
         animate={{ opacity: 1, y: 0 }}
       >
         <div className="relative flex-1 group">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-teal-600 transition-colors" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[hsl(var(--mn-muted))] group-focus-within:text-teal-600 transition-colors" />
           <Input
             placeholder="Hledat články..."
             value={searchQuery}
@@ -147,17 +147,17 @@ export default function Articles() {
                         )}
                       </div>
 
-                      <h3 className="font-semibold text-lg text-slate-900 dark:text-white mb-3 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors line-clamp-2 leading-snug">
+                      <h3 className="font-semibold text-lg text-[hsl(var(--mn-text))] mb-3 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors line-clamp-2 leading-snug">
                         {article.title}
                       </h3>
 
                       {article.summary && (
-                        <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-3 leading-relaxed">
+                        <p className="text-sm text-[hsl(var(--mn-muted))] mb-4 line-clamp-3 leading-relaxed">
                           {article.summary}
                         </p>
                       )}
 
-                      <div className="flex items-center justify-between mt-auto pt-4 border-t dark:border-slate-700 group-hover:border-teal-200 dark:group-hover:border-teal-800 transition-colors">
+                      <div className="flex items-center justify-between mt-auto pt-4 border-t dark:border-[hsl(var(--mn-border))] group-hover:border-teal-200 dark:group-hover:border-teal-800 transition-colors">
                         <div className="flex items-center gap-2 flex-wrap">
                           {topic && (
                             <Badge variant="outline" className="text-xs group-hover:border-teal-300 dark:group-hover:border-teal-700 transition-colors">
@@ -165,13 +165,13 @@ export default function Articles() {
                             </Badge>
                           )}
                           {article.read_time_minutes && (
-                            <span className="text-xs text-slate-500 flex items-center gap-1">
+                            <span className="text-xs text-[hsl(var(--mn-muted))] flex items-center gap-1">
                               <Clock className="w-3.5 h-3.5" />
                               {article.read_time_minutes} min
                             </span>
                           )}
                         </div>
-                        <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-teal-600 group-hover:translate-x-1 transition-all flex-shrink-0" />
+                        <ChevronRight className="w-5 h-5 text-[hsl(var(--mn-muted))] group-hover:text-teal-600 group-hover:translate-x-1 transition-all flex-shrink-0" />
                       </div>
                     </CardContent>
                   </Card>

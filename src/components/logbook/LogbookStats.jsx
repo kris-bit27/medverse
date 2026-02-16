@@ -29,8 +29,8 @@ export default function LogbookStats({ entries }) {
             <div className={`w-10 h-10 rounded-lg ${item.color} flex items-center justify-center mx-auto mb-2`}>
               <item.icon className="w-5 h-5" />
             </div>
-            <p className="text-2xl font-bold text-slate-900 dark:text-white">{item.value}</p>
-            <p className="text-xs text-slate-500">{item.label}</p>
+            <p className="text-2xl font-bold text-[hsl(var(--mn-text))]">{item.value}</p>
+            <p className="text-xs text-[hsl(var(--mn-muted))]">{item.label}</p>
           </CardContent>
         </Card>
       ))}

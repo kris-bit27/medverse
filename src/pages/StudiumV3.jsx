@@ -26,7 +26,7 @@ const OBOR_COLORS = {
   'Interna': { bg: 'bg-cyan-500/10', border: 'border-cyan-500/30', text: 'text-cyan-400', accent: '#06b6d4' },
 };
 
-const getOborTheme = (name) => OBOR_COLORS[name] || { bg: 'bg-slate-500/10', border: 'border-slate-500/30', text: 'text-slate-400', accent: '#64748b' };
+const getOborTheme = (name) => OBOR_COLORS[name] || { bg: 'bg-slate-500/10', border: 'border-slate-500/30', text: 'text-[hsl(var(--mn-muted))]', accent: '#64748b' };
 
 /* ─── Content availability dots ─── */
 function ContentDots({ topic }) {
@@ -41,7 +41,7 @@ function ContentDots({ topic }) {
       {dots.map(d => (
         <div key={d.key} className="group relative flex items-center gap-1">
           <div className={`w-2 h-2 rounded-full transition-all ${d.has ? 'bg-emerald-400 shadow-sm shadow-emerald-400/50' : 'bg-slate-300 dark:bg-slate-700'}`} />
-          <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-0.5 text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
+          <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-0.5 text-[10px] bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
             {d.label}: {d.has ? '✓' : '—'}
           </span>
         </div>
@@ -59,7 +59,7 @@ function TopicCard({ topic, mastery }) {
 
   return (
     <Link to={`${createPageUrl('TopicDetailV2')}?id=${topic.id}`}>
-      <div className={`group relative rounded-xl border ${theme.border} bg-white dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-800/70 transition-all duration-200 hover:shadow-lg hover:shadow-slate-200/50 dark:hover:shadow-black/20 hover:-translate-y-0.5 overflow-hidden`}>
+      <div className={`group relative rounded-xl border ${theme.border} bg-[hsl(var(--mn-surface))]/50 hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]/70 transition-all duration-200 hover:shadow-lg hover:shadow-slate-200/50 dark:hover:shadow-black/20 hover:-translate-y-0.5 overflow-hidden`}>
         {/* Top accent bar — shows mastery if studied */}
         {score > 0 ? (
           <div className="h-1 w-full bg-slate-200 dark:bg-slate-800">
@@ -84,7 +84,7 @@ function TopicCard({ topic, mastery }) {
                   score >= 80 ? 'text-emerald-600 bg-emerald-500/10' :
                   score >= 50 ? 'text-amber-600 bg-amber-500/10' :
                   score >= 20 ? 'text-amber-600 bg-amber-500/10' :
-                  'text-slate-500 bg-slate-500/10'
+                  'text-[hsl(var(--mn-muted))] bg-slate-500/10'
                 }`}>{Math.round(score)}%</span>
               )}
               <ContentDots topic={topic} />
@@ -92,32 +92,32 @@ function TopicCard({ topic, mastery }) {
           </div>
 
           {/* Title */}
-          <h3 className="font-semibold text-base text-slate-900 dark:text-slate-100 mb-1.5 group-hover:text-white transition-colors line-clamp-2">
+          <h3 className="font-semibold text-base text-[hsl(var(--mn-text))] mb-1.5 group-hover:text-[hsl(var(--mn-text))] transition-colors line-clamp-2">
             {topic.title}
           </h3>
 
           {/* No content indicator */}
           {wordCount === 0 && (
-            <span className="inline-block text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 mb-2">
+            <span className="inline-block text-[10px] px-2 py-0.5 rounded-full bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))] mb-2">
               ⏳ Připravujeme obsah
             </span>
           )}
 
           {/* Okruh */}
-          <p className="text-xs text-slate-500 mb-3">
+          <p className="text-xs text-[hsl(var(--mn-muted))] mb-3">
             {topic.okruhy?.name}
           </p>
 
           {/* Description */}
           {topic.description && (
-            <p className="text-sm text-slate-400 mb-4 line-clamp-2 leading-relaxed">
+            <p className="text-sm text-[hsl(var(--mn-muted))] mb-4 line-clamp-2 leading-relaxed">
               {topic.description}
             </p>
           )}
 
           {/* Footer */}
-          <div className="flex items-center justify-between pt-3 border-t border-slate-200 dark:border-slate-800">
-            <div className="flex items-center gap-3 text-xs text-slate-500">
+          <div className="flex items-center justify-between pt-3 border-t border-[hsl(var(--mn-border))]">
+            <div className="flex items-center gap-3 text-xs text-[hsl(var(--mn-muted))]">
               {topic.ai_model && (
                 <span className="flex items-center gap-1">
                   <Sparkles className="w-3 h-3 text-amber-500/70" />
@@ -138,7 +138,7 @@ function TopicCard({ topic, mastery }) {
                 </span>
               )}
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400 group-hover:translate-x-0.5 transition-all" />
+            <ChevronRight className="w-4 h-4 text-[hsl(var(--mn-muted))] group-hover:text-slate-400 group-hover:translate-x-0.5 transition-all" />
           </div>
         </div>
       </div>
@@ -149,13 +149,13 @@ function TopicCard({ topic, mastery }) {
 /* ─── Stat Card ─── */
 function StatCard({ icon: Icon, label, value, accent }) {
   return (
-    <div className={`flex items-center gap-3 p-4 rounded-xl bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800`}>
-      <div className={`p-2 rounded-lg ${accent || 'bg-slate-100 dark:bg-slate-800'}`}>
-        <Icon className="w-5 h-5 text-slate-700 dark:text-slate-300" />
+    <div className={`flex items-center gap-3 p-4 rounded-xl bg-[hsl(var(--mn-surface))]/50 border border-[hsl(var(--mn-border))]`}>
+      <div className={`p-2 rounded-lg ${accent || 'bg-[hsl(var(--mn-surface-2))]'}`}>
+        <Icon className="w-5 h-5 text-[hsl(var(--mn-muted))]" />
       </div>
       <div>
-        <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{value}</p>
-        <p className="text-xs text-slate-500">{label}</p>
+        <p className="text-2xl font-bold text-[hsl(var(--mn-text))]">{value}</p>
+        <p className="text-xs text-[hsl(var(--mn-muted))]">{label}</p>
       </div>
     </div>
   );
@@ -310,9 +310,9 @@ export default function StudiumV3() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <GraduationCap className="w-6 h-6 text-teal-400" />
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Studium</h1>
+              <h1 className="text-2xl font-bold text-[hsl(var(--mn-text))] tracking-tight">Studium</h1>
             </div>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-[hsl(var(--mn-muted))]">
               {stats.total} témat • {stats.withFulltext} s plným textem • {stats.oboryCount} oborů
             </p>
           </div>
@@ -330,15 +330,15 @@ export default function StudiumV3() {
         <div className="flex flex-col sm:flex-row gap-3">
           {/* Search */}
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(var(--mn-muted))]" />
             <Input
               placeholder="Hledat témata, obory, okruhy..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-slate-50 dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 placeholder:text-slate-500 focus:border-teal-500/50 focus:ring-teal-500/20"
+              className="pl-10 bg-[hsl(var(--mn-surface))] border-[hsl(var(--mn-border))] text-[hsl(var(--mn-text))] dark:text-[hsl(var(--mn-text))] placeholder:text-slate-500 focus:border-teal-500/50 focus:ring-teal-500/20"
             />
             {searchQuery && (
-              <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 dark:text-slate-300">
+              <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-muted))]">
                 <X className="w-4 h-4" />
               </button>
             )}
@@ -348,7 +348,7 @@ export default function StudiumV3() {
           <Button
             variant="outline"
             onClick={() => setShowFilters(!showFilters)}
-            className={`gap-2 border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 ${showFilters ? 'border-teal-500/50 text-teal-700 dark:text-teal-300' : ''}`}
+            className={`gap-2 border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface))] hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))] ${showFilters ? 'border-teal-500/50 text-teal-700 dark:text-teal-300' : ''}`}
           >
             <SlidersHorizontal className="w-4 h-4" />
             Filtry
@@ -360,16 +360,16 @@ export default function StudiumV3() {
           </Button>
 
           {/* View toggle */}
-          <div className="flex border border-slate-300 dark:border-slate-700 rounded-md overflow-hidden">
+          <div className="flex border border-[hsl(var(--mn-border))] rounded-md overflow-hidden">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-2 ${viewMode === 'grid' ? 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white' : 'bg-slate-50 dark:bg-slate-900 text-slate-400 hover:text-slate-700 dark:text-slate-300'}`}
+              className={`p-2 ${viewMode === 'grid' ? 'bg-slate-200 dark:bg-slate-700 text-[hsl(var(--mn-text))]' : 'bg-[hsl(var(--mn-surface))] text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-muted))]'}`}
             >
               <LayoutGrid className="w-4 h-4" />
             </button>
             <button
               onClick={() => setViewMode('grouped')}
-              className={`p-2 ${viewMode === 'grouped' ? 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white' : 'bg-slate-50 dark:bg-slate-900 text-slate-400 hover:text-slate-700 dark:text-slate-300'}`}
+              className={`p-2 ${viewMode === 'grouped' ? 'bg-slate-200 dark:bg-slate-700 text-[hsl(var(--mn-text))]' : 'bg-[hsl(var(--mn-surface))] text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-muted))]'}`}
             >
               <Layers className="w-4 h-4" />
             </button>
@@ -381,7 +381,7 @@ export default function StudiumV3() {
             className={`px-3 py-2 rounded-lg text-xs font-medium border transition-all ${
               contentOnly 
                 ? 'bg-teal-50 dark:bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-300 dark:border-teal-500/30' 
-                : 'bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 border-slate-300 dark:border-slate-700'
+                : 'bg-[hsl(var(--mn-surface))] text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))]'
             }`}
           >
             {contentOnly ? '✓ Pouze s obsahem' : 'Pouze s obsahem'}
@@ -389,10 +389,10 @@ export default function StudiumV3() {
 
           {/* Sort */}
           <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-[160px] bg-slate-50 dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300">
+            <SelectTrigger className="w-[160px] bg-[hsl(var(--mn-surface))] border-[hsl(var(--mn-border))] text-[hsl(var(--mn-muted))]">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700">
+            <SelectContent className="bg-[hsl(var(--mn-surface))] border-[hsl(var(--mn-border))]">
               <SelectItem value="newest">Nejnovější</SelectItem>
               <SelectItem value="oldest">Nejstarší</SelectItem>
               <SelectItem value="alpha">Abecedně</SelectItem>
@@ -405,14 +405,14 @@ export default function StudiumV3() {
 
         {/* Expanded Filters */}
         {showFilters && (
-          <div className="flex flex-wrap gap-3 p-4 rounded-xl bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 animate-in slide-in-from-top-2">
+          <div className="flex flex-wrap gap-3 p-4 rounded-xl bg-[hsl(var(--mn-surface))]/50 border border-[hsl(var(--mn-border))] animate-in slide-in-from-top-2">
             <div className="space-y-1.5 min-w-[180px]">
-              <label className="text-xs font-medium text-slate-400">Obor</label>
+              <label className="text-xs font-medium text-[hsl(var(--mn-muted))]">Obor</label>
               <Select value={selectedObor} onValueChange={(v) => { setSelectedObor(v); setSelectedOkruh('all'); }}>
-                <SelectTrigger className="bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 h-9">
+                <SelectTrigger className="bg-[hsl(var(--mn-surface-2))] border-[hsl(var(--mn-border))] text-[hsl(var(--mn-muted))] h-9">
                   <SelectValue placeholder="Všechny obory" />
                 </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700">
+                <SelectContent className="bg-[hsl(var(--mn-surface))] border-[hsl(var(--mn-border))]">
                   <SelectItem value="all">Všechny obory</SelectItem>
                   {obory.map(o => (
                     <SelectItem key={o.id} value={o.id}>
@@ -427,12 +427,12 @@ export default function StudiumV3() {
             </div>
 
             <div className="space-y-1.5 min-w-[180px]">
-              <label className="text-xs font-medium text-slate-400">Okruh</label>
+              <label className="text-xs font-medium text-[hsl(var(--mn-muted))]">Okruh</label>
               <Select value={selectedOkruh} onValueChange={setSelectedOkruh}>
-                <SelectTrigger className="bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 h-9">
+                <SelectTrigger className="bg-[hsl(var(--mn-surface-2))] border-[hsl(var(--mn-border))] text-[hsl(var(--mn-muted))] h-9">
                   <SelectValue placeholder="Všechny okruhy" />
                 </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700">
+                <SelectContent className="bg-[hsl(var(--mn-surface))] border-[hsl(var(--mn-border))]">
                   <SelectItem value="all">Všechny okruhy</SelectItem>
                   {filteredOkruhy.map(o => (
                     <SelectItem key={o.id} value={o.id}>{o.name}</SelectItem>
@@ -447,7 +447,7 @@ export default function StudiumV3() {
                   variant="ghost"
                   size="sm"
                   onClick={() => { setSearchQuery(''); setSelectedObor('all'); setSelectedOkruh('all'); }}
-                  className="text-slate-400 hover:text-slate-900 dark:hover:text-white h-9"
+                  className="text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))] dark:hover:text-[hsl(var(--mn-text))] h-9"
                 >
                   <X className="w-3 h-3 mr-1" />
                   Vymazat filtry
@@ -461,22 +461,22 @@ export default function StudiumV3() {
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
             <div className="flex flex-col items-center gap-3">
-              <div className="w-10 h-10 border-3 border-slate-300 dark:border-slate-700 border-t-teal-500 rounded-full animate-spin" />
-              <p className="text-sm text-slate-500">Načítám témata...</p>
+              <div className="w-10 h-10 border-3 border-[hsl(var(--mn-border))] border-t-teal-500 rounded-full animate-spin" />
+              <p className="text-sm text-[hsl(var(--mn-muted))]">Načítám témata...</p>
             </div>
           </div>
         ) : filteredTopics.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <BookOpen className="w-16 h-16 text-slate-700 mb-4" />
-            <h3 className="text-xl font-semibold text-slate-700 dark:text-slate-300 mb-2">Žádná témata nenalezena</h3>
-            <p className="text-slate-500 mb-6 max-w-md">
+            <BookOpen className="w-16 h-16 text-[hsl(var(--mn-muted))] mb-4" />
+            <h3 className="text-xl font-semibold text-[hsl(var(--mn-muted))] mb-2">Žádná témata nenalezena</h3>
+            <p className="text-[hsl(var(--mn-muted))] mb-6 max-w-md">
               {activeFilters > 0 ? 'Zkuste změnit nebo vymazat filtry' : 'Zatím nejsou k dispozici žádná témata'}
             </p>
             {activeFilters > 0 && (
               <Button
                 variant="outline"
                 onClick={() => { setSearchQuery(''); setSelectedObor('all'); setSelectedOkruh('all'); }}
-                className="border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                className="border-[hsl(var(--mn-border))] text-[hsl(var(--mn-muted))]"
               >
                 Vymazat filtry
               </Button>
@@ -495,7 +495,7 @@ export default function StudiumV3() {
                 <Button
                   variant="outline"
                   onClick={() => setVisibleCount(v => v + 60)}
-                  className="border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300"
+                  className="border-[hsl(var(--mn-border))] text-[hsl(var(--mn-muted))] dark:text-[hsl(var(--mn-muted))]"
                 >
                   Načíst dalších 60 ({filteredTopics.length - visibleCount} zbývá)
                 </Button>
@@ -511,8 +511,8 @@ export default function StudiumV3() {
                 <div key={oborName}>
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-3 h-3 rounded-full" style={{ background: theme.accent }} />
-                    <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200">{oborName}</h2>
-                    <Badge variant="outline" className="text-slate-500 border-slate-300 dark:border-slate-700 text-xs">
+                    <h2 className="text-lg font-semibold text-[hsl(var(--mn-text))] dark:text-[hsl(var(--mn-text))]">{oborName}</h2>
+                    <Badge variant="outline" className="text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))] text-xs">
                       {topics.length}
                     </Badge>
                   </div>

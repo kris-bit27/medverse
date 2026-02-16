@@ -226,7 +226,7 @@ export default function QuestionDetail() {
   return (
     <div className="p-6 lg:p-8 max-w-4xl mx-auto">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-6">
+      <div className="flex items-center gap-2 text-sm text-[hsl(var(--mn-muted))] mb-6">
         <Link to={createPageUrl('Studium')} className="hover:text-teal-600 transition-colors">
           Studium
         </Link>
@@ -239,7 +239,7 @@ export default function QuestionDetail() {
           </>
         )}
         <span>/</span>
-        <span className="text-slate-900 dark:text-white font-medium truncate max-w-[200px]">
+        <span className="text-[hsl(var(--mn-text))] font-medium truncate max-w-[200px]">
           {question.title}
         </span>
       </div>
@@ -248,7 +248,7 @@ export default function QuestionDetail() {
       <div className="mb-6">
         <div className="flex items-start justify-between gap-4 mb-4">
           <div className="flex-1">
-            <h1 className="text-xl lg:text-2xl font-bold text-slate-900 dark:text-white mb-3">
+            <h1 className="text-xl lg:text-2xl font-bold text-[hsl(var(--mn-text))] mb-3">
               {question.title}
             </h1>
             <div className="flex flex-wrap items-center gap-2">
@@ -271,7 +271,7 @@ export default function QuestionDetail() {
               variant="ghost"
               size="icon"
               onClick={() => bookmarkMutation.mutate()}
-              className={bookmark ? 'text-amber-500' : 'text-slate-400'}
+              className={bookmark ? 'text-amber-500' : 'text-[hsl(var(--mn-muted))]'}
             >
               {bookmark ? <BookmarkCheck className="w-5 h-5" /> : <Bookmark className="w-5 h-5" />}
             </Button>
@@ -285,7 +285,7 @@ export default function QuestionDetail() {
           <CardTitle className="text-lg">Otázka</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">
+          <p className="text-[hsl(var(--mn-muted))] leading-relaxed whitespace-pre-wrap">
             {question.question_text}
           </p>
         </CardContent>
@@ -345,10 +345,10 @@ export default function QuestionDetail() {
         </>
       ) : (
         <Card className="p-8 text-center bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+          <h3 className="text-lg font-semibold text-[hsl(var(--mn-text))] mb-2">
             Premium obsah
           </h3>
-          <p className="text-slate-600 dark:text-slate-400 mb-4">
+          <p className="text-[hsl(var(--mn-muted))] mb-4">
             Tato otázka je dostupná pouze pro Premium uživatele
           </p>
           <Button asChild className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600">

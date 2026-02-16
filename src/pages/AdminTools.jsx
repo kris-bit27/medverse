@@ -77,10 +77,10 @@ export default function AdminTools() {
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">
+          <h1 className="text-2xl font-bold text-[hsl(var(--mn-text))] mb-1">
             Nástroje
           </h1>
-          <p className="text-slate-500">{tools.length} celkem</p>
+          <p className="text-[hsl(var(--mn-muted))]">{tools.length} celkem</p>
         </div>
         <Button asChild className="bg-teal-600 hover:bg-teal-700">
           <Link to={createPageUrl('AdminToolEdit')}>
@@ -94,7 +94,7 @@ export default function AdminTools() {
       <Card className="mb-6">
         <CardContent className="p-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(var(--mn-muted))]" />
             <Input
               placeholder="Hledat..."
               value={searchQuery}
@@ -124,11 +124,11 @@ export default function AdminTools() {
                 <TableRow key={tool.id}>
                   <TableCell>
                     <div>
-                      <p className="font-medium text-slate-900 dark:text-white line-clamp-1">
+                      <p className="font-medium text-[hsl(var(--mn-text))] line-clamp-1">
                         {tool.title}
                       </p>
                       {tool.description && (
-                        <p className="text-xs text-slate-500 line-clamp-1">{tool.description}</p>
+                        <p className="text-xs text-[hsl(var(--mn-muted))] line-clamp-1">{tool.description}</p>
                       )}
                     </div>
                   </TableCell>

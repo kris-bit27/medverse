@@ -142,7 +142,7 @@ export const SearchTopics = () => {
                         Obsah ✓
                       </Badge>
                     ) : (
-                      <Badge variant="outline" className="text-[10px] text-slate-400">
+                      <Badge variant="outline" className="text-[10px] text-[hsl(var(--mn-muted))]">
                         Připravujeme
                       </Badge>
                     )}

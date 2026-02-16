@@ -51,7 +51,7 @@ export default function AdminBudgetSettings() {
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Enable/Disable */}
-          <div className="flex items-center justify-between p-4 rounded-lg border bg-slate-50 dark:bg-slate-900">
+          <div className="flex items-center justify-between p-4 rounded-lg border bg-[hsl(var(--mn-surface))]">
             <div className="flex items-start gap-3">
               <Shield className="w-5 h-5 text-blue-600 mt-0.5" />
               <div>
@@ -229,7 +229,7 @@ export default function AdminBudgetSettings() {
       </Card>
 
       {/* Implementation Instructions */}
-      <Card className="bg-slate-50 dark:bg-slate-900">
+      <Card className="bg-[hsl(var(--mn-surface))]">
         <CardHeader>
           <CardTitle className="text-base">📝 Implementation Notes</CardTitle>
         </CardHeader>

@@ -252,7 +252,7 @@ export default function ClinicalCalculators() {
               <Card
                 key={tool.id}
                 className={`cursor-pointer transition-colors ${
-                  isSelected ? 'border-teal-600 bg-teal-50 dark:bg-teal-950/20' : 'hover:bg-slate-50 dark:hover:bg-slate-900'
+                  isSelected ? 'border-teal-600 bg-teal-50 dark:bg-teal-950/20' : 'hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900'
                 }`}
                 onClick={() => {
                   setSelectedTool(tool);
@@ -385,7 +385,7 @@ export default function ClinicalCalculators() {
                       if (value === undefined) return null;
 
                       return (
-                        <div key={field.name} className="p-4 rounded-lg bg-slate-50 dark:bg-slate-900">
+                        <div key={field.name} className="p-4 rounded-lg bg-[hsl(var(--mn-surface))]">
                           <p className="text-sm text-muted-foreground">{field.label}</p>
                           <p className="text-2xl font-bold">
                             {value} {field.unit || ''}

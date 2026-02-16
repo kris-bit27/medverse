@@ -201,5 +201,5 @@ export function getRoleBadgeColor(role) {
     [ROLES.EDITOR]: 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400',
     [ROLES.ADMIN]: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
   };
-  return colors[role] || 'bg-slate-100 text-slate-700';
+  return colors[role] || 'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))]';
 }

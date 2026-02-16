@@ -13,9 +13,9 @@ const nodeStyles = {
     icon: Circle
   },
   step: {
-    bg: 'bg-white dark:bg-slate-800',
-    border: 'border-slate-300 dark:border-slate-600',
-    text: 'text-slate-800 dark:text-slate-200',
+    bg: 'bg-[hsl(var(--mn-elevated))]',
+    border: 'border-[hsl(var(--mn-border))] dark:border-slate-600',
+    text: 'text-[hsl(var(--mn-text))] dark:text-[hsl(var(--mn-text))]',
     icon: Square
   },
   decision: {
@@ -63,7 +63,7 @@ function FlowNode({ node, edges, allNodes, onNavigate, isActive, isVisited }) {
               {node.title}
             </h4>
             {node.text && (
-              <p className="text-sm text-slate-600 dark:text-slate-400">
+              <p className="text-sm text-[hsl(var(--mn-muted))]">
                 {node.text}
               </p>
             )}
@@ -112,7 +112,7 @@ function FlowNode({ node, edges, allNodes, onNavigate, isActive, isVisited }) {
       {/* Arrow to next */}
       {!isActive && outgoingEdges.length > 0 && !isDecision && (
         <div className="flex justify-center py-2">
-          <ChevronDown className="w-5 h-5 text-slate-400" />
+          <ChevronDown className="w-5 h-5 text-[hsl(var(--mn-muted))]" />
         </div>
       )}
     </motion.div>
@@ -154,7 +154,7 @@ export default function FlowchartViewer({ nodes = [], edges = [] }) {
   if (!nodes.length) {
     return (
       <Card className="p-8 text-center">
-        <p className="text-slate-500">Algoritmus nemá žádné kroky</p>
+        <p className="text-[hsl(var(--mn-muted))]">Algoritmus nemá žádné kroky</p>
       </Card>
     );
   }
@@ -193,7 +193,7 @@ export default function FlowchartViewer({ nodes = [], edges = [] }) {
           className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl text-center"
         >
           <CheckCircle2 className="w-12 h-12 mx-auto mb-3 text-emerald-600" />
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+          <h3 className="text-lg font-semibold text-[hsl(var(--mn-text))] mb-2">
             Algoritmus dokončen
           </h3>
           <Button onClick={handleReset} variant="outline" className="mt-2">

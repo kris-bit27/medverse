@@ -109,7 +109,7 @@ export default function StudyPlanDetail() {
   if (!plan) {
     return (
       <div className="p-6 lg:p-8 text-center">
-        <p className="text-slate-600">Plán nenalezen</p>
+        <p className="text-[hsl(var(--mn-muted))]">Plán nenalezen</p>
       </div>
     );
   }
@@ -205,10 +205,10 @@ export default function StudyPlanDetail() {
           <CardContent>
             <div className="grid md:grid-cols-3 gap-6">
               <div>
-                <p className="text-sm text-slate-500 mb-2">Celkový pokrok</p>
+                <p className="text-sm text-[hsl(var(--mn-muted))] mb-2">Celkový pokrok</p>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold text-slate-900 dark:text-white">
+                    <span className="text-2xl font-bold text-[hsl(var(--mn-text))]">
                       {plan.progress_percentage || 0}%
                     </span>
                     <Badge variant="secondary">{completedTasks}/{totalTasks} úkolů</Badge>
@@ -217,14 +217,14 @@ export default function StudyPlanDetail() {
                 </div>
               </div>
               <div>
-                <p className="text-sm text-slate-500 mb-2">Zbývající čas</p>
+                <p className="text-sm text-[hsl(var(--mn-muted))] mb-2">Zbývající čas</p>
                 <div className="flex items-center gap-2">
                   {daysRemaining > 0 ? (
                     <>
                       <span className="text-2xl font-bold text-teal-600">
                         {daysRemaining}
                       </span>
-                      <span className="text-slate-600">dní</span>
+                      <span className="text-[hsl(var(--mn-muted))]">dní</span>
                     </>
                   ) : (
                     <Badge className="bg-red-100 text-red-700">
@@ -235,7 +235,7 @@ export default function StudyPlanDetail() {
                 </div>
               </div>
               <div>
-                <p className="text-sm text-slate-500 mb-2">Spolupracovníci</p>
+                <p className="text-sm text-[hsl(var(--mn-muted))] mb-2">Spolupracovníci</p>
                 <div className="flex items-center gap-2">
                   {collaboratorUsers.length > 0 ? (
                     <>
@@ -249,13 +249,13 @@ export default function StudyPlanDetail() {
                         ))}
                       </div>
                       {collaboratorUsers.length > 3 && (
-                        <span className="text-sm text-slate-500">
+                        <span className="text-sm text-[hsl(var(--mn-muted))]">
                           +{collaboratorUsers.length - 3}
                         </span>
                       )}
                     </>
                   ) : (
-                    <span className="text-sm text-slate-500">Bez spolupracovníků</span>
+                    <span className="text-sm text-[hsl(var(--mn-muted))]">Bez spolupracovníků</span>
                   )}
                 </div>
               </div>
@@ -288,19 +288,19 @@ export default function StudyPlanDetail() {
                     <CardTitle className="text-lg">Statistiky pokroku</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between p-4 rounded-lg bg-slate-50 dark:bg-slate-800">
+                    <div className="flex items-center justify-between p-4 rounded-lg bg-[hsl(var(--mn-surface-2))]">
                       <div>
-                        <p className="text-sm text-slate-500">Dokončené úkoly</p>
-                        <p className="text-2xl font-bold text-slate-900 dark:text-white">
+                        <p className="text-sm text-[hsl(var(--mn-muted))]">Dokončené úkoly</p>
+                        <p className="text-2xl font-bold text-[hsl(var(--mn-text))]">
                           {completedTasks}
                         </p>
                       </div>
                       <CheckCircle2 className="w-8 h-8 text-green-600" />
                     </div>
-                    <div className="flex items-center justify-between p-4 rounded-lg bg-slate-50 dark:bg-slate-800">
+                    <div className="flex items-center justify-between p-4 rounded-lg bg-[hsl(var(--mn-surface-2))]">
                       <div>
-                        <p className="text-sm text-slate-500">Zbývající úkoly</p>
-                        <p className="text-2xl font-bold text-slate-900 dark:text-white">
+                        <p className="text-sm text-[hsl(var(--mn-muted))]">Zbývající úkoly</p>
+                        <p className="text-2xl font-bold text-[hsl(var(--mn-text))]">
                           {totalTasks - completedTasks}
                         </p>
                       </div>
@@ -324,10 +324,10 @@ export default function StudyPlanDetail() {
                               </AvatarFallback>
                             </Avatar>
                             <div>
-                              <p className="font-medium text-slate-900 dark:text-white">
+                              <p className="font-medium text-[hsl(var(--mn-text))]">
                                 {u.full_name || u.email}
                               </p>
-                              <p className="text-sm text-slate-500">{u.email}</p>
+                              <p className="text-sm text-[hsl(var(--mn-muted))]">{u.email}</p>
                             </div>
                           </div>
                           <div className="text-right">
@@ -335,7 +335,7 @@ export default function StudyPlanDetail() {
                               {collab.permission === 'edit' ? 'Úpravy' : 'Prohlížení'}
                             </Badge>
                             {collab.progress_percentage > 0 && (
-                              <p className="text-sm text-slate-500 mt-1">
+                              <p className="text-sm text-[hsl(var(--mn-muted))] mt-1">
                                 Pokrok: {collab.progress_percentage}%
                               </p>
                             )}
@@ -378,7 +378,7 @@ export default function StudyPlanDetail() {
                     <Link
                       key={p.id}
                       to={createPageUrl('StudyPackageDetail') + `?id=${p.id}`}
-                      className="block p-3 rounded-lg border hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                      className="block p-3 rounded-lg border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))] transition-colors"
                     >
                       <p className="text-sm font-medium">{p.title}</p>
                     </Link>

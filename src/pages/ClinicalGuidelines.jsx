@@ -109,7 +109,7 @@ export default function ClinicalGuidelines() {
                 <Card
                   key={guideline.id}
                   className={`cursor-pointer transition-colors ${
-                    isSelected ? 'border-teal-600 bg-teal-50 dark:bg-teal-950/20' : 'hover:bg-slate-50 dark:hover:bg-slate-900'
+                    isSelected ? 'border-teal-600 bg-teal-50 dark:bg-teal-950/20' : 'hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900'
                   }`}
                   onClick={() => setSelectedGuideline(guideline)}
                 >

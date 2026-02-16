@@ -50,20 +50,20 @@ const plans = [
 
 export default function Pricing() {
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950">
+    <div className="min-h-screen bg-[hsl(var(--mn-bg))]">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[hsl(var(--mn-bg)/0.8)] backdrop-blur-xl border-b border-[hsl(var(--mn-border))]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link to={createPageUrl('Landing')} className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-teal-500/20">
-                <Stethoscope className="w-6 h-6 text-white" />
+                <Stethoscope className="w-6 h-6 text-[hsl(var(--mn-text))]" />
               </div>
-              <span className="font-bold text-xl text-slate-900 dark:text-white">MedVerse</span>
+              <span className="font-bold text-xl text-[hsl(var(--mn-text))]">MedVerse</span>
             </Link>
             
             <div className="hidden md:flex items-center gap-8">
-              <Link to={createPageUrl('Demo')} className="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-teal-600 transition-colors">
+              <Link to={createPageUrl('Demo')} className="text-sm font-medium text-[hsl(var(--mn-muted))] hover:text-teal-600 transition-colors">
                 Demo
               </Link>
               <Link to={createPageUrl('Pricing')} className="text-sm font-medium text-teal-600 dark:text-teal-400">
@@ -98,10 +98,10 @@ export default function Pricing() {
               <Sparkles className="w-4 h-4" />
               Jednoduchý ceník
             </div>
-            <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 dark:text-white mb-4">
+            <h1 className="text-4xl sm:text-5xl font-bold text-[hsl(var(--mn-text))] mb-4">
               Vyberte si plán
             </h1>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-xl mx-auto">
+            <p className="text-lg text-[hsl(var(--mn-muted))] max-w-xl mx-auto">
               Začněte zdarma a upgradujte až budete připraveni na plný přístup
             </p>
           </motion.div>
@@ -122,7 +122,7 @@ export default function Pricing() {
                 <Card className={`p-8 h-full relative ${
                   plan.highlighted 
                     ? 'border-2 border-teal-500 shadow-xl shadow-teal-500/10' 
-                    : 'border border-slate-200 dark:border-slate-800'
+                    : 'border border-[hsl(var(--mn-border))]'
                 }`}>
                   {plan.highlighted && (
                     <div className="absolute -top-4 left-1/2 -translate-x-1/2">
@@ -134,17 +134,17 @@ export default function Pricing() {
                   )}
 
                   <div className="mb-8">
-                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+                    <h3 className="text-2xl font-bold text-[hsl(var(--mn-text))] mb-2">
                       {plan.name}
                     </h3>
-                    <p className="text-slate-600 dark:text-slate-400 mb-4">
+                    <p className="text-[hsl(var(--mn-muted))] mb-4">
                       {plan.description}
                     </p>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-5xl font-bold text-slate-900 dark:text-white">
+                      <span className="text-5xl font-bold text-[hsl(var(--mn-text))]">
                         {plan.price}
                       </span>
-                      <span className="text-lg text-slate-500 dark:text-slate-400">
+                      <span className="text-lg text-[hsl(var(--mn-muted))]">
                         Kč{plan.period}
                       </span>
                     </div>
@@ -154,7 +154,7 @@ export default function Pricing() {
                     {plan.features.map((feature, j) => (
                       <li key={j} className="flex items-start gap-3">
                         <Check className="w-5 h-5 text-teal-600 dark:text-teal-400 mt-0.5 flex-shrink-0" />
-                        <span className="text-slate-700 dark:text-slate-300">
+                        <span className="text-[hsl(var(--mn-muted))]">
                           {feature}
                         </span>
                       </li>
@@ -181,9 +181,9 @@ export default function Pricing() {
       </section>
 
       {/* FAQ */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-slate-900/50">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-[hsl(var(--mn-surface))]/50">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold text-slate-900 dark:text-white text-center mb-12">
+          <h2 className="text-3xl font-bold text-[hsl(var(--mn-text))] text-center mb-12">
             Často kladené dotazy
           </h2>
           
@@ -207,10 +207,10 @@ export default function Pricing() {
               }
             ].map((faq, i) => (
               <Card key={i} className="p-6">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+                <h3 className="text-lg font-semibold text-[hsl(var(--mn-text))] mb-2">
                   {faq.q}
                 </h3>
-                <p className="text-slate-600 dark:text-slate-400">
+                <p className="text-[hsl(var(--mn-muted))]">
                   {faq.a}
                 </p>
               </Card>
@@ -220,15 +220,15 @@ export default function Pricing() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-4 sm:px-6 lg:px-8 border-t border-slate-200 dark:border-slate-800">
+      <footer className="py-12 px-4 sm:px-6 lg:px-8 border-t border-[hsl(var(--mn-border))]">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center">
-              <Stethoscope className="w-5 h-5 text-white" />
+              <Stethoscope className="w-5 h-5 text-[hsl(var(--mn-text))]" />
             </div>
-            <span className="font-semibold text-slate-900 dark:text-white">MedVerse</span>
+            <span className="font-semibold text-[hsl(var(--mn-text))]">MedVerse</span>
           </div>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <p className="text-sm text-[hsl(var(--mn-muted))]">
             © 2024 MedVerse. Všechna práva vyhrazena.
           </p>
         </div>

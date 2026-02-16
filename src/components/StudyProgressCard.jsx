@@ -31,10 +31,10 @@ function OborProgress({ name, studied, total, avgMastery, color }) {
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
-        <span className="text-xs text-slate-600 dark:text-slate-400">{name}</span>
+        <span className="text-xs text-[hsl(var(--mn-muted))]">{name}</span>
         <div className="flex items-center gap-2">
-          {avgMastery > 0 && <span className="text-[10px] text-slate-500">⌀ {Math.round(avgMastery)}%</span>}
-          <span className="text-xs text-slate-500">{studied}/{total}</span>
+          {avgMastery > 0 && <span className="text-[10px] text-[hsl(var(--mn-muted))]">⌀ {Math.round(avgMastery)}%</span>}
+          <span className="text-xs text-[hsl(var(--mn-muted))]">{studied}/{total}</span>
         </div>
       </div>
       <div className="h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
@@ -115,13 +115,13 @@ export default function StudyProgressCard() {
   const needsReview = masteryData.filter(m => Number(m.mastery_score) < 60).sort((a, b) => Number(a.mastery_score) - Number(b.mastery_score)).slice(0, 5);
 
   return (
-    <Card className="bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800">
+    <Card className="bg-[hsl(var(--mn-surface))]/50 border-[hsl(var(--mn-border))]">
       <CardContent className="p-5 space-y-5">
         <div className="flex items-center gap-5">
           <ProgressRing value={studiedCount} max={totalTopics} size={64} strokeWidth={5} color="#a855f7" />
           <div className="flex-1">
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1">Celkový pokrok</h3>
-            <p className="text-xs text-slate-500">{studiedCount} z {totalTopics} témat otevřeno</p>
+            <h3 className="text-sm font-semibold text-[hsl(var(--mn-text))] mb-1">Celkový pokrok</h3>
+            <p className="text-xs text-[hsl(var(--mn-muted))]">{studiedCount} z {totalTopics} témat otevřeno</p>
             {avgMastery > 0 && <p className="text-xs text-teal-500 mt-0.5">Průměrné zvládnutí: {Math.round(avgMastery)}%</p>}
           </div>
           <div className="flex items-center gap-1 px-3 py-1.5 bg-orange-500/10 border border-orange-500/20 rounded-lg">
@@ -138,17 +138,17 @@ export default function StudyProgressCard() {
             { icon: Brain, val: totalFlashcardsReviewed, label: 'kartiček' },
             { icon: Target, val: `${Math.round(avgMastery)}%`, label: 'mastery', teal: true },
           ].map((s, i) => (
-            <div key={i} className="text-center p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-              <s.icon className="w-3.5 h-3.5 mx-auto text-slate-400 mb-0.5" />
-              <p className={`text-sm font-bold ${s.teal ? 'text-teal-600 dark:text-teal-400' : 'text-slate-900 dark:text-white'}`}>{s.val}</p>
-              <p className="text-[10px] text-slate-500">{s.label}</p>
+            <div key={i} className="text-center p-2 rounded-lg bg-[hsl(var(--mn-surface-2))]/50">
+              <s.icon className="w-3.5 h-3.5 mx-auto text-[hsl(var(--mn-muted))] mb-0.5" />
+              <p className={`text-sm font-bold ${s.teal ? 'text-teal-600 dark:text-teal-400' : 'text-[hsl(var(--mn-text))]'}`}>{s.val}</p>
+              <p className="text-[10px] text-[hsl(var(--mn-muted))]">{s.label}</p>
             </div>
           ))}
         </div>
 
         {Object.keys(oborStats).length > 0 && (
           <div className="space-y-3">
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Pokrok dle oborů</p>
+            <p className="text-xs font-medium text-[hsl(var(--mn-muted))] uppercase tracking-wider">Pokrok dle oborů</p>
             {Object.entries(oborStats).sort(([,a],[,b]) => b.total - a.total).slice(0, 5).map(([name, s]) => (
               <OborProgress key={name} name={name} studied={s.studied} total={s.total}
                 avgMastery={s.masteryCount > 0 ? s.masterySum / s.masteryCount : 0} color={COLORS[name] || '#64748b'} />
@@ -157,14 +157,14 @@ export default function StudyProgressCard() {
         )}
 
         {needsReview.length > 0 && (
-          <div className="space-y-1 pt-2 border-t border-slate-200 dark:border-slate-800">
+          <div className="space-y-1 pt-2 border-t border-[hsl(var(--mn-border))]">
             <p className="text-xs font-medium text-amber-500 mb-2 flex items-center gap-1"><TrendingUp className="w-3.5 h-3.5" /> K procvičení</p>
             {needsReview.map(m => {
               const score = Number(m.mastery_score) || 0;
               const color = score >= 50 ? 'text-amber-400' : score >= 20 ? 'text-orange-400' : 'text-red-400';
               return (
                 <div key={m.id} className="flex items-center justify-between py-1.5">
-                  <span className="text-sm text-slate-700 dark:text-slate-300 truncate mr-3 flex-1">{m.topics?.title}</span>
+                  <span className="text-sm text-[hsl(var(--mn-muted))] truncate mr-3 flex-1">{m.topics?.title}</span>
                   <div className="flex items-center gap-2 shrink-0">
                     <div className="w-12 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                       <div className="h-full rounded-full bg-teal-500" style={{ width: `${score}%` }} />
@@ -179,8 +179,8 @@ export default function StudyProgressCard() {
 
         {masteryData.length === 0 && (
           <div className="text-center py-4">
-            <BookOpen className="w-8 h-8 mx-auto text-slate-300 dark:text-slate-600 mb-2" />
-            <p className="text-sm text-slate-500">Začněte studovat pro zobrazení pokroku</p>
+            <BookOpen className="w-8 h-8 mx-auto text-[hsl(var(--mn-muted))] dark:text-slate-600 mb-2" />
+            <p className="text-sm text-[hsl(var(--mn-muted))]">Začněte studovat pro zobrazení pokroku</p>
             <Link to="/Studium"><Button size="sm" className="mt-3">Přejít na studium <ChevronRight className="w-4 h-4 ml-1" /></Button></Link>
           </div>
         )}

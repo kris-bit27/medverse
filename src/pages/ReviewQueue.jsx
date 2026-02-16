@@ -82,16 +82,16 @@ export default function ReviewQueue() {
   const QueueItem = ({ item }) => (
     <Link
       to={createPageUrl('QuestionDetail') + `?id=${item.question_id}`}
-      className="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg transition-colors group"
+      className="flex items-center gap-4 p-4 hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))]/50 rounded-lg transition-colors group"
     >
       <div className="flex-1 min-w-0">
-        <p className="font-medium text-slate-900 dark:text-white truncate group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+        <p className="font-medium text-[hsl(var(--mn-text))] truncate group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
           {item.question?.title}
         </p>
         <div className="flex items-center gap-3 mt-1">
           <DifficultyIndicator level={item.question?.difficulty || 1} showLabel={false} />
           {item.next_review_at && (
-            <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
+            <span className="text-xs text-[hsl(var(--mn-muted))] flex items-center gap-1">
               <Clock className="w-3 h-3" />
               {format(new Date(item.next_review_at), 'd. MMM', { locale: cs })}
             </span>
@@ -99,7 +99,7 @@ export default function ReviewQueue() {
         </div>
       </div>
       <StatusBadge status={item.status} size="sm" />
-      <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-teal-600 transition-colors" />
+      <ChevronRight className="w-4 h-4 text-[hsl(var(--mn-muted))] group-hover:text-teal-600 transition-colors" />
     </Link>
   );
 
@@ -108,7 +108,7 @@ export default function ReviewQueue() {
       {items.length > 0 ? (
         items.map((item) => <QueueItem key={item.id} item={item} />)
       ) : (
-        <p className="text-center py-6 text-slate-500 dark:text-slate-400">
+        <p className="text-center py-6 text-[hsl(var(--mn-muted))]">
           Žádné otázky
         </p>
       )}
@@ -120,10 +120,10 @@ export default function ReviewQueue() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white mb-2">
+          <h1 className="text-2xl lg:text-3xl font-bold text-[hsl(var(--mn-text))] mb-2">
             Fronta opakování
           </h1>
-          <p className="text-slate-600 dark:text-slate-400">
+          <p className="text-[hsl(var(--mn-muted))]">
             {categorized.today.length} otázek čeká na opakování dnes
           </p>
         </div>
@@ -140,20 +140,20 @@ export default function ReviewQueue() {
       {/* Stats cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <Card className="p-4">
-          <div className="text-2xl font-bold text-slate-900 dark:text-white">{categorized.today.length}</div>
-          <p className="text-sm text-slate-500">Dnes</p>
+          <div className="text-2xl font-bold text-[hsl(var(--mn-text))]">{categorized.today.length}</div>
+          <p className="text-sm text-[hsl(var(--mn-muted))]">Dnes</p>
         </Card>
         <Card className="p-4">
-          <div className="text-2xl font-bold text-slate-900 dark:text-white">{categorized.tomorrow.length}</div>
-          <p className="text-sm text-slate-500">Zítra</p>
+          <div className="text-2xl font-bold text-[hsl(var(--mn-text))]">{categorized.tomorrow.length}</div>
+          <p className="text-sm text-[hsl(var(--mn-muted))]">Zítra</p>
         </Card>
         <Card className="p-4">
-          <div className="text-2xl font-bold text-slate-900 dark:text-white">{categorized.thisWeek.length}</div>
-          <p className="text-sm text-slate-500">Tento týden</p>
+          <div className="text-2xl font-bold text-[hsl(var(--mn-text))]">{categorized.thisWeek.length}</div>
+          <p className="text-sm text-[hsl(var(--mn-muted))]">Tento týden</p>
         </Card>
         <Card className="p-4">
           <div className="text-2xl font-bold text-emerald-600">{categorized.mastered.length}</div>
-          <p className="text-sm text-slate-500">Zvládnuto</p>
+          <p className="text-sm text-[hsl(var(--mn-muted))]">Zvládnuto</p>
         </Card>
       </div>
 

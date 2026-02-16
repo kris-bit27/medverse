@@ -126,7 +126,7 @@ export default function AdminQuestions() {
   if (!canEditContent(user)) {
     return (
       <div className="p-6 text-center">
-        <p className="text-slate-500">Nemáte oprávnění</p>
+        <p className="text-[hsl(var(--mn-muted))]">Nemáte oprávnění</p>
       </div>
     );
   }
@@ -145,10 +145,10 @@ export default function AdminQuestions() {
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">
+          <h1 className="text-2xl font-bold text-[hsl(var(--mn-text))] mb-1">
             Otázky
           </h1>
-          <p className="text-slate-500">
+          <p className="text-[hsl(var(--mn-muted))]">
             {questions.length} celkem
             {selectedIds.length > 0 && ` · ${selectedIds.length} označeno`}
           </p>
@@ -178,7 +178,7 @@ export default function AdminQuestions() {
         <CardContent className="p-4">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(var(--mn-muted))]" />
               <Input
                 placeholder="Hledat..."
                 value={searchQuery}
@@ -264,11 +264,11 @@ export default function AdminQuestions() {
                     </TableCell>
                     <TableCell>
                       <div>
-                        <p className="font-medium text-slate-900 dark:text-white line-clamp-1">
+                        <p className="font-medium text-[hsl(var(--mn-text))] line-clamp-1">
                           {question.title}
                         </p>
                         {topic && (
-                          <p className="text-xs text-slate-500">{topic.title}</p>
+                          <p className="text-xs text-[hsl(var(--mn-muted))]">{topic.title}</p>
                         )}
                       </div>
                     </TableCell>
@@ -320,7 +320,7 @@ export default function AdminQuestions() {
               })}
               {filteredQuestions.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-slate-500">
+                  <TableCell colSpan={6} className="text-center py-8 text-[hsl(var(--mn-muted))]">
                     Žádné otázky
                   </TableCell>
                 </TableRow>

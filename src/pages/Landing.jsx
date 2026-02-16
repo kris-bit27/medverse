@@ -75,21 +75,21 @@ const systemValues = [
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950">
+    <div className="min-h-screen bg-[hsl(var(--mn-bg))]">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[hsl(var(--mn-bg)/0.8)] backdrop-blur-xl border-b border-[hsl(var(--mn-border))]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
               <MedVerseLogo size={40} />
-              <span className="font-bold text-xl text-slate-900 dark:text-white">MedVerse</span>
+              <span className="font-bold text-xl text-[hsl(var(--mn-text))]">MedVerse</span>
             </div>
             
             <div className="hidden md:flex items-center gap-8">
-              <Link to={createPageUrl('Demo')} className="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
+              <Link to={createPageUrl('Demo')} className="text-sm font-medium text-[hsl(var(--mn-muted))] hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
                 Demo
               </Link>
-              <Link to={createPageUrl('Pricing')} className="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
+              <Link to={createPageUrl('Pricing')} className="text-sm font-medium text-[hsl(var(--mn-muted))] hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
                 Ceník
               </Link>
             </div>
@@ -118,14 +118,14 @@ export default function Landing() {
             transition={{ duration: 0.6 }}
             className="text-center max-w-4xl mx-auto"
           >
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-slate-900 dark:text-white leading-tight mb-6">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-[hsl(var(--mn-text))] leading-tight mb-6">
               Moderní vzdělávací
               <span className="block bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-600 bg-clip-text text-transparent">
                 platforma pro medicínu
               </span>
             </h1>
             
-            <p className="text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-[hsl(var(--mn-muted))] mb-10 max-w-3xl mx-auto leading-relaxed">
               MedVerse propojuje strukturované znalosti, inteligentní asistenci a praktické nástroje 
               pro studenty, lékaře i kliniky napříč medicínskými obory.
             </p>
@@ -162,14 +162,14 @@ export default function Landing() {
             {valueProps.map((prop, i) => {
               const Icon = prop.icon;
               return (
-                <div key={i} className="text-center p-6 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
+                <div key={i} className="text-center p-6 rounded-xl bg-[hsl(var(--mn-surface))]/50 border border-[hsl(var(--mn-border))]">
                   <div className="w-12 h-12 mx-auto mb-4 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center">
-                    <Icon className="w-6 h-6 text-white" />
+                    <Icon className="w-6 h-6 text-[hsl(var(--mn-text))]" />
                   </div>
-                  <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-2">
+                  <h3 className="text-sm font-semibold text-[hsl(var(--mn-text))] mb-2">
                     {prop.title}
                   </h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                  <p className="text-xs text-[hsl(var(--mn-muted))] leading-relaxed">
                     {prop.description}
                   </p>
                 </div>
@@ -180,10 +180,10 @@ export default function Landing() {
       </section>
 
       {/* System Values */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-slate-950">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-[hsl(var(--mn-bg))]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-[hsl(var(--mn-text))] mb-4">
               Navrženo pro moderní medicínu
             </h2>
           </div>
@@ -196,12 +196,12 @@ export default function Landing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="p-6 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800"
+                className="p-6 rounded-xl bg-[hsl(var(--mn-surface))]/50 border border-[hsl(var(--mn-border))]"
               >
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+                <h3 className="text-lg font-semibold text-[hsl(var(--mn-text))] mb-2">
                   {value.title}
                 </h3>
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                <p className="text-[hsl(var(--mn-muted))] leading-relaxed">
                   {value.description}
                 </p>
               </motion.div>
@@ -211,13 +211,13 @@ export default function Landing() {
       </section>
 
       {/* Products */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-slate-900/50">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-[hsl(var(--mn-surface))]/50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-[hsl(var(--mn-text))] mb-4">
               MedVerse EDU
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-[hsl(var(--mn-muted))] max-w-2xl mx-auto">
               Hlavní modul dostupný nyní
             </p>
           </div>
@@ -240,7 +240,7 @@ export default function Landing() {
                     <div className="relative z-10">
                       <div className="flex items-start justify-between mb-5">
                         <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${product.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-all duration-300`}>
-                          <Icon className="w-8 h-8 text-white" />
+                          <Icon className="w-8 h-8 text-[hsl(var(--mn-text))]" />
                         </div>
                         <motion.span 
                           className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 flex items-center gap-1"
@@ -251,10 +251,10 @@ export default function Landing() {
                           {product.tagline}
                         </motion.span>
                       </div>
-                      <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                      <h3 className="text-2xl font-bold text-[hsl(var(--mn-text))] mb-2 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
                         {product.name}
                       </h3>
-                      <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
+                      <p className="text-[hsl(var(--mn-muted))] leading-relaxed mb-6">
                         {product.description}
                       </p>
                       <div className="flex items-center gap-2 text-teal-600 dark:text-teal-400 text-base font-semibold group-hover:gap-3 transition-all">
@@ -276,7 +276,7 @@ export default function Landing() {
           <Card className="p-8 sm:p-12 bg-gradient-to-br from-teal-600 to-cyan-700 border-0 text-center text-white relative overflow-hidden">
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMCAwaDIwdjIwSDB6Ii8+PHBhdGggZD0iTTIwIDIwaDIwdjIwSDIweiIvPjwvZz48L2c+PC9zdmc+')] opacity-30" />
             <div className="relative">
-              <Sparkles className="w-12 h-12 mx-auto mb-6 text-white" />
+              <Sparkles className="w-12 h-12 mx-auto mb-6 text-[hsl(var(--mn-text))]" />
               <h2 className="text-3xl sm:text-4xl font-bold mb-4">
                 Začněte pracovat s medicínskými znalostmi chytře
               </h2>
@@ -285,7 +285,7 @@ export default function Landing() {
               </p>
               <Button 
                 size="lg"
-                className="bg-white text-teal-700 hover:bg-teal-50 shadow-xl h-14 px-8 text-lg mb-3"
+                className="bg-[hsl(var(--mn-surface))] text-teal-700 hover:bg-teal-50 shadow-xl h-14 px-8 text-lg mb-3"
                 onClick={() => { window.location.href = `/login?redirectTo=${encodeURIComponent(createPageUrl('Dashboard'))}`; }}
               >
                 Začít zdarma
@@ -300,13 +300,13 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-4 sm:px-6 lg:px-8 border-t border-slate-200 dark:border-slate-800">
+      <footer className="py-12 px-4 sm:px-6 lg:px-8 border-t border-[hsl(var(--mn-border))]">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <MedVerseLogo size={32} />
-            <span className="font-semibold text-slate-900 dark:text-white">MedVerse</span>
+            <span className="font-semibold text-[hsl(var(--mn-text))]">MedVerse</span>
           </div>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <p className="text-sm text-[hsl(var(--mn-muted))]">
             © 2024 MedVerse. Všechna práva vyhrazena.
           </p>
         </div>

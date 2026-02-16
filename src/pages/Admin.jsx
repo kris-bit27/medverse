@@ -64,11 +64,11 @@ export default function Admin() {
   if (!canAccessAdmin(user)) {
     return (
       <div className="p-6 text-center">
-        <Shield className="w-12 h-12 mx-auto text-slate-300 mb-4" />
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
+        <Shield className="w-12 h-12 mx-auto text-[hsl(var(--mn-muted))] mb-4" />
+        <h2 className="text-xl font-semibold text-[hsl(var(--mn-text))] mb-2">
           Přístup odepřen
         </h2>
-        <p className="text-slate-500">
+        <p className="text-[hsl(var(--mn-muted))]">
           Nemáte oprávnění pro přístup k administraci
         </p>
       </div>
@@ -135,20 +135,20 @@ export default function Admin() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center">
-            <Shield className="w-5 h-5 text-white" />
+            <Shield className="w-5 h-5 text-[hsl(var(--mn-text))]" />
           </div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white">
+          <h1 className="text-2xl lg:text-3xl font-bold text-[hsl(var(--mn-text))]">
             Administrace
           </h1>
         </div>
-        <p className="text-slate-600 dark:text-slate-400">
+        <p className="text-[hsl(var(--mn-muted))]">
           Správa obsahu a nastavení aplikace
         </p>
       </div>
 
       {/* Content management cards */}
       <div className="mb-8">
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+        <h2 className="text-lg font-semibold text-[hsl(var(--mn-text))] mb-4">
           Správa obsahu
         </h2>
         <div className="grid md:grid-cols-2 gap-4">
@@ -156,24 +156,24 @@ export default function Admin() {
             const Icon = card.icon;
             return (
               <Link key={card.title} to={card.href}>
-                <Card className="h-full hover:shadow-lg transition-all hover:border-teal-200 dark:hover:border-teal-800 group">
+                <Card className="h-full hover:shadow-lg transition-all hover:border-teal-200 dark:hover:border-[hsl(var(--mn-accent)/0.4)] group">
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
                       <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${card.color} flex items-center justify-center flex-shrink-0`}>
-                        <Icon className="w-6 h-6 text-white" />
+                        <Icon className="w-6 h-6 text-[hsl(var(--mn-text))]" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1">
-                          <h3 className="font-semibold text-slate-900 dark:text-white group-hover:text-teal-600 transition-colors">
+                          <h3 className="font-semibold text-[hsl(var(--mn-text))] group-hover:text-teal-600 transition-colors">
                             {card.title}
                           </h3>
-                          <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-teal-600 transition-colors" />
+                          <ChevronRight className="w-5 h-5 text-[hsl(var(--mn-muted))] group-hover:text-teal-600 transition-colors" />
                         </div>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">
+                        <p className="text-sm text-[hsl(var(--mn-muted))] mb-2">
                           {card.description}
                         </p>
                         {card.count !== null && (
-                          <p className="text-2xl font-bold text-slate-900 dark:text-white">
+                          <p className="text-2xl font-bold text-[hsl(var(--mn-text))]">
                             {card.count}
                           </p>
                         )}
@@ -190,29 +190,29 @@ export default function Admin() {
       {/* Admin only section */}
       {(hasUserManagement || hasAuditAccess) && (
         <div>
-          <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+          <h2 className="text-lg font-semibold text-[hsl(var(--mn-text))] mb-4">
             Správa systému
           </h2>
           <div className="grid md:grid-cols-2 gap-4">
             {hasUserManagement && (
               <Link to={createPageUrl('AdminUsers')}>
-                <Card className="hover:shadow-lg transition-all hover:border-teal-200 dark:hover:border-teal-800 group">
+                <Card className="hover:shadow-lg transition-all hover:border-teal-200 dark:hover:border-[hsl(var(--mn-accent)/0.4)] group">
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
                       <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center flex-shrink-0">
-                        <Users className="w-6 h-6 text-white" />
+                        <Users className="w-6 h-6 text-[hsl(var(--mn-text))]" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1">
-                          <h3 className="font-semibold text-slate-900 dark:text-white group-hover:text-teal-600 transition-colors">
+                          <h3 className="font-semibold text-[hsl(var(--mn-text))] group-hover:text-teal-600 transition-colors">
                             Uživatelé
                           </h3>
-                          <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-teal-600 transition-colors" />
+                          <ChevronRight className="w-5 h-5 text-[hsl(var(--mn-muted))] group-hover:text-teal-600 transition-colors" />
                         </div>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">
+                        <p className="text-sm text-[hsl(var(--mn-muted))] mb-2">
                           Správa uživatelů a rolí
                         </p>
-                        <p className="text-2xl font-bold text-slate-900 dark:text-white">
+                        <p className="text-2xl font-bold text-[hsl(var(--mn-text))]">
                           {users.length}
                         </p>
                       </div>
@@ -224,20 +224,20 @@ export default function Admin() {
 
             {hasAuditAccess && (
               <Link to={createPageUrl('AdminAudit')}>
-                <Card className="hover:shadow-lg transition-all hover:border-teal-200 dark:hover:border-teal-800 group">
+                <Card className="hover:shadow-lg transition-all hover:border-teal-200 dark:hover:border-[hsl(var(--mn-accent)/0.4)] group">
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
                       <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-500 to-slate-700 flex items-center justify-center flex-shrink-0">
-                        <FileText className="w-6 h-6 text-white" />
+                        <FileText className="w-6 h-6 text-[hsl(var(--mn-text))]" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1">
-                          <h3 className="font-semibold text-slate-900 dark:text-white group-hover:text-teal-600 transition-colors">
+                          <h3 className="font-semibold text-[hsl(var(--mn-text))] group-hover:text-teal-600 transition-colors">
                             Audit log
                           </h3>
-                          <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-teal-600 transition-colors" />
+                          <ChevronRight className="w-5 h-5 text-[hsl(var(--mn-muted))] group-hover:text-teal-600 transition-colors" />
                         </div>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                        <p className="text-sm text-[hsl(var(--mn-muted))]">
                           Historie změn obsahu
                         </p>
                       </div>

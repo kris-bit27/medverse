@@ -226,7 +226,7 @@ export const CacheAnalytics = () => {
             {Object.entries(stats.byModel).map(([model, data]) => (
               <div
                 key={model}
-                className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                className="flex items-center justify-between p-3 bg-[hsl(var(--mn-bg))] rounded-lg"
               >
                 <div className="flex items-center gap-3">
                   {model.includes('haiku') ? (

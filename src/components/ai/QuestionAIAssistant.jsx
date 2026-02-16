@@ -36,7 +36,7 @@ function ConfidenceBadge({ confidence }) {
         {label}
       </span>
       {confidence?.reason ? (
-        <span className="text-xs text-slate-500 dark:text-slate-400">
+        <span className="text-xs text-[hsl(var(--mn-muted))]">
           {confidence.reason}
         </span>
       ) : null}
@@ -53,21 +53,21 @@ function SourcesBlock({ citations }) {
   }
 
   return (
-    <div className="mt-2 rounded-lg border border-slate-200 dark:border-slate-700 p-3">
-      <div className="text-xs font-semibold text-slate-700 dark:text-slate-200 mb-2">
+    <div className="mt-2 rounded-lg border border-[hsl(var(--mn-border))] p-3">
+      <div className="text-xs font-semibold text-[hsl(var(--mn-muted))] dark:text-[hsl(var(--mn-text))] mb-2">
         Zdroje
       </div>
 
       {internal?.length > 0 && (
         <div className="mb-2">
-          <div className="text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">
+          <div className="text-xs font-medium text-[hsl(var(--mn-muted))] dark:text-[hsl(var(--mn-muted))] mb-1">
             Interní
           </div>
           <ul className="list-disc pl-5 space-y-1">
             {internal.map((c, idx) => (
-              <li key={`i-${idx}`} className="text-xs text-slate-600 dark:text-slate-300">
+              <li key={`i-${idx}`} className="text-xs text-[hsl(var(--mn-muted))] dark:text-[hsl(var(--mn-muted))]">
                 {c.title || c.name || c.id || 'Interní zdroj'}
-                {c.section_hint ? <span className="text-slate-400"> — {c.section_hint}</span> : null}
+                {c.section_hint ? <span className="text-[hsl(var(--mn-muted))]"> — {c.section_hint}</span> : null}
               </li>
             ))}
           </ul>
@@ -76,12 +76,12 @@ function SourcesBlock({ citations }) {
 
       {external?.length > 0 && (
         <div>
-          <div className="text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">
+          <div className="text-xs font-medium text-[hsl(var(--mn-muted))] dark:text-[hsl(var(--mn-muted))] mb-1">
             Externí
           </div>
           <ul className="list-disc pl-5 space-y-1">
             {external.map((c, idx) => (
-              <li key={`e-${idx}`} className="text-xs text-slate-600 dark:text-slate-300">
+              <li key={`e-${idx}`} className="text-xs text-[hsl(var(--mn-muted))] dark:text-[hsl(var(--mn-muted))]">
                 {c.url ? (
                   <a
                     href={c.url}
@@ -95,7 +95,7 @@ function SourcesBlock({ citations }) {
                   <span>{c.title || 'Externí zdroj'}</span>
                 )}
                 {c.publisher || c.year ? (
-                  <span className="text-slate-400">
+                  <span className="text-[hsl(var(--mn-muted))]">
                     {c.publisher ? ` — ${c.publisher}` : ''}
                     {c.year ? ` (${c.year})` : ''}
                   </span>
@@ -366,13 +366,13 @@ export default function QuestionAIAssistant({ question, user, onNoteSaved, topic
       </DialogTrigger>
 
       <DialogContent className="max-w-2xl max-h-[90vh] p-0">
-        <DialogHeader className="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+        <DialogHeader className="px-6 py-4 border-b border-[hsl(var(--mn-border))]">
           <div className="flex items-center justify-between">
             <DialogTitle className="flex items-center gap-2">
               <Bot className="w-5 h-5 text-teal-600" />
               AI Asistent — {(question.title || '').substring(0, 40)}{(question.title || '').length > 40 ? '…' : ''}
             </DialogTitle>
-            <div className="flex gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
+            <div className="flex gap-1 bg-[hsl(var(--mn-surface-2))] rounded-lg p-1">
               <Button
                 variant={aiMode === 'EXAM' ? 'default' : 'ghost'}
                 size="sm"
@@ -396,7 +396,7 @@ export default function QuestionAIAssistant({ question, user, onNoteSaved, topic
         <div className="flex flex-col h-[60vh]">
           {/* Quick actions - pouze v EXAM režimu */}
           {aiMode === 'EXAM' && (
-            <div className="flex flex-wrap gap-2 p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+            <div className="flex flex-wrap gap-2 p-4 border-b border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))]">
               {examQuickActions.map((action, idx) => (
                 <Button
                   key={idx}
@@ -438,7 +438,7 @@ export default function QuestionAIAssistant({ question, user, onNoteSaved, topic
                       <div className="pl-2 space-y-2">
                         <ConfidenceBadge confidence={msg.meta?.confidence} />
                         {msg.meta?.cache?.hit && (
-                          <span className="inline-flex items-center text-xs text-slate-500 dark:text-slate-400">
+                          <span className="inline-flex items-center text-xs text-[hsl(var(--mn-muted))]">
                             🔄 Cached response
                           </span>
                         )}
@@ -449,7 +449,7 @@ export default function QuestionAIAssistant({ question, user, onNoteSaved, topic
                 );
               })}
               {isLoading ? (
-                <div className="flex items-center gap-2 text-sm text-slate-500">
+                <div className="flex items-center gap-2 text-sm text-[hsl(var(--mn-muted))]">
                   <Loader2 className="w-4 h-4 animate-spin" />
                   Generuji odpověď…
                 </div>
@@ -458,7 +458,7 @@ export default function QuestionAIAssistant({ question, user, onNoteSaved, topic
           </ScrollArea>
 
           {/* Input */}
-          <div className="p-4 border-t border-slate-200 dark:border-slate-700">
+          <div className="p-4 border-t border-[hsl(var(--mn-border))]">
             <div className="flex gap-2 mb-3">
               <Textarea
                 value={input}

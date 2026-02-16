@@ -148,7 +148,7 @@ export default function SaveCaseDialog({
                     {tag}
                     <button
                       onClick={() => handleRemoveTag(tag)}
-                      className="hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full"
+                      className="hover:bg-slate-200 dark:hover:bg-[hsl(var(--mn-elevated))] rounded-full"
                     >
                       <X className="w-3 h-3" />
                     </button>
@@ -190,7 +190,7 @@ export default function SaveCaseDialog({
                 rows={6}
                 className="font-mono text-sm"
               />
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-[hsl(var(--mn-muted))]">
                 Podporuje markdown formátování (nadpisy, seznamy, **tučný text**, *kurzíva*, atd.)
               </p>
             </div>
@@ -198,7 +198,7 @@ export default function SaveCaseDialog({
             {/* Attachments */}
             <div className="space-y-2">
               <Label>Přílohy</Label>
-              <div className="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-lg p-4">
+              <div className="border-2 border-dashed border-[hsl(var(--mn-border))] rounded-lg p-4">
                 <input
                   type="file"
                   id="file-upload"
@@ -211,11 +211,11 @@ export default function SaveCaseDialog({
                   htmlFor="file-upload"
                   className="flex flex-col items-center justify-center cursor-pointer"
                 >
-                  <Upload className="w-8 h-8 text-slate-400 mb-2" />
-                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                  <Upload className="w-8 h-8 text-[hsl(var(--mn-muted))] mb-2" />
+                  <p className="text-sm text-[hsl(var(--mn-muted))]">
                     {uploading ? 'Nahrávám...' : 'Klikněte pro nahrání souborů'}
                   </p>
-                  <p className="text-xs text-slate-500 mt-1">
+                  <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">
                     Obrázky, PDF, dokumenty
                   </p>
                 </label>
@@ -226,15 +226,15 @@ export default function SaveCaseDialog({
                   {attachments.map((file, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-lg"
+                      className="flex items-center justify-between p-3 bg-[hsl(var(--mn-surface-2))] rounded-lg"
                     >
                       <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <File className="w-5 h-5 text-slate-400 flex-shrink-0" />
+                        <File className="w-5 h-5 text-[hsl(var(--mn-muted))] flex-shrink-0" />
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
+                          <p className="text-sm font-medium text-[hsl(var(--mn-text))] truncate">
                             {file.name}
                           </p>
-                          <p className="text-xs text-slate-500">
+                          <p className="text-xs text-[hsl(var(--mn-muted))]">
                             {formatFileSize(file.size)}
                           </p>
                         </div>
@@ -254,14 +254,14 @@ export default function SaveCaseDialog({
             </div>
 
             {/* Sharing */}
-            <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800 rounded-lg">
+            <div className="flex items-center justify-between p-4 bg-[hsl(var(--mn-surface-2))] rounded-lg">
               <div className="flex items-center gap-3">
-                <Users className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                <Users className="w-5 h-5 text-[hsl(var(--mn-muted))]" />
                 <div>
                   <Label htmlFor="share" className="cursor-pointer">
                     Sdílet s ostatními uživateli
                   </Label>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p className="text-xs text-[hsl(var(--mn-muted))] mt-0.5">
                     Umožní ostatním uživatelům aplikace zobrazit tento případ
                   </p>
                 </div>

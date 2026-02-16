@@ -68,7 +68,7 @@ export default function Forum() {
       const discipline = disciplines.find(d => d.id === thread.clinical_discipline_id);
       return { icon: Users, label: discipline?.name || 'Obor', color: 'text-blue-600' };
     }
-    return { icon: Lock, label: 'Soukromé', color: 'text-slate-600' };
+    return { icon: Lock, label: 'Soukromé', color: 'text-[hsl(var(--mn-muted))]' };
   };
 
   if (isLoading) {
@@ -90,8 +90,8 @@ export default function Forum() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Forum</h1>
-          <p className="text-slate-600 dark:text-slate-400 mt-1">
+          <h1 className="text-3xl font-bold text-[hsl(var(--mn-text))]">Forum</h1>
+          <p className="text-[hsl(var(--mn-muted))] mt-1">
             Diskutujte s kolegy o klinických případech a tématech
           </p>
         </div>
@@ -103,7 +103,7 @@ export default function Forum() {
 
       {/* Search */}
       <div className="relative mb-6">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[hsl(var(--mn-muted))]" />
         <Input
           placeholder="Hledat v diskusích..."
           value={searchQuery}
@@ -126,8 +126,8 @@ export default function Forum() {
         {filteredThreads.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
-              <MessageSquare className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-              <p className="text-slate-600 dark:text-slate-400">
+              <MessageSquare className="w-12 h-12 text-[hsl(var(--mn-muted))] mx-auto mb-4" />
+              <p className="text-[hsl(var(--mn-muted))]">
                 {searchQuery ? 'Žádné výsledky nenalezeny' : 'Zatím zde nejsou žádné diskuse'}
               </p>
             </CardContent>
@@ -148,14 +148,14 @@ export default function Forum() {
                             <Pin className="w-4 h-4 text-amber-600 mt-1 flex-shrink-0" />
                           )}
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-semibold text-slate-900 dark:text-white mb-1 flex items-center gap-2">
+                            <h3 className="font-semibold text-[hsl(var(--mn-text))] mb-1 flex items-center gap-2">
                               {thread.title}
                               {thread.is_locked && (
-                                <Lock className="w-4 h-4 text-slate-400" />
+                                <Lock className="w-4 h-4 text-[hsl(var(--mn-muted))]" />
                               )}
                             </h3>
                             {thread.description && (
-                              <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 mb-2">
+                              <p className="text-sm text-[hsl(var(--mn-muted))] line-clamp-2 mb-2">
                                 {thread.description}
                               </p>
                             )}
@@ -169,7 +169,7 @@ export default function Forum() {
                                   {tag}
                                 </Badge>
                               ))}
-                              <span className="text-xs text-slate-500">
+                              <span className="text-xs text-[hsl(var(--mn-muted))]">
                                 {thread.created_by?.split('@')[0]} •{' '}
                                 {formatDistanceToNow(new Date(thread.created_date), {
                                   addSuffix: true,
@@ -181,7 +181,7 @@ export default function Forum() {
                         </div>
                       </div>
                       
-                      <div className="flex flex-col items-end gap-2 text-sm text-slate-600 dark:text-slate-400">
+                      <div className="flex flex-col items-end gap-2 text-sm text-[hsl(var(--mn-muted))]">
                         <div className="flex items-center gap-1">
                           <MessageSquare className="w-4 h-4" />
                           <span className="font-medium">{thread.posts_count || 0}</span>

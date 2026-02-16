@@ -86,10 +86,10 @@ export default function StudyPlanCreate() {
   return (
     <div className="p-6 lg:p-8 max-w-6xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+        <h1 className="text-3xl font-bold text-[hsl(var(--mn-text))] mb-2">
           Vytvořit studijní plán
         </h1>
-        <p className="text-slate-600 dark:text-slate-400">
+        <p className="text-[hsl(var(--mn-muted))]">
           Nastavte dlouhodobý cíl a AI Copilot vám pomůže s rozpisem
         </p>
       </div>
@@ -186,7 +186,7 @@ export default function StudyPlanCreate() {
                   {disciplines.map(d => (
                     <div 
                       key={d.id}
-                      className="flex items-center space-x-2 p-3 rounded-lg border hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                      className="flex items-center space-x-2 p-3 rounded-lg border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))] transition-colors"
                     >
                       <Checkbox
                         id={`disc-${d.id}`}
@@ -220,7 +220,7 @@ export default function StudyPlanCreate() {
                     {packages.map(p => (
                       <div 
                         key={p.id}
-                        className="flex items-center space-x-2 p-3 rounded-lg border hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                        className="flex items-center space-x-2 p-3 rounded-lg border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))] transition-colors"
                       >
                         <Checkbox
                           id={`pkg-${p.id}`}
@@ -271,7 +271,7 @@ export default function StudyPlanCreate() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+              <p className="text-sm text-[hsl(var(--mn-muted))] mb-4">
                 Požádejte AI o pomoc s vytvořením studijního plánu a rozpisem úkolů!
               </p>
               <Button 

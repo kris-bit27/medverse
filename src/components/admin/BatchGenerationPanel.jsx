@@ -211,7 +211,7 @@ export default function BatchGenerationPanel() {
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 ${
                     selectedModes.includes(mode) 
                       ? cfg.color + ' ring-2 ring-offset-1 ring-teal-400' 
-                      : 'bg-slate-100 dark:bg-slate-800 text-muted-foreground'
+                      : 'bg-[hsl(var(--mn-surface-2))] text-muted-foreground'
                   }`}
                 >
                   <span>{cfg.icon}</span>
@@ -256,7 +256,7 @@ export default function BatchGenerationPanel() {
             {filteredTopics.map(topic => (
               <label
                 key={topic.id}
-                className="flex items-center gap-3 px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                className="flex items-center gap-3 px-4 py-2.5 hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))] cursor-pointer"
               >
                 <Checkbox
                   checked={selectedTopics.has(topic.id)}
@@ -331,7 +331,7 @@ export default function BatchGenerationPanel() {
                       item.status === 'completed' ? 'text-green-600' :
                       item.status === 'failed' ? 'text-red-600' :
                       item.status === 'processing' ? 'text-blue-600 animate-spin' :
-                      'text-slate-400'
+                      'text-[hsl(var(--mn-muted))]'
                     }`} />
                     <span className="flex-1 truncate">{item.topics?.title || item.topic_id}</span>
                     <div className="flex gap-1">

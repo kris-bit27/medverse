@@ -25,7 +25,7 @@ const TYPE_META = {
 };
 
 const STATUS_META = {
-  pending:   { label: 'Čeká',       color: 'bg-slate-500/20 text-slate-400' },
+  pending:   { label: 'Čeká',       color: 'bg-slate-500/20 text-[hsl(var(--mn-muted))]' },
   analyzing: { label: 'Analyzuje',  color: 'bg-blue-500/20 text-blue-400' },
   approved:  { label: 'Schváleno',  color: 'bg-green-500/20 text-green-400' },
   rejected:  { label: 'Zamítnuto',  color: 'bg-red-500/20 text-red-400' },
@@ -40,7 +40,7 @@ function FeedbackCard({ fb, onApply, onReject, onAnalyze }) {
   const ai = fb.ai_analysis;
 
   return (
-    <Card className="bg-slate-900/50 border-slate-800 overflow-hidden">
+    <Card className="bg-[hsl(var(--mn-surface)/0.5)] border-[hsl(var(--mn-border))] overflow-hidden">
       <CardContent className="p-4">
         {/* Header row */}
         <div className="flex items-start justify-between gap-3">
@@ -63,59 +63,59 @@ function FeedbackCard({ fb, onApply, onReject, onAnalyze }) {
                   {typeMeta.label}
                 </Badge>
               </div>
-              <p className="text-sm text-slate-300 leading-relaxed">{fb.description}</p>
+              <p className="text-sm text-[hsl(var(--mn-muted))] leading-relaxed">{fb.description}</p>
               {fb.quoted_text && (
-                <p className="text-xs text-slate-500 mt-1 italic border-l-2 border-slate-700 pl-2">
+                <p className="text-xs text-[hsl(var(--mn-muted))] mt-1 italic border-l-2 border-[hsl(var(--mn-border))] pl-2">
                   „{fb.quoted_text}"
                 </p>
               )}
-              <p className="text-[10px] text-slate-600 mt-1.5">
+              <p className="text-[10px] text-[hsl(var(--mn-muted))] mt-1.5">
                 {new Date(fb.created_at).toLocaleString('cs-CZ')}
                 {fb.severity && ` · ${fb.severity}`}
               </p>
             </div>
           </div>
 
-          <button onClick={() => setExpanded(!expanded)} className="p-1 text-slate-500 hover:text-slate-300 shrink-0">
+          <button onClick={() => setExpanded(!expanded)} className="p-1 text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))] shrink-0">
             {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </button>
         </div>
 
         {/* AI Analysis (expandable) */}
         {expanded && (
-          <div className="mt-4 pt-4 border-t border-slate-800 space-y-3">
+          <div className="mt-4 pt-4 border-t border-[hsl(var(--mn-border))] space-y-3">
             {ai ? (
               <>
                 <div className="flex items-center gap-2 text-xs">
                   <Sparkles className="w-3.5 h-3.5 text-teal-400" />
-                  <span className="text-slate-400 font-medium">AI Analýza</span>
+                  <span className="text-[hsl(var(--mn-muted))] font-medium">AI Analýza</span>
                   <span className={`font-bold ${ai.valid ? 'text-green-400' : 'text-red-400'}`}>
                     {ai.valid ? 'Oprávněný' : 'Neoprávněný'}
                   </span>
-                  <span className="text-slate-600">· confidence: {(ai.confidence * 100).toFixed(0)}%</span>
+                  <span className="text-[hsl(var(--mn-muted))]">· confidence: {(ai.confidence * 100).toFixed(0)}%</span>
                 </div>
-                <p className="text-xs text-slate-400 leading-relaxed">{ai.reasoning}</p>
+                <p className="text-xs text-[hsl(var(--mn-muted))] leading-relaxed">{ai.reasoning}</p>
                 {ai.evidence?.length > 0 && (
-                  <div className="text-[10px] text-slate-500">
+                  <div className="text-[10px] text-[hsl(var(--mn-muted))]">
                     Evidence: {ai.evidence.join('; ')}
                   </div>
                 )}
                 {ai.suggested_fix && (
                   <div className="bg-green-500/5 border border-green-500/20 rounded-lg p-3">
                     <p className="text-[10px] text-green-400 font-medium mb-1">Navrhovaná oprava:</p>
-                    <p className="text-xs text-slate-300 whitespace-pre-wrap">{ai.suggested_fix}</p>
+                    <p className="text-xs text-[hsl(var(--mn-muted))] whitespace-pre-wrap">{ai.suggested_fix}</p>
                     {ai.fix_location && (
-                      <p className="text-[10px] text-slate-500 mt-1">Kde: {ai.fix_location}</p>
+                      <p className="text-[10px] text-[hsl(var(--mn-muted))] mt-1">Kde: {ai.fix_location}</p>
                     )}
                   </div>
                 )}
               </>
             ) : (
-              <p className="text-xs text-slate-500">AI analýza zatím nebyla provedena.</p>
+              <p className="text-xs text-[hsl(var(--mn-muted))]">AI analýza zatím nebyla provedena.</p>
             )}
 
             {fb.admin_notes && (
-              <p className="text-[10px] text-slate-500 italic">Admin: {fb.admin_notes}</p>
+              <p className="text-[10px] text-[hsl(var(--mn-muted))] italic">Admin: {fb.admin_notes}</p>
             )}
 
             {/* Actions */}
@@ -140,7 +140,7 @@ function FeedbackCard({ fb, onApply, onReject, onAnalyze }) {
               )}
               <Link
                 to={`${createPageUrl('TopicDetailV5')}?id=${fb.topic_id}`}
-                className="ml-auto text-[10px] text-slate-500 hover:text-teal-400 flex items-center gap-1"
+                className="ml-auto text-[10px] text-[hsl(var(--mn-muted))] hover:text-teal-400 flex items-center gap-1"
               >
                 <ExternalLink className="w-3 h-3" /> Otevřít téma
               </Link>
@@ -239,7 +239,7 @@ export default function AdminFeedback() {
   if (!canAccessAdmin(user)) {
     return (
       <div className="p-6 text-center">
-        <Shield className="w-12 h-12 mx-auto text-slate-600 mb-4" />
+        <Shield className="w-12 h-12 mx-auto text-[hsl(var(--mn-muted))] mb-4" />
         <h2 className="text-xl font-semibold text-white mb-2">Přístup odepřen</h2>
       </div>
     );
@@ -258,7 +258,7 @@ export default function AdminFeedback() {
     <div className="p-6 lg:p-8 max-w-4xl mx-auto">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <Link to={createPageUrl('AdminConsole')} className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors">
+        <Link to={createPageUrl('AdminConsole')} className="p-2 rounded-lg hover:bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))] transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div>
@@ -266,7 +266,7 @@ export default function AdminFeedback() {
             <Flag className="w-5 h-5 text-amber-400" />
             Content Feedback
           </h1>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-[hsl(var(--mn-muted))]">
             {counts.pending} čeká na posouzení · {counts.applied} aplikováno
           </p>
         </div>
@@ -279,8 +279,8 @@ export default function AdminFeedback() {
             onClick={() => setStatusFilter(key)}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
               statusFilter === key
-                ? 'bg-teal-600 text-white'
-                : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
+                ? 'bg-teal-600 text-[hsl(var(--mn-text))]'
+                : 'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))] hover:bg-[hsl(var(--mn-elevated))]'
             }`}>
             {label} ({counts[key] || 0})
           </button>
@@ -306,12 +306,12 @@ export default function AdminFeedback() {
       {/* List */}
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="w-6 h-6 animate-spin text-slate-500" />
+          <Loader2 className="w-6 h-6 animate-spin text-[hsl(var(--mn-muted))]" />
         </div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-12">
-          <FileText className="w-10 h-10 text-slate-700 mx-auto mb-3" />
-          <p className="text-sm text-slate-500">Žádné reporty v této kategorii</p>
+          <FileText className="w-10 h-10 text-[hsl(var(--mn-muted))] mx-auto mb-3" />
+          <p className="text-sm text-[hsl(var(--mn-muted))]">Žádné reporty v této kategorii</p>
         </div>
       ) : (
         <div className="space-y-3">

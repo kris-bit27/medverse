@@ -32,7 +32,7 @@ const GROUP_TYPES = [
   { value: 'kmen', label: 'Základní kmen', icon: BookOpen, color: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
   { value: 'vyzkum', label: 'Výzkumná skupina', icon: Microscope, color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
   { value: 'kazuistiky', label: 'Kazuistiky', icon: Stethoscope, color: 'bg-amber-500/10 text-amber-400 border-amber-500/20' },
-  { value: 'general', label: 'Obecná', icon: Users, color: 'bg-slate-500/10 text-slate-400 border-slate-500/20' },
+  { value: 'general', label: 'Obecná', icon: Users, color: 'bg-slate-500/10 text-[hsl(var(--mn-muted))] border-slate-500/20' },
 ];
 
 const THREAD_CATEGORIES = [

@@ -72,8 +72,8 @@ export default function AdminUsers() {
   if (!canManageUsers(currentUser)) {
     return (
       <div className="p-6 text-center">
-        <Shield className="w-12 h-12 mx-auto text-slate-300 mb-4" />
-        <p className="text-slate-500">Nemáte oprávnění ke správě uživatelů</p>
+        <Shield className="w-12 h-12 mx-auto text-[hsl(var(--mn-muted))] mb-4" />
+        <p className="text-[hsl(var(--mn-muted))]">Nemáte oprávnění ke správě uživatelů</p>
       </div>
     );
   }
@@ -92,10 +92,10 @@ export default function AdminUsers() {
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">
+          <h1 className="text-2xl font-bold text-[hsl(var(--mn-text))] mb-1">
             Uživatelé
           </h1>
-          <p className="text-slate-500">{users.length} celkem</p>
+          <p className="text-[hsl(var(--mn-muted))]">{users.length} celkem</p>
         </div>
       </div>
 
@@ -103,7 +103,7 @@ export default function AdminUsers() {
       <Card className="mb-6">
         <CardContent className="p-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(var(--mn-muted))]" />
             <Input
               placeholder="Hledat podle jména nebo emailu..."
               value={searchQuery}
@@ -134,10 +134,10 @@ export default function AdminUsers() {
                 <TableRow key={user.id}>
                   <TableCell>
                     <div>
-                      <p className="font-medium text-slate-900 dark:text-white">
+                      <p className="font-medium text-[hsl(var(--mn-text))]">
                         {user.full_name || 'Bez jména'}
                       </p>
-                      <p className="text-sm text-slate-500">{user.email}</p>
+                      <p className="text-sm text-[hsl(var(--mn-muted))]">{user.email}</p>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -172,7 +172,7 @@ export default function AdminUsers() {
                     </Select>
                   </TableCell>
                   <TableCell>
-                    <span className="text-sm text-slate-600 dark:text-slate-400">
+                    <span className="text-sm text-[hsl(var(--mn-muted))]">
                       {user.education_level || '-'}
                     </span>
                   </TableCell>
@@ -198,14 +198,14 @@ export default function AdminUsers() {
                       </SelectContent>
                     </Select>
                   </TableCell>
-                  <TableCell className="text-slate-500">
+                  <TableCell className="text-[hsl(var(--mn-muted))]">
                     {user.created_date ? format(new Date(user.created_date), 'd.M.yyyy') : '-'}
                   </TableCell>
                 </TableRow>
               ))}
               {filteredUsers.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-8 text-slate-500">
+                  <TableCell colSpan={5} className="text-center py-8 text-[hsl(var(--mn-muted))]">
                     Žádní uživatelé
                   </TableCell>
                 </TableRow>

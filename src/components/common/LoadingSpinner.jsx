@@ -12,7 +12,7 @@ export default function LoadingSpinner({ size = 'md', className, text }) {
         size === 'lg' && 'w-12 h-12'
       )} />
       {text && (
-        <p className="text-sm text-slate-500 dark:text-slate-400">{text}</p>
+        <p className="text-sm text-[hsl(var(--mn-muted))]">{text}</p>
       )}
     </div>
   );

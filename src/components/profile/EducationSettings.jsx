@@ -96,7 +96,7 @@ export default function EducationSettings({ user }) {
                 <SelectItem key={level.value} value={level.value}>
                   <div className="flex flex-col">
                     <span>{level.label}</span>
-                    <span className="text-xs text-slate-500">{level.description}</span>
+                    <span className="text-xs text-[hsl(var(--mn-muted))]">{level.description}</span>
                   </div>
                 </SelectItem>
               ))}
@@ -115,7 +115,7 @@ export default function EducationSettings({ user }) {
               {disciplines.map(discipline => (
                 <div 
                   key={discipline.id} 
-                  className="flex items-center space-x-2 p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                  className="flex items-center space-x-2 p-3 rounded-lg border border-[hsl(var(--mn-border))] hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))] transition-colors"
                 >
                   <Checkbox
                     id={discipline.id}
@@ -132,7 +132,7 @@ export default function EducationSettings({ user }) {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-slate-500">Zatím nejsou definovány žádné klinické obory.</p>
+            <p className="text-sm text-[hsl(var(--mn-muted))]">Zatím nejsou definovány žádné klinické obory.</p>
           )}
         </div>
 

@@ -464,7 +464,7 @@ export default function AdminTaxonomy() {
   }
 
   return (
-    <div className="bg-white dark:bg-slate-900">
+    <div className="bg-[hsl(var(--mn-surface))]">
       <div className="p-6 lg:p-8 max-w-6xl mx-auto">
       {/* Header */}
       <div className="flex items-center gap-4 mb-6">
@@ -477,7 +477,7 @@ export default function AdminTaxonomy() {
       </div>
 
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+        <h1 className="text-2xl font-bold text-[hsl(var(--mn-text))]">
           Taxonomie
         </h1>
         <div className="flex gap-2">
@@ -670,15 +670,15 @@ export default function AdminTaxonomy() {
               return (
                 <div 
                   key={discipline.id}
-                  className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg"
+                  className="flex items-center justify-between p-3 bg-[hsl(var(--mn-surface-2))]/50 rounded-lg"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center flex-shrink-0">
-                      <DisciplineIcon icon={discipline.icon} className="w-5 h-5 text-white" />
+                      <DisciplineIcon icon={discipline.icon} className="w-5 h-5 text-[hsl(var(--mn-text))]" />
                     </div>
                     <div>
-                      <p className="font-medium text-slate-900 dark:text-white text-sm">{discipline.name}</p>
-                      <p className="text-xs text-slate-500">{disciplineOkruhy.length} okruhů</p>
+                      <p className="font-medium text-[hsl(var(--mn-text))] text-sm">{discipline.name}</p>
+                      <p className="text-xs text-[hsl(var(--mn-muted))]">{disciplineOkruhy.length} okruhů</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-1">
@@ -702,7 +702,7 @@ export default function AdminTaxonomy() {
               );
             })}
             {disciplines.length === 0 && (
-              <p className="col-span-full text-center py-8 text-slate-500">Žádné obory</p>
+              <p className="col-span-full text-center py-8 text-[hsl(var(--mn-muted))]">Žádné obory</p>
             )}
           </div>
         </CardContent>
@@ -827,11 +827,11 @@ export default function AdminTaxonomy() {
               return (
                 <div 
                   key={okruh.id}
-                  className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg"
+                  className="flex items-center justify-between p-3 bg-[hsl(var(--mn-surface-2))]/50 rounded-lg"
                 >
                   <div>
-                    <p className="font-medium text-slate-900 dark:text-white">{okruh.title}</p>
-                    <p className="text-xs text-slate-500">{topicCount} témat · {questionCount} otázek</p>
+                    <p className="font-medium text-[hsl(var(--mn-text))]">{okruh.title}</p>
+                    <p className="text-xs text-[hsl(var(--mn-muted))]">{topicCount} témat · {questionCount} otázek</p>
                   </div>
                   <div className="flex items-center gap-1">
                     <Button variant="ghost" size="icon" onClick={() => openEditOkruh(okruh)}>
@@ -854,10 +854,10 @@ export default function AdminTaxonomy() {
               );
             })}
             {filteredOkruhy.length === 0 && okruhy.length > 0 && (
-              <p className="text-center py-8 text-slate-500">Žádné okruhy pro vybraný obor</p>
+              <p className="text-center py-8 text-[hsl(var(--mn-muted))]">Žádné okruhy pro vybraný obor</p>
             )}
             {okruhy.length === 0 && (
-              <p className="text-center py-8 text-slate-500">Žádné okruhy</p>
+              <p className="text-center py-8 text-[hsl(var(--mn-muted))]">Žádné okruhy</p>
             )}
             </div>
           </CardContent>
@@ -938,9 +938,9 @@ export default function AdminTaxonomy() {
             </Dialog>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="sticky top-0 z-10 bg-white dark:bg-slate-900 pb-3">
+            <div className="sticky top-0 z-10 bg-[hsl(var(--mn-surface))] pb-3">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(var(--mn-muted))]" />
                 <Input
                   placeholder="Hledat témata..."
                   value={searchQuery}
@@ -1097,7 +1097,7 @@ export default function AdminTaxonomy() {
               )}
 
               {filteredTopics.length > 0 && (
-                <div className="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-700 mt-3">
+                <div className="flex items-center gap-2 pb-2 border-b border-[hsl(var(--mn-border))] mt-3">
                   <Button
                     variant="ghost"
                     size="sm"
@@ -1116,13 +1116,13 @@ export default function AdminTaxonomy() {
             </div>
             <div className="space-y-2 max-h-[500px] overflow-y-auto">
               {filteredTopics.length === 0 && topics.length > 0 ? (
-                <p className="text-center py-8 text-slate-500">
+                <p className="text-center py-8 text-[hsl(var(--mn-muted))]">
                   {searchQuery || filterOkruh !== 'all' || filterTopicStatus !== 'all' || filterDiscipline !== 'all' || hidePublished
                     ? 'Žádná témata neodpovídají filtrům' 
                     : 'Žádná témata'}
                 </p>
               ) : topics.length === 0 ? (
-                <p className="text-center py-8 text-slate-500">Žádná témata</p>
+                <p className="text-center py-8 text-[hsl(var(--mn-muted))]">Žádná témata</p>
               ) : (
                 <>
                   {filteredOkruhy.map((okruh) => {
@@ -1131,14 +1131,14 @@ export default function AdminTaxonomy() {
                   
                   return (
                     <div key={okruh.id} className="mb-4">
-                      <p className="text-xs font-semibold text-slate-500 uppercase mb-2">{okruh.title}</p>
+                      <p className="text-xs font-semibold text-[hsl(var(--mn-muted))] uppercase mb-2">{okruh.title}</p>
                       <div className="space-y-1">
                         {okruhTopics.map((topic) => {
                             const questionCount = questionCountByTopic[topic.id] || 0;
                             return (
                               <div 
                                 key={topic.id}
-                                className="flex items-center justify-between p-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg"
+                                className="flex items-center justify-between p-2 bg-[hsl(var(--mn-surface-2))]/50 rounded-lg"
                               >
                                 <div className="flex items-center gap-2 flex-1">
                                  <Checkbox
@@ -1148,7 +1148,7 @@ export default function AdminTaxonomy() {
                                  {topic.is_reviewed && (
                                    <Shield className="w-4 h-4 text-teal-600 dark:text-teal-400" title="Revidováno odborníkem" />
                                  )}
-                                 <span className="text-sm text-slate-900 dark:text-white">{topic.title}</span>
+                                 <span className="text-sm text-[hsl(var(--mn-text))]">{topic.title}</span>
                                  {questionCount > 0 && (
                                    <Badge variant="secondary" className="text-xs">{questionCount}</Badge>
                                  )}
@@ -1156,7 +1156,7 @@ export default function AdminTaxonomy() {
                                  <Badge className={
                                  topic.status === 'published' ? 'bg-green-100 text-green-700' :
                                  topic.status === 'in_review' ? 'bg-amber-100 text-amber-700' :
-                                 'bg-slate-100 text-slate-700'
+                                 'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))]'
                                  }>
                                  {topic.status}
                                  </Badge>
@@ -1185,7 +1185,7 @@ export default function AdminTaxonomy() {
                               onClick={() => handleToggleReviewed(topic)}
                               title={topic.is_reviewed ? "Zrušit kontrolu" : "Označit jako zkontrolováno"}
                             >
-                              <CheckCircle className={`w-3 h-3 ${topic.is_reviewed ? 'text-green-600' : 'text-slate-400'}`} />
+                              <CheckCircle className={`w-3 h-3 ${topic.is_reviewed ? 'text-green-600' : 'text-[hsl(var(--mn-muted))]'}`} />
                             </Button>
                             <Button 
                               variant="ghost" 
@@ -1197,7 +1197,7 @@ export default function AdminTaxonomy() {
                               {topic.status === 'published' ? (
                                 <Eye className="w-3 h-3 text-blue-600" />
                               ) : (
-                                <EyeOff className="w-3 h-3 text-slate-400" />
+                                <EyeOff className="w-3 h-3 text-[hsl(var(--mn-muted))]" />
                               )}
                             </Button>
                             <Button 
@@ -1257,7 +1257,7 @@ export default function AdminTaxonomy() {
                                   {topic.is_reviewed && (
                                     <Shield className="w-4 h-4 text-teal-600 dark:text-teal-400" title="Revidováno odborníkem" />
                                   )}
-                                  <span className="text-sm text-slate-900 dark:text-white">{topic.title}</span>
+                                  <span className="text-sm text-[hsl(var(--mn-text))]">{topic.title}</span>
                                   {questionCount > 0 && (
                                     <Badge variant="secondary" className="text-xs">{questionCount}</Badge>
                                   )}
@@ -1285,7 +1285,7 @@ export default function AdminTaxonomy() {
                                     onClick={() => handleToggleReviewed(topic)}
                                     title={topic.is_reviewed ? "Zrušit kontrolu" : "Označit jako zkontrolováno"}
                                   >
-                                    <CheckCircle className={`w-3 h-3 ${topic.is_reviewed ? 'text-green-600' : 'text-slate-400'}`} />
+                                    <CheckCircle className={`w-3 h-3 ${topic.is_reviewed ? 'text-green-600' : 'text-[hsl(var(--mn-muted))]'}`} />
                                   </Button>
                                   <Button 
                                     variant="ghost" 
@@ -1297,7 +1297,7 @@ export default function AdminTaxonomy() {
                                     {topic.status === 'published' ? (
                                       <Eye className="w-3 h-3 text-blue-600" />
                                     ) : (
-                                      <EyeOff className="w-3 h-3 text-slate-400" />
+                                      <EyeOff className="w-3 h-3 text-[hsl(var(--mn-muted))]" />
                                     )}
                                   </Button>
                                   <Button 

@@ -26,7 +26,7 @@ export default function DifficultyIndicator({ level = 1, showLabel = true }) {
         ))}
       </div>
       {showLabel && (
-        <span className="text-xs text-slate-500 dark:text-slate-400">
+        <span className="text-xs text-[hsl(var(--mn-muted))]">
           {labels[level]}
         </span>
       )}

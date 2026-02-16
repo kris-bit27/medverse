@@ -91,7 +91,7 @@ export default function AnswerSection({
         {/* Images */}
         {images && images.length > 0 && (
           <div className="mt-6">
-            <h4 className="font-semibold text-slate-900 dark:text-white mb-3">Obrázky</h4>
+            <h4 className="font-semibold text-[hsl(var(--mn-text))] mb-3">Obrázky</h4>
             <div className="grid grid-cols-2 gap-4">
               {images.map((img, i) => (
                 <div key={i} className="relative rounded-lg overflow-hidden">
@@ -101,7 +101,7 @@ export default function AnswerSection({
                     className="w-full h-48 object-cover"
                   />
                   {img.caption && (
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 text-center">
+                    <p className="text-xs text-[hsl(var(--mn-muted))] mt-1 text-center">
                       {img.caption}
                     </p>
                   )}
@@ -113,8 +113,8 @@ export default function AnswerSection({
 
         {/* References */}
         {refs && refs.length > 0 && (
-          <div className="mt-6 pt-6 border-t dark:border-slate-700">
-            <h4 className="font-semibold text-slate-900 dark:text-white mb-3">Reference</h4>
+          <div className="mt-6 pt-6 border-t dark:border-[hsl(var(--mn-border))]">
+            <h4 className="font-semibold text-[hsl(var(--mn-text))] mb-3">Reference</h4>
             <ul className="space-y-2">
               {refs.map((ref, i) => (
                 <li key={i}>

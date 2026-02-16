@@ -265,7 +265,7 @@ export default function LogbookEntryForm({ entry, disciplines, userId, onClose }
           </div>
 
           {/* Verified */}
-          <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
+          <div className="flex items-center justify-between p-3 rounded-lg bg-[hsl(var(--mn-surface-2))]">
             <Label htmlFor="verified" className="cursor-pointer">Ověřeno školitelem</Label>
             <Switch
               id="verified"

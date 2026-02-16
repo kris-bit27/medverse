@@ -39,7 +39,7 @@ export default function TopBar({ user }) {
   };
 
   return (
-    <div className="h-16 border-b bg-white dark:bg-slate-900 flex items-center justify-between px-6">
+    <div className="h-16 border-b bg-[hsl(var(--mn-surface))] flex items-center justify-between px-6">
       {/* Logo / Search */}
       <div className="flex items-center gap-4">
         <Link to="/" className="text-xl font-bold text-teal-600">
@@ -58,7 +58,7 @@ export default function TopBar({ user }) {
       {/* Right Side */}
       <div className="flex items-center gap-4">
         {/* Dark Mode Toggle */}
-        <button className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
+        <button className="p-2 rounded-lg hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]">
           🌙
         </button>
 
@@ -66,7 +66,7 @@ export default function TopBar({ user }) {
         <div className="relative" ref={menuRef}>
           <button
             onClick={() => setUserMenuOpen(!userMenuOpen)}
-            className="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="flex items-center gap-2 p-2 rounded-lg hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))] transition-colors"
           >
             <div className="w-8 h-8 rounded-full bg-teal-600 text-white flex items-center justify-center font-medium">
               {user?.email?.charAt(0).toUpperCase() || 'U'}
@@ -76,9 +76,9 @@ export default function TopBar({ user }) {
 
           {/* Dropdown Menu */}
           {userMenuOpen && (
-            <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 py-2 z-50">
+            <div className="absolute right-0 mt-2 w-64 bg-[hsl(var(--mn-elevated))] rounded-lg shadow-lg border border-[hsl(var(--mn-border))] py-2 z-50">
               {/* User Info */}
-              <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+              <div className="px-4 py-3 border-b border-[hsl(var(--mn-border))]">
                 <p className="font-medium truncate">{user?.email}</p>
                 <p className="text-xs text-muted-foreground">Student účet</p>
               </div>
@@ -111,10 +111,10 @@ export default function TopBar({ user }) {
               </div>
 
               {/* Sign Out */}
-              <div className="border-t border-slate-200 dark:border-slate-700 pt-2">
+              <div className="border-t border-[hsl(var(--mn-border))] pt-2">
                 <button
                   onClick={handleSignOut}
-                  className="w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-red-600"
+                  className="w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-elevated))] transition-colors text-red-600"
                 >
                   <LogOut className="w-4 h-4" />
                   <span className="font-medium">Odhlásit se</span>
@@ -133,9 +133,9 @@ function UserMenuItem({ icon, label, description, to, onClick }) {
     <Link
       to={to}
       onClick={onClick}
-      className="flex items-start gap-3 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+      className="flex items-start gap-3 px-4 py-3 hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-elevated))] transition-colors"
     >
-      <div className="mt-0.5 text-slate-600 dark:text-slate-400">
+      <div className="mt-0.5 text-[hsl(var(--mn-muted))]">
         {icon}
       </div>
       <div className="flex-1 min-w-0">

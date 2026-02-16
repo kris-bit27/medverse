@@ -136,9 +136,9 @@ export default function Login() {
 
   if (mode === 'reset-sent' || mode === 'register-confirm') {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-6">
+      <div className="min-h-screen bg-[hsl(var(--mn-bg))] flex items-center justify-center p-6">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(15,118,110,0.25),transparent_55%)]" />
-        <Card className="relative w-full max-w-md border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-950/90 backdrop-blur shadow-xl">
+        <Card className="relative w-full max-w-md border-[hsl(var(--mn-border))] bg-white/90 dark:bg-[hsl(var(--mn-bg))]/90 backdrop-blur shadow-xl">
           <CardContent className="p-8 text-center space-y-4">
             <div className="mx-auto w-16 h-16 rounded-full bg-teal-500/10 flex items-center justify-center">
               <CheckCircle2 className="w-8 h-8 text-teal-500" />
@@ -161,11 +161,11 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-[hsl(var(--mn-bg))] text-[hsl(var(--mn-text))] flex items-center justify-center p-6">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(15,118,110,0.25),transparent_55%),radial-gradient(circle_at_bottom,rgba(59,130,246,0.18),transparent_45%)]" />
-      <Card className="relative w-full max-w-4xl overflow-hidden border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/80 shadow-[0_30px_80px_-40px_rgba(15,118,110,0.7)] backdrop-blur">
+      <Card className="relative w-full max-w-4xl overflow-hidden border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-bg)/0.8)] shadow-[0_30px_80px_-40px_rgba(15,118,110,0.7)] backdrop-blur">
         <CardContent className="grid gap-0 p-0 md:grid-cols-[1.1fr_1fr]">
-          <div className="p-10 md:p-12 border-b border-slate-200 dark:border-slate-900 md:border-b-0 md:border-r">
+          <div className="p-10 md:p-12 border-b border-[hsl(var(--mn-border))] dark:border-slate-900 md:border-b-0 md:border-r">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-teal-400 to-cyan-500" />
               <div>
@@ -186,13 +186,13 @@ export default function Login() {
               </p>
               <div className="mt-8 grid grid-cols-2 gap-3 text-xs text-muted-foreground">
                 {['Přístup k premium obsahu', 'Synchronizace napříč zařízeními', 'Ověřené AI výstupy', 'Individuální plán učení'].map((t, i) => (
-                  <div key={i} className="rounded-xl border border-slate-200 dark:border-slate-800 p-4">{t}</div>
+                  <div key={i} className="rounded-xl border border-[hsl(var(--mn-border))] p-4">{t}</div>
                 ))}
               </div>
             </div>
           </div>
 
-          <div className="p-8 md:p-10 bg-white/70 dark:bg-slate-950/70">
+          <div className="p-8 md:p-10 bg-white/70 dark:bg-[hsl(var(--mn-bg))]/70">
             {/* ═══ LOGIN ═══ */}
             {mode === 'login' && (<>
               <div className="text-sm uppercase tracking-[0.25em] text-muted-foreground">Přihlášení</div>
@@ -201,7 +201,7 @@ export default function Login() {
                 <div className="mt-6 space-y-2">
                   {providers.map((p) => (
                     <button key={p.id} type="button" onClick={() => handleOAuth(p.id)}
-                      className="group flex w-full items-center justify-between rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40 px-4 py-3 text-left text-sm font-medium transition hover:border-teal-500/40 hover:bg-teal-50 dark:hover:bg-slate-900">
+                      className="group flex w-full items-center justify-between rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface))]/40 px-4 py-3 text-left text-sm font-medium transition hover:border-teal-500/40 hover:bg-teal-50 dark:hover:bg-slate-900">
                       <span className="flex items-center gap-3">
                         <p.Logo />
                         Pokračovat přes {p.label}
@@ -320,7 +320,7 @@ export default function Login() {
               </div>
             </>)}
 
-            <div className="pt-5 mt-4 border-t border-slate-200 dark:border-slate-800">
+            <div className="pt-5 mt-4 border-t border-[hsl(var(--mn-border))]">
               <Button variant="ghost" className="w-full text-muted-foreground text-sm" onClick={() => navigate('/')}>Zpět na web</Button>
             </div>
           </div>

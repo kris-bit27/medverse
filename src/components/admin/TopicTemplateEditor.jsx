@@ -139,7 +139,7 @@ export default function TopicTemplateEditor({ topic, onSave }) {
 
   const getStatusBadge = (status) => {
     const variants = {
-      draft: { color: 'bg-slate-100 text-slate-700', icon: AlertTriangle },
+      draft: { color: 'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))]', icon: AlertTriangle },
       in_review: { color: 'bg-amber-100 text-amber-700', icon: Eye },
       published: { color: 'bg-green-100 text-green-700', icon: CheckCircle }
     };
@@ -246,7 +246,7 @@ export default function TopicTemplateEditor({ topic, onSave }) {
                     <Icon className="w-4 h-4" />
                     {section.label}
                   </Label>
-                  <p className="text-xs text-slate-500 mt-1">{section.description}</p>
+                  <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">{section.description}</p>
                 </div>
               </div>
               <Textarea

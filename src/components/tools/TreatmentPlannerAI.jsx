@@ -138,7 +138,7 @@ Odpověď piš česky, strukturovaně a s ohledem na individuální parametry pa
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">
+            <label className="block text-sm font-medium mb-2 text-[hsl(var(--mn-muted))]">
               Diagnóza
             </label>
             <Input
@@ -216,7 +216,7 @@ Odpověď piš česky, strukturovaně a s ohledem na individuální parametry pa
             {/* Pharmacological treatment */}
             {result.pharmacological_treatment && result.pharmacological_treatment.length > 0 && (
               <div>
-                <h3 className="font-semibold text-lg mb-4 flex items-center gap-2 text-slate-900 dark:text-white">
+                <h3 className="font-semibold text-lg mb-4 flex items-center gap-2 text-[hsl(var(--mn-text))]">
                   <Pill className="w-5 h-5 text-teal-600" />
                   Farmakologická léčba
                 </h3>
@@ -225,10 +225,10 @@ Odpověď piš česky, strukturovaně a s ohledem na individuální parametry pa
                     <Card key={idx}>
                       <CardContent className="pt-4">
                         <div className="flex items-start justify-between mb-2">
-                          <h4 className="font-semibold text-slate-900 dark:text-white">{med.drug}</h4>
+                          <h4 className="font-semibold text-[hsl(var(--mn-text))]">{med.drug}</h4>
                           <Badge>{med.dosage}</Badge>
                         </div>
-                        <div className="space-y-1 text-sm text-slate-600 dark:text-slate-400">
+                        <div className="space-y-1 text-sm text-[hsl(var(--mn-muted))]">
                           <p><strong>Délka léčby:</strong> {med.duration}</p>
                           <p><strong>Odůvodnění:</strong> {med.rationale}</p>
                         </div>
@@ -242,7 +242,7 @@ Odpověď piš česky, strukturovaně a s ohledem na individuální parametry pa
             {/* Non-pharmacological */}
             {result.non_pharmacological && (
               <div>
-                <h3 className="font-semibold text-lg mb-3 text-slate-900 dark:text-white">
+                <h3 className="font-semibold text-lg mb-3 text-[hsl(var(--mn-text))]">
                   Nefarmakologická opatření
                 </h3>
                 <div className="prose prose-sm dark:prose-invert max-w-none">
@@ -254,7 +254,7 @@ Odpověď piš česky, strukturovaně a s ohledem na individuální parametry pa
             {/* Monitoring */}
             {result.monitoring && (
               <div>
-                <h3 className="font-semibold text-lg mb-3 text-slate-900 dark:text-white">
+                <h3 className="font-semibold text-lg mb-3 text-[hsl(var(--mn-text))]">
                   Monitoring a kontroly
                 </h3>
                 <div className="prose prose-sm dark:prose-invert max-w-none">
@@ -266,7 +266,7 @@ Odpověď piš česky, strukturovaně a s ohledem na individuální parametry pa
             {/* Adjustment criteria */}
             {result.adjustment_criteria && (
               <div>
-                <h3 className="font-semibold text-lg mb-3 text-slate-900 dark:text-white">
+                <h3 className="font-semibold text-lg mb-3 text-[hsl(var(--mn-text))]">
                   Kritéria pro úpravu léčby
                 </h3>
                 <div className="prose prose-sm dark:prose-invert max-w-none">
@@ -307,7 +307,7 @@ Odpověď piš česky, strukturovaně a s ohledem na individuální parametry pa
             )}
 
             {/* Save case */}
-            <div className="pt-6 border-t border-slate-200 dark:border-slate-800">
+            <div className="pt-6 border-t border-[hsl(var(--mn-border))]">
               <Button
                 onClick={() => setSaveDialogOpen(true)}
                 variant="outline"

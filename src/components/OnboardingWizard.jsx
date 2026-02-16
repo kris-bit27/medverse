@@ -262,17 +262,17 @@ export default function OnboardingWizard({ onComplete }) {
         </div>
 
         {/* Step content */}
-        <Card className="bg-slate-900/80 border-slate-800 backdrop-blur-sm shadow-2xl">
+        <Card className="bg-[hsl(var(--mn-surface)/0.8)] border-[hsl(var(--mn-border))] backdrop-blur-sm shadow-2xl">
           <CardContent className="p-8">
             {/* ===== STEP: WELCOME ===== */}
             {STEPS[step].id === 'welcome' && (
               <div className="text-center space-y-6">
                 <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-teal-500/20">
-                  <Sparkles className="w-10 h-10 text-white" />
+                  <Sparkles className="w-10 h-10 text-[hsl(var(--mn-text))]" />
                 </div>
                 <div>
                   <h1 className="text-3xl font-bold text-white mb-2">Vítejte v MedVerse</h1>
-                  <p className="text-slate-400 text-lg leading-relaxed">
+                  <p className="text-[hsl(var(--mn-muted))] text-lg leading-relaxed">
                     Nastavíme váš profil tak, aby MedVerse přesně věděl, kde se v přípravě nacházíte
                     a co ještě potřebujete splnit.
                   </p>
@@ -283,13 +283,13 @@ export default function OnboardingWizard({ onComplete }) {
                     { icon: Calendar, label: 'Termíny' },
                     { icon: Building2, label: 'Pracoviště' },
                   ].map(({ icon: Icon, label }) => (
-                    <div key={label} className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
+                    <div key={label} className="p-4 rounded-xl bg-[hsl(var(--mn-surface-2)/0.5)] border border-[hsl(var(--mn-border)/0.5)]">
                       <Icon className="w-6 h-6 text-teal-400 mx-auto mb-2" />
-                      <p className="text-sm text-slate-300">{label}</p>
+                      <p className="text-sm text-[hsl(var(--mn-muted))]">{label}</p>
                     </div>
                   ))}
                 </div>
-                <p className="text-xs text-slate-500">Zabere to cca 2 minuty • Vše můžete později upravit</p>
+                <p className="text-xs text-[hsl(var(--mn-muted))]">Zabere to cca 2 minuty • Vše můžete později upravit</p>
               </div>
             )}
 
@@ -298,14 +298,14 @@ export default function OnboardingWizard({ onComplete }) {
               <div className="space-y-6">
                 <div>
                   <h2 className="text-2xl font-bold text-white mb-1">Váš obor specializace</h2>
-                  <p className="text-slate-400">Zvolte obor, na který se připravujete</p>
+                  <p className="text-[hsl(var(--mn-muted))]">Zvolte obor, na který se připravujete</p>
                 </div>
 
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label className="text-slate-300">Obor *</Label>
+                    <Label className="text-[hsl(var(--mn-muted))]">Obor *</Label>
                     <Select value={form.obor_id} onValueChange={(v) => updateForm({ obor_id: v })}>
-                      <SelectTrigger className="bg-slate-800 border-slate-700 text-white h-12">
+                      <SelectTrigger className="bg-[hsl(var(--mn-surface-2))] border-[hsl(var(--mn-border))] text-white h-12">
                         <SelectValue placeholder="Vyberte obor..." />
                       </SelectTrigger>
                       <SelectContent className="max-h-80">
@@ -317,9 +317,9 @@ export default function OnboardingWizard({ onComplete }) {
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-slate-300">Vzdělávací program</Label>
+                    <Label className="text-[hsl(var(--mn-muted))]">Vzdělávací program</Label>
                     <Select value={form.vp_year} onValueChange={(v) => updateForm({ vp_year: v })}>
-                      <SelectTrigger className="bg-slate-800 border-slate-700 text-white">
+                      <SelectTrigger className="bg-[hsl(var(--mn-surface-2))] border-[hsl(var(--mn-border))] text-[hsl(var(--mn-text))]">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -328,7 +328,7 @@ export default function OnboardingWizard({ onComplete }) {
                         ))}
                       </SelectContent>
                     </Select>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-[hsl(var(--mn-muted))]">
                       Většina školenců po roce 2019 spadá pod VP 2019
                     </p>
                   </div>
@@ -339,7 +339,7 @@ export default function OnboardingWizard({ onComplete }) {
                         <CheckCircle className="w-4 h-4" />
                         <span className="font-medium">{selectedObor.name}</span>
                       </div>
-                      <p className="text-xs text-slate-400">
+                      <p className="text-xs text-[hsl(var(--mn-muted))]">
                         Logbook s požadavky VP bude přizpůsoben tomuto oboru
                       </p>
                     </div>
@@ -353,7 +353,7 @@ export default function OnboardingWizard({ onComplete }) {
               <div className="space-y-6">
                 <div>
                   <h2 className="text-2xl font-bold text-white mb-1">Kde se nacházíte?</h2>
-                  <p className="text-slate-400">V jaké fázi přípravy aktuálně jste</p>
+                  <p className="text-[hsl(var(--mn-muted))]">V jaké fázi přípravy aktuálně jste</p>
                 </div>
 
                 <div className="grid gap-3">
@@ -383,13 +383,13 @@ export default function OnboardingWizard({ onComplete }) {
                       className={`w-full p-5 rounded-xl border-2 text-left transition-all ${
                         form.phase === opt.value
                           ? `border-${opt.color}-500 bg-${opt.color}-500/10`
-                          : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
+                          : 'border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2)/0.5)] hover:border-[hsl(var(--mn-accent)/0.3)]'
                       }`}
                     >
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="font-semibold text-white">{opt.title}</p>
-                          <p className="text-sm text-slate-400 mt-1">{opt.desc}</p>
+                          <p className="font-semibold text-[hsl(var(--mn-text))]">{opt.title}</p>
+                          <p className="text-sm text-[hsl(var(--mn-muted))] mt-1">{opt.desc}</p>
                         </div>
                         {form.phase === opt.value && (
                           <CheckCircle className="w-6 h-6 text-teal-400 flex-shrink-0" />
@@ -406,28 +406,28 @@ export default function OnboardingWizard({ onComplete }) {
               <div className="space-y-6">
                 <div>
                   <h2 className="text-2xl font-bold text-white mb-1">Klíčové termíny</h2>
-                  <p className="text-slate-400">Pomůže nám spočítat váš odpočet k atestaci</p>
+                  <p className="text-[hsl(var(--mn-muted))]">Pomůže nám spočítat váš odpočet k atestaci</p>
                 </div>
 
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label className="text-slate-300">Datum zařazení do oboru *</Label>
+                    <Label className="text-[hsl(var(--mn-muted))]">Datum zařazení do oboru *</Label>
                     <Input
                       type="date"
                       value={form.enrolled_at}
                       onChange={e => updateForm({ enrolled_at: e.target.value })}
-                      className="bg-slate-800 border-slate-700 text-white"
+                      className="bg-[hsl(var(--mn-surface-2))] border-[hsl(var(--mn-border))] text-[hsl(var(--mn-text))]"
                     />
                   </div>
 
                   {(form.phase === 'kmen' || form.phase === 'specializace') && (
                     <div className="space-y-2">
-                      <Label className="text-slate-300">Začátek kmene</Label>
+                      <Label className="text-[hsl(var(--mn-muted))]">Začátek kmene</Label>
                       <Input
                         type="date"
                         value={form.kmen_started_at}
                         onChange={e => updateForm({ kmen_started_at: e.target.value })}
-                        className="bg-slate-800 border-slate-700 text-white"
+                        className="bg-[hsl(var(--mn-surface-2))] border-[hsl(var(--mn-border))] text-[hsl(var(--mn-text))]"
                       />
                     </div>
                   )}
@@ -435,40 +435,40 @@ export default function OnboardingWizard({ onComplete }) {
                   {form.phase === 'specializace' && (
                     <>
                       <div className="space-y-2">
-                        <Label className="text-slate-300">Kmen dokončen</Label>
+                        <Label className="text-[hsl(var(--mn-muted))]">Kmen dokončen</Label>
                         <Input
                           type="date"
                           value={form.kmen_completed_at}
                           onChange={e => updateForm({ kmen_completed_at: e.target.value })}
-                          className="bg-slate-800 border-slate-700 text-white"
+                          className="bg-[hsl(var(--mn-surface-2))] border-[hsl(var(--mn-border))] text-[hsl(var(--mn-text))]"
                         />
                       </div>
-                      <div className="flex items-center justify-between p-3 rounded-lg bg-slate-800/50">
-                        <Label className="text-slate-300 cursor-pointer">Kmenová zkouška složena</Label>
+                      <div className="flex items-center justify-between p-3 rounded-lg bg-[hsl(var(--mn-surface-2)/0.5)]">
+                        <Label className="text-[hsl(var(--mn-muted))] cursor-pointer">Kmenová zkouška složena</Label>
                         <Switch
                           checked={form.kmen_exam_passed}
                           onCheckedChange={v => updateForm({ kmen_exam_passed: v })}
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label className="text-slate-300">Začátek specializačního výcviku</Label>
+                        <Label className="text-[hsl(var(--mn-muted))]">Začátek specializačního výcviku</Label>
                         <Input
                           type="date"
                           value={form.spec_started_at}
                           onChange={e => updateForm({ spec_started_at: e.target.value })}
-                          className="bg-slate-800 border-slate-700 text-white"
+                          className="bg-[hsl(var(--mn-surface-2))] border-[hsl(var(--mn-border))] text-[hsl(var(--mn-text))]"
                         />
                       </div>
                     </>
                   )}
 
                   <div className="space-y-2">
-                    <Label className="text-slate-300">Plánovaný termín atestace (volitelné)</Label>
+                    <Label className="text-[hsl(var(--mn-muted))]">Plánovaný termín atestace (volitelné)</Label>
                     <Input
                       type="date"
                       value={form.attestation_target_date}
                       onChange={e => updateForm({ attestation_target_date: e.target.value })}
-                      className="bg-slate-800 border-slate-700 text-white"
+                      className="bg-[hsl(var(--mn-surface-2))] border-[hsl(var(--mn-border))] text-[hsl(var(--mn-text))]"
                     />
                   </div>
 
@@ -477,7 +477,7 @@ export default function OnboardingWizard({ onComplete }) {
                       <p className="text-sm text-cyan-300">
                         📅 Odhadovaný konec přípravy: <strong>{estimatedEndDate}</strong>
                       </p>
-                      <p className="text-xs text-slate-500 mt-1">
+                      <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">
                         Orientační odhad na základě délky oboru
                       </p>
                     </div>
@@ -491,27 +491,27 @@ export default function OnboardingWizard({ onComplete }) {
               <div className="space-y-6">
                 <div>
                   <h2 className="text-2xl font-bold text-white mb-1">Pracoviště</h2>
-                  <p className="text-slate-400">Volitelné – můžete doplnit později</p>
+                  <p className="text-[hsl(var(--mn-muted))]">Volitelné – můžete doplnit později</p>
                 </div>
 
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label className="text-slate-300">Akreditované zařízení</Label>
+                    <Label className="text-[hsl(var(--mn-muted))]">Akreditované zařízení</Label>
                     <Input
                       value={form.primary_workplace}
                       onChange={e => updateForm({ primary_workplace: e.target.value })}
                       placeholder="např. FN Motol, Nemocnice Na Bulovce..."
-                      className="bg-slate-800 border-slate-700 text-white"
+                      className="bg-[hsl(var(--mn-surface-2))] border-[hsl(var(--mn-border))] text-[hsl(var(--mn-text))]"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-slate-300">Typ akreditace</Label>
+                    <Label className="text-[hsl(var(--mn-muted))]">Typ akreditace</Label>
                     <Select
                       value={form.primary_workplace_accreditation}
                       onValueChange={v => updateForm({ primary_workplace_accreditation: v })}
                     >
-                      <SelectTrigger className="bg-slate-800 border-slate-700 text-white">
+                      <SelectTrigger className="bg-[hsl(var(--mn-surface-2))] border-[hsl(var(--mn-border))] text-[hsl(var(--mn-text))]">
                         <SelectValue placeholder="Vyberte typ..." />
                       </SelectTrigger>
                       <SelectContent>
@@ -523,22 +523,22 @@ export default function OnboardingWizard({ onComplete }) {
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-slate-300">Školitel</Label>
+                    <Label className="text-[hsl(var(--mn-muted))]">Školitel</Label>
                     <Input
                       value={form.supervisor_name}
                       onChange={e => updateForm({ supervisor_name: e.target.value })}
                       placeholder="Jméno školitele"
-                      className="bg-slate-800 border-slate-700 text-white"
+                      className="bg-[hsl(var(--mn-surface-2))] border-[hsl(var(--mn-border))] text-[hsl(var(--mn-text))]"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-slate-300">Lékařská fakulta (kde jste zařazeni)</Label>
+                    <Label className="text-[hsl(var(--mn-muted))]">Lékařská fakulta (kde jste zařazeni)</Label>
                     <Input
                       value={form.faculty}
                       onChange={e => updateForm({ faculty: e.target.value })}
                       placeholder="např. 1. LF UK, LF MU..."
-                      className="bg-slate-800 border-slate-700 text-white"
+                      className="bg-[hsl(var(--mn-surface-2))] border-[hsl(var(--mn-border))] text-[hsl(var(--mn-text))]"
                     />
                   </div>
                 </div>
@@ -550,15 +550,15 @@ export default function OnboardingWizard({ onComplete }) {
               <div className="space-y-6">
                 <div>
                   <h2 className="text-2xl font-bold text-white mb-1">Přerušení přípravy</h2>
-                  <p className="text-slate-400">
+                  <p className="text-[hsl(var(--mn-muted))]">
                     Mateřská, nemoc nebo jiné přerušení prodlužuje dobu přípravy
                   </p>
                 </div>
 
-                <div className="flex items-center justify-between p-4 rounded-xl bg-slate-800/50 border border-slate-700">
+                <div className="flex items-center justify-between p-4 rounded-xl bg-[hsl(var(--mn-surface-2)/0.5)] border border-[hsl(var(--mn-border))]">
                   <div>
-                    <p className="font-medium text-white">Měl/a jsem přerušení</p>
-                    <p className="text-sm text-slate-400">Mateřská, nemocenská apod.</p>
+                    <p className="font-medium text-[hsl(var(--mn-text))]">Měl/a jsem přerušení</p>
+                    <p className="text-sm text-[hsl(var(--mn-muted))]">Mateřská, nemocenská apod.</p>
                   </div>
                   <Switch
                     checked={form.has_interruptions}
@@ -572,14 +572,14 @@ export default function OnboardingWizard({ onComplete }) {
                 {form.has_interruptions && (
                   <div className="space-y-4">
                     {form.interruptions.map((intItem, idx) => (
-                      <div key={idx} className="p-4 rounded-xl bg-slate-800/50 border border-slate-700 space-y-3">
+                      <div key={idx} className="p-4 rounded-xl bg-[hsl(var(--mn-surface-2)/0.5)] border border-[hsl(var(--mn-border))] space-y-3">
                         <div className="flex items-center justify-between">
                           <Badge variant="outline" className="text-amber-400 border-amber-400/30">
                             Přerušení {idx + 1}
                           </Badge>
                           <button
                             onClick={() => removeInterruption(idx)}
-                            className="text-slate-500 hover:text-red-400 transition-colors"
+                            className="text-[hsl(var(--mn-muted))] hover:text-red-400 transition-colors"
                           >
                             <X className="w-4 h-4" />
                           </button>
@@ -589,7 +589,7 @@ export default function OnboardingWizard({ onComplete }) {
                           value={intItem.reason}
                           onValueChange={v => updateInterruption(idx, { reason: v })}
                         >
-                          <SelectTrigger className="bg-slate-900 border-slate-700 text-white">
+                          <SelectTrigger className="bg-[hsl(var(--mn-surface))] border-[hsl(var(--mn-border))] text-[hsl(var(--mn-text))]">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -601,21 +601,21 @@ export default function OnboardingWizard({ onComplete }) {
 
                         <div className="grid grid-cols-2 gap-3">
                           <div className="space-y-1">
-                            <Label className="text-xs text-slate-400">Od</Label>
+                            <Label className="text-xs text-[hsl(var(--mn-muted))]">Od</Label>
                             <Input
                               type="date"
                               value={intItem.started_at}
                               onChange={e => updateInterruption(idx, { started_at: e.target.value })}
-                              className="bg-slate-900 border-slate-700 text-white text-sm"
+                              className="bg-[hsl(var(--mn-surface))] border-[hsl(var(--mn-border))] text-white text-sm"
                             />
                           </div>
                           <div className="space-y-1">
-                            <Label className="text-xs text-slate-400">Do (prázdné = trvá)</Label>
+                            <Label className="text-xs text-[hsl(var(--mn-muted))]">Do (prázdné = trvá)</Label>
                             <Input
                               type="date"
                               value={intItem.ended_at}
                               onChange={e => updateInterruption(idx, { ended_at: e.target.value })}
-                              className="bg-slate-900 border-slate-700 text-white text-sm"
+                              className="bg-[hsl(var(--mn-surface))] border-[hsl(var(--mn-border))] text-white text-sm"
                             />
                           </div>
                         </div>
@@ -625,7 +625,7 @@ export default function OnboardingWizard({ onComplete }) {
                             value={intItem.reason_detail}
                             onChange={e => updateInterruption(idx, { reason_detail: e.target.value })}
                             placeholder="Upřesněte důvod..."
-                            className="bg-slate-900 border-slate-700 text-white text-sm"
+                            className="bg-[hsl(var(--mn-surface))] border-[hsl(var(--mn-border))] text-white text-sm"
                           />
                         )}
                       </div>
@@ -635,7 +635,7 @@ export default function OnboardingWizard({ onComplete }) {
                       variant="outline"
                       size="sm"
                       onClick={addInterruption}
-                      className="w-full border-dashed border-slate-700 text-slate-400 hover:text-white"
+                      className="w-full border-dashed border-[hsl(var(--mn-border))] text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))]"
                     >
                       <Plus className="w-4 h-4 mr-2" />
                       Přidat další přerušení
@@ -653,18 +653,18 @@ export default function OnboardingWizard({ onComplete }) {
             )}
 
             {/* Navigation */}
-            <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-800">
+            <div className="flex items-center justify-between mt-8 pt-6 border-t border-[hsl(var(--mn-border))]">
               <Button
                 variant="ghost"
                 onClick={goBack}
                 disabled={step === 0}
-                className="text-slate-400 hover:text-white"
+                className="text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))]"
               >
                 <ChevronLeft className="w-4 h-4 mr-1" />
                 Zpět
               </Button>
 
-              <div className="text-xs text-slate-500">
+              <div className="text-xs text-[hsl(var(--mn-muted))]">
                 {step + 1} / {STEPS.length}
               </div>
 
@@ -696,7 +696,7 @@ export default function OnboardingWizard({ onComplete }) {
           <div className="text-center mt-4">
             <button
               onClick={onComplete}
-              className="text-sm text-slate-500 hover:text-slate-300 transition-colors underline underline-offset-4"
+              className="text-sm text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))] transition-colors underline underline-offset-4"
             >
               Přeskočit a nastavit později
             </button>

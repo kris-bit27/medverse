@@ -27,7 +27,7 @@ function ContentBlock({ block }) {
   switch (block.type) {
     case 'heading':
       return (
-        <h2 className="text-xl font-bold text-slate-900 dark:text-white mt-8 mb-4">
+        <h2 className="text-xl font-bold text-[hsl(var(--mn-text))] mt-8 mb-4">
           {block.data?.text}
         </h2>
       );
@@ -43,7 +43,7 @@ function ContentBlock({ block }) {
       return (
         <ul className="list-disc pl-6 space-y-2 mb-4">
           {block.data?.items?.map((item, i) => (
-            <li key={i} className="text-slate-700 dark:text-slate-300">{item}</li>
+            <li key={i} className="text-[hsl(var(--mn-muted))]">{item}</li>
           ))}
         </ul>
       );
@@ -82,7 +82,7 @@ function ContentBlock({ block }) {
             className="rounded-lg w-full"
           />
           {block.data?.caption && (
-            <figcaption className="text-sm text-slate-500 dark:text-slate-400 text-center mt-2">
+            <figcaption className="text-sm text-[hsl(var(--mn-muted))] text-center mt-2">
               {block.data.caption}
             </figcaption>
           )}
@@ -163,7 +163,7 @@ export default function ArticleDetail() {
   if (!article) {
     return (
       <div className="p-6 text-center">
-        <p className="text-slate-500">Článek nenalezen</p>
+        <p className="text-[hsl(var(--mn-muted))]">Článek nenalezen</p>
       </div>
     );
   }
@@ -173,7 +173,7 @@ export default function ArticleDetail() {
   return (
     <div className="p-6 lg:p-8 max-w-4xl mx-auto">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-6">
+      <div className="flex items-center gap-2 text-sm text-[hsl(var(--mn-muted))] mb-6">
         <Link to={createPageUrl('Articles')} className="hover:text-teal-600 transition-colors flex items-center gap-1">
           <ChevronLeft className="w-4 h-4" />
           Články
@@ -187,14 +187,14 @@ export default function ArticleDetail() {
             <div className="flex flex-wrap items-center gap-2 mb-3">
               {topic && <Badge variant="outline">{topic.title}</Badge>}
               {article.read_time_minutes && (
-                <span className="text-sm text-slate-500 flex items-center gap-1">
+                <span className="text-sm text-[hsl(var(--mn-muted))] flex items-center gap-1">
                   <Clock className="w-4 h-4" />
                   {article.read_time_minutes} min čtení
                 </span>
               )}
               <VisibilityBadge visibility={article.visibility} />
             </div>
-            <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white">
+            <h1 className="text-2xl lg:text-3xl font-bold text-[hsl(var(--mn-text))]">
               {article.title}
             </h1>
           </div>
@@ -202,14 +202,14 @@ export default function ArticleDetail() {
             variant="ghost"
             size="icon"
             onClick={() => bookmarkMutation.mutate()}
-            className={bookmark ? 'text-amber-500' : 'text-slate-400'}
+            className={bookmark ? 'text-amber-500' : 'text-[hsl(var(--mn-muted))]'}
           >
             {bookmark ? <BookmarkCheck className="w-5 h-5" /> : <Bookmark className="w-5 h-5" />}
           </Button>
         </div>
 
         {article.summary && (
-          <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
+          <p className="text-lg text-[hsl(var(--mn-muted))] leading-relaxed">
             {article.summary}
           </p>
         )}
@@ -227,7 +227,7 @@ export default function ArticleDetail() {
           {/* Images */}
           {article.images && article.images.length > 0 && (
             <div className="mb-8">
-              <h3 className="font-semibold text-slate-900 dark:text-white mb-4">Obrázky</h3>
+              <h3 className="font-semibold text-[hsl(var(--mn-text))] mb-4">Obrázky</h3>
               <div className="grid grid-cols-2 gap-4">
                 {article.images.map((img, i) => (
                   <figure key={i}>
@@ -237,7 +237,7 @@ export default function ArticleDetail() {
                       className="rounded-lg w-full"
                     />
                     {img.caption && (
-                      <figcaption className="text-sm text-slate-500 mt-1 text-center">
+                      <figcaption className="text-sm text-[hsl(var(--mn-muted))] mt-1 text-center">
                         {img.caption}
                       </figcaption>
                     )}
@@ -251,7 +251,7 @@ export default function ArticleDetail() {
           {article.refs && article.refs.length > 0 && (
             <Card>
               <CardContent className="p-6">
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-4">Reference</h3>
+                <h3 className="font-semibold text-[hsl(var(--mn-text))] mb-4">Reference</h3>
                 <ul className="space-y-2">
                   {article.refs.map((ref, i) => (
                     <li key={i}>
@@ -273,10 +273,10 @@ export default function ArticleDetail() {
         </>
       ) : (
         <Card className="p-8 text-center bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+          <h3 className="text-lg font-semibold text-[hsl(var(--mn-text))] mb-2">
             Premium obsah
           </h3>
-          <p className="text-slate-600 dark:text-slate-400 mb-4">
+          <p className="text-[hsl(var(--mn-muted))] mb-4">
             Tento článek je dostupný pouze pro Premium uživatele
           </p>
           <Button asChild className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600">

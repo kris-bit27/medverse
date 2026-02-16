@@ -49,7 +49,7 @@ export default function NotesTab({ question, user }) {
   if (isLoading) {
     return (
       <div className="flex justify-center p-8">
-        <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+        <Loader2 className="w-6 h-6 animate-spin text-[hsl(var(--mn-muted))]" />
       </div>
     );
   }
@@ -70,7 +70,7 @@ export default function NotesTab({ question, user }) {
                         <Badge variant="outline" className="text-xs">AI generováno</Badge>
                       </>
                     )}
-                    <span className="text-xs text-slate-500">
+                    <span className="text-xs text-[hsl(var(--mn-muted))]">
                       {new Date(note.created_date).toLocaleDateString('cs-CZ')}
                     </span>
                   </div>
@@ -90,7 +90,7 @@ export default function NotesTab({ question, user }) {
                     <ReactMarkdown>{note.content}</ReactMarkdown>
                   </div>
                 ) : (
-                  <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
+                  <p className="text-sm text-[hsl(var(--mn-muted))] whitespace-pre-wrap">
                     {note.content}
                   </p>
                 )}
@@ -127,8 +127,8 @@ export default function NotesTab({ question, user }) {
       </Card>
 
       {notes.length === 0 && !newNote && (
-        <Card className="bg-slate-50 dark:bg-slate-800/50">
-          <CardContent className="p-6 text-center text-sm text-slate-500 dark:text-slate-400">
+        <Card className="bg-[hsl(var(--mn-surface-2))]/50">
+          <CardContent className="p-6 text-center text-sm text-[hsl(var(--mn-muted))]">
             Zatím nemáte žádné poznámky k této otázce.
           </CardContent>
         </Card>

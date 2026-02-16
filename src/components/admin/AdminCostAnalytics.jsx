@@ -121,7 +121,7 @@ export default function AdminCostAnalytics() {
           <Card key={i}><CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-500">{m.label}</p>
+                <p className="text-sm text-[hsl(var(--mn-muted))]">{m.label}</p>
                 <p className={`text-xl font-bold ${m.color}`}>{m.value}</p>
               </div>
               <m.icon className="w-7 h-7 opacity-20" />
@@ -162,7 +162,7 @@ export default function AdminCostAnalytics() {
                         style={{ width: `${pct}%` }} />
                     </div>
                   </div>
-                  <span className="text-xs text-slate-500 w-16 text-right">${(data.cost / data.count).toFixed(4)}/t</span>
+                  <span className="text-xs text-[hsl(var(--mn-muted))] w-16 text-right">${(data.cost / data.count).toFixed(4)}/t</span>
                 </div>
               );
             })}
@@ -176,7 +176,7 @@ export default function AdminCostAnalytics() {
           <CardHeader className="pb-3"><CardTitle className="text-base">Náklady podle dne</CardTitle></CardHeader>
           <CardContent>
             <table className="w-full text-sm">
-              <thead className="border-b text-xs text-slate-500">
+              <thead className="border-b text-xs text-[hsl(var(--mn-muted))]">
                 <tr><th className="text-left py-2">Datum</th><th className="text-center py-2">Topics</th><th className="text-right py-2">Náklady</th></tr>
               </thead>
               <tbody className="divide-y">

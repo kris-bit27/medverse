@@ -118,7 +118,7 @@ export default function CollaborationDialog({
 
         <div className="space-y-6 pt-4">
           {/* Invite form */}
-          <div className="space-y-4 p-4 rounded-lg border bg-slate-50 dark:bg-slate-900">
+          <div className="space-y-4 p-4 rounded-lg border bg-[hsl(var(--mn-surface))]">
             <div className="space-y-2">
               <Label htmlFor="email">Email uživatele</Label>
               <Input
@@ -169,7 +169,7 @@ export default function CollaborationDialog({
                   return (
                     <div 
                       key={user.id}
-                      className="flex items-center justify-between p-3 rounded-lg border bg-white dark:bg-slate-800"
+                      className="flex items-center justify-between p-3 rounded-lg border bg-[hsl(var(--mn-elevated))]"
                     >
                       <div className="flex items-center gap-3">
                         <Avatar className="w-8 h-8">
@@ -178,10 +178,10 @@ export default function CollaborationDialog({
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <p className="text-sm font-medium text-slate-900 dark:text-white">
+                          <p className="text-sm font-medium text-[hsl(var(--mn-text))]">
                             {user.full_name || user.email}
                           </p>
-                          <p className="text-xs text-slate-500">{user.email}</p>
+                          <p className="text-xs text-[hsl(var(--mn-muted))]">{user.email}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
@@ -217,7 +217,7 @@ export default function CollaborationDialog({
                 })}
               </div>
             ) : (
-              <p className="text-sm text-slate-500 text-center py-4">
+              <p className="text-sm text-[hsl(var(--mn-muted))] text-center py-4">
                 Zatím žádní spolupracovníci
               </p>
             )}

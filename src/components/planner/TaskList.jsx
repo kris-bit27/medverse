@@ -76,16 +76,16 @@ export default function TaskList({ tasks, onComplete, showCompleted = false, sho
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <h4 className={cn(
-                      "font-medium text-slate-900 dark:text-white",
-                      task.is_completed && "line-through text-slate-500"
+                      "font-medium text-[hsl(var(--mn-text))]",
+                      task.is_completed && "line-through text-[hsl(var(--mn-muted))]"
                     )}>
                       {task.title}
                     </h4>
-                    <Icon className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                    <Icon className="w-4 h-4 text-[hsl(var(--mn-muted))] flex-shrink-0" />
                   </div>
 
                   {task.description && (
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
+                    <p className="text-sm text-[hsl(var(--mn-muted))] mb-2">
                       {task.description}
                     </p>
                   )}
@@ -128,7 +128,7 @@ export default function TaskList({ tasks, onComplete, showCompleted = false, sho
                   </div>
 
                   {task.notes && (
-                    <p className="text-xs text-slate-500 mt-2 italic">
+                    <p className="text-xs text-[hsl(var(--mn-muted))] mt-2 italic">
                       {task.notes}
                     </p>
                   )}

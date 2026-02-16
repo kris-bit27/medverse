@@ -146,7 +146,7 @@ export default function CreateThreadDialog({ open, onOpenChange, disciplines = [
                   {tag}
                   <button
                     onClick={() => handleRemoveTag(tag)}
-                    className="hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full"
+                    className="hover:bg-slate-200 dark:hover:bg-[hsl(var(--mn-elevated))] rounded-full"
                   >
                     <X className="w-3 h-3" />
                   </button>

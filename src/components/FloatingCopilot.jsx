@@ -112,7 +112,7 @@ export const FloatingCopilot = ({ topicContent, topicTitle, topicId }) => {
           bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent-2))]
           shadow-[var(--mn-shadow-1)] hover:shadow-[var(--mn-shadow-2)]
           flex items-center justify-center transition-all hover:scale-105 active:scale-95
-          border border-[hsl(var(--mn-accent)/0.3)] text-white"
+          border border-[hsl(var(--mn-accent)/0.3)] text-[hsl(var(--mn-text))]"
         title="Hippo AI — studijní asistent"
       >
         <HippoLogo size={18} />

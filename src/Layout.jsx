@@ -109,7 +109,7 @@ export default function Layout({ children, currentPageName }) {
   return (
     <div className={cn("mn-shell min-h-screen transition-colors")}>
       {/* Mobile header */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-50 flex items-center justify-between px-4">
+      <header className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-[hsl(var(--mn-surface))] border-b border-[hsl(var(--mn-border))] z-50 flex items-center justify-between px-4">
         <div className="flex items-center">
           <Button
             variant="ghost"
@@ -122,14 +122,14 @@ export default function Layout({ children, currentPageName }) {
           <Link to={createPageUrl('Dashboard')} className="flex items-center gap-2">
             <MedVerseLogo size={32} />
             <div className="flex items-center gap-2">
-              <span className="font-bold text-slate-900 dark:text-white">MedVerse</span>
+              <span className="font-bold text-[hsl(var(--mn-text))]">MedVerse</span>
               <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400">
                 EDU
               </span>
             </div>
           </Link>
         </div>
-        <Link to={createPageUrl('Search')} className="p-2 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200">
+        <Link to={createPageUrl('Search')} className="p-2 text-[hsl(var(--mn-muted))] hover:text-slate-700 dark:hover:text-[hsl(var(--mn-text))]">
           <Search className="w-5 h-5" />
         </Link>
       </header>
@@ -150,12 +150,12 @@ export default function Layout({ children, currentPageName }) {
       )}>
         <div className="h-full flex flex-col">
           {/* Logo */}
-          <div className="h-16 flex items-center justify-between px-6 border-b border-slate-200 dark:border-slate-800">
+          <div className="h-16 flex items-center justify-between px-6 border-b border-[hsl(var(--mn-border))]">
             <Link to={createPageUrl('Dashboard')} className="flex items-center gap-3">
               <MedVerseLogo size={40} />
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-lg text-slate-900 dark:text-white">MedVerse</span>
+                  <span className="font-bold text-lg text-[hsl(var(--mn-text))]">MedVerse</span>
                   <span className="text-xs font-semibold px-2 py-0.5 rounded bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400">
                     EDU
                   </span>
@@ -204,7 +204,7 @@ export default function Layout({ children, currentPageName }) {
                         "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
                         hasActiveSubmenu 
                           ? "is-active" 
-                          : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                          : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]"
                       )}
                     >
                       <Icon className={cn("w-5 h-5", hasActiveSubmenu && "text-teal-600 dark:text-teal-400")} />
@@ -232,7 +232,7 @@ export default function Layout({ children, currentPageName }) {
                                 "flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-all",
                                 isActive 
                                   ? "bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400" 
-                                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                                  : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]"
                               )}
                             >
                               <SubIcon className="w-4 h-4" />
@@ -261,7 +261,7 @@ export default function Layout({ children, currentPageName }) {
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
                     "mn-sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
-                    isActive ? "is-active" : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    isActive ? "is-active" : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]"
                   )}
                 >
                   <Icon className={cn("w-5 h-5", isActive && "text-teal-600 dark:text-teal-400")} />
@@ -274,7 +274,7 @@ export default function Layout({ children, currentPageName }) {
             {hasAdminAccess && (
               <>
                 <div className="pt-4 pb-2">
-                  <p className="px-4 text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                  <p className="px-4 text-xs font-semibold text-[hsl(var(--mn-muted))] uppercase tracking-wider">
                     Admin
                   </p>
                 </div>
@@ -285,7 +285,7 @@ export default function Layout({ children, currentPageName }) {
                     "mn-sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
                     currentPageName === 'AdminConsole'
                       ? "is-active"
-                      : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]"
                   )}
                 >
                   <Shield className="w-5 h-5" />
@@ -298,7 +298,7 @@ export default function Layout({ children, currentPageName }) {
                     "mn-sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
                     currentPageName === 'AdminBatchMonitor'
                       ? "is-active"
-                      : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]"
                   )}
                 >
                   <Zap className="w-5 h-5" />
@@ -311,7 +311,7 @@ export default function Layout({ children, currentPageName }) {
                     "mn-sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
                     currentPageName === 'AdminFeedback'
                       ? "is-active"
-                      : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]"
                   )}
                 >
                   <Flag className="w-5 h-5" />
@@ -322,8 +322,8 @@ export default function Layout({ children, currentPageName }) {
           </nav>
 
           {/* User section */}
-          <div className="p-4 border-t border-slate-200 dark:border-slate-800">
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
+          <div className="p-4 border-t border-[hsl(var(--mn-border))]">
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-[hsl(var(--mn-surface-2))]/50">
               <Avatar className="w-10 h-10">
                 <AvatarFallback className="bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300">
                   {user?.full_name?.charAt(0) || user?.email?.charAt(0) || 'U'}
@@ -331,7 +331,7 @@ export default function Layout({ children, currentPageName }) {
               </Avatar>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
+                  <p className="text-sm font-medium text-[hsl(var(--mn-text))] truncate">
                     {user?.full_name || 'Uživatel'}
                   </p>
                   {user?.role && (
@@ -340,7 +340,7 @@ export default function Layout({ children, currentPageName }) {
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                <p className="text-xs text-[hsl(var(--mn-muted))] truncate">
                   {user?.email}
                 </p>
               </div>
@@ -362,7 +362,7 @@ export default function Layout({ children, currentPageName }) {
               variant="ghost"
               size="icon"
               onClick={toggleDarkMode}
-              className="atesto-btn atesto-btn-ghost text-slate-600 dark:text-slate-400"
+              className="atesto-btn atesto-btn-ghost text-[hsl(var(--mn-muted))]"
             >
               {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </Button>
@@ -375,7 +375,7 @@ export default function Layout({ children, currentPageName }) {
                       {user?.full_name?.charAt(0) || 'U'}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <span className="text-sm font-medium text-[hsl(var(--mn-muted))]">
                     {user?.full_name || 'Uživatel'}
                   </span>
                 </Button>

@@ -151,14 +151,14 @@ export const VersionHistory = ({ topicId, onRestore }) => {
 
               <div className="prose max-w-none">
                 <h3>Full Text</h3>
-                <div className="bg-gray-50 p-4 rounded">
+                <div className="bg-[hsl(var(--mn-bg))] p-4 rounded">
                   {previewVersion.full_text_content || 'No content'}
                 </div>
 
                 {previewVersion.bullet_points_summary && (
                   <>
                     <h3 className="mt-4">High-Yield Points</h3>
-                    <div className="bg-gray-50 p-4 rounded">
+                    <div className="bg-[hsl(var(--mn-bg))] p-4 rounded">
                       {previewVersion.bullet_points_summary}
                     </div>
                   </>

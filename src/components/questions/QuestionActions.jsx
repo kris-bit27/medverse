@@ -15,7 +15,7 @@ export default function QuestionActions({
       label: 'Umím',
       description: 'Znám odpověď, další opakování za 30 dní',
       icon: CheckCircle2,
-      color: 'bg-emerald-600 hover:bg-emerald-700 text-white',
+      color: 'bg-emerald-600 hover:bg-emerald-700 text-[hsl(var(--mn-text))]',
       borderColor: 'border-emerald-200 dark:border-emerald-800 hover:border-emerald-300'
     },
     {
@@ -23,7 +23,7 @@ export default function QuestionActions({
       label: 'Do opakování',
       description: 'Potřebuji zopakovat, další opakování za 2 dny',
       icon: RefreshCw,
-      color: 'bg-amber-500 hover:bg-amber-600 text-white',
+      color: 'bg-amber-500 hover:bg-amber-600 text-[hsl(var(--mn-text))]',
       borderColor: 'border-amber-200 dark:border-amber-800 hover:border-amber-300'
     },
     {
@@ -31,7 +31,7 @@ export default function QuestionActions({
       label: 'Neumím',
       description: 'Neznal/a jsem, další opakování zítra',
       icon: XCircle,
-      color: 'bg-red-500 hover:bg-red-600 text-white',
+      color: 'bg-red-500 hover:bg-red-600 text-[hsl(var(--mn-text))]',
       borderColor: 'border-red-200 dark:border-red-800 hover:border-red-300'
     }
   ];
@@ -39,7 +39,7 @@ export default function QuestionActions({
   return (
     <Card>
       <CardContent className="p-4">
-        <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-4 text-center">
+        <p className="text-sm font-medium text-[hsl(var(--mn-muted))] mb-4 text-center">
           Jak jste si vedli?
         </p>
         <div className="grid grid-cols-3 gap-3">

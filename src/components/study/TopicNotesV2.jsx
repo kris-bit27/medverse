@@ -267,11 +267,11 @@ export default function TopicNotesV2({ topicId, user }) {
           Načítání poznámek...
         </div>
       ) : notes.length === 0 ? (
-        <Card className="bg-slate-50 dark:bg-slate-900/20">
+        <Card className="bg-[hsl(var(--mn-surface))]/20">
           <CardContent className="p-8 text-center">
-            <StickyNote className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-            <p className="text-slate-500 mb-2">Zatím nemáte žádné poznámky</p>
-            <p className="text-sm text-slate-400">
+            <StickyNote className="w-12 h-12 text-[hsl(var(--mn-muted))] mx-auto mb-3" />
+            <p className="text-[hsl(var(--mn-muted))] mb-2">Zatím nemáte žádné poznámky</p>
+            <p className="text-sm text-[hsl(var(--mn-muted))]">
               Klikněte na "Přidat poznámku" pro vytvoření první poznámky
             </p>
           </CardContent>

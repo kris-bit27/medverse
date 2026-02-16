@@ -16,15 +16,15 @@ export default function EmptyState({
       className
     )}>
       {Icon && (
-        <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-6">
-          <Icon className="w-8 h-8 text-slate-400 dark:text-slate-500" />
+        <div className="w-16 h-16 rounded-2xl bg-[hsl(var(--mn-surface-2))] flex items-center justify-center mb-6">
+          <Icon className="w-8 h-8 text-[hsl(var(--mn-muted))]" />
         </div>
       )}
-      <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+      <h3 className="text-lg font-semibold text-[hsl(var(--mn-text))] mb-2">
         {title}
       </h3>
       {description && (
-        <p className="text-slate-500 dark:text-slate-400 max-w-sm mb-6">
+        <p className="text-[hsl(var(--mn-muted))] max-w-sm mb-6">
           {description}
         </p>
       )}

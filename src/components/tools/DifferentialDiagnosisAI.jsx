@@ -147,7 +147,7 @@ Odpověď piš česky, strukturovaně a prakticky využitelně pro klinickou pra
           />
 
           <div>
-            <label className="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">
+            <label className="block text-sm font-medium mb-2 text-[hsl(var(--mn-muted))]">
               Symptomy a klinický nález
             </label>
             <Textarea
@@ -193,7 +193,7 @@ Odpověď piš česky, strukturovaně a prakticky využitelně pro klinickou pra
             {/* Differential diagnoses */}
             {result.differential_diagnoses && result.differential_diagnoses.length > 0 && (
               <div>
-                <h3 className="font-semibold text-lg mb-4 text-slate-900 dark:text-white">
+                <h3 className="font-semibold text-lg mb-4 text-[hsl(var(--mn-text))]">
                   Možné diagnózy
                 </h3>
                 <div className="space-y-4">
@@ -201,19 +201,19 @@ Odpověď piš česky, strukturovaně a prakticky využitelně pro klinickou pra
                     <Card key={idx}>
                       <CardContent className="pt-6">
                         <div className="flex items-start justify-between mb-3">
-                          <h4 className="font-semibold text-slate-900 dark:text-white">
+                          <h4 className="font-semibold text-[hsl(var(--mn-text))]">
                             {idx + 1}. {dx.diagnosis}
                           </h4>
                           <Badge variant="outline">{dx.probability}</Badge>
                         </div>
                         {dx.key_features && dx.key_features.length > 0 && (
                           <div className="mb-3">
-                            <p className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
+                            <p className="text-sm font-medium text-[hsl(var(--mn-muted))] mb-2">
                               Klíčové příznaky:
                             </p>
                             <ul className="space-y-1">
                               {dx.key_features.map((feature, i) => (
-                                <li key={i} className="text-sm text-slate-700 dark:text-slate-300 flex items-start gap-2">
+                                <li key={i} className="text-sm text-[hsl(var(--mn-muted))] flex items-start gap-2">
                                   <CheckCircle2 className="w-4 h-4 text-teal-600 mt-0.5 flex-shrink-0" />
                                   {feature}
                                 </li>
@@ -222,7 +222,7 @@ Odpověď piš česky, strukturovaně a prakticky využitelně pro klinickou pra
                           </div>
                         )}
                         {dx.distinguishing_factors && (
-                          <p className="text-sm text-slate-600 dark:text-slate-400">
+                          <p className="text-sm text-[hsl(var(--mn-muted))]">
                             <strong>Rozlišující faktory:</strong> {dx.distinguishing_factors}
                           </p>
                         )}
@@ -236,7 +236,7 @@ Odpověď piš česky, strukturovaně a prakticky využitelně pro klinickou pra
             {/* Recommended workup */}
             {result.recommended_workup && (
               <div>
-                <h3 className="font-semibold text-lg mb-3 text-slate-900 dark:text-white">
+                <h3 className="font-semibold text-lg mb-3 text-[hsl(var(--mn-text))]">
                   Doporučené vyšetření
                 </h3>
                 <div className="prose prose-sm dark:prose-invert max-w-none">
@@ -267,7 +267,7 @@ Odpověď piš česky, strukturovaně a prakticky využitelně pro klinickou pra
             )}
 
             {/* Save case */}
-            <div className="pt-6 border-t border-slate-200 dark:border-slate-800">
+            <div className="pt-6 border-t border-[hsl(var(--mn-border))]">
               <Button
                 onClick={() => setSaveDialogOpen(true)}
                 variant="outline"

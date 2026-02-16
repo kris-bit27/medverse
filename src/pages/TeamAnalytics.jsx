@@ -368,11 +368,11 @@ export default function TeamAnalytics() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-900">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-[hsl(var(--mn-surface))]">
                     <span className="text-sm">Celkový čas studia</span>
                     <span className="font-semibold">{analytics.totalStudyTime} min</span>
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-900">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-[hsl(var(--mn-surface))]">
                     <span className="text-sm">Čas na test</span>
                     <span className="font-semibold">
                       {analytics.totalTests > 0 
@@ -380,7 +380,7 @@ export default function TeamAnalytics() {
                         : 0} min
                     </span>
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-900">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-[hsl(var(--mn-surface))]">
                     <span className="text-sm">Průměrné skóre</span>
                     <span className="font-semibold">{analytics.avgScore.toFixed(1)}%</span>
                   </div>

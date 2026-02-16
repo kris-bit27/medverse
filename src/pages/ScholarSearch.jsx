@@ -69,11 +69,11 @@ Najdi 5-8 nejrelevantnějších článků z renomovaných zdrojů.`,
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-3">
+          <h1 className="text-3xl lg:text-4xl font-bold text-[hsl(var(--mn-text))] mb-2 flex items-center gap-3">
             <BookOpen className="w-8 h-8 text-teal-600" />
             Vyhledávání odborných článků
           </h1>
-          <p className="text-slate-600 dark:text-slate-400">
+          <p className="text-[hsl(var(--mn-muted))]">
             Vyhledejte nejnovější medicínské publikace z renomovaných zdrojů
           </p>
         </div>
@@ -83,7 +83,7 @@ Najdi 5-8 nejrelevantnějších článků z renomovaných zdrojů.`,
           <CardContent className="pt-6">
             <form onSubmit={handleSearch} className="flex gap-3">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[hsl(var(--mn-muted))]" />
                 <Input
                   placeholder="Např. 'reconstructive surgery flap' nebo 'akutní infarkt myokardu'"
                   value={query}
@@ -121,7 +121,7 @@ Najdi 5-8 nejrelevantnějších článků z renomovaných zdrojů.`,
               className="flex flex-col items-center justify-center py-20"
             >
               <Loader2 className="w-12 h-12 animate-spin text-teal-600 mb-4" />
-              <p className="text-slate-600 dark:text-slate-400">
+              <p className="text-[hsl(var(--mn-muted))]">
                 Prohledávám odborné databáze...
               </p>
             </motion.div>
@@ -134,7 +134,7 @@ Najdi 5-8 nejrelevantnějších článků z renomovaných zdrojů.`,
               className="space-y-4"
             >
               <div className="flex items-center justify-between mb-4">
-                <p className="text-sm text-slate-600 dark:text-slate-400">
+                <p className="text-sm text-[hsl(var(--mn-muted))]">
                   Nalezeno <strong className="text-teal-600">{results.length}</strong> článků
                 </p>
               </div>
@@ -148,11 +148,11 @@ Najdi 5-8 nejrelevantnějších článků z renomovaných zdrojů.`,
                 >
                   <Card className="hover:shadow-lg transition-shadow">
                     <CardHeader>
-                      <CardTitle className="text-lg text-slate-900 dark:text-white leading-snug mb-3">
+                      <CardTitle className="text-lg text-[hsl(var(--mn-text))] leading-snug mb-3">
                         {article.title}
                       </CardTitle>
                       
-                      <div className="flex flex-wrap items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
+                      <div className="flex flex-wrap items-center gap-3 text-sm text-[hsl(var(--mn-muted))]">
                         <div className="flex items-center gap-1.5">
                           <Users className="w-4 h-4" />
                           <span>{article.authors}</span>
@@ -177,7 +177,7 @@ Najdi 5-8 nejrelevantnějších článků z renomovaných zdrojů.`,
                     </CardHeader>
 
                     <CardContent>
-                      <p className="text-slate-700 dark:text-slate-300 mb-4 leading-relaxed">
+                      <p className="text-[hsl(var(--mn-muted))] mb-4 leading-relaxed">
                         {article.summary}
                       </p>
 
@@ -207,8 +207,8 @@ Najdi 5-8 nejrelevantnějších článků z renomovaných zdrojů.`,
               animate={{ opacity: 1 }}
               className="text-center py-20"
             >
-              <BookOpen className="w-16 h-16 text-slate-300 dark:text-slate-700 mx-auto mb-4" />
-              <p className="text-slate-600 dark:text-slate-400">
+              <BookOpen className="w-16 h-16 text-[hsl(var(--mn-muted))] dark:text-slate-700 mx-auto mb-4" />
+              <p className="text-[hsl(var(--mn-muted))]">
                 Nebyly nalezeny žádné články. Zkuste jiný dotaz.
               </p>
             </motion.div>
@@ -220,8 +220,8 @@ Najdi 5-8 nejrelevantnějších článků z renomovaných zdrojů.`,
               animate={{ opacity: 1 }}
               className="text-center py-20"
             >
-              <Search className="w-16 h-16 text-slate-300 dark:text-slate-700 mx-auto mb-4" />
-              <p className="text-slate-600 dark:text-slate-400">
+              <Search className="w-16 h-16 text-[hsl(var(--mn-muted))] dark:text-slate-700 mx-auto mb-4" />
+              <p className="text-[hsl(var(--mn-muted))]">
                 Zadejte hledaný výraz a začněte vyhledávat odborné články
               </p>
             </motion.div>
