@@ -1,4 +1,23 @@
 /* MedNexus UI tokens + primitives */
+
+/* Design System Fonts */
+:root {
+  --mn-font-serif: 'Source Serif 4', Georgia, serif;
+  --mn-font-sans: 'IBM Plex Sans', -apple-system, sans-serif;
+  --mn-font-mono: 'IBM Plex Mono', monospace;
+}
+
+body {
+  font-family: var(--mn-font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Font utility classes */
+.mn-serif-font { font-family: var(--mn-font-serif); }
+.mn-ui-font { font-family: var(--mn-font-sans); }
+.mn-mono-font { font-family: var(--mn-font-mono); }
+.mn-caption { font-family: var(--mn-font-sans); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
+
 :root {
   /* Core tokens (default = light) */
   --mn-bg: 210 20% 97%;
@@ -8,14 +27,18 @@
   --mn-border: 215 16% 78%;
   --mn-text: 222 32% 14%;
   --mn-muted: 220 12% 40%;
-  --mn-accent: 176 56% 36%;
-  --mn-accent-2: 198 80% 42%;
-  --mn-success: 142 60% 38%;
-  --mn-warn: 38 92% 48%;
-  --mn-danger: 0 72% 48%;
-  --mn-shadow-1: 0 1px 2px rgba(15, 23, 42, 0.04), 0 2px 8px rgba(15, 23, 42, 0.02);
+  --mn-accent: 173 82% 32%;
+  --mn-accent-2: 192 82% 36%;
+  --mn-success: 160 60% 40%;
+  --mn-warn: 38 92% 50%;
+  --mn-danger: 0 72% 50%;
+  --mn-shadow-1: 0 1px 8px rgba(15, 23, 42, 0.06);
   --mn-shadow-2: 0 4px 16px rgba(15, 23, 42, 0.08), 0 12px 32px rgba(15, 23, 42, 0.06);
-  --mn-radius: 16px;
+  --mn-radius: 10px;
+  --mn-radius-sm: 4px;
+  --mn-radius-md: 8px;
+  --mn-radius-lg: 14px;
+  --mn-radius-full: 999px;
   --mn-space: 16px;
   --mn-space-1: 4px;
   --mn-space-2: 8px;
@@ -52,21 +75,21 @@
 
 /* Dark mode — activated by Tailwind html.dark class */
 html.dark {
-  --mn-bg: 222 22% 7%;
-  --mn-surface: 222 20% 10%;
-  --mn-surface-2: 222 18% 12%;
-  --mn-elevated: 222 16% 14%;
-  --mn-border: 220 14% 22%;
-  --mn-text: 210 40% 98%;
+  --mn-bg: 222 24% 5%;
+  --mn-surface: 222 20% 8%;
+  --mn-surface-2: 222 18% 10%;
+  --mn-elevated: 222 16% 12%;
+  --mn-border: 220 14% 20%;
+  --mn-text: 210 40% 93%;
   --mn-muted: 215 18% 68%;
-  --mn-accent: 176 56% 45%;
-  --mn-accent-2: 198 80% 52%;
-  --mn-success: 142 60% 45%;
+  --mn-accent: 173 58% 39%;
+  --mn-accent-2: 188 76% 42%;
+  --mn-success: 160 60% 45%;
   --mn-warn: 38 92% 55%;
   --mn-danger: 0 72% 55%;
-  --mn-shadow-1: 0 2px 8px rgba(0, 0, 0, 0.2);
-  --mn-shadow-2: 0 8px 24px rgba(0, 0, 0, 0.3);
-  --mn-focus: 176 56% 45%;
+  --mn-shadow-1: 0 2px 12px rgba(0, 0, 0, 0.25);
+  --mn-shadow-2: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --mn-focus: 173 58% 39%;
 }
 
 
