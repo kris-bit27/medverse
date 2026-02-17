@@ -26,7 +26,7 @@ const OBOR_COLORS = {
   'Interna': { bg: 'bg-cyan-500/10', border: 'border-cyan-500/30', text: 'text-cyan-400', accent: '#06b6d4' },
 };
 
-const getOborTheme = (name) => OBOR_COLORS[name] || { bg: 'bg-slate-500/10', border: 'border-slate-500/30', text: 'text-[hsl(var(--mn-muted))]', accent: '#64748b' };
+const getOborTheme = (name) => OBOR_COLORS[name] || { bg: 'bg-[hsl(var(--mn-surface-2))]', border: 'border-[hsl(var(--mn-border))]', text: 'text-[hsl(var(--mn-muted))]', accent: '#64748b' };
 
 /* ─── Content availability dots ─── */
 function ContentDots({ topic }) {
@@ -40,7 +40,7 @@ function ContentDots({ topic }) {
     <div className="flex items-center gap-1.5">
       {dots.map(d => (
         <div key={d.key} className="group relative flex items-center gap-1">
-          <div className={`w-2 h-2 rounded-full transition-all ${d.has ? 'bg-emerald-400 shadow-sm shadow-emerald-400/50' : 'bg-slate-300 dark:bg-slate-700'}`} />
+          <div className={`w-2 h-2 rounded-full transition-all ${d.has ? 'bg-emerald-400 shadow-sm shadow-emerald-400/50' : 'bg-[hsl(var(--mn-border))]'}`} />
           <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-0.5 text-[10px] bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
             {d.label}: {d.has ? '✓' : '—'}
           </span>
@@ -84,7 +84,7 @@ function TopicCard({ topic, mastery }) {
                   score >= 80 ? 'text-emerald-600 bg-emerald-500/10' :
                   score >= 50 ? 'text-amber-600 bg-amber-500/10' :
                   score >= 20 ? 'text-amber-600 bg-amber-500/10' :
-                  'text-[hsl(var(--mn-muted))] bg-slate-500/10'
+                  'text-[hsl(var(--mn-muted))] bg-[hsl(var(--mn-surface-2))]'
                 }`}>{Math.round(score)}%</span>
               )}
               <ContentDots topic={topic} />
@@ -138,7 +138,7 @@ function TopicCard({ topic, mastery }) {
                 </span>
               )}
             </div>
-            <ChevronRight className="w-4 h-4 text-[hsl(var(--mn-muted))] group-hover:text-slate-400 group-hover:translate-x-0.5 transition-all" />
+            <ChevronRight className="w-4 h-4 text-[hsl(var(--mn-muted))] group-hover:text-[hsl(var(--mn-muted))] group-hover:translate-x-0.5 transition-all" />
           </div>
         </div>
       </div>
@@ -302,8 +302,7 @@ export default function StudiumV3() {
   }, [okruhy, selectedObor, allTopics]);
 
   return (
-    <div className="min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+    <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
 
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
@@ -527,6 +526,5 @@ export default function StudiumV3() {
           </div>
         )}
       </div>
-    </div>
   );
 }

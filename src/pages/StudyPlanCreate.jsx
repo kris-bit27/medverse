@@ -86,7 +86,7 @@ export default function StudyPlanCreate() {
   return (
     <div className="p-6 lg:p-8 max-w-6xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-[hsl(var(--mn-text))] mb-2">
+        <h1 className="text-2xl lg:text-3xl font-bold text-[hsl(var(--mn-text))] mb-2">
           Vytvořit studijní plán
         </h1>
         <p className="text-[hsl(var(--mn-muted))]">

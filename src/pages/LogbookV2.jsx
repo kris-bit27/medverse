@@ -256,7 +256,7 @@ export default function LogbookV2() {
 
   // Onboarding
   if (sel && showOB && obor) return (
-    <div className="container max-w-2xl mx-auto p-6">
+    <div className="container max-w-2xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
       <Onboarding obor={obor} onComplete={data => { setProfiles(p => ({ ...p, [sel]: data })); setShowOB(false); }} onCancel={() => { setSel(null); setShowOB(false); }} />
     </div>
   );
@@ -264,7 +264,7 @@ export default function LogbookV2() {
 
   // Overview
   if (!sel) return (
-    <div className="container max-w-5xl mx-auto p-6 space-y-6">
+    <div className="container max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
       <div><h1 className="text-2xl font-bold flex items-center gap-3"><ClipboardList className="w-7 h-7 text-teal-500" />Logbook & Plánovač VP</h1>
         <p className="text-sm text-muted-foreground mt-1">Sleduj plnění vzdělávacího programu dle MZČR 2019.</p></div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -280,7 +280,7 @@ export default function LogbookV2() {
 
   // Detail
   return (
-    <div className="container max-w-4xl mx-auto p-6 space-y-4">
+    <div className="container max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-4">
       <div className="flex items-center justify-between">
         <Button variant="ghost" size="sm" onClick={() => { setSel(null); setFPh('all'); setFTy('all'); }}><ChevronLeft className="w-4 h-4 mr-1" />Zpět</Button>
         <Button variant="ghost" size="sm" onClick={() => setShowOB(true)}><Settings className="w-4 h-4 mr-1" />Profil</Button>

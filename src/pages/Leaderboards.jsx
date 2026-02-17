@@ -115,7 +115,7 @@ export default function Leaderboards() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Žebříčky</h1>
+          <h1 className="text-2xl lg:text-3xl font-bold mb-2">Žebříčky</h1>
           <p className="text-muted-foreground">
             Soutěžte s ostatními a sledujte svůj pokrok
           </p>
@@ -203,7 +203,7 @@ export default function Leaderboards() {
               <p className="font-bold text-lg mb-1">
                 {leaderboard[0].profile?.full_name || 'Uživatel'}
               </p>
-              <p className="text-3xl font-bold text-yellow-600 mb-2">
+              <p className="text-2xl lg:text-3xl font-bold text-yellow-600 mb-2">
                 {leaderboard[0].total_points.toLocaleString()}
               </p>
               <Badge className="bg-yellow-500">🏆 Champion</Badge>

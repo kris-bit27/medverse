@@ -90,7 +90,7 @@ export default function Forum() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-[hsl(var(--mn-text))]">Forum</h1>
+          <h1 className="text-2xl lg:text-3xl font-bold text-[hsl(var(--mn-text))]">Forum</h1>
           <p className="text-[hsl(var(--mn-muted))] mt-1">
             Diskutujte s kolegy o klinických případech a tématech
           </p>

@@ -86,9 +86,9 @@ export default function Tools() {
   }
 
   return (
-    <div className="p-6 lg:p-8 max-w-6xl mx-auto">
+    <div className="container max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
       {/* Header */}
-      <div className="mb-8">
+      <div>
         <h1 className="text-2xl lg:text-3xl font-bold text-[hsl(var(--mn-text))] mb-2">
           Klinické nástroje
         </h1>

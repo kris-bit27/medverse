@@ -117,7 +117,7 @@ export default function Search() {
   const totalResults = topics.length + questions.length + flashcards.length + tools.length + drugs.length;
 
   return (
-    <div className="container max-w-4xl mx-auto p-6 space-y-6">
+    <div className="container max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
       <div className="space-y-2">
         <h1 className="text-2xl font-bold">Vyhledávání</h1>
         <div className="relative">

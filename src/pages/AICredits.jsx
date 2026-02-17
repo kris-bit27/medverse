@@ -127,10 +127,10 @@ export default function AICredits() {
   const daysUntilReset = Math.ceil((new Date(tokens.next_reset_date) - new Date()) / (1000 * 60 * 60 * 24));
 
   return (
-    <div className="container max-w-4xl mx-auto p-6 space-y-6">
+    <div className="container max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold mb-2">AI Kredity & Billing</h1>
+        <h1 className="text-2xl lg:text-3xl font-bold mb-2">AI Kredity & Billing</h1>
         <p className="text-muted-foreground">
           Sleduj využití AI a spravuj platby
         </p>

@@ -32,7 +32,7 @@ const GROUP_TYPES = [
   { value: 'kmen', label: 'Základní kmen', icon: BookOpen, color: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
   { value: 'vyzkum', label: 'Výzkumná skupina', icon: Microscope, color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
   { value: 'kazuistiky', label: 'Kazuistiky', icon: Stethoscope, color: 'bg-amber-500/10 text-amber-400 border-amber-500/20' },
-  { value: 'general', label: 'Obecná', icon: Users, color: 'bg-slate-500/10 text-[hsl(var(--mn-muted))] border-slate-500/20' },
+  { value: 'general', label: 'Obecná', icon: Users, color: 'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))]' },
 ];
 
 const THREAD_CATEGORIES = [
@@ -251,7 +251,7 @@ function StudyGroupsTab() {
             const isOwner = group.owner_id === user?.id;
             return (
               <Card key={group.id} className="group hover:shadow-md transition-all relative overflow-hidden">
-                <div className={`absolute top-0 left-0 right-0 h-1 ${typeInfo.color.includes('purple') ? 'bg-purple-500' : typeInfo.color.includes('blue') ? 'bg-blue-500' : typeInfo.color.includes('emerald') ? 'bg-emerald-500' : typeInfo.color.includes('amber') ? 'bg-amber-500' : 'bg-slate-500'}`} />
+                <div className={`absolute top-0 left-0 right-0 h-1 ${typeInfo.color.includes('purple') ? 'bg-purple-500' : typeInfo.color.includes('blue') ? 'bg-blue-500' : typeInfo.color.includes('emerald') ? 'bg-emerald-500' : typeInfo.color.includes('amber') ? 'bg-amber-500' : 'bg-[hsl(var(--mn-border))]'}`} />
                 <CardContent className="p-5 pt-6">
                   <div className="flex items-start gap-3 mb-3">
                     <div className={`p-2.5 rounded-xl border ${typeInfo.color}`}>
@@ -575,9 +575,9 @@ export default function Community() {
   const [activeTab, setActiveTab] = useState('skupiny');
 
   return (
-    <div className="container max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+    <div className="container max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-1">Komunita</h1>
+        <h1 className="text-2xl lg:text-3xl font-bold mb-2">Komunita</h1>
         <p className="text-muted-foreground">Studijní skupiny, diskuze a spolupráce</p>
       </div>
 

@@ -253,7 +253,7 @@ Vrať JSON s týdenním rozpisu úkolů.`;
       </Button>
 
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-[hsl(var(--mn-text))] mb-2 flex items-center gap-3">
+        <h1 className="text-2xl lg:text-3xl font-bold text-[hsl(var(--mn-text))] mb-2 flex items-center gap-3">
           <Sparkles className="w-8 h-8 text-teal-500" />
           AI Personalizovaný studijní plán
         </h1>

@@ -116,7 +116,7 @@ export default function OrganizationManagement() {
     <div className="container max-w-7xl mx-auto p-6 space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold mb-2">Správa Organizací</h1>
+        <h1 className="text-2xl lg:text-3xl font-bold mb-2">Správa Organizací</h1>
         <p className="text-muted-foreground">
           Centrální řízení pro týmy a instituce
         </p>

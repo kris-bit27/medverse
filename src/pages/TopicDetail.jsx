@@ -241,13 +241,13 @@ export default function TopicDetail() {
                     <article className="prose prose-lg dark:prose-invert max-w-none
                       prose-headings:font-bold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
                       prose-h1:text-3xl prose-h1:mb-4 prose-h1:mt-8
-                      prose-h2:text-2xl prose-h2:mb-3 prose-h2:mt-6 prose-h2:pb-2 prose-h2:border-b prose-h2:border-slate-200
+                      prose-h2:text-2xl prose-h2:mb-3 prose-h2:mt-6 prose-h2:pb-2 prose-h2:border-b prose-h2:border-[hsl(var(--mn-border))]
                       prose-h3:text-xl prose-h3:mb-2 prose-h3:mt-4
                       prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-p:leading-relaxed prose-p:mb-4
                       prose-li:text-slate-700 dark:prose-li:text-slate-300 prose-li:leading-relaxed
                       prose-strong:text-slate-900 dark:prose-strong:text-slate-100 prose-strong:font-semibold
                       prose-code:text-teal-600 prose-code:bg-teal-50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
-                      prose-pre:bg-slate-100 dark:prose-pre:bg-slate-800 prose-pre:border prose-pre:border-slate-200
+                      prose-pre:bg-slate-100 dark:prose-pre:bg-slate-800 prose-pre:border prose-pre:border-[hsl(var(--mn-border))]
                       prose-ul:my-4 prose-ol:my-4 prose-li:my-1">
                       <ReactMarkdown>{currentContent}</ReactMarkdown>
                     </article>

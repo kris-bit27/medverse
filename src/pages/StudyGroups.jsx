@@ -163,7 +163,7 @@ export default function StudyGroups() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Studijní Skupiny</h1>
+          <h1 className="text-2xl lg:text-3xl font-bold mb-2">Studijní Skupiny</h1>
           <p className="text-muted-foreground">
             Spolupracujte a učte se společně s kolegy
           </p>

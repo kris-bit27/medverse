@@ -237,11 +237,11 @@ export default function MyProfile() {
   }
 
   return (
-    <div className="container max-w-4xl mx-auto p-6 space-y-6">
+    <div className="container max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Můj profil</h1>
+          <h1 className="text-2xl lg:text-3xl font-bold mb-2">Můj profil</h1>
           <p className="text-muted-foreground">
             Spravuj své informace a personalizuj AI asistenta
           </p>
@@ -613,7 +613,7 @@ function ProfileForm({ profile, user, isEditing, onSave, isSaving }) {
                   px-3 py-1 rounded-full text-sm transition-all
                   ${formData.areas_of_interest.includes(field)
                     ? 'bg-teal-500 text-[hsl(var(--mn-text))]'
-                    : 'bg-[hsl(var(--mn-surface-2))] hover:bg-slate-200'
+                    : 'bg-[hsl(var(--mn-surface-2))] hover:bg-[hsl(var(--mn-surface-2))]'
                   }
                   ${!isEditing && 'opacity-60 cursor-not-allowed'}
                 `}
