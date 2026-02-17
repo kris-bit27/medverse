@@ -107,8 +107,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
-    // Step 1: Search PubMed
-    const articles = await searchPubMed(pubmedQuery, mode === 'deep' ? 12 : 8);
+    // Step 1: Search PubMed (20 for browse, 8 for AI synthesis)
+    const maxResults = mode === 'search' ? 20 : 8;
+    const articles = await searchPubMed(pubmedQuery, maxResults);
 
     if (mode === 'search') {
       return res.status(200).json({ articles, query, pubmedQuery });
