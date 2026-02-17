@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { callApi } from '@/lib/api';
+import { useAuth } from '@/lib/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -11,6 +12,7 @@ import { toast } from 'sonner';
 import SaveCaseDialog from './SaveCaseDialog';
 
 export default function TreatmentPlannerAI() {
+  const { user } = useAuth();
   const [diagnosis, setDiagnosis] = useState('');
   const [patientInfo, setPatientInfo] = useState({ 
     age: '', 
@@ -39,6 +41,7 @@ export default function TreatmentPlannerAI() {
       const safeMeds = (patientInfo.current_medications || '').slice(0, MAX_INPUT_CHARS);
       const safeTests = (patientInfo.performed_tests || '').slice(0, MAX_INPUT_CHARS);
       const response = await callApi('invokeLLM', {
+        user_id: user?.id,
         prompt: `Jsi zkušený klinický lékař. Vytvoř léčebný plán na základě následujících informací:
 
 DIAGNÓZA: ${safeDiagnosis}

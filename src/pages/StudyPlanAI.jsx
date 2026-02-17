@@ -141,6 +141,7 @@ Na základě pokroku uživatele vytvoř strukturovaný studijní plán s konkré
 Vrať JSON s týdenním rozpisu úkolů.`;
 
       const response = await callApi('invokeLLM', {
+        user_id: user?.id,
         prompt,
         model: 'gemini-1.5-pro',
         maxTokens: 2048,

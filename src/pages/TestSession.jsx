@@ -15,9 +15,11 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { toast } from 'sonner';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 export default function TestSession() {
   const { user } = useAuth();
+  const { track } = useAnalytics();
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get('id');
   const queryClient = useQueryClient();
@@ -120,6 +122,7 @@ export default function TestSession() {
         })
         .eq('id', sessionId);
       if (error) console.error('Complete session error:', error);
+      track('test_completed', { score, correct, total, duration: elapsed });
       queryClient.invalidateQueries(['test-session', sessionId]);
     }
   });

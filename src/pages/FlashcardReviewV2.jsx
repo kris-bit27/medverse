@@ -17,6 +17,7 @@ import {
   TrendingUp
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 // SM-2 Algorithm
 function calculateNextReview(quality, repetitions, easiness, interval) {
@@ -54,6 +55,7 @@ function calculateNextReview(quality, repetitions, easiness, interval) {
 
 export default function FlashcardReviewV2() {
   const { user } = useAuth();
+  const { track } = useAnalytics();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   
@@ -175,6 +177,7 @@ export default function FlashcardReviewV2() {
           });
         });
         toast.success(`Session complete! ${sessionStats.reviewed + 1} cards`);
+        track('flashcard_session_completed', { cards: sessionStats.reviewed + 1, correct: sessionStats.correct });
         navigate('/Dashboard');
       }
     }

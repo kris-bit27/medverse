@@ -1,8 +1,11 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { createClient } from '@supabase/supabase-js';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY
 });
+
+const supabaseAdmin = createClient(process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
 const extractText = (response: any) => {
   if (!response?.content) return '';
@@ -78,10 +81,27 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    const { mode, userPrompt, entityContext, allowWeb, pageContext } = req.body || {};
+    const { mode, userPrompt, entityContext, allowWeb, pageContext, user_id } = req.body || {};
 
     if (!userPrompt) {
       return res.status(400).json({ error: 'Missing userPrompt' });
+    }
+
+    // Token check for copilot usage
+    if (user_id) {
+      try {
+        const { checkTokens, deductTokens } = await import('./_token-utils');
+        const check = await checkTokens(supabaseAdmin, user_id, 'copilot_question');
+        if (!check.allowed) {
+          return res.status(402).json({
+            error: `Nedostatek AI kreditů. Potřeba: ${check.cost}, zbývá: ${check.remaining}`,
+            tokens_remaining: check.remaining,
+          });
+        }
+        await deductTokens(supabaseAdmin, user_id, 'copilot_question', `Copilot: ${userPrompt.substring(0, 40)}`);
+      } catch (tokenErr: any) {
+        console.warn('[invokeEduLLM] token deduction failed:', tokenErr.message);
+      }
     }
 
     const systemPrompt = `Jsi AI asistent pro medicínskou edukaci. Odpovídej česky, strukturovaně a bezpečně.\n` +

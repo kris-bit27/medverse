@@ -17,9 +17,11 @@ import {
   Filter
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 export default function ReviewToday() {
   const { user } = useAuth();
+  const { track } = useAnalytics();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   
@@ -217,6 +219,7 @@ export default function ReviewToday() {
       setIsFlipped(false);
     } else {
       toast.success(`Session hotova! ${sessionStats.correct + (isCorrect ? 1 : 0)}/${sessionStats.reviewed + 1} správně`);
+      track('review_session_completed', { correct: sessionStats.correct + (isCorrect ? 1 : 0), reviewed: sessionStats.reviewed + 1 });
       setCurrentIndex(0);
       setSessionStats({ reviewed: 0, correct: 0 });
     }

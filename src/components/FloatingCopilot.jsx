@@ -68,6 +68,7 @@ export const FloatingCopilot = ({ topicContent, topicTitle, topicId }) => {
         userPrompt: `${text}${ctx}`,
         pageContext: topicContent ? topicContent.substring(0, 6000) : '',
         allowWeb: false,
+        user_id: user?.id,
       });
 
       const answer = data.text || data.answer || (typeof data === 'string' ? data : 'Omlouvám se, nepodařilo se vygenerovat odpověď.');

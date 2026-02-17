@@ -28,9 +28,11 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 export default function TestGeneratorV2() {
   const { user } = useAuth();
+  const { track } = useAnalytics();
   const navigate = useNavigate();
 
   // Test configuration
@@ -197,6 +199,7 @@ export default function TestGeneratorV2() {
       if (error) throw error;
 
       toast.success('Test vygenerován!');
+      track('test_generated', { question_count: questionCount, topic_count: selectedTopics.length });
       navigate(`${createPageUrl('TestSessionV2')}?id=${session.id}`);
     } catch (error) {
       console.error('Error creating test:', error);
