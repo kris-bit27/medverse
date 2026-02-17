@@ -15,18 +15,35 @@ import {
   GraduationCap, X, SlidersHorizontal, LayoutGrid, List as ListIcon
 } from 'lucide-react';
 
-/* ─── Obor color palette ─── */
-const OBOR_COLORS = {
-  'Chirurgie': { bg: 'bg-red-500/10', border: 'border-red-500/30', text: 'text-red-400', accent: '#ef4444' },
-  'Vnitřní lékařství': { bg: 'bg-blue-500/10', border: 'border-blue-500/30', text: 'text-blue-400', accent: '#3b82f6' },
-  'Neurologie': { bg: 'bg-purple-500/10', border: 'border-purple-500/30', text: 'text-purple-400', accent: '#a855f7' },
-  'Pediatrie': { bg: 'bg-green-500/10', border: 'border-green-500/30', text: 'text-green-400', accent: '#22c55e' },
-  'Anesteziologie a intenzivní medicína': { bg: 'bg-orange-500/10', border: 'border-orange-500/30', text: 'text-orange-400', accent: '#f97316' },
-  'Gynekologie a porodnictví': { bg: 'bg-pink-500/10', border: 'border-pink-500/30', text: 'text-pink-400', accent: '#ec4899' },
-  'Interna': { bg: 'bg-cyan-500/10', border: 'border-cyan-500/30', text: 'text-cyan-400', accent: '#06b6d4' },
-};
+/* ─── Obor color palette — dynamic for all specialties ─── */
+const COLOR_POOL = [
+  { bg: 'bg-red-500/10', border: 'border-red-500/30', text: 'text-red-400', accent: '#ef4444' },
+  { bg: 'bg-blue-500/10', border: 'border-blue-500/30', text: 'text-blue-400', accent: '#3b82f6' },
+  { bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', text: 'text-emerald-400', accent: '#10b981' },
+  { bg: 'bg-purple-500/10', border: 'border-purple-500/30', text: 'text-purple-400', accent: '#a855f7' },
+  { bg: 'bg-orange-500/10', border: 'border-orange-500/30', text: 'text-orange-400', accent: '#f97316' },
+  { bg: 'bg-pink-500/10', border: 'border-pink-500/30', text: 'text-pink-400', accent: '#ec4899' },
+  { bg: 'bg-cyan-500/10', border: 'border-cyan-500/30', text: 'text-cyan-400', accent: '#06b6d4' },
+  { bg: 'bg-amber-500/10', border: 'border-amber-500/30', text: 'text-amber-400', accent: '#f59e0b' },
+  { bg: 'bg-teal-500/10', border: 'border-teal-500/30', text: 'text-teal-400', accent: '#14b8a6' },
+  { bg: 'bg-indigo-500/10', border: 'border-indigo-500/30', text: 'text-indigo-400', accent: '#6366f1' },
+  { bg: 'bg-rose-500/10', border: 'border-rose-500/30', text: 'text-rose-400', accent: '#f43f5e' },
+  { bg: 'bg-lime-500/10', border: 'border-lime-500/30', text: 'text-lime-400', accent: '#84cc16' },
+  { bg: 'bg-sky-500/10', border: 'border-sky-500/30', text: 'text-sky-400', accent: '#0ea5e9' },
+  { bg: 'bg-violet-500/10', border: 'border-violet-500/30', text: 'text-violet-400', accent: '#8b5cf6' },
+  { bg: 'bg-fuchsia-500/10', border: 'border-fuchsia-500/30', text: 'text-fuchsia-400', accent: '#d946ef' },
+];
 
-const getOborTheme = (name) => OBOR_COLORS[name] || { bg: 'bg-[hsl(var(--mn-surface-2))]', border: 'border-[hsl(var(--mn-border))]', text: 'text-[hsl(var(--mn-muted))]', accent: '#64748b' };
+// Stable hash to assign consistent color per obor name
+const _oborColorCache = {};
+const getOborTheme = (name) => {
+  if (!name) return { bg: 'bg-[hsl(var(--mn-surface-2))]', border: 'border-[hsl(var(--mn-border))]', text: 'text-[hsl(var(--mn-muted))]', accent: '#64748b' };
+  if (_oborColorCache[name]) return _oborColorCache[name];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = ((hash << 5) - hash + name.charCodeAt(i)) | 0;
+  _oborColorCache[name] = COLOR_POOL[Math.abs(hash) % COLOR_POOL.length];
+  return _oborColorCache[name];
+};
 
 /* ─── Content availability dots ─── */
 function ContentDots({ topic }) {
@@ -59,10 +76,10 @@ function TopicCard({ topic, mastery }) {
 
   return (
     <Link to={`${createPageUrl('TopicDetailV2')}?id=${topic.id}`}>
-      <div className={`group relative rounded-xl border ${theme.border} bg-[hsl(var(--mn-surface))]/50 hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]/70 transition-all duration-200 hover:shadow-lg hover:shadow-slate-200/50 dark:hover:shadow-black/20 hover:-translate-y-0.5 overflow-hidden`}>
+      <div className={`group relative rounded-xl border ${theme.border} bg-[hsl(var(--mn-surface))]/50 hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]/70 transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 overflow-hidden`}>
         {/* Top accent bar — shows mastery if studied */}
         {score > 0 ? (
-          <div className="h-1 w-full bg-slate-200 dark:bg-slate-800">
+          <div className="h-1 w-full bg-[hsl(var(--mn-border))]">
             <div className="h-full transition-all duration-500" style={{
               width: `${score}%`,
               background: score >= 80 ? '#22c55e' : score >= 50 ? '#a855f7' : score >= 20 ? '#f59e0b' : '#64748b'
@@ -177,18 +194,31 @@ export default function StudiumV3() {
   const { data: allTopics = [], isLoading } = useQuery({
     queryKey: ['topics-v3'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('topics')
-        .select(`
-          *,
-          obory:obor_id(id, name, slug, color),
-          okruhy:okruh_id(id, name, slug)
-        `)
-        .eq('status', 'published')
-        .order('created_at', { ascending: false });
+      // Supabase default limit is 1000, need to fetch all
+      const PAGE_SIZE = 1000;
+      let allData = [];
+      let from = 0;
+      let hasMore = true;
+      
+      while (hasMore) {
+        const { data, error } = await supabase
+          .from('topics')
+          .select(`
+            *,
+            obory:obor_id(id, name, slug, color),
+            okruhy:okruh_id(id, name, slug)
+          `)
+          .eq('status', 'published')
+          .order('created_at', { ascending: false })
+          .range(from, from + PAGE_SIZE - 1);
 
-      if (error) throw error;
-      return data || [];
+        if (error) throw error;
+        allData = allData.concat(data || []);
+        hasMore = (data?.length || 0) === PAGE_SIZE;
+        from += PAGE_SIZE;
+      }
+      
+      return allData;
     }
   });
 

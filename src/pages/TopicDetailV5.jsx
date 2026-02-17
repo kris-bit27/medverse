@@ -18,17 +18,33 @@ import {
 import { useNavigate, Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 
-/* ─── Obor colors ─── */
-const OBOR_COLORS = {
-  'Chirurgie': { text: 'text-red-500 dark:text-red-400', bg: 'bg-red-500/10' },
-  'Vnitřní lékařství': { text: 'text-blue-500 dark:text-blue-400', bg: 'bg-blue-500/10' },
-  'Neurologie': { text: 'text-purple-500 dark:text-purple-400', bg: 'bg-purple-500/10' },
-  'Pediatrie': { text: 'text-green-500 dark:text-green-400', bg: 'bg-green-500/10' },
-  'Anesteziologie a intenzivní medicína': { text: 'text-orange-500 dark:text-orange-400', bg: 'bg-orange-500/10' },
-  'Gynekologie a porodnictví': { text: 'text-pink-500 dark:text-pink-400', bg: 'bg-pink-500/10' },
-  'Interna': { text: 'text-cyan-500 dark:text-cyan-400', bg: 'bg-cyan-500/10' },
+/* ─── Obor colors — dynamic ─── */
+const _COLORS = [
+  { text: 'text-red-500 dark:text-red-400', bg: 'bg-red-500/10' },
+  { text: 'text-blue-500 dark:text-blue-400', bg: 'bg-blue-500/10' },
+  { text: 'text-emerald-500 dark:text-emerald-400', bg: 'bg-emerald-500/10' },
+  { text: 'text-purple-500 dark:text-purple-400', bg: 'bg-purple-500/10' },
+  { text: 'text-orange-500 dark:text-orange-400', bg: 'bg-orange-500/10' },
+  { text: 'text-pink-500 dark:text-pink-400', bg: 'bg-pink-500/10' },
+  { text: 'text-cyan-500 dark:text-cyan-400', bg: 'bg-cyan-500/10' },
+  { text: 'text-amber-500 dark:text-amber-400', bg: 'bg-amber-500/10' },
+  { text: 'text-teal-500 dark:text-teal-400', bg: 'bg-teal-500/10' },
+  { text: 'text-indigo-500 dark:text-indigo-400', bg: 'bg-indigo-500/10' },
+  { text: 'text-rose-500 dark:text-rose-400', bg: 'bg-rose-500/10' },
+  { text: 'text-lime-500 dark:text-lime-400', bg: 'bg-lime-500/10' },
+  { text: 'text-sky-500 dark:text-sky-400', bg: 'bg-sky-500/10' },
+  { text: 'text-violet-500 dark:text-violet-400', bg: 'bg-violet-500/10' },
+  { text: 'text-fuchsia-500 dark:text-fuchsia-400', bg: 'bg-fuchsia-500/10' },
+];
+const _tc = {};
+const getTheme = (n) => {
+  if (!n) return { text: 'text-teal-600 dark:text-teal-400', bg: 'bg-teal-500/10' };
+  if (_tc[n]) return _tc[n];
+  let h = 0;
+  for (let i = 0; i < n.length; i++) h = ((h << 5) - h + n.charCodeAt(i)) | 0;
+  _tc[n] = _COLORS[Math.abs(h) % _COLORS.length];
+  return _tc[n];
 };
-const getTheme = (n) => OBOR_COLORS[n] || { text: 'text-teal-600 dark:text-teal-400', bg: 'bg-teal-500/10' };
 
 const TABS = [
   { id: 'fulltext', label: 'Plný text', icon: BookOpen, field: 'full_text_content' },

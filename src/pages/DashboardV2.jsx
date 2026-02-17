@@ -190,7 +190,7 @@ export default function DashboardV2() {
       {/* Welcome Header */}
       <div>
         <h1 className="text-2xl lg:text-3xl font-bold mb-2">
-          Vítej zpět, {user?.email?.split('@')[0] || 'Student'}! 👋
+          Vítej zpět, {user?.full_name || user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Student'}! 👋
         </h1>
         <p className="text-muted-foreground">
           Zde je tvůj dnešní přehled
