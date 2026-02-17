@@ -167,7 +167,7 @@ function TopicCard({ topic, mastery }) {
 function StatCard({ icon: Icon, label, value, accent }) {
   return (
     <div className={`flex items-center gap-3 p-4 rounded-xl bg-[hsl(var(--mn-surface))]/50 border border-[hsl(var(--mn-border))]`}>
-      <div className={`p-2 rounded-lg ${accent || 'bg-[hsl(var(--mn-surface-2))]'}`}>
+      <div className={`p-2 rounded-xl ${accent || 'bg-[hsl(var(--mn-surface-2))]'}`}>
         <Icon className="w-5 h-5 text-[hsl(var(--mn-muted))]" />
       </div>
       <div>
@@ -407,7 +407,7 @@ export default function StudiumV3() {
           {/* Content filter */}
           <button
             onClick={() => setContentOnly(!contentOnly)}
-            className={`px-3 py-2 rounded-lg text-xs font-medium border transition-all ${
+            className={`px-3 py-2 rounded-xl text-xs font-medium border transition-all ${
               contentOnly 
                 ? 'bg-teal-50 dark:bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-300 dark:border-teal-500/30' 
                 : 'bg-[hsl(var(--mn-surface))] text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))]'

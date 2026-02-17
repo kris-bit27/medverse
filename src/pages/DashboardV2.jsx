@@ -305,7 +305,7 @@ export default function DashboardV2() {
             <Link to={createPageUrl("Studium")}>
               <Card className="hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900 transition-colors cursor-pointer border-2">
                 <CardContent className="p-6 flex items-start gap-4">
-                  <div className="p-3 rounded-lg bg-teal-100 dark:bg-teal-900/20">
+                  <div className="p-3 rounded-xl bg-teal-100 dark:bg-teal-900/20">
                     <Brain className="w-6 h-6 text-teal-600 dark:text-teal-300" />
                   </div>
                   <div className="flex-1">
@@ -322,7 +322,7 @@ export default function DashboardV2() {
             <Link to={createPageUrl("FlashcardReviewV2")}>
               <Card className="hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900 transition-colors cursor-pointer border-2">
                 <CardContent className="p-6 flex items-start gap-4">
-                  <div className="p-3 rounded-lg bg-orange-100 dark:bg-amber-900/20">
+                  <div className="p-3 rounded-xl bg-orange-100 dark:bg-amber-900/20">
                     <Zap className="w-6 h-6 text-orange-600 dark:text-orange-300" />
                   </div>
                   <div className="flex-1">
@@ -339,7 +339,7 @@ export default function DashboardV2() {
             <Link to={createPageUrl("TestGeneratorV2")}>
               <Card className="hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900 transition-colors cursor-pointer border-2">
                 <CardContent className="p-6 flex items-start gap-4">
-                  <div className="p-3 rounded-lg bg-blue-100 dark:bg-blue-900/20">
+                  <div className="p-3 rounded-xl bg-blue-100 dark:bg-blue-900/20">
                     <Target className="w-6 h-6 text-blue-600 dark:text-blue-300" />
                   </div>
                   <div className="flex-1">
@@ -376,7 +376,7 @@ export default function DashboardV2() {
                   const score = Number(m.mastery_score) || 0;
                   return (
                     <Link key={m.id} to={`${createPageUrl('TopicDetailV2')}?id=${m.topic_id}`}>
-                      <div className="flex items-center justify-between p-3 rounded-lg border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))] transition-colors">
+                      <div className="flex items-center justify-between p-3 rounded-xl border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))] transition-colors">
                         <div className="flex-1 min-w-0 mr-3">
                           <p className="text-sm font-medium truncate">{m.topics?.title}</p>
                           <p className="text-xs text-muted-foreground">{m.topics?.obory?.name}</p>
@@ -418,7 +418,7 @@ export default function DashboardV2() {
               {recentAchievements.map((achievement) => (
                 <div
                   key={achievement.id}
-                  className="flex items-center justify-between p-3 rounded-lg border"
+                  className="flex items-center justify-between p-3 rounded-xl border"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-yellow-100 dark:bg-amber-900/20 flex items-center justify-center">
@@ -481,7 +481,7 @@ export default function DashboardV2() {
                 return (
                   <div
                     key={test.id}
-                    className="flex items-center justify-between p-4 rounded-lg border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900 transition-colors"
+                    className="flex items-center justify-between p-4 rounded-xl border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900 transition-colors"
                   >
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">

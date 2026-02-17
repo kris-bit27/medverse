@@ -251,7 +251,7 @@ export default function ReviewToday() {
               <div className="ml-auto">
                 <button
                   onClick={() => setDueOnly(!dueOnly)}
-                  className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
+                  className={`text-xs px-3 py-1.5 rounded-xl border transition-colors ${
                     dueOnly 
                       ? 'bg-purple-100 dark:bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-500/30'
                       : 'text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))] hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]'
@@ -365,7 +365,7 @@ export default function ReviewToday() {
             <div className="ml-auto">
               <button
                 onClick={() => setDueOnly(!dueOnly)}
-                className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
+                className={`text-xs px-3 py-1.5 rounded-xl border transition-colors ${
                   dueOnly 
                     ? 'bg-purple-100 dark:bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-500/30'
                     : 'text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))] hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]'

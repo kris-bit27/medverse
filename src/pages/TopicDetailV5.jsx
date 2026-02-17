@@ -107,7 +107,7 @@ function CopyBtn({ content }) {
   return (
     <button
       onClick={() => { navigator.clipboard.writeText(content); setOk(true); setTimeout(() => setOk(false), 2000); }}
-      className="p-2 rounded-lg bg-[hsl(var(--mn-surface-2))]/80 text-[hsl(var(--mn-muted))] hover:text-slate-700 dark:hover:text-[hsl(var(--mn-text))] opacity-0 group-hover:opacity-100 transition-opacity"
+      className="p-2 rounded-xl bg-[hsl(var(--mn-surface-2))]/80 text-[hsl(var(--mn-muted))] hover:text-slate-700 dark:hover:text-[hsl(var(--mn-text))] opacity-0 group-hover:opacity-100 transition-opacity"
       title="Kopírovat"
     >
       {ok ? <Check className="w-4 h-4 text-teal-500" /> : <Copy className="w-4 h-4" />}
@@ -230,7 +230,7 @@ export default function TopicDetailV5() {
               {hasToc && (
                 <button
                   onClick={() => setShowToc(!showToc)}
-                  className={`p-2 rounded-lg border transition-all mn-ui-font text-sm ${
+                  className={`p-2 rounded-xl border transition-all mn-ui-font text-sm ${
                     showToc
                       ? 'bg-teal-50 dark:bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-200 dark:border-teal-500/30'
                       : 'bg-[hsl(var(--mn-elevated))] text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))]'
@@ -242,7 +242,7 @@ export default function TopicDetailV5() {
               )}
 
               <button onClick={() => { setShowNotes(!showNotes); setShowFlashcards(false); }}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm border transition-all mn-ui-font ${
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm border transition-all mn-ui-font ${
                   showNotes ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-500/30'
                   : 'bg-[hsl(var(--mn-elevated))] text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))]'
                 }`}>
@@ -250,7 +250,7 @@ export default function TopicDetailV5() {
                 <span className="hidden sm:inline">Poznámky</span>
               </button>
               <button onClick={() => { setShowFlashcards(!showFlashcards); setShowNotes(false); }}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm border transition-all mn-ui-font ${
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm border transition-all mn-ui-font ${
                   showFlashcards ? 'bg-teal-50 dark:bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-200 dark:border-teal-500/30'
                   : 'bg-[hsl(var(--mn-elevated))] text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))]'
                 }`}>
@@ -309,7 +309,7 @@ export default function TopicDetailV5() {
               const Icon = tab.icon;
               return (
                 <button key={tab.id} onClick={() => has && handleTabSwitch(tab.id)} disabled={!has}
-                  className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all mn-ui-font ${
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all mn-ui-font ${
                     active ? 'bg-[hsl(var(--mn-elevated))]/80 text-[hsl(var(--mn-text))] shadow-sm'
                     : has ? 'text-[hsl(var(--mn-muted))] hover:text-slate-700 dark:hover:text-slate-400'
                     : 'text-[hsl(var(--mn-muted))] dark:text-slate-700 cursor-not-allowed'

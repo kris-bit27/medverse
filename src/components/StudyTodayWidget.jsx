@@ -114,7 +114,7 @@ export default function StudyTodayWidget() {
         {dueCards > 0 && (
           <Link to={createPageUrl('ReviewToday')}>
             <div className="flex items-center gap-4 p-3 rounded-xl bg-orange-50 dark:bg-orange-500/5 border border-orange-200 dark:border-orange-500/20 hover:bg-orange-100 dark:hover:bg-orange-500/10 transition-colors">
-              <div className="p-2 rounded-lg bg-orange-100 dark:bg-orange-500/20">
+              <div className="p-2 rounded-xl bg-orange-100 dark:bg-orange-500/20">
                 <RotateCcw className="w-5 h-5 text-orange-600 dark:text-orange-400" />
               </div>
               <div className="flex-1">
@@ -138,8 +138,8 @@ export default function StudyTodayWidget() {
                 const isStale = new Date(m.last_studied_at) < new Date(Date.now() - 7 * 86400000);
                 return (
                   <Link key={m.id} to={`${createPageUrl('TopicDetailV2')}?id=${m.topic_id}`}>
-                    <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]/50 transition-colors">
-                      <div className="w-8 h-8 rounded-lg bg-[hsl(var(--mn-surface-2))] flex items-center justify-center shrink-0">
+                    <div className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]/50 transition-colors">
+                      <div className="w-8 h-8 rounded-xl bg-[hsl(var(--mn-surface-2))] flex items-center justify-center shrink-0">
                         <span className={`text-xs font-bold ${
                           score < 20 ? 'text-red-500' : score < 40 ? 'text-orange-500' : 'text-amber-500'
                         }`}>{Math.round(score)}</span>
@@ -168,8 +168,8 @@ export default function StudyTodayWidget() {
             <div className="space-y-2">
               {newTopics.map(t => (
                 <Link key={t.id} to={`${createPageUrl('TopicDetailV2')}?id=${t.id}`}>
-                  <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]/50 transition-colors">
-                    <div className="w-8 h-8 rounded-lg bg-teal-50 dark:bg-teal-500/10 flex items-center justify-center shrink-0">
+                  <div className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]/50 transition-colors">
+                    <div className="w-8 h-8 rounded-xl bg-teal-50 dark:bg-teal-500/10 flex items-center justify-center shrink-0">
                       <Zap className="w-4 h-4 text-teal-500" />
                     </div>
                     <div className="flex-1 min-w-0">

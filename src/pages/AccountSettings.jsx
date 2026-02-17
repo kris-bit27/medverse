@@ -222,7 +222,7 @@ export default function AccountSettings() {
             </p>
           </div>
 
-          <div className="flex items-center justify-between p-4 rounded-lg border">
+          <div className="flex items-center justify-between p-4 rounded-xl border">
             <div className="flex items-center gap-3">
               <Lock className="w-5 h-5 text-teal-600" />
               <div>
@@ -483,7 +483,7 @@ function NotificationToggle({ label, description, defaultChecked }) {
   const [checked, setChecked] = useState(defaultChecked);
 
   return (
-    <div className="flex items-center justify-between p-3 rounded-lg border">
+    <div className="flex items-center justify-between p-3 rounded-xl border">
       <div className="flex-1">
         <div className="font-medium">{label}</div>
         <p className="text-sm text-muted-foreground">{description}</p>
@@ -499,7 +499,7 @@ function NotificationToggle({ label, description, defaultChecked }) {
 // Data Consent Toggle Component
 function DataConsentToggle({ label, description, bonus, checked, onChange, required }) {
   return (
-    <div className="flex items-start justify-between p-4 rounded-lg border">
+    <div className="flex items-start justify-between p-4 rounded-xl border">
       <div className="flex-1">
         <div className="flex items-center gap-2">
           <span className="font-medium">{label}</span>

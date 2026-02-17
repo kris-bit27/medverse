@@ -334,7 +334,7 @@ export default function MyProfile() {
             </p>
             
             {subjectLevels.map((subject) => (
-              <div key={subject.id} className="flex items-center justify-between p-3 rounded-lg border">
+              <div key={subject.id} className="flex items-center justify-between p-3 rounded-xl border">
                 <div className="flex-1">
                   <div className="font-medium capitalize">{subject.subject}</div>
                   <div className="text-xs text-muted-foreground">
@@ -375,7 +375,7 @@ export default function MyProfile() {
 function AchievementBadge({ icon, label, tokens, earned }) {
   return (
     <div className={`
-      flex flex-col items-center p-2 rounded-lg border-2 transition-all
+      flex flex-col items-center p-2 rounded-xl border-2 transition-all
       ${earned 
         ? 'bg-green-50 border-green-300 dark:bg-green-950/20' 
         : 'bg-[hsl(var(--mn-bg))] border-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-surface)/0.5)] opacity-60'
@@ -570,7 +570,7 @@ function ProfileForm({ profile, user, isEditing, onSave, isSaving }) {
                   })}
                   disabled={!isEditing}
                   className={`
-                    p-3 rounded-lg border-2 text-left transition-all
+                    p-3 rounded-xl border-2 text-left transition-all
                     ${formData.career_paths.includes(path.value)
                       ? 'border-teal-500 bg-teal-50 dark:bg-teal-950/20'
                       : 'border-[hsl(var(--mn-border))] hover:border-[hsl(var(--mn-border))]'

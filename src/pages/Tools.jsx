@@ -347,7 +347,7 @@ function SavedCases() {
             <Card className="hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <div className="flex items-start gap-4">
-                  <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${bgColor} flex items-center justify-center flex-shrink-0`}>
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${bgColor} flex items-center justify-center flex-shrink-0`}>
                     <IconComponent className="w-6 h-6 text-[hsl(var(--mn-text))]" />
                   </div>
                   <div className="flex-1 min-w-0">

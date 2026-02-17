@@ -238,7 +238,7 @@ export default function MedSearch() {
           <div className="flex flex-wrap gap-2">
             {EXAMPLE_QUERIES.map((q, i) => (
               <button key={i} onClick={() => { setQuery(q); handleSearch(q, 'answer'); }}
-                className="px-3 py-2 rounded-lg bg-[hsl(var(--mn-surface-2))] border border-[hsl(var(--mn-border))] text-sm text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-accent))] hover:border-[hsl(var(--mn-accent)/0.3)] transition-colors text-left">
+                className="px-3 py-2 rounded-xl bg-[hsl(var(--mn-surface-2))] border border-[hsl(var(--mn-border))] text-sm text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-accent))] hover:border-[hsl(var(--mn-accent)/0.3)] transition-colors text-left">
                 {q}
               </button>
             ))}
@@ -336,7 +336,7 @@ export default function MedSearch() {
             <Card>
               <CardContent className="p-5">
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="w-7 h-7 rounded-lg bg-[hsl(var(--mn-accent)/0.1)] flex items-center justify-center">
+                  <div className="w-7 h-7 rounded-xl bg-[hsl(var(--mn-accent)/0.1)] flex items-center justify-center">
                     <Sparkles className="w-4 h-4 text-[hsl(var(--mn-accent))]" />
                   </div>
                   <span className="text-sm font-semibold text-[hsl(var(--mn-text))]">AI Syntéza</span>
@@ -355,7 +355,7 @@ export default function MedSearch() {
                 </div>
 
                 {/* Disclaimer */}
-                <div className="flex items-start gap-2 px-3 py-2 mb-4 rounded-lg bg-[hsl(var(--mn-warn)/0.08)] border border-[hsl(var(--mn-warn)/0.2)]">
+                <div className="flex items-start gap-2 px-3 py-2 mb-4 rounded-xl bg-[hsl(var(--mn-warn)/0.08)] border border-[hsl(var(--mn-warn)/0.2)]">
                   <AlertTriangle className="w-3.5 h-3.5 text-[hsl(var(--mn-warn))] shrink-0 mt-0.5" />
                   <p className="text-[11px] text-[hsl(var(--mn-muted))] leading-relaxed">
                     AI odpověď vychází výhradně z PubMed abstrakt zobrazených níže. Může obsahovat nepřesnosti — vždy ověřte v primárních zdrojích.
