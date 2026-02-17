@@ -253,6 +253,11 @@ export default function MedSearch() {
           <div className="flex items-center justify-between">
             <p className="text-sm text-[hsl(var(--mn-muted))]">
               Nalezeno <strong className="text-[hsl(var(--mn-text))]">{articles.length}</strong> článků pro „{result.query}"
+              {result.pubmedQuery && result.pubmedQuery !== result.query && (
+                <span className="ml-1 text-[hsl(var(--mn-accent))]">
+                  → PubMed: „{result.pubmedQuery}"
+                </span>
+              )}
             </p>
             {result.cost_usd && (
               <Badge variant="outline" className="text-[10px]">

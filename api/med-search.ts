@@ -84,12 +84,34 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'Missing query' });
     }
 
+    // Step 0: Translate query to English for PubMed (indexed in English)
+    let pubmedQuery = query;
+    const hasNonAscii = /[^\x00-\x7F]/.test(query);
+    if (hasNonAscii) {
+      try {
+        const translateRes = await anthropic.messages.create({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 150,
+          temperature: 0,
+          system: 'Translate the following medical query to English for PubMed search. Return ONLY the English search query, nothing else. Use standard medical/MeSH terminology. Keep it concise (max 8 words).',
+          messages: [{ role: 'user', content: query }],
+        });
+        const translated = translateRes.content
+          .filter((b: any) => b.type === 'text')
+          .map((b: any) => b.text)
+          .join('')
+          .trim();
+        if (translated) pubmedQuery = translated;
+      } catch (_) {
+        // If translation fails, use original query
+      }
+    }
+
     // Step 1: Search PubMed
-    const articles = await searchPubMed(query, mode === 'deep' ? 12 : 8);
+    const articles = await searchPubMed(pubmedQuery, mode === 'deep' ? 12 : 8);
 
     if (mode === 'search') {
-      // Simple search — return articles without AI synthesis
-      return res.status(200).json({ articles, query });
+      return res.status(200).json({ articles, query, pubmedQuery });
     }
 
     // Step 2: AI Synthesis (mode === 'answer' or 'deep')
@@ -159,6 +181,7 @@ Syntetizuj odpověď na otázku na základě dodaných článků. Cituj každé 
       answer: answerText,
       articles,
       query,
+      pubmedQuery,
       cost_usd: costUsd,
     });
   } catch (error: any) {
