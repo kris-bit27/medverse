@@ -55,7 +55,7 @@ const navItems = [
   { name: 'Studijní sady', page: 'StudyPackages', icon: Package },
   { name: 'Komunita', page: 'Community', icon: Users },
   { name: 'Logbook', page: 'Logbook', icon: ClipboardList },
-  { name: 'Články', page: 'Articles', icon: BookOpen },
+  { name: 'Med Search', page: 'MedSearch', icon: Search },
   { 
     name: 'Nástroje', 
     icon: Stethoscope,
@@ -66,7 +66,6 @@ const navItems = [
     ]
   },
   { name: 'Plánovač', page: 'StudyPlansV2', icon: CalendarIcon },
-  { name: 'Vyhledávání', page: 'ScholarSearch', icon: Search },
 ];
 
 export default function Layout({ children, currentPageName }) {

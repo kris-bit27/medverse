@@ -79,6 +79,7 @@ export const PAGES = {
   // === Search ===
   "Search":             L(() => import('./pages/Search')),
   "ScholarSearch":      L(() => import('./pages/ScholarSearch')),
+  "MedSearch":          L(() => import('./pages/MedSearch')),
 
   // === Articles ===
   "ArticleDetail":      L(() => import('./pages/ArticleDetail')),

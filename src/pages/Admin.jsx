@@ -32,11 +32,6 @@ export default function Admin() {
     queryFn: () => supabase.from('questions').select('*').then(r => r.data || [])
   });
 
-  const { data: articles = [] } = useQuery({
-    queryKey: ['articles'],
-    queryFn: () => supabase.from('articles').select('*').then(r => r.data || [])
-  });
-
   const { data: tools = [] } = useQuery({
     queryKey: ['tools'],
     queryFn: () => supabase.from('clinical_tools').select('*').then(r => r.data || [])
@@ -86,14 +81,6 @@ export default function Admin() {
       icon: GraduationCap,
       href: createPageUrl('AdminQuestions'),
       color: 'from-teal-500 to-cyan-600'
-    },
-    {
-      title: 'Články',
-      description: 'Klinické přehledy a články',
-      count: articles.length,
-      icon: BookOpen,
-      href: createPageUrl('AdminArticles'),
-      color: 'from-blue-500 to-indigo-600'
     },
     {
       title: 'Nástroje',
