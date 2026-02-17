@@ -4,10 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
 import { createPageUrl } from '../utils';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import OnboardingWizard from '@/components/OnboardingWizard';
 import StudyTodayWidget from '@/components/StudyTodayWidget';
 import AttestationProgress from '@/components/AttestationProgress';
@@ -16,542 +14,283 @@ import WeeklyActivityChart from '@/components/dashboard/WeeklyActivityChart';
 import TestScoreTrend from '@/components/dashboard/TestScoreTrend';
 import MasteryOverview from '@/components/dashboard/MasteryOverview';
 import GeminiWeeklyDigest from '@/components/dashboard/GeminiWeeklyDigest';
-import { 
-  Zap,
-  BookOpen,
-  Target,
-  Flame,
-  TrendingUp,
-  Calendar,
-  Award,
-  Clock,
-  Brain,
-  ChevronRight
+import {
+  Zap, BookOpen, Target, Flame, TrendingUp,
+  Award, Brain, ChevronRight, ArrowRight, Sparkles
 } from 'lucide-react';
 
 export default function DashboardV2() {
   const { user } = useAuth();
   const [showOnboarding, setShowOnboarding] = useState(false);
 
-  // Check if user has completed profile
   const { data: profile, isLoading: profileLoading } = useQuery({
     queryKey: ['userProfile', user?.id],
     queryFn: async () => {
-      const { data } = await supabase
-        .from('user_profiles')
-        .select('profile_completed, display_name')
-        .eq('user_id', user.id)
-        .maybeSingle();
+      const { data } = await supabase.from('user_profiles')
+        .select('profile_completed, display_name').eq('user_id', user.id).maybeSingle();
       return data;
     },
     enabled: !!user?.id,
-    onSuccess: (data) => {
-      if (!data || !data.profile_completed) {
-        setShowOnboarding(true);
-      }
-    }
+    onSuccess: (data) => { if (!data || !data.profile_completed) setShowOnboarding(true); }
   });
 
-  // Show onboarding for new users
   React.useEffect(() => {
-    if (!profileLoading && profile === null) {
-      setShowOnboarding(true);
-    }
+    if (!profileLoading && profile === null) setShowOnboarding(true);
   }, [profile, profileLoading]);
 
-  // Fetch user tokens
   const { data: tokens } = useQuery({
     queryKey: ['userTokens', user?.id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('user_tokens')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-      
+      const { data, error } = await supabase.from('user_tokens').select('*').eq('user_id', user.id).single();
       if (error && error.code !== 'PGRST116') throw error;
       return data;
     },
     enabled: !!user?.id
   });
 
-  // Fetch due flashcards count
   const { data: dueCardsCount = 0 } = useQuery({
     queryKey: ['dueCardsCount', user?.id],
     queryFn: async () => {
       const today = new Date().toISOString().split('T')[0];
-      
-      const { count, error } = await supabase
-        .from('user_flashcard_progress')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id)
-        .lte('next_review', today);
-      
-      if (error) throw error;
+      const { count } = await supabase.from('user_flashcard_progress')
+        .select('*', { count: 'exact', head: true }).eq('user_id', user.id).lte('next_review', today);
       return count || 0;
     },
     enabled: !!user?.id
   });
 
-  // Fetch recent achievements
+  const { data: streakData = { current_streak: 0, today_active: false } } = useQuery({
+    queryKey: ['studyStreak', user?.id],
+    queryFn: async () => {
+      const { data } = await supabase.rpc('get_study_streak', { p_user_id: user.id });
+      return data || { current_streak: 0, today_active: false };
+    },
+    enabled: !!user?.id
+  });
+
   const { data: recentAchievements = [] } = useQuery({
     queryKey: ['recentAchievements', user?.id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('gamification_achievements')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('unlocked_at', { ascending: false })
-        .limit(5);
-      
-      if (error) throw error;
+      const { data } = await supabase.from('gamification_achievements')
+        .select('*').eq('user_id', user.id).order('unlocked_at', { ascending: false }).limit(5);
       return data || [];
     },
     enabled: !!user?.id
   });
 
-  // Fetch study streak
-  const { data: streakData = { current_streak: 0, today_active: false, total_study_days: 0 } } = useQuery({
-    queryKey: ['studyStreak', user?.id],
-    queryFn: async () => {
-      const { data, error } = await supabase.rpc('get_study_streak', { p_user_id: user.id });
-      if (error) throw error;
-      return data || { current_streak: 0, today_active: false, total_study_days: 0 };
-    },
-    enabled: !!user?.id
-  });
-  const studyStreak = streakData.current_streak;
-  const todayActive = streakData.today_active;
-
-  // Fetch recent test sessions
-  const { data: recentTests = [] } = useQuery({
-    queryKey: ['recentTests', user?.id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('test_sessions')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(5);
-      
-      if (error) throw error;
-      return data || [];
-    },
-    enabled: !!user?.id
-  });
-
-  // Fetch topic mastery data (Sprint 1)
   const { data: masteryData = [] } = useQuery({
     queryKey: ['topicMastery', user?.id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('user_topic_mastery')
+      const { data } = await supabase.from('user_topic_mastery')
         .select('*, topics:topic_id(title, slug, obory:obor_id(name))')
-        .eq('user_id', user.id)
-        .order('last_studied_at', { ascending: false })
-        .limit(10);
-      
-      if (error) throw error;
+        .eq('user_id', user.id).order('last_studied_at', { ascending: false }).limit(10);
       return data || [];
     },
     enabled: !!user?.id
   });
 
-  // Fetch total study time (Sprint 1)
-  const { data: studyStats } = useQuery({
-    queryKey: ['studyStats', user?.id],
+  const { data: recentTests = [] } = useQuery({
+    queryKey: ['recentTests', user?.id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('study_sessions')
-        .select('duration_seconds')
-        .eq('user_id', user.id);
-      
-      if (error) throw error;
-      const totalSeconds = (data || []).reduce((sum, s) => sum + (s.duration_seconds || 0), 0);
-      return {
-        totalMinutes: Math.round(totalSeconds / 60),
-        sessionCount: data?.length || 0,
-      };
+      const { data } = await supabase.from('test_sessions')
+        .select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(5);
+      return data || [];
     },
     enabled: !!user?.id
   });
 
-  const tokenPercentage = tokens 
-    ? ((tokens.current_tokens / tokens.monthly_limit) * 100)
-    : 0;
+  const streak = streakData.current_streak;
+  const firstName = (user?.full_name || user?.user_metadata?.full_name || '').split(' ')[0] || user?.email?.split('@')[0] || 'Student';
 
   return (
-    <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
-      {/* Onboarding for new users */}
-      {showOnboarding && (
-        <OnboardingWizard onComplete={() => setShowOnboarding(false)} />
-      )}
+    <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-8">
+      {showOnboarding && <OnboardingWizard onComplete={() => setShowOnboarding(false)} />}
 
-      {/* Welcome Header */}
+      {/* ══════ GREETING ══════ */}
       <div>
-        <h1 className="text-2xl lg:text-3xl font-bold mb-2">
-          Vítej zpět, {user?.full_name || user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Student'}! 👋
+        <h1 className="text-2xl lg:text-3xl font-bold tracking-tight mb-1">
+          Vítej zpět, {firstName}
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-[hsl(var(--mn-muted))] text-sm">
           Zde je tvůj dnešní přehled
         </p>
       </div>
 
-      {/* Sprint 4: What to study today */}
+      {/* ══════ QUICK STATS BAR ══════ */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-px rounded-2xl overflow-hidden border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-border))]">
+        {[
+          {
+            icon: Zap, label: 'AI Kredity',
+            value: `${(tokens?.current_tokens || 0).toLocaleString()}`,
+            sub: `${(tokens?.monthly_limit || 1000).toLocaleString()} limit`,
+            accent: 'text-teal-500',
+          },
+          {
+            icon: BookOpen, label: 'K opakování',
+            value: `${dueCardsCount}`,
+            sub: dueCardsCount === 0 ? 'Vše hotovo ✓' : 'kartiček čeká',
+            accent: dueCardsCount > 0 ? 'text-amber-500' : 'text-emerald-500',
+          },
+          {
+            icon: Flame, label: 'Série',
+            value: `${streak} ${streak === 1 ? 'den' : streak >= 2 && streak <= 4 ? 'dny' : 'dní'}`,
+            sub: streakData.today_active ? 'Dnes aktivní ✓' : streak > 0 ? 'Dnes ještě ne' : 'Začni studovat',
+            accent: streak >= 3 ? 'text-orange-500' : 'text-[hsl(var(--mn-muted))]',
+          },
+          {
+            icon: Award, label: 'Úspěchy',
+            value: `${recentAchievements.length}`,
+            sub: 'odemčeno',
+            accent: 'text-yellow-500',
+          },
+        ].map((s, i) => (
+          <div key={i} className="bg-[hsl(var(--mn-surface))] p-4 sm:p-5">
+            <div className="flex items-center gap-2 mb-2">
+              <s.icon className={`w-4 h-4 ${s.accent}`} />
+              <span className="text-xs text-[hsl(var(--mn-muted))] uppercase tracking-wider font-medium">{s.label}</span>
+            </div>
+            <p className="text-xl sm:text-2xl font-bold tracking-tight">{s.value}</p>
+            <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">{s.sub}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* ══════ STUDY TODAY + ATTESTATION ══════ */}
       <div className="grid lg:grid-cols-2 gap-6">
         <StudyTodayWidget />
         <AttestationProgress />
       </div>
 
-      {/* Weak spots */}
+      {/* ══════ WEAK SPOTS ══════ */}
       <WeakSpotsWidget />
 
-      {/* P1: Study Analytics Widgets */}
-      <div className="grid lg:grid-cols-3 gap-6">
-        <WeeklyActivityChart />
-        <TestScoreTrend />
-        <MasteryOverview />
+      {/* ══════ ANALYTICS ══════ */}
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-widest text-[hsl(var(--mn-accent))] mb-4">Studijní analytika</p>
+        <div className="grid lg:grid-cols-3 gap-6">
+          <WeeklyActivityChart />
+          <TestScoreTrend />
+          <MasteryOverview />
+        </div>
       </div>
 
-      {/* P2: AI Weekly Digest */}
+      {/* ══════ AI WEEKLY DIGEST ══════ */}
       <GeminiWeeklyDigest />
 
-      {/* Quick Stats */}
-      <div className="grid md:grid-cols-4 gap-6">
-        {/* Token Balance */}
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Zap className="w-4 h-4 text-teal-600" />
-              AI Kredity
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <p className="text-2xl font-bold">
-                {tokens?.current_tokens?.toLocaleString() || 0} 💎
-              </p>
-              <Progress value={tokenPercentage} className="h-2" />
-              <p className="text-xs text-muted-foreground">
-                {tokens?.monthly_limit?.toLocaleString() || 1000} limit
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Due Cards */}
-        <Card className={dueCardsCount > 0 ? 'border-orange-200 bg-orange-50/50 dark:bg-orange-950/20' : ''}>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-orange-600" />
-              K opakování
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{dueCardsCount}</p>
-            <p className="text-xs text-muted-foreground mt-2">
-              {dueCardsCount === 0 ? 'Vše hotovo!' : 'kartiček čeká'}
-            </p>
-            {dueCardsCount > 0 && (
-              <Button size="sm" className="mt-3 w-full" asChild>
-                <Link to={createPageUrl("FlashcardReviewV2")}>
-                  Začít opakování
-                </Link>
-              </Button>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Study Streak */}
-        <Card className={studyStreak >= 3 ? 'border-orange-200 bg-orange-50/50 dark:bg-orange-950/20' : ''}>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Flame className={`w-4 h-4 ${studyStreak >= 3 ? 'text-orange-500' : 'text-muted-foreground'}`} />
-              Série
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{studyStreak} {studyStreak === 1 ? 'den' : studyStreak >= 2 && studyStreak <= 4 ? 'dny' : 'dní'} 🔥</p>
-            <p className="text-xs text-muted-foreground mt-2">
-              {todayActive ? '✅ Dnes aktivní' : studyStreak > 0 ? '⏰ Dnes ještě ne — udrž sérii!' : 'Začni studovat!'}
-            </p>
-          </CardContent>
-        </Card>
-
-        {/* Achievements */}
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Award className="w-4 h-4 text-yellow-600" />
-              Úspěchy
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{recentAchievements.length}</p>
-            <p className="text-xs text-muted-foreground mt-2">
-              odemčeno
-            </p>
-          </CardContent>
-        </Card>
+      {/* ══════ QUICK ACTIONS ══════ */}
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-widest text-[hsl(var(--mn-accent))] mb-4">Rychlé akce</p>
+        <div className="grid sm:grid-cols-3 gap-4">
+          {[
+            { to: 'Studium', icon: Brain, label: 'Studuj téma', desc: 'Procházej AI-generovaný obsah', accent: 'from-teal-500 to-emerald-500' },
+            { to: 'FlashcardReviewV2', icon: Zap, label: 'Opakovat kartičky', desc: `${dueCardsCount} kartiček čeká`, accent: 'from-amber-500 to-orange-500' },
+            { to: 'TestGeneratorV2', icon: Target, label: 'Zkušební test', desc: 'Vyzkoušej své znalosti', accent: 'from-violet-500 to-purple-500' },
+          ].map((a, i) => (
+            <Link key={i} to={createPageUrl(a.to)}>
+              <div className="group p-5 rounded-2xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface)/0.5)] hover:border-[hsl(var(--mn-accent)/0.3)] hover:bg-[hsl(var(--mn-surface))] transition-all">
+                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${a.accent} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
+                  <a.icon className="w-5 h-5 text-white" />
+                </div>
+                <h3 className="font-semibold text-sm mb-1">{a.label}</h3>
+                <p className="text-xs text-[hsl(var(--mn-muted))]">{a.desc}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
 
-      {/* Quick Actions */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Rychlé akce</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid md:grid-cols-3 gap-4">
-            <Link to={createPageUrl("Studium")}>
-              <Card className="hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900 transition-colors cursor-pointer border-2">
-                <CardContent className="p-6 flex items-start gap-4">
-                  <div className="p-3 rounded-xl bg-teal-100 dark:bg-teal-900/20">
-                    <Brain className="w-6 h-6 text-teal-600 dark:text-teal-300" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold mb-1">Studuj téma</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Procházej AI-generovaný obsah
-                    </p>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link to={createPageUrl("FlashcardReviewV2")}>
-              <Card className="hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900 transition-colors cursor-pointer border-2">
-                <CardContent className="p-6 flex items-start gap-4">
-                  <div className="p-3 rounded-xl bg-orange-100 dark:bg-amber-900/20">
-                    <Zap className="w-6 h-6 text-orange-600 dark:text-orange-300" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold mb-1">Opakovat kartičky</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {dueCardsCount} kartiček čeká
-                    </p>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link to={createPageUrl("TestGeneratorV2")}>
-              <Card className="hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900 transition-colors cursor-pointer border-2">
-                <CardContent className="p-6 flex items-start gap-4">
-                  <div className="p-3 rounded-xl bg-blue-100 dark:bg-blue-900/20">
-                    <Target className="w-6 h-6 text-blue-600 dark:text-blue-300" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold mb-1">Zkušební test</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Vyzkoušej své znalosti
-                    </p>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
-                </CardContent>
-              </Card>
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
-
-
-      {/* ── Sprint 3: Weakness Dashboard ── */}
-      {masteryData.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-amber-500" />
-              Oblasti k procvičení
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {masteryData
-                .filter(m => Number(m.mastery_score) < 60)
-                .sort((a, b) => Number(a.mastery_score) - Number(b.mastery_score))
-                .slice(0, 6)
-                .map(m => {
-                  const score = Number(m.mastery_score) || 0;
-                  return (
-                    <Link key={m.id} to={`${createPageUrl('TopicDetailV2')}?id=${m.topic_id}`}>
-                      <div className="flex items-center justify-between p-3 rounded-xl border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))] transition-colors">
-                        <div className="flex-1 min-w-0 mr-3">
-                          <p className="text-sm font-medium truncate">{m.topics?.title}</p>
-                          <p className="text-xs text-muted-foreground">{m.topics?.obory?.name}</p>
-                        </div>
-                        <div className="flex items-center gap-3 shrink-0">
-                          <div className="w-20 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                            <div className="h-full rounded-full transition-all" style={{
-                              width: `${score}%`,
-                              background: score >= 50 ? '#a855f7' : score >= 20 ? '#f59e0b' : '#ef4444'
-                            }} />
-                          </div>
-                          <span className="text-xs font-bold w-8 text-right text-muted-foreground">{Math.round(score)}%</span>
-                        </div>
+      {/* ══════ AREAS TO PRACTICE ══════ */}
+      {masteryData.filter(m => Number(m.mastery_score) < 60).length > 0 && (
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-widest text-[hsl(var(--mn-accent))] mb-4">Oblasti k procvičení</p>
+          <div className="rounded-2xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface)/0.5)] divide-y divide-[hsl(var(--mn-border))]">
+            {masteryData
+              .filter(m => Number(m.mastery_score) < 60)
+              .sort((a, b) => Number(a.mastery_score) - Number(b.mastery_score))
+              .slice(0, 6)
+              .map(m => {
+                const score = Number(m.mastery_score) || 0;
+                return (
+                  <Link key={m.id} to={`${createPageUrl('TopicDetailV2')}?id=${m.topic_id}`}
+                    className="flex items-center justify-between p-4 hover:bg-[hsl(var(--mn-surface-2)/0.5)] transition-colors first:rounded-t-2xl last:rounded-b-2xl"
+                  >
+                    <div className="flex-1 min-w-0 mr-3">
+                      <p className="text-sm font-medium truncate">{m.topics?.title}</p>
+                      <p className="text-xs text-[hsl(var(--mn-muted))]">{m.topics?.obory?.name}</p>
+                    </div>
+                    <div className="flex items-center gap-3 shrink-0">
+                      <div className="w-20 h-1.5 bg-[hsl(var(--mn-border))] rounded-full overflow-hidden">
+                        <div className="h-full rounded-full transition-all" style={{
+                          width: `${score}%`,
+                          background: score >= 50 ? '#a855f7' : score >= 20 ? '#f59e0b' : '#ef4444'
+                        }} />
                       </div>
-                    </Link>
-                  );
-                })}
-              {masteryData.filter(m => Number(m.mastery_score) < 60).length === 0 && (
-                <p className="text-sm text-muted-foreground text-center py-4">
-                  Všechna prostudovaná témata mají dobré zvládnutí! 🎉
-                </p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+                      <span className="text-xs font-bold w-8 text-right text-[hsl(var(--mn-muted))]">{Math.round(score)}%</span>
+                    </div>
+                  </Link>
+                );
+              })}
+          </div>
+        </div>
       )}
 
-      {/* Recent Achievements */}
-      {recentAchievements.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Award className="w-5 h-5" />
-              Nedávné úspěchy
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {recentAchievements.map((achievement) => (
-                <div
-                  key={achievement.id}
-                  className="flex items-center justify-between p-3 rounded-xl border"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-yellow-100 dark:bg-amber-900/20 flex items-center justify-center">
-                      <Award className="w-5 h-5 text-yellow-600 dark:text-yellow-300" />
-                    </div>
-                    <div>
-                      <p className="font-medium">{achievement.achievement_name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(achievement.unlocked_at).toLocaleDateString('cs-CZ')}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <Badge variant="outline">
-                    +{achievement.tokens_earned} 💎
-                  </Badge>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* My Tests Section */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <Target className="w-5 h-5" />
-              Moje Testy
-            </CardTitle>
+      {/* ══════ RECENT TESTS ══════ */}
+      {recentTests.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[hsl(var(--mn-accent))]">Moje testy</p>
             <Link to={createPageUrl('TestGeneratorV2')}>
-              <Button size="sm">
-                <Target className="w-4 h-4 mr-2" />
-                Nový test
+              <Button size="sm" variant="outline" className="text-xs">
+                Nový test <ArrowRight className="w-3 h-3 ml-1" />
               </Button>
             </Link>
           </div>
-        </CardHeader>
-        <CardContent>
-          {recentTests.length === 0 ? (
-            <div className="text-center py-8">
-              <Target className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
-              <p className="text-muted-foreground mb-4">
-                Zatím jste nevytvořili žádný test
-              </p>
-              <Link to={createPageUrl('TestGeneratorV2')}>
-                <Button>
-                  <Target className="w-4 h-4 mr-2" />
-                  Vytvořit první test
-                </Button>
-              </Link>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {recentTests.map((test) => {
-                const isCompleted = test.status === 'completed';
-                const inProgress = test.status === 'in_progress';
-
-                return (
-                  <div
-                    key={test.id}
-                    className="flex items-center justify-between p-4 rounded-xl border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900 transition-colors"
-                  >
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <Badge variant={isCompleted ? 'default' : inProgress ? 'secondary' : 'outline'}>
-                          {isCompleted ? 'Dokončeno' : inProgress ? 'Probíhá' : 'Opuštěno'}
-                        </Badge>
-                        <span className="text-sm text-muted-foreground">
-                          {test.question_count} otázek
-                        </span>
-                        {test.time_limit_minutes && (
-                          <span className="text-sm text-muted-foreground">
-                            • {test.time_limit_minutes} min
-                          </span>
-                        )}
-                      </div>
-                      
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(test.created_at).toLocaleString('cs-CZ')}
-                      </p>
-
-                      {isCompleted && test.score !== null && (
-                        <div className="mt-2">
-                          <div className="flex items-center gap-2">
-                            <span className={`text-lg font-bold ${
-                              test.score >= 80 ? 'text-green-600' :
-                              test.score >= 60 ? 'text-yellow-600' :
-                              'text-red-600'
-                            }`}>
-                              {test.score.toFixed(1)}%
-                            </span>
-                            <span className="text-sm text-muted-foreground">
-                              ({test.correct_answers}/{test.total_questions} správně)
-                            </span>
-                          </div>
-                        </div>
-                      )}
+          <div className="rounded-2xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface)/0.5)] divide-y divide-[hsl(var(--mn-border))]">
+            {recentTests.map(test => {
+              const done = test.status === 'completed';
+              const inProg = test.status === 'in_progress';
+              return (
+                <div key={test.id} className="flex items-center justify-between p-4 first:rounded-t-2xl last:rounded-b-2xl">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <Badge variant={done ? 'default' : inProg ? 'secondary' : 'outline'} className="text-[10px]">
+                        {done ? 'Dokončeno' : inProg ? 'Probíhá' : 'Opuštěno'}
+                      </Badge>
+                      <span className="text-xs text-[hsl(var(--mn-muted))]">{test.question_count} otázek</span>
                     </div>
-
-                    <div className="flex items-center gap-2">
-                      {inProgress && (
-                        <Link to={`${createPageUrl('TestSessionV2')}?id=${test.id}`}>
-                          <Button size="sm" variant="default">
-                            Pokračovat
-                          </Button>
-                        </Link>
-                      )}
-                      
-                      {isCompleted && (
-                        <Link to={`${createPageUrl('TestResults')}?id=${test.id}`}>
-                          <Button size="sm" variant="outline">
-                            Zobrazit výsledky
-                          </Button>
-                        </Link>
-                      )}
-                    </div>
+                    {done && test.score !== null && (
+                      <span className={`text-sm font-bold ${test.score >= 80 ? 'text-emerald-500' : test.score >= 60 ? 'text-amber-500' : 'text-red-500'}`}>
+                        {test.score.toFixed(1)}% ({test.correct_answers}/{test.total_questions})
+                      </span>
+                    )}
+                    <p className="text-[10px] text-[hsl(var(--mn-muted))] mt-0.5">{new Date(test.created_at).toLocaleString('cs-CZ')}</p>
                   </div>
-                );
-              })}
-
-              {recentTests.length >= 5 && (
-                <div className="text-center pt-2">
-                  <Button variant="ghost" size="sm">
-                    Zobrazit všechny testy
-                  </Button>
+                  <div className="shrink-0 ml-3">
+                    {inProg && <Link to={`${createPageUrl('TestSessionV2')}?id=${test.id}`}><Button size="sm">Pokračovat</Button></Link>}
+                    {done && <Link to={`${createPageUrl('TestResults')}?id=${test.id}`}><Button size="sm" variant="outline">Výsledky</Button></Link>}
+                  </div>
                 </div>
-              )}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ══════ ACHIEVEMENTS ══════ */}
+      {recentAchievements.length > 0 && (
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-widest text-[hsl(var(--mn-accent))] mb-4">Nedávné úspěchy</p>
+          <div className="flex flex-wrap gap-3">
+            {recentAchievements.map(a => (
+              <div key={a.id} className="flex items-center gap-2 px-4 py-2.5 rounded-full border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface)/0.5)]">
+                <Award className="w-4 h-4 text-yellow-500" />
+                <span className="text-sm font-medium">{a.achievement_name}</span>
+                <Badge variant="outline" className="text-[10px]">+{a.tokens_earned} 💎</Badge>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
