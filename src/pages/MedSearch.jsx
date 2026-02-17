@@ -259,11 +259,6 @@ export default function MedSearch() {
                 </span>
               )}
             </p>
-            {result.cost_usd && (
-              <Badge variant="outline" className="text-[10px]">
-                AI cost: ${result.cost_usd.toFixed(4)}
-              </Badge>
-            )}
           </div>
 
           {/* Tabs */}
