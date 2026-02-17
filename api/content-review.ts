@@ -1,8 +1,28 @@
-import { callGPT } from './_ai-models';
 import { createClient } from '@supabase/supabase-js';
 
-
 const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+
+async function callGPT(prompt: string, options: { system?: string; maxTokens?: number; temperature?: number; model?: string } = {}) {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) throw new Error('OPENAI_API_KEY not set');
+  const model = options.model || 'gpt-4o';
+  const messages: any[] = [];
+  if (options.system) messages.push({ role: 'system', content: options.system });
+  messages.push({ role: 'user', content: prompt });
+
+  const r = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+    body: JSON.stringify({ model, messages, max_tokens: options.maxTokens || 2048, temperature: options.temperature ?? 0.2 }),
+  });
+  if (!r.ok) throw new Error(`OpenAI error ${r.status}: ${await r.text()}`);
+  const data = await r.json();
+  const text = data.choices?.[0]?.message?.content || '';
+  const usage = data.usage || {};
+  const inTok = usage.prompt_tokens || 0;
+  const outTok = usage.completion_tokens || 0;
+  return { text, model, input_tokens: inTok, output_tokens: outTok, cost_usd: (inTok * 2.5 + outTok * 10) / 1_000_000 };
+}
 
 export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });

@@ -1,6 +1,29 @@
-import { callGemini } from './_ai-models';
 import { createClient } from '@supabase/supabase-js';
 
+
+async function callGemini(prompt: string, options: { system?: string; maxTokens?: number; temperature?: number } = {}) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error('GEMINI_API_KEY not set');
+  const model = 'gemini-2.5-flash';
+  const body: any = {
+    contents: [{ role: 'user', parts: [{ text: prompt }] }],
+    generationConfig: { maxOutputTokens: options.maxTokens || 2048, temperature: options.temperature ?? 0.3 },
+  };
+  if (options.system) body.systemInstruction = { parts: [{ text: options.system }] };
+
+  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!r.ok) throw new Error(`Gemini error ${r.status}: ${await r.text()}`);
+  const data = await r.json();
+  const text = data.candidates?.[0]?.content?.parts?.map((p: any) => p.text).join('') || '';
+  const usage = data.usageMetadata || {};
+  const inTok = usage.promptTokenCount || 0;
+  const outTok = usage.candidatesTokenCount || 0;
+  return { text, model, input_tokens: inTok, output_tokens: outTok, cost_usd: (inTok * 0.15 + outTok * 0.60) / 1_000_000 };
+}
 
 const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
