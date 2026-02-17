@@ -115,6 +115,26 @@ export default async function handler(req: any, res: any) {
       return res.status(200).json({ articles, query, pubmedQuery });
     }
 
+    // Token check for AI synthesis
+    const userId = req.body?.user_id;
+    if (userId) {
+      try {
+        const { checkTokens, deductTokens } = await import('./_token-utils');
+        const check = await checkTokens(supabase, userId, 'med_search_answer');
+        if (!check.allowed) {
+          return res.status(402).json({ 
+            error: `Nedostatek AI kreditů. Potřeba: ${check.cost}, zbývá: ${check.remaining}`,
+            tokens_remaining: check.remaining,
+            tokens_needed: check.cost,
+          });
+        }
+        await deductTokens(supabase, userId, 'med_search_answer', `MedSearch: ${query.substring(0, 50)}`);
+      } catch (tokenErr: any) {
+        // Non-critical — don't block if token system fails
+        console.warn('[med-search] token deduction failed:', tokenErr.message);
+      }
+    }
+
     // Step 2: AI Synthesis (mode === 'answer' or 'deep')
     const abstractContext = articles
       .filter(a => a.abstract)

@@ -15,6 +15,7 @@ import WeakSpotsWidget from '@/components/dashboard/WeakSpotsWidget';
 import WeeklyActivityChart from '@/components/dashboard/WeeklyActivityChart';
 import TestScoreTrend from '@/components/dashboard/TestScoreTrend';
 import MasteryOverview from '@/components/dashboard/MasteryOverview';
+import GeminiWeeklyDigest from '@/components/dashboard/GeminiWeeklyDigest';
 import { 
   Zap,
   BookOpen,
@@ -211,6 +212,9 @@ export default function DashboardV2() {
         <TestScoreTrend />
         <MasteryOverview />
       </div>
+
+      {/* P2: AI Weekly Digest */}
+      <GeminiWeeklyDigest />
 
       {/* Quick Stats */}
       <div className="grid md:grid-cols-4 gap-6">

@@ -12,13 +12,32 @@ export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    const { studySetId, topicIds, title, mode = 'summary' } = req.body || {};
+    const { studySetId, topicIds, title, mode = 'summary', user_id } = req.body || {};
 
     if (!topicIds?.length) {
       return res.status(400).json({ error: 'No topics selected' });
     }
     if (topicIds.length > 20) {
       return res.status(400).json({ error: 'Maximum 20 topics per set' });
+    }
+
+    // Token check
+    if (user_id) {
+      try {
+        const { checkTokens, deductTokens } = await import('./_token-utils');
+        const operation = `study_set_${mode}`;
+        const check = await checkTokens(supabase, user_id, operation);
+        if (!check.allowed) {
+          return res.status(402).json({
+            error: `Nedostatek AI kreditů. Potřeba: ${check.cost}, zbývá: ${check.remaining}`,
+            tokens_remaining: check.remaining,
+            tokens_needed: check.cost,
+          });
+        }
+        await deductTokens(supabase, user_id, operation, `StudySet ${mode}: ${title?.substring(0, 40) || 'untitled'}`);
+      } catch (tokenErr: any) {
+        console.warn('[study-set] token deduction failed:', tokenErr.message);
+      }
     }
 
     // Fetch topic content (bullet_points_summary is cheaper to process)

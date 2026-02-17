@@ -448,6 +448,7 @@ export default function StudyPackages() {
         topicIds: activeSet.topic_ids,
         title: activeSet.title,
         mode,
+        user_id: user?.id,
       });
     },
     onSuccess: (data, { mode }) => {

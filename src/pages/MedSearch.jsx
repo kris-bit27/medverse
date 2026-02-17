@@ -115,7 +115,7 @@ export default function MedSearch() {
   // PubMed search + AI synthesis
   const searchMutation = useMutation({
     mutationFn: async ({ q, mode }) => {
-      return callApi('med-search', { query: q, mode });
+      return callApi('med-search', { query: q, mode, user_id: user?.id });
     },
     onSuccess: () => {
       setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
