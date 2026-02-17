@@ -16,6 +16,7 @@ import {
   FileText, Brain, ListChecks, GraduationCap, X, Check
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useAnalytics } from '@/hooks/useAnalytics';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import EmptyState from '@/components/common/EmptyState';
 import HTMLContent from '@/components/study/HTMLContent';
@@ -335,6 +336,7 @@ function QuizPlayer({ quiz, title }) {
 /* ─── Main Page ─── */
 export default function StudyPackages() {
   const { user } = useAuth();
+  const { track } = useAnalytics();
   const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeSetId = searchParams.get('id');
@@ -423,6 +425,7 @@ export default function StudyPackages() {
     },
     onSuccess: (data) => {
       toast.success('Sada vytvořena');
+      track('study_set_created', { topic_count: newTopicIds.length });
       setShowCreate(false);
       setNewTitle('');
       setNewDescription('');
@@ -449,6 +452,7 @@ export default function StudyPackages() {
     },
     onSuccess: (data, { mode }) => {
       toast.success(mode === 'summary' ? 'Souhrn vygenerován' : mode === 'study_plan' ? 'Plán vytvořen' : 'Kvíz vygenerován');
+      track('study_set_ai_generated', { mode, topic_count: activeSet?.topic_ids?.length });
       queryClient.invalidateQueries({ queryKey: ['studySetDetail'] });
       queryClient.invalidateQueries({ queryKey: ['studySets'] });
       setActiveTab(mode === 'study_plan' ? 'plan' : mode === 'quiz' ? 'quiz' : 'summary');

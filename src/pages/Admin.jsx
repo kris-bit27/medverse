@@ -100,10 +100,10 @@ export default function Admin() {
     },
     {
       title: 'Analytics',
-      description: 'Cache & AI náklady',
+      description: 'Uživatelé, engagement, AI náklady',
       count: null,
       icon: BarChart3,
-      href: createPageUrl('AdminCostAnalytics'),
+      href: createPageUrl('AdminAnalytics'),
       color: 'from-emerald-500 to-teal-600'
     },
     {

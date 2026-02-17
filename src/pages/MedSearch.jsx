@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import HTMLContent from '@/components/study/HTMLContent';
 import { toast } from 'sonner';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 const EXAMPLE_QUERIES = [
   'Diferenciální diagnostika bolesti na hrudi',
@@ -92,6 +93,7 @@ function ArticleCard({ article, index }) {
 
 export default function MedSearch() {
   const { user } = useAuth();
+  const { track } = useAnalytics();
   const queryClient = useQueryClient();
   const [query, setQuery] = useState('');
   const [activeTab, setActiveTab] = useState('answer');
@@ -124,6 +126,7 @@ export default function MedSearch() {
     const searchQuery = q || query;
     if (!searchQuery.trim()) return;
     setQuery(searchQuery);
+    track('med_search', { query: searchQuery, mode });
     searchMutation.mutate({ q: searchQuery, mode });
   };
 
