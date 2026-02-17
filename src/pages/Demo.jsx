@@ -7,14 +7,17 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
-import ReactMarkdown from 'react-markdown';
+import MedicalContent from '@/components/MedicalContent';
 import {
-  ArrowRight, BookOpen, Brain, Zap, RefreshCw, ChevronDown, ChevronUp,
-  CheckCircle2, XCircle, Loader2, GraduationCap, Sparkles, Eye, EyeOff,
+  ArrowRight, BookOpen, Brain, Zap, RefreshCw, 
+  CheckCircle2, XCircle, Loader2, GraduationCap, Sparkles,
   Clock, FileText, Layers
 } from 'lucide-react';
 
 const loginUrl = `/login?redirectTo=${encodeURIComponent('/Dashboard')}`;
+
+// Specific obory to show in demo
+const DEMO_OBORY = ['Kardiologie', 'Chirurgie', 'Pediatrie', 'Gynekologie a porodnictví', 'Ortopedie a traumatologie pohybového ústrojí'];
 
 // ─── Flashcard component ───
 function FlashcardDemo({ cards }) {
@@ -112,10 +115,7 @@ function MCQDemo({ questions }) {
             else cls = 'border-[hsl(var(--mn-border))] opacity-50';
           }
           return (
-            <button
-              key={key}
-              onClick={() => handleSelect(key)}
-              disabled={!!selected}
+            <button key={key} onClick={() => handleSelect(key)} disabled={!!selected}
               className={`w-full text-left p-4 rounded-xl border ${cls} transition-all flex items-start gap-3`}
             >
               <span className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${
@@ -148,46 +148,81 @@ function MCQDemo({ questions }) {
   );
 }
 
-// ─── Topic preview ───
+// ─── Topic preview — portal style ───
 function TopicPreview({ topic }) {
-  const [mode, setMode] = useState('summary');
+  const [mode, setMode] = useState('fulltext');
   if (!topic) return null;
+
+  const content = mode === 'fulltext' ? topic.full_text_content : topic.bullet_points_summary;
+  const wordCount = topic.full_text_content ? Math.round(topic.full_text_content.split(/\s+/).length) : 0;
+  const readTime = Math.max(1, Math.round(wordCount / 200));
+
+  // Truncate for demo — show first ~3000 chars then fade out
+  const truncated = content ? content.slice(0, 4000) : '';
+  const isTruncated = content && content.length > 4000;
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2 flex-wrap">
-        <Badge variant="outline" className="text-[10px]">{topic.obor}</Badge>
-        <Badge variant="outline" className="text-[10px]">
-          <Sparkles className="w-3 h-3 mr-1" /> {topic.ai_model?.includes('opus') ? 'Opus 4' : 'Sonnet 4'}
-        </Badge>
+      {/* Topic header — mirroring TopicDetailV5 style */}
+      <div>
+        <div className="flex items-center gap-2 mb-2">
+          <Badge variant="outline" className="text-xs text-teal-600 dark:text-teal-400 border-teal-500/30 bg-teal-500/10">{topic.obor}</Badge>
+          {topic.okruh && <Badge variant="outline" className="text-xs text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))]">{topic.okruh}</Badge>}
+        </div>
+        <h3 className="text-xl sm:text-2xl font-bold mb-2" style={{ letterSpacing: '-0.02em' }}>
+          {topic.title}
+        </h3>
+        <div className="flex flex-wrap items-center gap-3 text-xs text-[hsl(var(--mn-muted))]">
+          <span className="flex items-center gap-1">
+            <Sparkles className="w-3.5 h-3.5 text-teal-500" /> {topic.ai_model?.includes('opus') ? 'Opus 4' : 'Sonnet 4'}
+          </span>
+          {wordCount > 0 && (
+            <span className="flex items-center gap-1">
+              <Clock className="w-3.5 h-3.5" /> ~{readTime} min
+            </span>
+          )}
+        </div>
       </div>
-      <h3 className="text-lg font-bold">{topic.title}</h3>
 
-      <div className="flex gap-1 p-0.5 rounded-lg bg-[hsl(var(--mn-surface-2))]">
+      {/* Content tabs — matching TopicDetailV5 */}
+      <div className="inline-flex gap-1 p-1 rounded-xl bg-[hsl(var(--mn-surface-2))] border border-[hsl(var(--mn-border))]">
         {[
-          { id: 'summary', label: 'High-Yield', icon: Zap },
-          { id: 'fulltext', label: 'Plný text', icon: FileText },
+          { id: 'fulltext', label: 'Plný text', icon: BookOpen, has: !!topic.full_text_content },
+          { id: 'highyield', label: 'High-Yield', icon: Zap, has: !!topic.bullet_points_summary },
         ].map(tab => (
-          <button key={tab.id} onClick={() => setMode(tab.id)}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-md text-xs font-medium transition-all ${
-              mode === tab.id ? 'bg-[hsl(var(--mn-surface))] text-[hsl(var(--mn-text))] shadow-sm' : 'text-[hsl(var(--mn-muted))]'
+          <button key={tab.id} onClick={() => tab.has && setMode(tab.id)} disabled={!tab.has}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              mode === tab.id
+                ? 'bg-[hsl(var(--mn-surface))] text-[hsl(var(--mn-text))] shadow-sm'
+                : tab.has
+                ? 'text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))]'
+                : 'text-[hsl(var(--mn-muted))] opacity-40 cursor-not-allowed'
             }`}
           >
-            <tab.icon className="w-3.5 h-3.5" />
+            <tab.icon className="w-4 h-4" />
             {tab.label}
+            {tab.has && mode === tab.id && <div className="w-1.5 h-1.5 rounded-full bg-teal-500" />}
           </button>
         ))}
       </div>
 
-      <div className="max-h-[400px] overflow-y-auto rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface))] p-5">
-        <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:text-[hsl(var(--mn-text))] prose-p:text-[hsl(var(--mn-muted))]">
-          <ReactMarkdown>
-            {mode === 'summary'
-              ? (topic.bullet_points_summary || '').slice(0, 2000)
-              : (topic.full_text_content || '').slice(0, 3000) + '\n\n---\n*Obsah pokračuje… Zaregistrujte se pro plný přístup.*'
-            }
-          </ReactMarkdown>
+      {/* Content — using MedicalContent component like the real portal */}
+      <div className="relative rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface))] shadow-sm">
+        <div className="p-5 sm:p-8">
+          <MedicalContent content={truncated} />
         </div>
+        {/* Fade overlay if truncated */}
+        {isTruncated && (
+          <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[hsl(var(--mn-surface))] via-[hsl(var(--mn-surface)/0.8)] to-transparent rounded-b-xl flex items-end justify-center pb-6">
+            <Button
+              className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)] text-white shadow-lg"
+              onClick={() => window.location.href = loginUrl}
+            >
+              Zaregistrujte se pro plný obsah
+              <ArrowRight className="w-4 h-4 ml-1" />
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -204,58 +239,53 @@ export default function Demo() {
 
   useEffect(() => {
     (async () => {
-      // Fetch diverse demo content
-      const { data: t } = await supabase.from('topics')
-        .select('id, title, full_text_content, bullet_points_summary, ai_model, obory:obor_id(name)')
-        .not('full_text_content', 'is', null)
-        .not('bullet_points_summary', 'is', null)
-        .limit(200);
+      try {
+        // Fetch 1 good topic per target obor
+        const picks = [];
+        for (const oborName of DEMO_OBORY) {
+          const { data } = await supabase.from('topics')
+            .select('id, title, full_text_content, bullet_points_summary, ai_model, obory:obor_id(name), okruhy:okruh_id(name)')
+            .not('full_text_content', 'is', null)
+            .not('bullet_points_summary', 'is', null)
+            .eq('obory.name', oborName)
+            .order('title')
+            .limit(50);
+          // Filter to ones that actually matched the obor join and have good content
+          const matched = (data || []).filter(t => t.obory?.name === oborName && (t.full_text_content?.length || 0) > 5000);
+          if (matched.length) {
+            const pick = matched[Math.floor(Math.random() * matched.length)];
+            picks.push({ ...pick, obor: pick.obory?.name, okruh: pick.okruhy?.name });
+          }
+        }
+        setTopics(picks);
+        if (picks.length) setSelectedTopic(picks[0]);
 
-      // Pick 5 from different obory
-      const byObor = {};
-      (t || []).forEach(topic => {
-        const obor = topic.obory?.name || 'Ostatní';
-        if (!byObor[obor]) byObor[obor] = [];
-        byObor[obor].push({ ...topic, obor });
-      });
-      const picks = [];
-      const oborNames = Object.keys(byObor).sort(() => Math.random() - 0.5);
-      for (const name of oborNames) {
-        if (picks.length >= 5) break;
-        const arr = byObor[name];
-        const good = arr.filter(x => (x.full_text_content?.length || 0) > 4000);
-        if (good.length) picks.push(good[Math.floor(Math.random() * good.length)]);
+        // Fetch flashcards from picked topics
+        if (picks.length) {
+          const { data: fc } = await supabase.from('flashcards')
+            .select('question, answer, difficulty, topics:topic_id(title, obory:obor_id(name))')
+            .in('topic_id', picks.map(p => p.id))
+            .limit(50);
+          const mapped = (fc || []).filter(f => f.question && f.answer).map(f => ({
+            question: f.question, answer: f.answer,
+            topic: f.topics?.title, obor: f.topics?.obory?.name || '',
+          }));
+          setFlashcards(mapped.sort(() => Math.random() - 0.5).slice(0, 8));
+        }
+
+        // Fetch MCQs from different obory for variety
+        const { data: mcq } = await supabase.from('questions')
+          .select('question_text, options, correct_answer, explanation, topics:topic_id(title, obory:obor_id(name))')
+          .not('options', 'is', null)
+          .not('explanation', 'is', null)
+          .limit(100);
+        const goodMcq = (mcq || []).filter(q => q.options && Object.keys(q.options).length >= 3 && q.explanation?.length > 40);
+        setQuestions(goodMcq.sort(() => Math.random() - 0.5).slice(0, 5).map(q => ({
+          ...q, obor: q.topics?.obory?.name || ''
+        })));
+      } catch (e) {
+        console.error('Demo fetch error:', e);
       }
-      setTopics(picks);
-      if (picks.length) setSelectedTopic(picks[0]);
-
-      // Fetch flashcards from picked topics
-      if (picks.length) {
-        const { data: fc } = await supabase.from('flashcards')
-          .select('question, answer, difficulty, topics:topic_id(title, obory:obor_id(name))')
-          .in('topic_id', picks.map(p => p.id))
-          .limit(50);
-        const mapped = (fc || []).filter(f => f.question && f.answer).map(f => ({
-          question: f.question,
-          answer: f.answer,
-          topic: f.topics?.title,
-          obor: f.topics?.obory?.name || '',
-        }));
-        // Pick 6 random
-        setFlashcards(mapped.sort(() => Math.random() - 0.5).slice(0, 6));
-      }
-
-      // Fetch MCQs
-      const { data: mcq } = await supabase.from('questions')
-        .select('question_text, options, correct_answer, explanation, topics:topic_id(title, obory:obor_id(name))')
-        .not('options', 'is', null)
-        .not('explanation', 'is', null)
-        .limit(100);
-      const goodMcq = (mcq || []).filter(q => q.options && Object.keys(q.options).length >= 3 && q.explanation?.length > 40);
-      setQuestions(goodMcq.sort(() => Math.random() - 0.5).slice(0, 5).map(q => ({
-        ...q, obor: q.topics?.obory?.name || ''
-      })));
-
       setLoading(false);
     })();
   }, []);
@@ -288,7 +318,7 @@ export default function Demo() {
 
       {/* Header */}
       <section className="pt-28 pb-10 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-5xl mx-auto text-center">
           <Badge variant="outline" className="mb-4">
             <GraduationCap className="w-3 h-3 mr-1" /> Živá ukázka z databáze
           </Badge>
@@ -296,14 +326,14 @@ export default function Demo() {
             Vyzkoušejte reálný obsah MedVerse
           </h1>
           <p className="text-[hsl(var(--mn-muted))] max-w-xl mx-auto">
-            Vše co vidíte je skutečný obsah z naší databáze — AI generované studijní materiály, kartičky a testové otázky.
+            Vše co vidíte je skutečný AI-generovaný obsah z naší databáze — studijní materiály, flashcards a testové otázky napříč obory.
           </p>
         </div>
       </section>
 
       {/* Tabs + Content */}
       <section className="pb-24 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           {/* Tab selector */}
           <div className="grid grid-cols-3 gap-3 mb-8">
             {tabs.map(tab => (
@@ -329,42 +359,52 @@ export default function Demo() {
               <p className="text-sm text-[hsl(var(--mn-muted))]">Načítám obsah z databáze…</p>
             </div>
           ) : (
-            <div className="grid lg:grid-cols-[240px_1fr] gap-6">
-              {/* Sidebar — topic list (only for topic tab) */}
+            <div>
+              {/* ─── TOPIC TAB ─── */}
               {activeTab === 'topic' && (
-                <div className="space-y-2">
-                  <p className="text-xs font-medium text-[hsl(var(--mn-muted))] uppercase tracking-wider mb-2 px-1">Témata</p>
-                  {topics.map(t => (
-                    <button
-                      key={t.id}
-                      onClick={() => setSelectedTopic(t)}
-                      className={`w-full text-left p-3 rounded-xl text-sm transition-all ${
-                        selectedTopic?.id === t.id
-                          ? 'bg-[hsl(var(--mn-accent)/0.1)] border border-[hsl(var(--mn-accent)/0.3)]'
-                          : 'hover:bg-[hsl(var(--mn-surface-2))] border border-transparent'
-                      }`}
-                    >
-                      <p className="font-medium leading-tight line-clamp-2">{t.title}</p>
-                      <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">{t.obor}</p>
-                    </button>
-                  ))}
+                <div className="grid lg:grid-cols-[220px_1fr] gap-6">
+                  {/* Sidebar — topic list */}
+                  <div className="space-y-2">
+                    <p className="text-xs font-medium text-[hsl(var(--mn-muted))] uppercase tracking-wider mb-2 px-1">Témata z 5 oborů</p>
+                    {topics.map(t => (
+                      <button
+                        key={t.id}
+                        onClick={() => setSelectedTopic(t)}
+                        className={`w-full text-left p-3 rounded-xl text-sm transition-all ${
+                          selectedTopic?.id === t.id
+                            ? 'bg-[hsl(var(--mn-accent)/0.1)] border border-[hsl(var(--mn-accent)/0.3)]'
+                            : 'hover:bg-[hsl(var(--mn-surface-2))] border border-transparent'
+                        }`}
+                      >
+                        <p className="font-medium leading-tight line-clamp-2">{t.title}</p>
+                        <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">{t.obor}</p>
+                      </button>
+                    ))}
+                  </div>
+                  {/* Main content */}
+                  <TopicPreview topic={selectedTopic} />
                 </div>
               )}
 
-              {/* Main content area */}
-              <Card className="border-[hsl(var(--mn-border))]">
-                <CardContent className="p-6">
-                  {activeTab === 'topic' && <TopicPreview topic={selectedTopic} />}
-                  {activeTab === 'flashcards' && (
-                    flashcards.length ? <FlashcardDemo cards={flashcards} /> :
-                    <p className="text-center py-12 text-[hsl(var(--mn-muted))]">Žádné kartičky k zobrazení</p>
-                  )}
-                  {activeTab === 'mcq' && (
-                    questions.length ? <MCQDemo questions={questions} /> :
-                    <p className="text-center py-12 text-[hsl(var(--mn-muted))]">Žádné otázky k zobrazení</p>
-                  )}
-                </CardContent>
-              </Card>
+              {/* ─── FLASHCARDS TAB ─── */}
+              {activeTab === 'flashcards' && (
+                <Card className="border-[hsl(var(--mn-border))] max-w-2xl mx-auto">
+                  <CardContent className="p-6">
+                    {flashcards.length ? <FlashcardDemo cards={flashcards} /> :
+                    <p className="text-center py-12 text-[hsl(var(--mn-muted))]">Žádné kartičky k zobrazení</p>}
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* ─── MCQ TAB ─── */}
+              {activeTab === 'mcq' && (
+                <Card className="border-[hsl(var(--mn-border))] max-w-2xl mx-auto">
+                  <CardContent className="p-6">
+                    {questions.length ? <MCQDemo questions={questions} /> :
+                    <p className="text-center py-12 text-[hsl(var(--mn-muted))]">Žádné otázky k zobrazení</p>}
+                  </CardContent>
+                </Card>
+              )}
             </div>
           )}
 
@@ -372,19 +412,16 @@ export default function Demo() {
           <div className="mt-12 relative rounded-3xl border border-[hsl(var(--mn-accent)/0.3)] overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--mn-accent)/0.1)] via-transparent to-[hsl(var(--mn-accent-2)/0.05)]" />
             <div className="relative p-8 sm:p-10 text-center">
-              <h2 className="text-xl sm:text-2xl font-bold mb-3">
-                Líbí se vám obsah?
-              </h2>
+              <h2 className="text-xl sm:text-2xl font-bold mb-3">Líbí se vám obsah?</h2>
               <p className="text-[hsl(var(--mn-muted))] mb-6 max-w-md mx-auto text-sm">
-                Zaregistrujte se a získejte plný přístup ke všem {topics.length > 0 ? '1 468' : ''} tématům, flashcards, testům a AI copilotu.
+                Zaregistrujte se a získejte plný přístup ke všem 1 468 tématům, flashcards, testům a AI copilotu.
               </p>
               <Button
                 size="lg"
                 className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)] text-white shadow-lg shadow-[hsl(var(--mn-accent)/0.25)]"
                 onClick={() => window.location.href = loginUrl}
               >
-                Vytvořit účet zdarma
-                <ArrowRight className="w-4 h-4 ml-2" />
+                Vytvořit účet zdarma <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </div>
           </div>
