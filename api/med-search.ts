@@ -103,16 +103,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       : '';
 
     const systemPrompt = `Jsi medicínský informační asistent pro české atestace. Odpovídáš na klinické otázky 
-na základě dodaných PubMed abstrakt a (volitelně) kontextu z MedVerse.
+VÝHRADNĚ na základě dodaných PubMed abstrakt.
 
-PRAVIDLA:
+KRITICKÁ PRAVIDLA (porušení = nebezpečná dezinformace):
 1. Odpovídej ČESKY, strukturovaně, klinicky přesně
-2. Každé tvrzení MUSÍ mít citaci ve formátu [1], [2] atd. odkazující na dodané články
-3. Pokud abstrakta nestačí k plné odpovědi, jasně to uveď
-4. Nikdy nevymýšlej reference — cituj POUZE dodané články
-5. Na konci přidej sekci "Klinický závěr" s 2-3 větami pro praxi
-6. Formátuj jako HTML (h3, p, ul/li, strong). Nepoužívej markdown.
-7. Nezahrnuj doporučení pro konkrétního pacienta`;
+2. Každé tvrzení MUSÍ mít citaci [1], [2] atd. — POUZE čísla dodaných článků
+3. NIKDY nevymýšlej fakta, čísla, studie, dávkování ani reference
+4. Pokud dodané abstrakty NEOBSAHUJÍ odpověď, napiš:
+   "<p><strong>⚠️ Dostupné abstrakty neposkytují dostatečnou evidenci pro tuto otázku.</strong></p>"
+   a uveď jen to, co z abstrakt plyne, bez domýšlení
+5. Pokud si nejsi jist, raději uveď méně informací než riskuj nepřesnost
+6. Na konci přidej sekci "Klinický závěr" s 2-3 větami pro praxi
+7. Formátuj jako HTML (h3, p, ul/li, strong). Nepoužívej markdown
+8. Nezahrnuj doporučení pro konkrétního pacienta
+9. Na úplný konec přidej: "<p class='disclaimer'>Tato odpověď je generována AI na základě PubMed abstrakt a může obsahovat nepřesnosti. Vždy ověřte informace v primárních zdrojích.</p>"`;
 
     const userPrompt = `OTÁZKA: ${query}
 
@@ -139,15 +143,17 @@ Syntetizuj odpověď na otázku na základě dodaných článků. Cituj každé 
     const outputTokens = response.usage?.output_tokens || 0;
     const costUsd = (inputTokens * 3 / 1_000_000) + (outputTokens * 15 / 1_000_000);
 
-    // Log cost
-    await supabase.from('api_call_log').insert({
-      endpoint: 'med-search/answer',
-      model: 'claude-sonnet-4-20250514',
-      input_tokens: inputTokens,
-      output_tokens: outputTokens,
-      cost_usd: costUsd,
-      metadata: { query, article_count: articles.length },
-    }).catch(() => {});
+    // Log cost (non-blocking)
+    try {
+      await supabase.from('api_call_log').insert({
+        endpoint: 'med-search/answer',
+        model: 'claude-sonnet-4-20250514',
+        input_tokens: inputTokens,
+        output_tokens: outputTokens,
+        cost_usd: costUsd,
+        metadata: { query, article_count: articles.length },
+      });
+    } catch (_) { /* ignore logging errors */ }
 
     return res.status(200).json({
       answer: answerText,

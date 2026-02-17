@@ -155,15 +155,17 @@ Otázky by měly testovat klinické uvažování, ne jen memorování faktů.`;
       await supabase.from('study_sets').update(updateData).eq('id', studySetId);
     }
 
-    // Log cost
-    await supabase.from('api_call_log').insert({
-      endpoint: `study-set-generate/${mode}`,
-      model: 'claude-sonnet-4-20250514',
-      input_tokens: inputTokens,
-      output_tokens: outputTokens,
-      cost_usd: costUsd,
-      metadata: { study_set_id: studySetId, topic_count: topicIds.length }
-    }).then(() => {}).catch(() => {});
+    // Log cost (non-blocking)
+    try {
+      await supabase.from('api_call_log').insert({
+        endpoint: `study-set-generate/${mode}`,
+        model: 'claude-sonnet-4-20250514',
+        input_tokens: inputTokens,
+        output_tokens: outputTokens,
+        cost_usd: costUsd,
+        metadata: { study_set_id: studySetId, topic_count: topicIds.length }
+      });
+    } catch (_) { /* ignore */ }
 
     return res.status(200).json({
       mode,
