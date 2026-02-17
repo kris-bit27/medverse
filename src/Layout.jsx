@@ -52,7 +52,7 @@ const navItems = [
   { name: 'Studium', page: 'Studium', icon: GraduationCap },
   { name: 'Opakování', page: 'ReviewToday', icon: RefreshCw },
   { name: 'Testy', page: 'TestGeneratorV2', icon: Zap },
-  { name: 'Studijní balíčky', page: 'StudyPackages', icon: Package },
+  { name: 'Studijní sady', page: 'StudyPackages', icon: Package },
   { name: 'Komunita', page: 'Community', icon: Users },
   { name: 'Logbook', page: 'Logbook', icon: ClipboardList },
   { name: 'Články', page: 'Articles', icon: BookOpen },

@@ -1,705 +1,824 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '../utils';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { useAuth } from '@/lib/AuthContext';
+import { callApi } from '@/lib/api';
+import { Link, useSearchParams } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import {
-  Package,
-  Plus,
-  Search,
-  Clock,
-  BookOpen,
-  HelpCircle,
-  Wrench,
-  Users,
-  Lock,
-  Sparkles,
-  TrendingUp,
-  Copy,
-  Upload,
-  Loader2,
-  FileText,
-  FileCheck
+  FolderPlus, Search, BookOpen, Sparkles, Plus, Loader2, Trash2,
+  Clock, CheckCircle2, AlertCircle, ChevronRight, Globe, Lock,
+  FileText, Brain, ListChecks, GraduationCap, X, Check
 } from 'lucide-react';
+import { toast } from 'sonner';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import EmptyState from '@/components/common/EmptyState';
 import HTMLContent from '@/components/study/HTMLContent';
-import { toast } from 'sonner';
-import { isAdmin } from '@/components/utils/permissions';
 
-export default function StudyPackages() {
-  const asArray = (value) => {
-    if (Array.isArray(value)) return value;
-    if (Array.isArray(value?.data)) return value.data;
-    if (Array.isArray(value?.items)) return value.items;
-    return [];
+/* ─── Topic Picker Dialog ─── */
+function TopicPicker({ open, onClose, onConfirm, existingIds = [] }) {
+  const [search, setSearch] = useState('');
+  const [selected, setSelected] = useState(new Set(existingIds));
+  const [expandedObor, setExpandedObor] = useState(null);
+
+  const { data: topics = [] } = useQuery({
+    queryKey: ['allTopicsForPicker'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('topics')
+        .select('id, title, okruhy(name, obor_id, obory(name))')
+        .not('full_text_content', 'is', null)
+        .order('title');
+      return data || [];
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Group by obor
+  const grouped = useMemo(() => {
+    const map = {};
+    topics.forEach(t => {
+      const obor = t.okruhy?.obory?.name || 'Ostatní';
+      if (!map[obor]) map[obor] = [];
+      map[obor].push(t);
+    });
+    return Object.entries(map).sort((a, b) => a[0].localeCompare(b[0], 'cs'));
+  }, [topics]);
+
+  const filtered = useMemo(() => {
+    if (!search.trim()) return grouped;
+    const q = search.toLowerCase();
+    return grouped.map(([obor, items]) => [
+      obor,
+      items.filter(t => t.title.toLowerCase().includes(q))
+    ]).filter(([, items]) => items.length > 0);
+  }, [grouped, search]);
+
+  const toggle = (id) => {
+    setSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
   };
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [aiTitle, setAiTitle] = useState('');
-  const [aiFocus, setAiFocus] = useState('');
-  const [aiFile, setAiFile] = useState(null);
-  const [processMode, setProcessMode] = useState('FULLTEXT');
-  const [selectedPackId, setSelectedPackId] = useState(null);
-  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
-  const [topicTitle, setTopicTitle] = useState('');
-  const [topicOkruhId, setTopicOkruhId] = useState('');
-
-  const { data: user } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; }
-  });
-
-  const { data: myPackagesRaw, isLoading: loadingMy } = useQuery({
-    queryKey: ['myStudyPackages', user?.id],
-    queryFn: () => supabase.from('study_packages').select('*').eq('created_by', user.email ).then(r => r.data || []),
-    enabled: !!user
-  });
-  const myPackages = asArray(myPackagesRaw);
-
-  const { data: sharedPackagesRaw, isLoading: loadingShared } = useQuery({
-    queryKey: ['sharedStudyPackages', user?.id],
-    queryFn: async () => {
-      const all = await supabase.from('study_packages').select('*').then(r => r.data || []);
-      const allPackages = asArray(all);
-      return allPackages.filter(p => 
-        (p.shared_with?.includes(user.id) || 
-         p.collaborators?.some(c => c.user_id === user.id)) && 
-        p.created_by !== user.email
-      );
-    },
-    enabled: !!user
-  });
-  const sharedPackages = asArray(sharedPackagesRaw);
-
-  const { data: publicPackagesRaw, isLoading: loadingPublic } = useQuery({
-    queryKey: ['publicStudyPackages'],
-    queryFn: () => supabase.from('study_packages').select('*').eq('is_public', true).then(r => r.data || [])
-  });
-  const publicPackages = asArray(publicPackagesRaw);
-
-  const { data: disciplinesRaw } = useQuery({
-    queryKey: ['clinicalDisciplines'],
-    queryFn: () => supabase.from('obory').select('*').order('order_index').then(r => r.data || [])
-  });
-  const disciplines = asArray(disciplinesRaw);
-
-  const { data: okruhyRaw } = useQuery({
-    queryKey: ['okruhy'],
-    queryFn: () => supabase.from('okruhy').select('*').order('name').then(r => r.data || []),
-    enabled: !!user && isAdmin(user)
-  });
-  const okruhy = asArray(okruhyRaw);
-
-  const { data: aiPacksRaw, refetch: refetchAiPacks } = useQuery({
-    queryKey: ['aiStudyPacks', user?.id],
-    queryFn: async () => {
-      const all = await supabase.from('study_packs').select('*').eq('user_id', user.id ).order('created_at', { ascending: false }).then(r => r.data || []);
-      return asArray(all);
-    },
-    enabled: !!user
-  });
-  const aiPacks = asArray(aiPacksRaw);
-
-  const { data: aiPackDetail, refetch: refetchAiPackDetail } = useQuery({
-    queryKey: ['aiStudyPack', selectedPackId],
-    queryFn: async () => {
-      const packList = await supabase.from('study_packs').select('*').eq('id', selectedPackId ).then(r => r.data || []);
-      const pack = asArray(packList)[0];
-      if (!pack) return { pack: null, outputs: [], files: [] };
-      const outputsRaw = await supabase.from('study_pack_outputs').select('*').eq('pack_id', selectedPackId ).then(r => r.data || []);
-      const filesRaw = await supabase.from('study_pack_files').select('*').eq('pack_id', selectedPackId ).then(r => r.data || []);
-      return { pack, outputs: asArray(outputsRaw), files: asArray(filesRaw) };
-    },
-    enabled: !!selectedPackId,
-    refetchInterval: (data) => {
-      if (!data?.pack) return false;
-      return ['READY', 'ERROR'].includes(data.pack.status) ? false : 5000;
-    }
-  });
-
-  useEffect(() => {
-    if (!selectedPackId && aiPacks.length > 0) {
-      setSelectedPackId(aiPacks[0].id);
-    }
-  }, [aiPacks, selectedPackId]);
-
-  const processMutation = useMutation({
-    mutationFn: async () => {
-      return callApi('processStudyPack', {
-        packId: selectedPackId,
-        mode: processMode
-      });
-    },
-    onSuccess: () => {
-      toast.success('Zpracování spuštěno');
-      refetchAiPackDetail();
-    },
-    onError: (error) => {
-      console.error(error);
-      toast.error('Zpracování se nepodařilo spustit');
-    }
-  });
-
-  const uploadMutation = useMutation({
-    mutationFn: async () => {
-      if (!user) {
-        throw new Error('Uživatel není přihlášen');
-      }
-      if (!aiTitle.trim()) {
-        throw new Error('Vyplňte název');
-      }
-      if (!aiFile) {
-        throw new Error('Vyberte soubor');
-      }
-      if (aiFile.size > 10 * 1024 * 1024) {
-        throw new Error('Soubor je příliš velký (max 10MB)');
-      }
-      const { data: uploadData } = await supabase.storage
-        .from('study-packs').upload(`${Date.now()}-${aiFile.name}`, aiFile);
-      const file_url = uploadData?.path 
-        ? supabase.storage.from('study-packs').getPublicUrl(uploadData.path).data.publicUrl
-        : null;
-      const { data: pack } = await supabase.from('study_packs').insert({
-        user_id: user.id,
-        title: aiTitle.trim(),
-        status: 'UPLOADED',
-        topic_focus: aiFocus.trim() || null
-      }).select().single();
-      await supabase.from('study_pack_files').insert({
-        pack_id: pack.id,
-        filename: aiFile.name,
-        mime_type: aiFile.type,
-        size_bytes: aiFile.size,
-        storage_url: file_url
-      });
-      return pack;
-    },
-    onSuccess: (pack) => {
-      toast.success('Soubor nahrán');
-      setAiTitle('');
-      setAiFocus('');
-      setAiFile(null);
-      setSelectedPackId(pack.id);
-      refetchAiPacks();
-    },
-    onError: (error) => {
-      toast.error(error.message || 'Nahrání se nepodařilo');
-    }
-  });
-
-  const saveTopicMutation = useMutation({
-    mutationFn: async () => {
-      if (!topicTitle.trim() || !topicOkruhId) {
-        throw new Error('Vyplňte název a okruh');
-      }
-      const fullOutput = (aiPackDetail?.outputs || []).find(o => o.mode === 'FULLTEXT');
-      const highOutput = (aiPackDetail?.outputs || []).find(o => o.mode === 'HIGH_YIELD');
-      return supabase.from('topics').insert({
-        title: topicTitle.trim(),
-        okruh_id: topicOkruhId,
-        full_text_content: fullOutput?.content_html || '',
-        bullet_points_summary: highOutput?.content_html || ''
-      }).select().single().then(r => r.data);
-    },
-    onSuccess: () => {
-      toast.success('Téma vytvořeno');
-      setSaveDialogOpen(false);
-      setTopicTitle('');
-      setTopicOkruhId('');
-    },
-    onError: (error) => {
-      toast.error(error.message || 'Uložení se nepodařilo');
-    }
-  });
-
-  const getDisciplineName = (id) => {
-    return disciplines.find(d => d.id === id)?.name || 'Neurčeno';
+  const toggleObor = (items) => {
+    const ids = items.map(t => t.id);
+    const allSelected = ids.every(id => selected.has(id));
+    setSelected(prev => {
+      const next = new Set(prev);
+      ids.forEach(id => allSelected ? next.delete(id) : next.add(id));
+      return next;
+    });
   };
 
-  const filterPackages = (packages) => {
-    if (!searchQuery) return packages;
-    return packages.filter(p => 
-      p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-    );
-  };
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <BookOpen className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
+            Vybrat témata
+            <Badge variant="secondary" className="ml-2">{selected.size} vybráno</Badge>
+          </DialogTitle>
+        </DialogHeader>
 
-  const PackageCard = ({ pkg, showActions = false }) => (
-    <Card className="hover:shadow-lg transition-shadow">
-      <CardHeader>
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <CardTitle className="text-lg flex items-center gap-2 mb-1">
-              {pkg.is_ai_generated && (
-                <Sparkles className="w-4 h-4 text-teal-500" />
-              )}
-              {pkg.title}
-            </CardTitle>
-            <CardDescription className="text-sm line-clamp-2">
-              {pkg.description}
-            </CardDescription>
-          </div>
-          <div className="flex gap-1 ml-2">
-            {pkg.is_public ? (
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <Users className="w-3 h-3" />
-                Veřejný
-              </Badge>
-            ) : (
-              <Badge variant="outline" className="flex items-center gap-1">
-                <Lock className="w-3 h-3" />
-                Soukromý
-              </Badge>
-            )}
+        <div className="relative mb-3">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(var(--mn-muted))]" />
+          <Input
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Hledat téma..."
+            className="pl-9"
+          />
+        </div>
+
+        <div className="flex-1 overflow-y-auto space-y-1 min-h-0 pr-1">
+          {filtered.map(([obor, items]) => {
+            const oborSelected = items.filter(t => selected.has(t.id)).length;
+            const isExpanded = expandedObor === obor || search.trim().length > 0;
+            return (
+              <div key={obor}>
+                <button
+                  onClick={() => setExpandedObor(expandedObor === obor ? null : obor)}
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[hsl(var(--mn-surface-2))] transition-colors text-left"
+                >
+                  <ChevronRight className={`w-3.5 h-3.5 text-[hsl(var(--mn-muted))] transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                  <span className="text-sm font-medium text-[hsl(var(--mn-text))] flex-1">{obor}</span>
+                  <span className="text-[10px] text-[hsl(var(--mn-muted))]">
+                    {oborSelected > 0 && <span className="text-[hsl(var(--mn-accent))] font-bold">{oborSelected}/</span>}
+                    {items.length}
+                  </span>
+                  <button
+                    onClick={e => { e.stopPropagation(); toggleObor(items); }}
+                    className="text-[10px] px-1.5 py-0.5 rounded bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-accent))]"
+                  >
+                    {items.every(t => selected.has(t.id)) ? 'Odebrat vše' : 'Vybrat vše'}
+                  </button>
+                </button>
+
+                {isExpanded && (
+                  <div className="ml-5 space-y-0.5 mb-2">
+                    {items.map(t => (
+                      <button
+                        key={t.id}
+                        onClick={() => toggle(t.id)}
+                        className={`w-full flex items-center gap-2 px-3 py-1.5 rounded-md text-left text-sm transition-colors ${
+                          selected.has(t.id)
+                            ? 'bg-[hsl(var(--mn-accent)/0.1)] text-[hsl(var(--mn-accent))]'
+                            : 'hover:bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-text))]'
+                        }`}
+                      >
+                        <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
+                          selected.has(t.id)
+                            ? 'bg-[hsl(var(--mn-accent))] border-[hsl(var(--mn-accent))]'
+                            : 'border-[hsl(var(--mn-border))]'
+                        }`}>
+                          {selected.has(t.id) && <Check className="w-3 h-3 text-white" />}
+                        </div>
+                        <span className="truncate">{t.title}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="flex items-center justify-between pt-3 border-t border-[hsl(var(--mn-border))]">
+          <span className="text-sm text-[hsl(var(--mn-muted))]">{selected.size} témat vybráno (max 20)</span>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={onClose}>Zrušit</Button>
+            <Button
+              onClick={() => { onConfirm([...selected]); onClose(); }}
+              disabled={selected.size === 0 || selected.size > 20}
+              className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent-2))] text-white"
+            >
+              Potvrdit ({selected.size})
+            </Button>
           </div>
         </div>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-3">
-          <div className="flex items-center gap-4 text-sm text-[hsl(var(--mn-muted))]">
-            <span className="flex items-center gap-1">
-              <HelpCircle className="w-4 h-4" />
-              {pkg.question_ids?.length || 0} otázek
-            </span>
-            <span className="flex items-center gap-1">
-              <BookOpen className="w-4 h-4" />
-              {pkg.article_ids?.length || 0} článků
-            </span>
-            <span className="flex items-center gap-1">
-              <Wrench className="w-4 h-4" />
-              {pkg.tool_ids?.length || 0} nástrojů
-            </span>
-          </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
-          {pkg.clinical_discipline_id && (
-            <Badge variant="outline" className="text-xs">
-              {getDisciplineName(pkg.clinical_discipline_id)}
-            </Badge>
-          )}
+/* ─── Study Set Card ─── */
+function SetCard({ set, onOpen }) {
+  const topicCount = set.topic_ids?.length || 0;
+  const statusIcon = {
+    draft: <Clock className="w-3.5 h-3.5" />,
+    generating: <Loader2 className="w-3.5 h-3.5 animate-spin" />,
+    ready: <CheckCircle2 className="w-3.5 h-3.5" />,
+    error: <AlertCircle className="w-3.5 h-3.5" />,
+  }[set.status] || <Clock className="w-3.5 h-3.5" />;
 
-          {pkg.estimated_hours && (
-            <div className="flex items-center gap-1 text-sm text-[hsl(var(--mn-muted))]">
-              <Clock className="w-4 h-4" />
-              ~{pkg.estimated_hours}h studia
-            </div>
-          )}
+  const statusColor = {
+    draft: 'text-[hsl(var(--mn-muted))]',
+    generating: 'text-[hsl(var(--mn-accent))]',
+    ready: 'text-[hsl(var(--mn-success))]',
+    error: 'text-[hsl(var(--mn-danger))]',
+  }[set.status] || 'text-[hsl(var(--mn-muted))]';
 
-          {pkg.tags && pkg.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1">
-              {pkg.tags.map((tag, idx) => (
-                <Badge key={idx} variant="secondary" className="text-xs">
-                  {tag}
-                </Badge>
-              ))}
-            </div>
-          )}
-
-          <div className="flex gap-2 pt-2">
-            <Button asChild className="flex-1 bg-teal-600 hover:bg-teal-700">
-              <Link to={createPageUrl('StudyPackageDetail') + `?id=${pkg.id}`}>
-                Zobrazit detail
-              </Link>
-            </Button>
-            {showActions && pkg.is_public && (
-              <Button variant="outline" size="icon" title="Zkopírovat balíček">
-                <Copy className="w-4 h-4" />
-              </Button>
+  return (
+    <Card
+      className="group cursor-pointer hover:shadow-md transition-all hover:border-[hsl(var(--mn-accent)/0.3)]"
+      onClick={() => onOpen(set.id)}
+    >
+      <CardContent className="p-5">
+        <div className="flex items-start justify-between gap-3 mb-3">
+          <div className="min-w-0 flex-1">
+            <h3 className="font-semibold text-[hsl(var(--mn-text))] truncate group-hover:text-[hsl(var(--mn-accent))] transition-colors">
+              {set.title}
+            </h3>
+            {set.description && (
+              <p className="text-sm text-[hsl(var(--mn-muted))] line-clamp-2 mt-0.5">{set.description}</p>
             )}
           </div>
+          <div className={`flex items-center gap-1 shrink-0 ${statusColor}`}>
+            {statusIcon}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 text-xs text-[hsl(var(--mn-muted))]">
+          <span className="flex items-center gap-1">
+            <BookOpen className="w-3 h-3" />
+            {topicCount} témat
+          </span>
+          {set.ai_summary && (
+            <span className="flex items-center gap-1 text-[hsl(var(--mn-accent))]">
+              <Sparkles className="w-3 h-3" /> Souhrn
+            </span>
+          )}
+          {set.ai_study_plan && (
+            <span className="flex items-center gap-1 text-[hsl(var(--mn-accent))]">
+              <ListChecks className="w-3 h-3" /> Plán
+            </span>
+          )}
+          {set.ai_quiz && (
+            <span className="flex items-center gap-1 text-[hsl(var(--mn-accent))]">
+              <Brain className="w-3 h-3" /> Kvíz
+            </span>
+          )}
+          <span className="ml-auto flex items-center gap-1">
+            {set.is_public ? <Globe className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
+          </span>
         </div>
       </CardContent>
     </Card>
   );
+}
 
-  const aiPackOutputs = aiPackDetail?.outputs || [];
-  const fullOutput = aiPackOutputs.find(o => o.mode === 'FULLTEXT');
-  const highOutput = aiPackOutputs.find(o => o.mode === 'HIGH_YIELD');
+/* ─── Quiz Component ─── */
+function QuizPlayer({ quiz, title }) {
+  const [current, setCurrent] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [showResult, setShowResult] = useState(false);
 
-  const statusLabel = (status) => {
-    switch (status) {
-      case 'UPLOADED':
-        return { label: 'Nahráno', variant: 'secondary' };
-      case 'CHUNKED':
-        return { label: 'Zpracování', variant: 'outline' };
-      case 'GENERATED':
-        return { label: 'Generováno', variant: 'outline' };
-      case 'READY':
-        return { label: 'Hotovo', variant: 'default' };
-      case 'ERROR':
-        return { label: 'Chyba', variant: 'destructive' };
-      default:
-        return { label: status || 'Neznámý', variant: 'outline' };
-    }
-  };
+  if (!Array.isArray(quiz) || quiz.length === 0) {
+    return <p className="text-sm text-[hsl(var(--mn-muted))]">Kvíz nebyl vygenerován.</p>;
+  }
 
-  const parseCitations = (value) => {
-    if (!value) return [];
-    if (typeof value === 'string') {
-      try {
-        return JSON.parse(value);
-      } catch {
-        return [];
-      }
-    }
-    return value;
-  };
+  const q = quiz[current];
+  const answered = answers[current] !== undefined;
+  const isCorrect = answers[current] === q.correct;
+  const totalCorrect = Object.entries(answers).filter(([i, a]) => a === quiz[i]?.correct).length;
 
-  const citations = parseCitations(fullOutput?.citations_json || highOutput?.citations_json);
+  if (showResult) {
+    return (
+      <div className="text-center py-8 space-y-4">
+        <div className={`w-20 h-20 mx-auto rounded-2xl flex items-center justify-center ${
+          totalCorrect / quiz.length >= 0.7 ? 'bg-[hsl(var(--mn-success)/0.1)]' : 'bg-[hsl(var(--mn-warn)/0.1)]'
+        }`}>
+          <span className="text-3xl font-bold text-[hsl(var(--mn-text))]">
+            {totalCorrect}/{quiz.length}
+          </span>
+        </div>
+        <p className="text-lg font-semibold text-[hsl(var(--mn-text))]">
+          {totalCorrect / quiz.length >= 0.7 ? 'Výborně!' : 'Zkus to znovu'}
+        </p>
+        <p className="text-sm text-[hsl(var(--mn-muted))]">
+          Úspěšnost: {Math.round(totalCorrect / quiz.length * 100)}%
+        </p>
+        <Button variant="outline" onClick={() => { setAnswers({}); setCurrent(0); setShowResult(false); }}>
+          Opakovat kvíz
+        </Button>
+      </div>
+    );
+  }
 
   return (
-    <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <span className="text-xs text-[hsl(var(--mn-muted))] font-medium">
+          Otázka {current + 1} / {quiz.length}
+        </span>
+        {q.topic_title && (
+          <Badge variant="outline" className="text-[10px]">{q.topic_title}</Badge>
+        )}
+      </div>
+
+      <p className="text-[hsl(var(--mn-text))] font-medium leading-relaxed">{q.question}</p>
+
+      <div className="space-y-2">
+        {q.options.map((opt, i) => (
+          <button
+            key={i}
+            onClick={() => !answered && setAnswers(prev => ({ ...prev, [current]: i }))}
+            disabled={answered}
+            className={`w-full text-left px-4 py-3 rounded-xl border text-sm transition-all ${
+              answered && i === q.correct
+                ? 'border-[hsl(var(--mn-success))] bg-[hsl(var(--mn-success)/0.1)] text-[hsl(var(--mn-success))]'
+                : answered && i === answers[current] && i !== q.correct
+                ? 'border-[hsl(var(--mn-danger))] bg-[hsl(var(--mn-danger)/0.1)] text-[hsl(var(--mn-danger))]'
+                : answered
+                ? 'border-[hsl(var(--mn-border))] text-[hsl(var(--mn-muted))] opacity-60'
+                : 'border-[hsl(var(--mn-border))] hover:border-[hsl(var(--mn-accent)/0.4)] hover:bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-text))]'
+            }`}
+          >
+            {opt}
+          </button>
+        ))}
+      </div>
+
+      {answered && q.explanation && (
+        <div className="px-4 py-3 rounded-xl bg-[hsl(var(--mn-surface-2))] border border-[hsl(var(--mn-border))] text-sm text-[hsl(var(--mn-muted))]">
+          <strong className="text-[hsl(var(--mn-text))]">Vysvětlení:</strong> {q.explanation}
+        </div>
+      )}
+
+      <div className="flex justify-between pt-2">
+        <Button variant="outline" onClick={() => setCurrent(c => c - 1)} disabled={current === 0}>
+          Předchozí
+        </Button>
+        {current < quiz.length - 1 ? (
+          <Button onClick={() => setCurrent(c => c + 1)} disabled={!answered}>
+            Další
+          </Button>
+        ) : (
+          <Button onClick={() => setShowResult(true)} disabled={Object.keys(answers).length < quiz.length}
+            className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent-2))] text-white">
+            Vyhodnotit
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ─── Main Page ─── */
+export default function StudyPackages() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeSetId = searchParams.get('id');
+
+  const [showPicker, setShowPicker] = useState(false);
+  const [showCreate, setShowCreate] = useState(false);
+  const [newTitle, setNewTitle] = useState('');
+  const [newDescription, setNewDescription] = useState('');
+  const [newTopicIds, setNewTopicIds] = useState([]);
+  const [activeTab, setActiveTab] = useState('summary');
+
+  // Fetch user's study sets
+  const { data: mySets = [], isLoading } = useQuery({
+    queryKey: ['studySets', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('study_sets')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('updated_at', { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!user,
+  });
+
+  // Fetch public sets
+  const { data: publicSets = [] } = useQuery({
+    queryKey: ['publicStudySets'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('study_sets')
+        .select('*')
+        .eq('is_public', true)
+        .order('created_at', { ascending: false })
+        .limit(20);
+      return data || [];
+    },
+    enabled: !!user,
+  });
+
+  // Active set detail with topic names
+  const { data: activeSet } = useQuery({
+    queryKey: ['studySetDetail', activeSetId],
+    queryFn: async () => {
+      const { data: set } = await supabase
+        .from('study_sets')
+        .select('*')
+        .eq('id', activeSetId)
+        .single();
+      if (!set) return null;
+
+      // Fetch topic titles
+      let topics = [];
+      if (set.topic_ids?.length > 0) {
+        const { data } = await supabase
+          .from('topics')
+          .select('id, title, okruhy(name, obory(name))')
+          .in('id', set.topic_ids);
+        topics = data || [];
+      }
+      return { ...set, topics };
+    },
+    enabled: !!activeSetId,
+  });
+
+  // Create set
+  const createMutation = useMutation({
+    mutationFn: async () => {
+      if (!newTitle.trim()) throw new Error('Zadejte název');
+      if (newTopicIds.length === 0) throw new Error('Vyberte alespoň 1 téma');
+
+      const { data, error } = await supabase
+        .from('study_sets')
+        .insert({
+          user_id: user.id,
+          title: newTitle.trim(),
+          description: newDescription.trim() || null,
+          topic_ids: newTopicIds,
+          status: 'draft',
+        })
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      toast.success('Sada vytvořena');
+      setShowCreate(false);
+      setNewTitle('');
+      setNewDescription('');
+      setNewTopicIds([]);
+      queryClient.invalidateQueries({ queryKey: ['studySets'] });
+      setSearchParams({ id: data.id });
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
+  // Generate AI content
+  const generateMutation = useMutation({
+    mutationFn: async ({ mode }) => {
+      if (!activeSet) throw new Error('No active set');
+      await supabase.from('study_sets').update({ status: 'generating' }).eq('id', activeSet.id);
+      queryClient.invalidateQueries({ queryKey: ['studySetDetail'] });
+
+      return callApi('study-set-generate', {
+        studySetId: activeSet.id,
+        topicIds: activeSet.topic_ids,
+        title: activeSet.title,
+        mode,
+      });
+    },
+    onSuccess: (data, { mode }) => {
+      toast.success(mode === 'summary' ? 'Souhrn vygenerován' : mode === 'study_plan' ? 'Plán vytvořen' : 'Kvíz vygenerován');
+      queryClient.invalidateQueries({ queryKey: ['studySetDetail'] });
+      queryClient.invalidateQueries({ queryKey: ['studySets'] });
+      setActiveTab(mode === 'study_plan' ? 'plan' : mode === 'quiz' ? 'quiz' : 'summary');
+    },
+    onError: (e) => {
+      toast.error('Chyba: ' + (e.message || 'Generování selhalo'));
+      supabase.from('study_sets').update({ status: 'error' }).eq('id', activeSetId);
+      queryClient.invalidateQueries({ queryKey: ['studySetDetail'] });
+    },
+  });
+
+  // Delete set
+  const deleteMutation = useMutation({
+    mutationFn: async (id) => {
+      const { error } = await supabase.from('study_sets').delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success('Sada smazána');
+      setSearchParams({});
+      queryClient.invalidateQueries({ queryKey: ['studySets'] });
+    },
+  });
+
+  // Toggle public
+  const togglePublic = async () => {
+    if (!activeSet) return;
+    await supabase.from('study_sets').update({ is_public: !activeSet.is_public }).eq('id', activeSet.id);
+    queryClient.invalidateQueries({ queryKey: ['studySetDetail'] });
+    queryClient.invalidateQueries({ queryKey: ['studySets'] });
+    toast.success(activeSet.is_public ? 'Sada je nyní soukromá' : 'Sada je nyní veřejná');
+  };
+
+  const parsePlan = (plan) => {
+    if (!plan) return null;
+    if (plan.days) return plan;
+    if (typeof plan === 'string') { try { return JSON.parse(plan); } catch { return null; } }
+    return null;
+  };
+
+  const parseQuiz = (quiz) => {
+    if (Array.isArray(quiz)) return quiz;
+    if (typeof quiz === 'string') { try { return JSON.parse(quiz); } catch { return null; } }
+    return null;
+  };
+
+  /* ─── Detail View ─── */
+  if (activeSetId && activeSet) {
+    const plan = parsePlan(activeSet.ai_study_plan);
+    const quiz = parseQuiz(activeSet.ai_quiz);
+
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+        {/* Back + header */}
         <div>
-          <h1 className="text-3xl font-bold text-[hsl(var(--mn-text))] flex items-center gap-3">
-            <Package className="w-8 h-8 text-teal-600" />
-            Studijní balíčky
+          <button onClick={() => setSearchParams({})}
+            className="text-sm text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))] mb-3 flex items-center gap-1">
+            ← Zpět na sady
+          </button>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h1 className="text-2xl font-bold text-[hsl(var(--mn-text))]">{activeSet.title}</h1>
+              {activeSet.description && (
+                <p className="text-[hsl(var(--mn-muted))] mt-1">{activeSet.description}</p>
+              )}
+            </div>
+            <div className="flex gap-2 shrink-0">
+              <Button variant="outline" size="sm" onClick={togglePublic} title={activeSet.is_public ? 'Zveřejněno' : 'Soukromé'}>
+                {activeSet.is_public ? <Globe className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => {
+                if (confirm('Smazat tuto sadu?')) deleteMutation.mutate(activeSet.id);
+              }} className="text-[hsl(var(--mn-danger))]">
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Topics list */}
+        <Card>
+          <CardContent className="p-4">
+            <h3 className="text-sm font-semibold text-[hsl(var(--mn-text))] mb-3 flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-[hsl(var(--mn-accent))]" />
+              Témata ({activeSet.topics?.length || 0})
+            </h3>
+            <div className="flex flex-wrap gap-1.5">
+              {activeSet.topics?.map(t => (
+                <Link key={t.id} to={`${createPageUrl('TopicDetailV5')}?id=${t.id}`}>
+                  <Badge variant="outline" className="text-xs hover:border-[hsl(var(--mn-accent)/0.4)] hover:text-[hsl(var(--mn-accent))] transition-colors cursor-pointer">
+                    {t.title}
+                  </Badge>
+                </Link>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* AI Generation buttons */}
+        <div className="flex flex-wrap gap-2">
+          <Button
+            onClick={() => generateMutation.mutate({ mode: 'summary' })}
+            disabled={generateMutation.isPending}
+            className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent-2))] text-white gap-2"
+          >
+            {generateMutation.isPending && generateMutation.variables?.mode === 'summary'
+              ? <Loader2 className="w-4 h-4 animate-spin" />
+              : <FileText className="w-4 h-4" />}
+            {activeSet.ai_summary ? 'Přegenerovat souhrn' : 'Vygenerovat souhrn'}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => generateMutation.mutate({ mode: 'study_plan' })}
+            disabled={generateMutation.isPending}
+            className="gap-2"
+          >
+            {generateMutation.isPending && generateMutation.variables?.mode === 'study_plan'
+              ? <Loader2 className="w-4 h-4 animate-spin" />
+              : <ListChecks className="w-4 h-4" />}
+            {plan ? 'Přegenerovat plán' : 'Studijní plán'}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => generateMutation.mutate({ mode: 'quiz' })}
+            disabled={generateMutation.isPending}
+            className="gap-2"
+          >
+            {generateMutation.isPending && generateMutation.variables?.mode === 'quiz'
+              ? <Loader2 className="w-4 h-4 animate-spin" />
+              : <Brain className="w-4 h-4" />}
+            {quiz ? 'Nový kvíz' : 'Vygenerovat kvíz'}
+          </Button>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex gap-1 border-b border-[hsl(var(--mn-border))]">
+          {[
+            { key: 'summary', label: 'Souhrn', icon: FileText, has: !!activeSet.ai_summary },
+            { key: 'plan', label: 'Studijní plán', icon: ListChecks, has: !!plan },
+            { key: 'quiz', label: 'Kvíz', icon: Brain, has: !!quiz },
+          ].map(tab => (
+            <button key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === tab.key
+                  ? 'border-[hsl(var(--mn-accent))] text-[hsl(var(--mn-accent))]'
+                  : 'border-transparent text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))]'
+              }`}
+            >
+              <tab.icon className="w-3.5 h-3.5" />
+              {tab.label}
+              {tab.has && <div className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--mn-accent))]" />}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab content */}
+        <div className="min-h-[200px]">
+          {activeTab === 'summary' && (
+            activeSet.ai_summary ? (
+              <div className="prose prose-sm max-w-none">
+                <HTMLContent content={activeSet.ai_summary} />
+              </div>
+            ) : (
+              <EmptyState
+                icon={FileText}
+                title="Souhrn zatím nebyl vygenerován"
+                description="Klikněte na 'Vygenerovat souhrn' pro AI shrnutí klíčových bodů"
+              />
+            )
+          )}
+
+          {activeTab === 'plan' && (
+            plan?.days ? (
+              <div className="space-y-4">
+                {plan.strategy_note && (
+                  <p className="text-sm text-[hsl(var(--mn-muted))] italic px-4 py-3 rounded-xl bg-[hsl(var(--mn-surface-2))] border border-[hsl(var(--mn-border))]">
+                    {plan.strategy_note}
+                  </p>
+                )}
+                {plan.days.map((day, i) => (
+                  <Card key={i}>
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 rounded-lg bg-[hsl(var(--mn-accent)/0.1)] flex items-center justify-center text-sm font-bold text-[hsl(var(--mn-accent))]">
+                          {day.day}
+                        </div>
+                        <div>
+                          <p className="font-medium text-[hsl(var(--mn-text))]">{day.focus}</p>
+                          <p className="text-xs text-[hsl(var(--mn-muted))]">~{day.duration_minutes} min</p>
+                        </div>
+                      </div>
+                      <div className="ml-11 space-y-1.5">
+                        {day.topics?.map((t, j) => (
+                          <p key={j} className="text-sm text-[hsl(var(--mn-text))]">• {t}</p>
+                        ))}
+                        {day.activities?.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {day.activities.map((a, j) => (
+                              <Badge key={j} variant="secondary" className="text-[10px]">{a}</Badge>
+                            ))}
+                          </div>
+                        )}
+                        {day.tip && (
+                          <p className="text-xs text-[hsl(var(--mn-accent))] mt-1">💡 {day.tip}</p>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+                {plan.total_hours && (
+                  <p className="text-sm text-[hsl(var(--mn-muted))] text-center">
+                    Celkem: {plan.total_days} dní · ~{plan.total_hours} hodin studia
+                  </p>
+                )}
+              </div>
+            ) : (
+              <EmptyState
+                icon={ListChecks}
+                title="Studijní plán zatím nebyl vytvořen"
+                description="Klikněte na 'Studijní plán' pro AI optimalizovaný rozvrh studia"
+              />
+            )
+          )}
+
+          {activeTab === 'quiz' && (
+            quiz ? (
+              <QuizPlayer quiz={quiz} title={activeSet.title} />
+            ) : (
+              <EmptyState
+                icon={Brain}
+                title="Kvíz zatím nebyl vygenerován"
+                description="Klikněte na 'Vygenerovat kvíz' pro atestační otázky z vybraných témat"
+              />
+            )
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  /* ─── List View ─── */
+  return (
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl lg:text-3xl font-bold text-[hsl(var(--mn-text))] flex items-center gap-3">
+            <GraduationCap className="w-7 h-7 text-[hsl(var(--mn-accent))]" />
+            Studijní sady
           </h1>
           <p className="text-[hsl(var(--mn-muted))] mt-1">
-            Kurátorované kolekce materiálů pro efektivní studium
+            Sestavte si vlastní studijní materiály z témat MedVerse
           </p>
         </div>
-        <Button asChild className="bg-teal-600 hover:bg-teal-700">
-          <Link to={createPageUrl('StudyPackageCreate')}>
-            <Plus className="w-4 h-4 mr-2" />
-            Vytvořit balíček
-          </Link>
+        <Button onClick={() => setShowCreate(true)}
+          className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent-2))] text-white gap-2">
+          <Plus className="w-4 h-4" />
+          Nová sada
         </Button>
       </div>
 
-      {/* Search */}
-      <div className="relative mb-6">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[hsl(var(--mn-muted))]" />
-        <Input
-          placeholder="Hledat balíčky..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10"
-        />
+      {/* My sets */}
+      <div>
+        <h2 className="text-sm font-semibold text-[hsl(var(--mn-muted))] uppercase tracking-wider mb-3">
+          Moje sady
+        </h2>
+        {isLoading ? (
+          <div className="flex justify-center py-12"><LoadingSpinner /></div>
+        ) : mySets.length > 0 ? (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {mySets.map(s => (
+              <SetCard key={s.id} set={s} onOpen={(id) => setSearchParams({ id })} />
+            ))}
+          </div>
+        ) : (
+          <EmptyState
+            icon={FolderPlus}
+            title="Zatím nemáte žádné studijní sady"
+            description="Vytvořte si první sadu — vyberte témata a nechte AI připravit personalizovaný souhrn a kvíz."
+            action={
+              <Button onClick={() => setShowCreate(true)}
+                className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent-2))] text-white gap-2">
+                <Plus className="w-4 h-4" /> Vytvořit první sadu
+              </Button>
+            }
+          />
+        )}
       </div>
 
-      {/* AI Study Pack */}
-      <Card className="mb-8">
-        <CardHeader>
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <CardTitle className="text-xl flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-teal-600" />
-                AI Study Pack
-              </CardTitle>
-              <CardDescription>
-                Nahrajte text/PDF a nechte si vytvořit plný text i high-yield shrnutí.
-              </CardDescription>
-            </div>
-            {aiPackDetail?.pack && (
-              <Badge variant={statusLabel(aiPackDetail.pack.status).variant}>
-                {statusLabel(aiPackDetail.pack.status).label}
-              </Badge>
-            )}
+      {/* Public sets */}
+      {publicSets.filter(s => s.user_id !== user?.id).length > 0 && (
+        <div>
+          <h2 className="text-sm font-semibold text-[hsl(var(--mn-muted))] uppercase tracking-wider mb-3">
+            Veřejné sady
+          </h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {publicSets.filter(s => s.user_id !== user?.id).map(s => (
+              <SetCard key={s.id} set={s} onOpen={(id) => setSearchParams({ id })} />
+            ))}
           </div>
-        </CardHeader>
-        <CardContent>
-          <div className="grid lg:grid-cols-[320px_1fr] gap-6">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Název balíčku</label>
-                <Input
-                  value={aiTitle}
-                  onChange={(e) => setAiTitle(e.target.value)}
-                  placeholder="Např. Aorta – přehled"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Co přesně zpracovat (fokus)</label>
-                <Input
-                  value={aiFocus}
-                  onChange={(e) => setAiFocus(e.target.value)}
-                  placeholder="Např. Akutní appendicitida"
-                />
-                <div className="text-xs text-[hsl(var(--mn-muted))]">
-                  AI vyfiltruje relevantní části z dokumentu.
-                </div>
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Soubor (PDF, TXT, MD)</label>
-                <Input
-                  type="file"
-                  accept=".pdf,.txt,.md,text/plain,text/markdown,application/pdf"
-                  onChange={(e) => setAiFile(e.target.files?.[0] || null)}
-                />
-                {aiFile && (
-                  <div className="text-xs text-[hsl(var(--mn-muted))] flex items-center gap-2">
-                    <FileText className="w-4 h-4" />
-                    {aiFile.name}
-                  </div>
-                )}
-              </div>
-              <Button
-                className="w-full bg-teal-600 hover:bg-teal-700"
-                disabled={uploadMutation.isPending}
-                onClick={() => uploadMutation.mutate()}
-              >
-                {uploadMutation.isPending ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Nahrávám...
-                  </>
-                ) : (
-                  <>
-                    <Upload className="w-4 h-4 mr-2" />
-                    Nahrát a vytvořit balíček
-                  </>
-                )}
-              </Button>
+        </div>
+      )}
 
-              <div className="space-y-2 pt-4 border-t">
-                <div className="text-sm font-medium">Moje AI balíčky</div>
-                <div className="space-y-2 max-h-64 overflow-auto">
-                  {aiPacks.length === 0 && (
-                    <div className="text-sm text-[hsl(var(--mn-muted))]">Zatím žádné balíčky</div>
-                  )}
-                  {aiPacks.map((pack) => (
-                    <button
-                      key={pack.id}
-                      type="button"
-                      onClick={() => setSelectedPackId(pack.id)}
-                      className={`w-full text-left p-2 rounded-md border transition ${
-                        selectedPackId === pack.id
-                          ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20'
-                          : 'border-[hsl(var(--mn-border))]'
-                      }`}
-                    >
-                      <div className="text-sm font-medium">{pack.title}</div>
-                      <div className="text-xs text-[hsl(var(--mn-muted))] flex items-center gap-2">
-                        <FileCheck className="w-3 h-3" />
-                        {statusLabel(pack.status).label}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
+      {/* Create dialog */}
+      <Dialog open={showCreate} onOpenChange={setShowCreate}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FolderPlus className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
+              Nová studijní sada
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-medium text-[hsl(var(--mn-text))] mb-1 block">Název</label>
+              <Input
+                value={newTitle}
+                onChange={e => setNewTitle(e.target.value)}
+                placeholder="Např. Kardiologie — zkouškové"
+              />
             </div>
-
-            <div className="space-y-4">
-              {!aiPackDetail?.pack ? (
-                <div className="border rounded-lg p-6 text-sm text-[hsl(var(--mn-muted))]">
-                  Vyberte balíček pro zobrazení výstupů.
-                </div>
+            <div>
+              <label className="text-sm font-medium text-[hsl(var(--mn-text))] mb-1 block">Popis (nepovinné)</label>
+              <Input
+                value={newDescription}
+                onChange={e => setNewDescription(e.target.value)}
+                placeholder="Krátký popis sady"
+              />
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-sm font-medium text-[hsl(var(--mn-text))]">Témata</label>
+                <Button variant="outline" size="sm" onClick={() => setShowPicker(true)} className="gap-1.5">
+                  <Plus className="w-3 h-3" />
+                  Vybrat témata
+                </Button>
+              </div>
+              {newTopicIds.length > 0 ? (
+                <p className="text-sm text-[hsl(var(--mn-accent))] font-medium">
+                  {newTopicIds.length} témat vybráno
+                </p>
               ) : (
-                <>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Button
-                      variant="outline"
-                      onClick={() => processMutation.mutate()}
-                      disabled={processMutation.isPending || aiPackDetail.pack.status === 'READY'}
-                    >
-                      {processMutation.isPending ? (
-                        <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          Zpracovávám...
-                        </>
-                      ) : (
-                        'Spustit zpracování'
-                      )}
-                    </Button>
-                    <Tabs value={processMode} onValueChange={setProcessMode} className="ml-2">
-                      <TabsList>
-                        <TabsTrigger value="FULLTEXT">Plný text</TabsTrigger>
-                        <TabsTrigger value="HIGH_YIELD">High-yield</TabsTrigger>
-                      </TabsList>
-                    </Tabs>
-                    {processMode === 'HIGH_YIELD' && (
-                      <div className="text-xs text-[hsl(var(--mn-muted))]">
-                        High-yield se generuje z plného textu (může trvat déle).
-                      </div>
-                    )}
-                    {isAdmin(user) && (
-                      <Button
-                        variant="outline"
-                        onClick={() => {
-                          setTopicTitle(aiPackDetail.pack.title || '');
-                          setSaveDialogOpen(true);
-                        }}
-                        disabled={!fullOutput}
-                      >
-                        Uložit jako téma
-                      </Button>
-                    )}
-                  </div>
-
-                  <Tabs defaultValue="full">
-                    <TabsList>
-                      <TabsTrigger value="full">Plný text</TabsTrigger>
-                      <TabsTrigger value="high">High-yield</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="full" className="mt-4">
-                      {fullOutput ? (
-                        <HTMLContent content={fullOutput.content_html || ''} />
-                      ) : (
-                        <div className="text-sm text-[hsl(var(--mn-muted))]">Zatím bez výstupu.</div>
-                      )}
-                    </TabsContent>
-                    <TabsContent value="high" className="mt-4">
-                      {highOutput ? (
-                        <HTMLContent content={highOutput.content_html || ''} />
-                      ) : (
-                        <div className="text-sm text-[hsl(var(--mn-muted))]">Zatím bez výstupu.</div>
-                      )}
-                    </TabsContent>
-                  </Tabs>
-
-                  {citations.length > 0 && (
-                    <details className="border rounded-md p-4">
-                      <summary className="cursor-pointer font-medium">Citace</summary>
-                      <div className="mt-3 space-y-3 text-sm">
-                        {citations.map((c, idx) => (
-                          <div key={idx} className="border rounded-md p-3">
-                            <div className="font-medium">{c.sectionTitle}</div>
-                            <div className="text-xs text-[hsl(var(--mn-muted))]">
-                              Chunky: {(c.chunkIds || []).join(', ')}
-                            </div>
-                            {(c.quoteSnippets || []).length > 0 && (
-                              <ul className="list-disc pl-5 mt-2">
-                                {c.quoteSnippets.map((q, qIdx) => (
-                                  <li key={qIdx}>{q}</li>
-                                ))}
-                              </ul>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </details>
-                  )}
-                </>
+                <p className="text-sm text-[hsl(var(--mn-muted))]">Zatím nevybráno žádné téma</p>
               )}
             </div>
           </div>
-        </CardContent>
-      </Card>
 
-      {/* Tabs */}
-      <Tabs defaultValue="my">
-        <TabsList>
-          <TabsTrigger value="my">Moje balíčky</TabsTrigger>
-          <TabsTrigger value="shared">Sdílené se mnou</TabsTrigger>
-          <TabsTrigger value="public">Veřejné balíčky</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="my" className="mt-6">
-          {loadingMy ? (
-            <div className="flex justify-center py-12">
-              <LoadingSpinner size="lg" />
-            </div>
-          ) : filterPackages(myPackages).length > 0 ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filterPackages(myPackages).map(pkg => (
-                <PackageCard key={pkg.id} pkg={pkg} />
-              ))}
-            </div>
-          ) : (
-            <EmptyState
-              icon={Package}
-              title="Zatím nemáte žádné balíčky"
-              description="Vytvořte si první studijní balíček nebo požádejte AI Copilota o pomoc"
-              action={
-                <Button asChild className="bg-teal-600 hover:bg-teal-700">
-                  <Link to={createPageUrl('StudyPackageCreate')}>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Vytvořit balíček
-                  </Link>
-                </Button>
-              }
-            />
-          )}
-        </TabsContent>
-
-        <TabsContent value="shared" className="mt-6">
-          {loadingShared ? (
-            <div className="flex justify-center py-12">
-              <LoadingSpinner size="lg" />
-            </div>
-          ) : filterPackages(sharedPackages).length > 0 ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filterPackages(sharedPackages).map(pkg => (
-                <PackageCard key={pkg.id} pkg={pkg} showActions />
-              ))}
-            </div>
-          ) : (
-            <EmptyState
-              icon={Users}
-              title="Žádné sdílené balíčky"
-              description="Zde se zobrazí balíčky, které s vámi sdíleli ostatní uživatelé"
-            />
-          )}
-        </TabsContent>
-
-        <TabsContent value="public" className="mt-6">
-          {loadingPublic ? (
-            <div className="flex justify-center py-12">
-              <LoadingSpinner size="lg" />
-            </div>
-          ) : filterPackages(publicPackages).length > 0 ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filterPackages(publicPackages).map(pkg => (
-                <PackageCard key={pkg.id} pkg={pkg} showActions />
-              ))}
-            </div>
-          ) : (
-            <EmptyState
-              icon={TrendingUp}
-              title="Zatím žádné veřejné balíčky"
-              description="Buďte první, kdo vytvoří a sdílí studijní balíček s komunitou"
-            />
-          )}
-        </TabsContent>
-      </Tabs>
-
-      <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Uložit jako téma</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Název tématu</label>
-              <Input value={topicTitle} onChange={(e) => setTopicTitle(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Okruh</label>
-              <Select value={topicOkruhId} onValueChange={setTopicOkruhId}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Vyberte okruh" />
-                </SelectTrigger>
-                <SelectContent>
-                  {okruhy.map((okruh) => (
-                    <SelectItem key={okruh.id} value={okruh.id}>
-                      {okruh.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <DialogFooter>
+          <div className="flex justify-end gap-2 pt-2">
+            <Button variant="outline" onClick={() => setShowCreate(false)}>Zrušit</Button>
             <Button
-              className="bg-teal-600 hover:bg-teal-700"
-              onClick={() => saveTopicMutation.mutate()}
-              disabled={saveTopicMutation.isPending}
+              onClick={() => createMutation.mutate()}
+              disabled={createMutation.isPending || !newTitle.trim() || newTopicIds.length === 0}
+              className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent-2))] text-white gap-2"
             >
-              {saveTopicMutation.isPending ? 'Ukládám...' : 'Uložit'}
+              {createMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+              Vytvořit sadu
             </Button>
-          </DialogFooter>
+          </div>
         </DialogContent>
       </Dialog>
+
+      {/* Topic picker */}
+      <TopicPicker
+        open={showPicker}
+        onClose={() => setShowPicker(false)}
+        onConfirm={setNewTopicIds}
+        existingIds={newTopicIds}
+      />
     </div>
   );
 }
