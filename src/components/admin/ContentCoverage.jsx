@@ -12,16 +12,13 @@ export default function ContentCoverage() {
   const { data: stats, isLoading, refetch } = useQuery({
     queryKey: ['content-coverage-stats'],
     queryFn: async () => {
-      // Use count queries to avoid 1000-row limit
-      const [topicsCount, fcCount, fcTopicCount, qCount, qTopicCount, cCount, cTopicCount, pending] = await Promise.all([
+      // Count queries for totals (no 1000-row limit)
+      const [topicsCount, fcCount, qCount, cCount, pending] = await Promise.all([
         supabase.from('topics').select('id', { count: 'exact', head: true })
           .eq('status', 'published').not('full_text_content', 'is', null),
         supabase.from('flashcards').select('id', { count: 'exact', head: true }),
-        supabase.rpc('count_distinct', { table_name: 'flashcards', column_name: 'topic_id' }).catch(() => ({ data: null })),
         supabase.from('questions').select('id', { count: 'exact', head: true }),
-        supabase.rpc('count_distinct', { table_name: 'questions', column_name: 'topic_id' }).catch(() => ({ data: null })),
         supabase.from('topic_concept_links').select('id', { count: 'exact', head: true }),
-        supabase.rpc('count_distinct', { table_name: 'topic_concept_links', column_name: 'topic_id' }).catch(() => ({ data: null })),
         supabase.from('batch_generation_queue').select('id, status'),
       ]);
 
@@ -33,14 +30,24 @@ export default function ContentCoverage() {
       const { data: oborData } = await supabase.from('obory')
         .select('name, topics!inner(id)').order('name');
       
-      // Get FC/Q/C topic coverage per obor using fetched topics
-      const { data: fcData } = await supabase.from('flashcards').select('topic_id').limit(5000);
-      const { data: qData } = await supabase.from('questions').select('topic_id').limit(5000);
-      const { data: cData } = await supabase.from('topic_concept_links').select('topic_id').limit(5000);
-      
-      const fcTopics = new Set((fcData || []).map(x => x.topic_id));
-      const qTopics = new Set((qData || []).map(x => x.topic_id));
-      const cTopics = new Set((cData || []).map(x => x.topic_id));
+      // Paginated fetch for topic_id sets (need distinct topic coverage)
+      async function fetchAllTopicIds(table) {
+        let all = [], from = 0;
+        while (true) {
+          const { data } = await supabase.from(table).select('topic_id').range(from, from + 999);
+          if (!data || data.length === 0) break;
+          all.push(...data);
+          if (data.length < 1000) break;
+          from += 1000;
+        }
+        return new Set(all.map(x => x.topic_id));
+      }
+
+      const [fcTopics, qTopics, cTopics] = await Promise.all([
+        fetchAllTopicIds('flashcards'),
+        fetchAllTopicIds('questions'),
+        fetchAllTopicIds('topic_concept_links'),
+      ]);
 
       const byObor = {};
       (oborData || []).forEach(o => {
@@ -63,7 +70,7 @@ export default function ContentCoverage() {
         cTopics: cTopics.size,
         pendingCount,
         completedCount,
-        incomplete: [], // skip per-topic listing to avoid 1000 limit
+        incomplete: [],
         byObor,
       };
     },
@@ -89,7 +96,7 @@ export default function ContentCoverage() {
     setPipelineRunning(false);
   };
 
-  if (isLoading) return <Card><CardContent className="p-6 text-center"><Loader2 className="w-6 h-6 animate-spin mx-auto" /></CardContent></Card>;
+  if (isLoading || !stats) return <Card><CardContent className="p-6 text-center"><Loader2 className="w-6 h-6 animate-spin mx-auto" /></CardContent></Card>;
 
   const s = stats;
   const completePct = s.totalTopics > 0 ? Math.round((Math.min(s.fcTopics, s.qTopics, s.cTopics) / s.totalTopics) * 100) : 0;
