@@ -1,17 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
 import { callApi } from '@/lib/api';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import {
   Search, Sparkles, ExternalLink, BookOpen, Loader2, Users,
   Calendar, FileText, ChevronDown, ChevronUp, ArrowRight,
-  Microscope, Brain, Clock, RotateCcw, AlertTriangle
+  Microscope, Brain, Clock, RotateCcw, AlertTriangle,
+  Save, FolderPlus, Check
 } from 'lucide-react';
 import HTMLContent from '@/components/study/HTMLContent';
+import { toast } from 'sonner';
 
 const EXAMPLE_QUERIES = [
   'Diferenciální diagnostika bolesti na hrudi',
@@ -88,8 +92,11 @@ function ArticleCard({ article, index }) {
 
 export default function MedSearch() {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [query, setQuery] = useState('');
   const [activeTab, setActiveTab] = useState('answer');
+  const [showSave, setShowSave] = useState(false);
+  const [saveTitle, setSaveTitle] = useState('');
   const inputRef = useRef(null);
   const resultsRef = useRef(null);
 
@@ -123,6 +130,44 @@ export default function MedSearch() {
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') handleSearch(null, 'answer');
   };
+
+  // Save AI answer to study set
+  const saveMutation = useMutation({
+    mutationFn: async () => {
+      if (!user || !result?.answer) throw new Error('Žádná odpověď k uložení');
+      const title = saveTitle.trim() || `MedSearch: ${result.query}`;
+
+      // Build citation HTML
+      const citationsHtml = result.articles?.length > 0
+        ? `<hr/><h3>Citované zdroje</h3><ol>${result.articles.map(a =>
+            `<li><a href="${a.url}" target="_blank">${a.authors ? a.authors + '. ' : ''}${a.title}. ${a.journal || ''} (${a.year || ''})</a></li>`
+          ).join('')}</ol>`
+        : '';
+
+      const fullContent = result.answer + citationsHtml;
+
+      const { data, error } = await supabase
+        .from('study_sets')
+        .insert({
+          user_id: user.id,
+          title,
+          description: `PubMed vyhledávání: "${result.query}"${result.pubmedQuery && result.pubmedQuery !== result.query ? ` → "${result.pubmedQuery}"` : ''}`,
+          ai_summary: fullContent,
+          status: 'ready',
+        })
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      toast.success('Uloženo do studijních sad');
+      setShowSave(false);
+      setSaveTitle('');
+      queryClient.invalidateQueries({ queryKey: ['studySets'] });
+    },
+    onError: (e) => toast.error(e.message || 'Uložení se nepodařilo'),
+  });
 
   const result = searchMutation.data;
   const articles = result?.articles || [];
@@ -295,6 +340,15 @@ export default function MedSearch() {
                   <span className="text-[10px] text-[hsl(var(--mn-muted))]">
                     na základě {articles.length} PubMed článků
                   </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => { setSaveTitle(`MedSearch: ${result.query}`); setShowSave(true); }}
+                    className="ml-auto gap-1.5 text-xs"
+                  >
+                    <Save className="w-3.5 h-3.5" />
+                    Uložit
+                  </Button>
                 </div>
 
                 {/* Disclaimer */}
@@ -351,6 +405,41 @@ export default function MedSearch() {
           )}
         </div>
       )}
+      {/* Save to Study Set dialog */}
+      <Dialog open={showSave} onOpenChange={setShowSave}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FolderPlus className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
+              Uložit do studijních sad
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <label className="text-sm font-medium text-[hsl(var(--mn-text))] mb-1 block">Název sady</label>
+              <Input
+                value={saveTitle}
+                onChange={e => setSaveTitle(e.target.value)}
+                placeholder="Název pro uloženou odpověď"
+              />
+            </div>
+            <p className="text-xs text-[hsl(var(--mn-muted))]">
+              AI odpověď včetně citací se uloží jako studijní sada. Najdete ji v sekci Studijní sady.
+            </p>
+          </div>
+          <div className="flex justify-end gap-2 pt-2">
+            <Button variant="outline" onClick={() => setShowSave(false)}>Zrušit</Button>
+            <Button
+              onClick={() => saveMutation.mutate()}
+              disabled={saveMutation.isPending}
+              className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent-2))] text-white gap-2"
+            >
+              {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+              Uložit
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
