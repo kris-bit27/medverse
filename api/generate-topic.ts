@@ -8,7 +8,7 @@
  *   → After first request per specialty+mode: ~90% cache hit, costs drop to 10%
  */
 import Anthropic from '@anthropic-ai/sdk';
-import { getCached, setCache } from './cache.js';
+import { getCached, setCache } from './_cache.js';
 import { supabaseAdmin } from './_supabaseAdmin.js';
 import { z } from 'zod';
 import {
