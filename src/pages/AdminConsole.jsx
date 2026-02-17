@@ -31,17 +31,19 @@ function DashboardTab() {
   const { data: stats, isLoading } = useQuery({
     queryKey: ['adminDashStats'],
     queryFn: async () => {
-      const [tRes, uRes, qRes, bRes] = await Promise.all([
-        supabase.from('topics').select('status, full_text_content, bullet_points_summary'),
+      const [tTotal, tPublished, tWithFt, tWithHy, uRes, qRes, bRes] = await Promise.all([
+        supabase.from('topics').select('id', { count: 'exact', head: true }),
+        supabase.from('topics').select('id', { count: 'exact', head: true }).eq('status', 'published'),
+        supabase.from('topics').select('id', { count: 'exact', head: true }).not('full_text_content', 'is', null).neq('full_text_content', ''),
+        supabase.from('topics').select('id', { count: 'exact', head: true }).not('bullet_points_summary', 'is', null).neq('bullet_points_summary', ''),
         supabase.from('user_profiles').select('id', { count: 'exact', head: true }),
         supabase.from('questions').select('id', { count: 'exact', head: true }),
         supabase.from('batch_generation_queue').select('status'),
       ]);
-      const t = tRes.data || [];
       const b = bRes.data || [];
       return {
-        topics: { total: t.length, published: t.filter(x => x.status === 'published').length,
-          withFt: t.filter(x => x.full_text_content).length, withHy: t.filter(x => x.bullet_points_summary).length },
+        topics: { total: tTotal.count || 0, published: tPublished.count || 0,
+          withFt: tWithFt.count || 0, withHy: tWithHy.count || 0 },
         users: uRes.count || 0, questions: qRes.count || 0,
         queue: { pending: b.filter(x => x.status === 'pending').length, processing: b.filter(x => x.status === 'processing').length,
           completed: b.filter(x => x.status === 'completed').length, failed: b.filter(x => x.status === 'failed').length }
@@ -75,7 +77,7 @@ function DashboardTab() {
           <h3 className="font-semibold">Pokrytí obsahem</h3>
           <span className="text-sm text-[hsl(var(--mn-muted))]">{pct}%</span>
         </div>
-        <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3 mb-4">
+        <div className="w-full bg-[hsl(var(--mn-surface-2))] rounded-full h-3 mb-4">
           <div className="bg-gradient-to-r from-blue-500 to-green-500 h-3 rounded-full transition-all" style={{ width: `${pct}%` }} />
         </div>
         <div className="grid grid-cols-3 gap-4 text-center text-sm">
@@ -258,7 +260,7 @@ function AIGenerationTab() {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex-1 bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+          <div className="flex-1 bg-[hsl(var(--mn-surface-2))] rounded-full h-2">
             <div className="bg-green-500 h-2 rounded-full transition-all" style={{ width: `${pct}%` }} />
           </div>
           <span className="text-sm text-[hsl(var(--mn-muted))] w-12 text-right">{pct}%</span>
@@ -431,8 +433,8 @@ function ContentOverviewTab() {
                       <span className="font-medium text-sm truncate">{obor.name}</span>
                       <Badge variant="outline" className="text-[10px] shrink-0">{obor.total}</Badge>
                     </div>
-                    <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1">
-                      <div className={`h-1 rounded-full ${pct === 100 ? 'bg-green-500' : pct > 0 ? 'bg-blue-500' : 'bg-slate-300'}`}
+                    <div className="w-full bg-[hsl(var(--mn-surface-2))] rounded-full h-1">
+                      <div className={`h-1 rounded-full ${pct === 100 ? 'bg-green-500' : pct > 0 ? 'bg-blue-500' : 'bg-[hsl(var(--mn-border))]'}`}
                         style={{ width: `${pct}%` }} />
                     </div>
                   </div>

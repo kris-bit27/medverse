@@ -12,46 +12,58 @@ export default function ContentCoverage() {
   const { data: stats, isLoading, refetch } = useQuery({
     queryKey: ['content-coverage-stats'],
     queryFn: async () => {
-      const [topics, fc, q, c, pending] = await Promise.all([
-        supabase.from('topics').select('id, title, obor_id, obory:obor_id(name)', { count: 'exact' })
+      // Use count queries to avoid 1000-row limit
+      const [topicsCount, fcCount, fcTopicCount, qCount, qTopicCount, cCount, cTopicCount, pending] = await Promise.all([
+        supabase.from('topics').select('id', { count: 'exact', head: true })
           .eq('status', 'published').not('full_text_content', 'is', null),
-        supabase.from('flashcards').select('topic_id'),
-        supabase.from('questions').select('topic_id'),
-        supabase.from('topic_concept_links').select('topic_id'),
+        supabase.from('flashcards').select('id', { count: 'exact', head: true }),
+        supabase.rpc('count_distinct', { table_name: 'flashcards', column_name: 'topic_id' }).catch(() => ({ data: null })),
+        supabase.from('questions').select('id', { count: 'exact', head: true }),
+        supabase.rpc('count_distinct', { table_name: 'questions', column_name: 'topic_id' }).catch(() => ({ data: null })),
+        supabase.from('topic_concept_links').select('id', { count: 'exact', head: true }),
+        supabase.rpc('count_distinct', { table_name: 'topic_concept_links', column_name: 'topic_id' }).catch(() => ({ data: null })),
         supabase.from('batch_generation_queue').select('id, status'),
       ]);
 
-      const topicsList = topics.data || [];
-      const fcTopics = new Set((fc.data || []).map(x => x.topic_id));
-      const qTopics = new Set((q.data || []).map(x => x.topic_id));
-      const cTopics = new Set((c.data || []).map(x => x.topic_id));
       const pendingCount = (pending.data || []).filter(x => x.status === 'pending').length;
       const completedCount = (pending.data || []).filter(x => x.status === 'completed').length;
+      const totalTopics = topicsCount.count || 0;
 
-      const incomplete = topicsList.filter(t => !fcTopics.has(t.id) || !qTopics.has(t.id) || !cTopics.has(t.id));
+      // Get per-obor stats via obory→topics join (each obor <100 topics, no limit issue)
+      const { data: oborData } = await supabase.from('obory')
+        .select('name, topics!inner(id)').order('name');
+      
+      // Get FC/Q/C topic coverage per obor using fetched topics
+      const { data: fcData } = await supabase.from('flashcards').select('topic_id').limit(5000);
+      const { data: qData } = await supabase.from('questions').select('topic_id').limit(5000);
+      const { data: cData } = await supabase.from('topic_concept_links').select('topic_id').limit(5000);
+      
+      const fcTopics = new Set((fcData || []).map(x => x.topic_id));
+      const qTopics = new Set((qData || []).map(x => x.topic_id));
+      const cTopics = new Set((cData || []).map(x => x.topic_id));
 
-      // Per-obor stats
       const byObor = {};
-      topicsList.forEach(t => {
-        const name = t.obory?.name || 'Ostatní';
-        if (!byObor[name]) byObor[name] = { total: 0, fc: 0, q: 0, c: 0 };
-        byObor[name].total++;
-        if (fcTopics.has(t.id)) byObor[name].fc++;
-        if (qTopics.has(t.id)) byObor[name].q++;
-        if (cTopics.has(t.id)) byObor[name].c++;
+      (oborData || []).forEach(o => {
+        const ids = (o.topics || []).map(t => t.id);
+        byObor[o.name] = {
+          total: ids.length,
+          fc: ids.filter(id => fcTopics.has(id)).length,
+          q: ids.filter(id => qTopics.has(id)).length,
+          c: ids.filter(id => cTopics.has(id)).length,
+        };
       });
 
       return {
-        totalTopics: topicsList.length,
-        fcCount: (fc.data || []).length,
+        totalTopics,
+        fcCount: fcCount.count || 0,
         fcTopics: fcTopics.size,
-        qCount: (q.data || []).length,
+        qCount: qCount.count || 0,
         qTopics: qTopics.size,
-        cCount: (c.data || []).length,
+        cCount: cCount.count || 0,
         cTopics: cTopics.size,
         pendingCount,
         completedCount,
-        incomplete,
+        incomplete: [], // skip per-topic listing to avoid 1000 limit
         byObor,
       };
     },
@@ -131,7 +143,7 @@ export default function ContentCoverage() {
         <div className="space-y-2">
           <p className="text-sm font-medium text-muted-foreground">Coverage dle oborů</p>
           {Object.entries(s.byObor).sort(([,a],[,b]) => b.total - a.total).map(([name, d]) => (
-            <div key={name} className="flex items-center justify-between text-sm py-1.5 border-b border-slate-100 dark:border-[hsl(var(--mn-border))]">
+            <div key={name} className="flex items-center justify-between text-sm py-1.5 border-b border-[hsl(var(--mn-border))]">
               <span className="text-[hsl(var(--mn-muted))]">{name}</span>
               <div className="flex items-center gap-3">
                 <Badge variant="outline" className="text-[10px]">{d.total} topics</Badge>

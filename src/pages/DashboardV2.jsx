@@ -326,9 +326,9 @@ export default function DashboardV2() {
                     <Zap className="w-6 h-6 text-orange-600 dark:text-orange-300" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold mb-1">Review Flashcards</h3>
+                    <h3 className="font-semibold mb-1">Opakovat kartičky</h3>
                     <p className="text-sm text-muted-foreground">
-                      {dueCardsCount} cards čeká
+                      {dueCardsCount} kartiček čeká
                     </p>
                   </div>
                   <ChevronRight className="w-5 h-5 text-muted-foreground" />
@@ -343,7 +343,7 @@ export default function DashboardV2() {
                     <Target className="w-6 h-6 text-blue-600 dark:text-blue-300" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold mb-1">Practice Test</h3>
+                    <h3 className="font-semibold mb-1">Zkušební test</h3>
                     <p className="text-sm text-muted-foreground">
                       Vyzkoušej své znalosti
                     </p>

@@ -242,7 +242,7 @@ export default function OnboardingWizard({ onComplete }) {
   })();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 bg-[hsl(var(--mn-bg)/0.95)] backdrop-blur-sm flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
         {/* Progress dots */}
         <div className="flex items-center justify-center gap-2 mb-8">
@@ -255,7 +255,7 @@ export default function OnboardingWizard({ onComplete }) {
                   ? 'w-10 h-3 bg-teal-500'
                   : i < step
                   ? 'w-3 h-3 bg-teal-400 cursor-pointer hover:bg-teal-300'
-                  : 'w-3 h-3 bg-slate-700'
+                  : 'w-3 h-3 bg-[hsl(var(--mn-border))]'
               }`}
             />
           ))}
