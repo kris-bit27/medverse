@@ -1,4 +1,4 @@
-import { callGPT } from './lib/ai-models';
+import { callGPT } from './_ai-models';
 import { createClient } from '@supabase/supabase-js';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
