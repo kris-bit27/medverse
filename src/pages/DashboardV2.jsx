@@ -12,6 +12,9 @@ import OnboardingWizard from '@/components/OnboardingWizard';
 import StudyTodayWidget from '@/components/StudyTodayWidget';
 import AttestationProgress from '@/components/AttestationProgress';
 import WeakSpotsWidget from '@/components/dashboard/WeakSpotsWidget';
+import WeeklyActivityChart from '@/components/dashboard/WeeklyActivityChart';
+import TestScoreTrend from '@/components/dashboard/TestScoreTrend';
+import MasteryOverview from '@/components/dashboard/MasteryOverview';
 import { 
   Zap,
   BookOpen,
@@ -201,6 +204,13 @@ export default function DashboardV2() {
 
       {/* Weak spots */}
       <WeakSpotsWidget />
+
+      {/* P1: Study Analytics Widgets */}
+      <div className="grid lg:grid-cols-3 gap-6">
+        <WeeklyActivityChart />
+        <TestScoreTrend />
+        <MasteryOverview />
+      </div>
 
       {/* Quick Stats */}
       <div className="grid md:grid-cols-4 gap-6">
