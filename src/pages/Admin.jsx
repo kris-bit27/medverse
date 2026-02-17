@@ -113,6 +113,14 @@ export default function Admin() {
       icon: Flag,
       href: createPageUrl('AdminFeedback'),
       color: 'from-amber-500 to-red-500'
+    },
+    {
+      title: 'Content Review',
+      description: 'GPT-4o cross-model validace',
+      count: null,
+      icon: Shield,
+      href: createPageUrl('AdminContentReview'),
+      color: 'from-orange-500 to-red-600'
     }
   ];
 
