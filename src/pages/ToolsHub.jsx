@@ -24,7 +24,6 @@ const SECTIONS = [
     color: '#a855f7',
     link: 'DrugDatabase',
     countKey: 'drugs',
-    badge: 'Připravujeme',
   },
   {
     key: 'algorithms',
