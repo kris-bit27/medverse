@@ -2,8 +2,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
-import { Card } from '@/components/ui/card';
-import { Target, TrendingDown, ArrowRight, Loader2 } from 'lucide-react';
+import { TrendingDown, ArrowRight, Loader2, Target } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
@@ -14,10 +13,7 @@ export default function WeakSpotsWidget() {
     queryKey: ['weakSpots', user?.id],
     enabled: !!user?.id,
     queryFn: async () => {
-      const { data, error } = await supabase.rpc('get_user_weak_spots', {
-        p_user_id: user.id,
-        p_limit: 5,
-      });
+      const { data, error } = await supabase.rpc('get_user_weak_spots', { p_user_id: user.id, p_limit: 5 });
       if (error) throw error;
       return data || [];
     },
@@ -26,91 +22,73 @@ export default function WeakSpotsWidget() {
 
   if (isLoading) {
     return (
-      <Card className="p-5 border-[hsl(var(--mn-border))]">
-        <div className="flex items-center gap-2 text-[hsl(var(--mn-muted))] text-sm">
-          <Loader2 className="w-4 h-4 animate-spin" /> Načítám...
+      <div className="p-6 rounded-2xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface)/0.5)]">
+        <div className="flex items-center gap-2 text-[hsl(var(--mn-muted))] text-sm mn-ui-font">
+          <Loader2 className="w-4 h-4 animate-spin" /> Načítám…
         </div>
-      </Card>
+      </div>
     );
   }
 
   if (!weakSpots?.length) {
     return (
-      <Card className="p-5 border-[hsl(var(--mn-border))]">
+      <div className="p-6 rounded-2xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface)/0.5)]">
         <div className="flex items-center gap-2 mb-2">
-          <Target className="w-4 h-4 text-amber-400" />
-          <h3 className="text-sm font-semibold text-[hsl(var(--mn-text))]">Slabá místa</h3>
+          <Target className="w-4 h-4 text-[hsl(var(--mn-warn))]" />
+          <h3 className="mn-ui-font text-sm font-semibold">Slabá místa</h3>
         </div>
-        <p className="text-xs text-[hsl(var(--mn-muted))]">
+        <p className="mn-ui-font text-xs text-[hsl(var(--mn-muted))]">
           Zatím nemáte dostatek dat. Procvičte alespoň 3 kartičky/otázky z více témat.
         </p>
-      </Card>
+      </div>
     );
   }
 
   return (
-    <Card className="p-5 border-[hsl(var(--mn-border))]">
+    <div className="p-6 rounded-2xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface)/0.5)]">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <TrendingDown className="w-4 h-4 text-amber-400" />
-          <h3 className="text-sm font-semibold text-[hsl(var(--mn-text))]">Slabá místa</h3>
+          <TrendingDown className="w-4 h-4 text-[hsl(var(--mn-warn))]" />
+          <h3 className="mn-ui-font text-sm font-semibold">Slabá místa</h3>
         </div>
-        <span className="text-[10px] text-[hsl(var(--mn-muted))] uppercase tracking-wider">Doporučujeme zopakovat</span>
+        <span className="mn-caption text-[hsl(var(--mn-muted))]">Doporučujeme zopakovat</span>
       </div>
 
-      <div className="space-y-2.5">
+      <div className="space-y-1">
         {weakSpots.map((spot, i) => {
           const accuracy = Number(spot.accuracy) || 0;
           const total = (spot.flashcards_reviewed || 0) + (spot.questions_answered || 0);
           return (
-            <Link
-              key={spot.topic_id}
-              to={`${createPageUrl('TopicDetailV5')}?id=${spot.topic_id}`}
-              className="flex items-center gap-3 p-2.5 rounded-lg bg-[hsl(var(--mn-surface-2)/0.4)] hover:bg-[hsl(var(--mn-surface-2))]/60 transition-colors group"
+            <Link key={spot.topic_id} to={`${createPageUrl('TopicDetailV5')}?id=${spot.topic_id}`}
+              className="flex items-center gap-3 p-3 rounded-xl hover:bg-[hsl(var(--mn-surface-2))] transition-colors group"
             >
-              {/* Rank */}
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
-                i === 0 ? 'bg-red-500/20 text-red-400' :
-                i === 1 ? 'bg-amber-500/20 text-amber-400' :
-                'bg-slate-700 text-[hsl(var(--mn-muted))]'
-              }`}>
-                {i + 1}
-              </div>
-
-              {/* Info */}
+              <span className={`mn-mono-font text-xs font-bold w-6 text-center ${
+                i === 0 ? 'text-[hsl(var(--mn-danger))]' : i === 1 ? 'text-[hsl(var(--mn-warn))]' : 'text-[hsl(var(--mn-muted))]'
+              }`}>{i + 1}</span>
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-slate-200 truncate group-hover:text-[hsl(var(--mn-text))] transition-colors">
-                  {spot.topic_title}
-                </p>
+                <p className="mn-ui-font text-sm font-medium truncate group-hover:text-[hsl(var(--mn-text))]">{spot.topic_title}</p>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <span className="text-[10px] text-[hsl(var(--mn-muted))]">{spot.obor_name}</span>
+                  <span className="mn-ui-font text-[10px] text-[hsl(var(--mn-muted))]">{spot.obor_name}</span>
                   <span className="text-[10px] text-[hsl(var(--mn-muted))]">·</span>
-                  <span className="text-[10px] text-[hsl(var(--mn-muted))]">{total} odpovědí</span>
+                  <span className="mn-ui-font text-[10px] text-[hsl(var(--mn-muted))]">{total} odpovědí</span>
                 </div>
               </div>
-
-              {/* Accuracy bar */}
               <div className="flex items-center gap-2 shrink-0">
-                <div className="w-16 h-1.5 rounded-full bg-slate-700 overflow-hidden">
-                  <div
-                    className={`h-full rounded-full transition-all ${
-                      accuracy < 40 ? 'bg-red-500' : accuracy < 60 ? 'bg-amber-500' : 'bg-teal-500'
-                    }`}
-                    style={{ width: `${accuracy}%` }}
-                  />
+                <div className="w-16 h-1.5 rounded-full bg-[hsl(var(--mn-border))] overflow-hidden">
+                  <div className="h-full rounded-full transition-all" style={{
+                    width: `${accuracy}%`,
+                    background: accuracy < 40 ? 'hsl(var(--mn-danger))' : accuracy < 60 ? 'hsl(var(--mn-warn))' : 'hsl(var(--mn-accent))'
+                  }} />
                 </div>
-                <span className={`text-xs font-mono font-bold ${
-                  accuracy < 40 ? 'text-red-400' : accuracy < 60 ? 'text-amber-400' : 'text-teal-400'
-                }`}>
-                  {accuracy}%
-                </span>
+                <span className={`mn-mono-font text-xs font-bold ${
+                  accuracy < 40 ? 'text-[hsl(var(--mn-danger))]' : accuracy < 60 ? 'text-[hsl(var(--mn-warn))]' : 'text-[hsl(var(--mn-accent))]'
+                }`}>{accuracy}%</span>
               </div>
-
-              <ArrowRight className="w-3.5 h-3.5 text-[hsl(var(--mn-muted))] group-hover:text-teal-400 transition-colors shrink-0" />
+              <ArrowRight className="w-3.5 h-3.5 text-[hsl(var(--mn-muted))] group-hover:text-[hsl(var(--mn-accent))] transition-colors shrink-0" />
             </Link>
           );
         })}
       </div>
-    </Card>
+    </div>
   );
 }
