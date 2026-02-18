@@ -40,7 +40,7 @@ const SECTIONS = [
     description: 'DDx, léčebný plán, lékové interakce',
     icon: Bot,
     color: '#f59e0b',
-    link: 'Tools',
+    link: 'AIConsultant',
     badge: 'Beta',
   },
 ];

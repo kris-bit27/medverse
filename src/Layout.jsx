@@ -39,6 +39,7 @@ import {
   Calculator,
   Pill,
   FileText,
+  Bot,
   Users,
   Trophy
 } from 'lucide-react';
@@ -64,6 +65,7 @@ const navItems = [
       { name: 'Kalkulačky', page: 'ClinicalCalculators', icon: Calculator },
       { name: 'Databáze léků', page: 'DrugDatabase', icon: Pill },
       { name: 'Klinické postupy', page: 'ClinicalGuidelines', icon: FileText },
+      { name: 'AI Konzultant', page: 'AIConsultant', icon: Bot },
     ]
   },
   { name: 'Plánovač', page: 'StudyPlansV2', icon: CalendarIcon },
