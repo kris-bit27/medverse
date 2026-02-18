@@ -28,7 +28,7 @@ const _COLORS = [
   { text: 'text-pink-500 dark:text-pink-400', bg: 'bg-pink-500/10' },
   { text: 'text-cyan-500 dark:text-cyan-400', bg: 'bg-cyan-500/10' },
   { text: 'text-amber-500 dark:text-amber-400', bg: 'bg-amber-500/10' },
-  { text: 'text-teal-500 dark:text-teal-400', bg: 'bg-teal-500/10' },
+  { text: 'text-[hsl(var(--mn-accent))] dark:text-teal-400', bg: 'bg-teal-500/10' },
   { text: 'text-indigo-500 dark:text-indigo-400', bg: 'bg-indigo-500/10' },
   { text: 'text-rose-500 dark:text-rose-400', bg: 'bg-rose-500/10' },
   { text: 'text-lime-500 dark:text-lime-400', bg: 'bg-lime-500/10' },
@@ -38,7 +38,7 @@ const _COLORS = [
 ];
 const _tc = {};
 const getTheme = (n) => {
-  if (!n) return { text: 'text-teal-600 dark:text-teal-400', bg: 'bg-teal-500/10' };
+  if (!n) return { text: 'text-[hsl(var(--mn-accent))]', bg: 'bg-[hsl(var(--mn-accent)/0.1)]' };
   if (_tc[n]) return _tc[n];
   let h = 0;
   for (let i = 0; i < n.length; i++) h = ((h << 5) - h + n.charCodeAt(i)) | 0;
@@ -56,13 +56,13 @@ const TABS = [
 function WarningsBanner({ warnings }) {
   if (!warnings?.length) return null;
   return (
-    <div className="rounded-xl border border-amber-300/40 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-500/5 p-4 mt-4">
+    <div className="rounded-xl border border-[hsl(var(--mn-warn)/0.3)] bg-[hsl(var(--mn-warn)/0.06)] p-4 mt-4">
       <div className="flex items-start gap-3">
-        <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+        <AlertTriangle className="w-5 h-5 text-[hsl(var(--mn-warn))] shrink-0 mt-0.5" />
         <div>
-          <p className="text-sm font-medium text-amber-800 dark:text-amber-300 mb-1">Vyžaduje ověření</p>
+          <p className="text-sm font-medium text-[hsl(var(--mn-warn))] mb-1">Vyžaduje ověření</p>
           {warnings.map((w, i) => (
-            <p key={i} className="text-sm text-amber-700 dark:text-amber-200/70">
+            <p key={i} className="text-sm text-[hsl(var(--mn-warn)/0.8)]">
               {typeof w === 'string' ? w : w.message || JSON.stringify(w)}
             </p>
           ))}
@@ -95,7 +95,7 @@ function AIMetadata({ topic }) {
   const name = topic.ai_model.includes('opus') ? 'Opus 4' : topic.ai_model.includes('sonnet') ? 'Sonnet 4' : topic.ai_model;
   return (
     <span className="text-xs text-[hsl(var(--mn-muted))] flex items-center gap-1.5">
-      <Sparkles className="w-3.5 h-3.5 text-teal-500/60" />
+      <Sparkles className="w-3.5 h-3.5 text-[hsl(var(--mn-accent)/0.6)]" />
       {name}
       {topic.ai_confidence > 0 && <span>• {Math.round(topic.ai_confidence * 100)}%</span>}
     </span>
@@ -107,10 +107,10 @@ function CopyBtn({ content }) {
   return (
     <button
       onClick={() => { navigator.clipboard.writeText(content); setOk(true); setTimeout(() => setOk(false), 2000); }}
-      className="p-2 rounded-xl bg-[hsl(var(--mn-surface-2))]/80 text-[hsl(var(--mn-muted))] hover:text-slate-700 dark:hover:text-[hsl(var(--mn-text))] opacity-0 group-hover:opacity-100 transition-opacity"
+      className="p-2 rounded-xl bg-[hsl(var(--mn-surface-2))]/80 text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))] opacity-0 group-hover:opacity-100 transition-opacity"
       title="Kopírovat"
     >
-      {ok ? <Check className="w-4 h-4 text-teal-500" /> : <Copy className="w-4 h-4" />}
+      {ok ? <Check className="w-4 h-4 text-[hsl(var(--mn-accent))]" /> : <Copy className="w-4 h-4" />}
     </button>
   );
 }
@@ -186,7 +186,7 @@ export default function TopicDetailV5() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[hsl(var(--mn-bg))] flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-[hsl(var(--mn-accent))] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -215,7 +215,7 @@ export default function TopicDetailV5() {
           <div className="flex items-center justify-between">
             {/* Left: breadcrumb */}
             <div className="flex items-center gap-2 text-sm text-[hsl(var(--mn-muted))] mn-ui-font min-w-0">
-              <button onClick={() => navigate(createPageUrl('StudiumV2'))} className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors shrink-0">
+              <button onClick={() => navigate(createPageUrl('StudiumV2'))} className="hover:text-[hsl(var(--mn-accent))] transition-colors shrink-0">
                 Studium
               </button>
               <ChevronRight className="w-3.5 h-3.5 shrink-0" />
@@ -232,7 +232,7 @@ export default function TopicDetailV5() {
                   onClick={() => setShowToc(!showToc)}
                   className={`p-2 rounded-xl border transition-all mn-ui-font text-sm ${
                     showToc
-                      ? 'bg-teal-50 dark:bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-200 dark:border-teal-500/30'
+                      ? 'bg-[hsl(var(--mn-accent)/0.1)] text-[hsl(var(--mn-accent))] border-[hsl(var(--mn-accent)/0.3)]'
                       : 'bg-[hsl(var(--mn-elevated))] text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))]'
                   }`}
                   title={showToc ? 'Skrýt obsah' : 'Zobrazit obsah'}
@@ -243,7 +243,7 @@ export default function TopicDetailV5() {
 
               <button onClick={() => { setShowNotes(!showNotes); setShowFlashcards(false); }}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm border transition-all mn-ui-font ${
-                  showNotes ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-500/30'
+                  showNotes ? 'bg-[hsl(var(--mn-warn)/0.1)] text-[hsl(var(--mn-warn))] border-[hsl(var(--mn-warn)/0.3)]'
                   : 'bg-[hsl(var(--mn-elevated))] text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))]'
                 }`}>
                 <StickyNote className="w-4 h-4" />
@@ -251,13 +251,13 @@ export default function TopicDetailV5() {
               </button>
               <button onClick={() => { setShowFlashcards(!showFlashcards); setShowNotes(false); }}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm border transition-all mn-ui-font ${
-                  showFlashcards ? 'bg-teal-50 dark:bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-200 dark:border-teal-500/30'
+                  showFlashcards ? 'bg-[hsl(var(--mn-accent)/0.1)] text-[hsl(var(--mn-accent))] border-[hsl(var(--mn-accent)/0.3)]'
                   : 'bg-[hsl(var(--mn-elevated))] text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))]'
                 }`}>
                 <Brain className="w-4 h-4" />
                 <span className="hidden sm:inline">Kartičky</span>
                 {contentCounts?.flashcards > 0 && (
-                  <span className="text-[10px] bg-teal-500/20 text-teal-600 dark:text-teal-400 px-1.5 py-0.5 rounded-full font-bold">{contentCounts.flashcards}</span>
+                  <span className="text-[10px] bg-[hsl(var(--mn-accent)/0.2)] text-[hsl(var(--mn-accent))] px-1.5 py-0.5 rounded-full font-bold">{contentCounts.flashcards}</span>
                 )}
               </button>
             </div>
@@ -266,7 +266,7 @@ export default function TopicDetailV5() {
       </div>
 
       {/* ── Title section ── */}
-      <div className="bg-[hsl(var(--mn-surface))] border-b border-slate-100 dark:border-[hsl(var(--mn-border))]">
+      <div className="bg-[hsl(var(--mn-surface))] border-b border-[hsl(var(--mn-border))]">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-5">
           <div className="flex items-center gap-2 mb-2">
             <Badge variant="outline" className={`text-xs ${theme.text} border-current/30 ${theme.bg}`}>{topic.obory?.name}</Badge>
@@ -283,13 +283,13 @@ export default function TopicDetailV5() {
               </span>
             )}
             {contentCounts?.flashcards > 0 && (
-              <span className="text-xs text-teal-500 flex items-center gap-1">
+              <span className="text-xs text-[hsl(var(--mn-accent))] flex items-center gap-1">
                 <Brain className="w-3.5 h-3.5" /> {contentCounts.flashcards} kartiček
               </span>
             )}
             {contentCounts?.questions > 0 && (
               <Link to={`${createPageUrl('TestGeneratorV2')}`} 
-                className="text-xs text-blue-500 hover:text-blue-600 flex items-center gap-1 transition-colors">
+                className="text-xs text-[hsl(var(--mn-accent-2))] hover:text-[hsl(var(--mn-accent))] flex items-center gap-1 transition-colors">
                 <CheckCircle2 className="w-3.5 h-3.5" /> {contentCounts.questions} otázek
               </Link>
             )}
@@ -311,8 +311,8 @@ export default function TopicDetailV5() {
                 <button key={tab.id} onClick={() => has && handleTabSwitch(tab.id)} disabled={!has}
                   className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all mn-ui-font ${
                     active ? 'bg-[hsl(var(--mn-elevated))]/80 text-[hsl(var(--mn-text))] shadow-sm'
-                    : has ? 'text-[hsl(var(--mn-muted))] hover:text-slate-700 dark:hover:text-slate-400'
-                    : 'text-[hsl(var(--mn-muted))] dark:text-slate-700 cursor-not-allowed'
+                    : has ? 'text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))]'
+                    : 'text-[hsl(var(--mn-muted))] cursor-not-allowed'
                   }`}>
                   <Icon className="w-4 h-4" />
                   <span className="hidden sm:inline">{tab.label}</span>
@@ -351,7 +351,7 @@ export default function TopicDetailV5() {
                 <p className="text-[hsl(var(--mn-muted))] font-medium mb-1">Obsah se připravuje</p>
                 <p className="text-sm text-[hsl(var(--mn-muted))] mb-4">Toto téma bude brzy dostupné s plným textem, kartičkami a testovými otázkami.</p>
                 {contentCounts?.flashcards > 0 && (
-                  <p className="text-xs text-teal-500">✓ {contentCounts.flashcards} kartiček už je připraveno</p>
+                  <p className="text-xs text-[hsl(var(--mn-accent))]">✓ {contentCounts.flashcards} kartiček už je připraveno</p>
                 )}
               </div>
             )}

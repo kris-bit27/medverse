@@ -25,7 +25,7 @@ const COLOR_POOL = [
   { bg: 'bg-pink-500/10', border: 'border-pink-500/30', text: 'text-pink-400', accent: '#ec4899' },
   { bg: 'bg-cyan-500/10', border: 'border-cyan-500/30', text: 'text-cyan-400', accent: '#06b6d4' },
   { bg: 'bg-amber-500/10', border: 'border-amber-500/30', text: 'text-amber-400', accent: '#f59e0b' },
-  { bg: 'bg-teal-500/10', border: 'border-teal-500/30', text: 'text-teal-400', accent: '#14b8a6' },
+  { bg: 'bg-teal-500/10', border: 'border-teal-500/30', text: 'text-[hsl(var(--mn-accent))]', accent: '#14b8a6' },
   { bg: 'bg-indigo-500/10', border: 'border-indigo-500/30', text: 'text-indigo-400', accent: '#6366f1' },
   { bg: 'bg-rose-500/10', border: 'border-rose-500/30', text: 'text-rose-400', accent: '#f43f5e' },
   { bg: 'bg-lime-500/10', border: 'border-lime-500/30', text: 'text-lime-400', accent: '#84cc16' },
@@ -57,7 +57,7 @@ function ContentDots({ topic }) {
     <div className="flex items-center gap-1.5">
       {dots.map(d => (
         <div key={d.key} className="group relative flex items-center gap-1">
-          <div className={`w-2 h-2 rounded-full transition-all ${d.has ? 'bg-emerald-400 shadow-sm shadow-emerald-400/50' : 'bg-[hsl(var(--mn-border))]'}`} />
+          <div className={`w-2 h-2 rounded-full transition-all ${d.has ? 'bg-[hsl(var(--mn-success))] shadow-sm shadow-[hsl(var(--mn-success)/0.5)]' : 'bg-[hsl(var(--mn-border))]'}`} />
           <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-0.5 text-[10px] bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
             {d.label}: {d.has ? '✓' : '—'}
           </span>
@@ -76,7 +76,7 @@ function TopicCard({ topic, mastery }) {
 
   return (
     <Link to={`${createPageUrl('TopicDetailV2')}?id=${topic.id}`}>
-      <div className={`group relative rounded-xl border ${theme.border} bg-[hsl(var(--mn-surface))]/50 hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]/70 transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 overflow-hidden`}>
+      <div className={`group relative rounded-xl border ${theme.border} bg-[hsl(var(--mn-surface))]/50 hover:bg-[hsl(var(--mn-surface-2))] transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 overflow-hidden`}>
         {/* Top accent bar — shows mastery if studied */}
         {score > 0 ? (
           <div className="h-1 w-full bg-[hsl(var(--mn-border))]">
@@ -98,9 +98,9 @@ function TopicCard({ topic, mastery }) {
             <div className="flex items-center gap-2">
               {score > 0 && (
                 <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded ${
-                  score >= 80 ? 'text-emerald-600 bg-emerald-500/10' :
-                  score >= 50 ? 'text-amber-600 bg-amber-500/10' :
-                  score >= 20 ? 'text-amber-600 bg-amber-500/10' :
+                  score >= 80 ? 'text-[hsl(var(--mn-success))] bg-[hsl(var(--mn-success)/0.1)]' :
+                  score >= 50 ? 'text-[hsl(var(--mn-warn))] bg-[hsl(var(--mn-warn)/0.1)]' :
+                  score >= 20 ? 'text-[hsl(var(--mn-warn))] bg-[hsl(var(--mn-warn)/0.1)]' :
                   'text-[hsl(var(--mn-muted))] bg-[hsl(var(--mn-surface-2))]'
                 }`}>{Math.round(score)}%</span>
               )}
@@ -137,7 +137,7 @@ function TopicCard({ topic, mastery }) {
             <div className="flex items-center gap-3 text-xs text-[hsl(var(--mn-muted))]">
               {topic.ai_model && (
                 <span className="flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-amber-500/70" />
+                  <Sparkles className="w-3 h-3 text-[hsl(var(--mn-warn))]" />
                   {topic.ai_model.includes('opus') ? 'Opus 4' : 
                    topic.ai_model.includes('sonnet') ? 'Sonnet 4' : 'AI'}
                 </span>
@@ -338,7 +338,7 @@ export default function StudiumV3() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <GraduationCap className="w-6 h-6 text-teal-400" />
+              <GraduationCap className="w-6 h-6 text-[hsl(var(--mn-accent))]" />
               <h1 className="text-2xl font-bold text-[hsl(var(--mn-text))] tracking-tight">Studium</h1>
             </div>
             <p className="text-sm text-[hsl(var(--mn-muted))]">
@@ -349,10 +349,10 @@ export default function StudiumV3() {
 
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <StatCard icon={BookOpen} label="Celkem témat" value={stats.total} accent="bg-teal-500/20" />
-          <StatCard icon={FileText} label="S fulltextem" value={stats.withFulltext} accent="bg-emerald-500/20" />
-          <StatCard icon={Target} label="Oborů" value={stats.oboryCount} accent="bg-amber-500/20" />
-          <StatCard icon={Filter} label="Zobrazeno" value={stats.filtered} accent="bg-blue-500/20" />
+          <StatCard icon={BookOpen} label="Celkem témat" value={stats.total} accent="bg-[hsl(var(--mn-accent)/0.15)]" />
+          <StatCard icon={FileText} label="S fulltextem" value={stats.withFulltext} accent="bg-[hsl(var(--mn-success)/0.15)]" />
+          <StatCard icon={Target} label="Oborů" value={stats.oboryCount} accent="bg-[hsl(var(--mn-warn)/0.15)]" />
+          <StatCard icon={Filter} label="Zobrazeno" value={stats.filtered} accent="bg-[hsl(var(--mn-accent-2)/0.15)]" />
         </div>
 
         {/* Search + Filter Bar */}
@@ -364,7 +364,7 @@ export default function StudiumV3() {
               placeholder="Hledat témata, obory, okruhy..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-[hsl(var(--mn-surface))] border-[hsl(var(--mn-border))] text-[hsl(var(--mn-text))] dark:text-[hsl(var(--mn-text))] placeholder:text-slate-500 focus:border-teal-500/50 focus:ring-teal-500/20"
+              className="pl-10 bg-[hsl(var(--mn-surface))] border-[hsl(var(--mn-border))] text-[hsl(var(--mn-text))] placeholder:text-[hsl(var(--mn-muted))] focus:border-[hsl(var(--mn-accent)/0.5)] focus:ring-[hsl(var(--mn-accent)/0.2)]"
             />
             {searchQuery && (
               <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-muted))]">
@@ -377,12 +377,12 @@ export default function StudiumV3() {
           <Button
             variant="outline"
             onClick={() => setShowFilters(!showFilters)}
-            className={`gap-2 border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface))] hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))] ${showFilters ? 'border-teal-500/50 text-teal-700 dark:text-teal-300' : ''}`}
+            className={`gap-2 border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface))] hover:bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))] ${showFilters ? 'border-[hsl(var(--mn-accent)/0.5)] text-[hsl(var(--mn-accent))]' : ''}`}
           >
             <SlidersHorizontal className="w-4 h-4" />
             Filtry
             {activeFilters > 0 && (
-              <Badge className="bg-teal-500 text-white text-[10px] px-1.5 py-0 ml-1">
+              <Badge className="bg-[hsl(var(--mn-accent))] text-white text-[10px] px-1.5 py-0 ml-1">
                 {activeFilters}
               </Badge>
             )}
@@ -392,13 +392,13 @@ export default function StudiumV3() {
           <div className="flex border border-[hsl(var(--mn-border))] rounded-md overflow-hidden">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-2 ${viewMode === 'grid' ? 'bg-slate-200 dark:bg-slate-700 text-[hsl(var(--mn-text))]' : 'bg-[hsl(var(--mn-surface))] text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-muted))]'}`}
+              className={`p-2 ${viewMode === 'grid' ? 'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-text))]' : 'bg-[hsl(var(--mn-surface))] text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-muted))]'}`}
             >
               <LayoutGrid className="w-4 h-4" />
             </button>
             <button
               onClick={() => setViewMode('grouped')}
-              className={`p-2 ${viewMode === 'grouped' ? 'bg-slate-200 dark:bg-slate-700 text-[hsl(var(--mn-text))]' : 'bg-[hsl(var(--mn-surface))] text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-muted))]'}`}
+              className={`p-2 ${viewMode === 'grouped' ? 'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-text))]' : 'bg-[hsl(var(--mn-surface))] text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-muted))]'}`}
             >
               <Layers className="w-4 h-4" />
             </button>
@@ -409,7 +409,7 @@ export default function StudiumV3() {
             onClick={() => setContentOnly(!contentOnly)}
             className={`px-3 py-2 rounded-xl text-xs font-medium border transition-all ${
               contentOnly 
-                ? 'bg-teal-50 dark:bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-300 dark:border-teal-500/30' 
+                ? 'bg-[hsl(var(--mn-accent)/0.1)] text-[hsl(var(--mn-accent))] border-[hsl(var(--mn-accent)/0.3)]' 
                 : 'bg-[hsl(var(--mn-surface))] text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))]'
             }`}
           >
@@ -476,7 +476,7 @@ export default function StudiumV3() {
                   variant="ghost"
                   size="sm"
                   onClick={() => { setSearchQuery(''); setSelectedObor('all'); setSelectedOkruh('all'); }}
-                  className="text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))] dark:hover:text-[hsl(var(--mn-text))] h-9"
+                  className="text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))] h-9"
                 >
                   <X className="w-3 h-3 mr-1" />
                   Vymazat filtry
@@ -490,7 +490,7 @@ export default function StudiumV3() {
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
             <div className="flex flex-col items-center gap-3">
-              <div className="w-10 h-10 border-3 border-[hsl(var(--mn-border))] border-t-teal-500 rounded-full animate-spin" />
+              <div className="w-10 h-10 border-3 border-[hsl(var(--mn-border))] border-t-[hsl(var(--mn-accent))] rounded-full animate-spin" />
               <p className="text-sm text-[hsl(var(--mn-muted))]">Načítám témata...</p>
             </div>
           </div>
@@ -524,7 +524,7 @@ export default function StudiumV3() {
                 <Button
                   variant="outline"
                   onClick={() => setVisibleCount(v => v + 60)}
-                  className="border-[hsl(var(--mn-border))] text-[hsl(var(--mn-muted))] dark:text-[hsl(var(--mn-muted))]"
+                  className="border-[hsl(var(--mn-border))] text-[hsl(var(--mn-muted))]"
                 >
                   Načíst dalších 60 ({filteredTopics.length - visibleCount} zbývá)
                 </Button>
@@ -540,7 +540,7 @@ export default function StudiumV3() {
                 <div key={oborName}>
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-3 h-3 rounded-full" style={{ background: theme.accent }} />
-                    <h2 className="text-lg font-semibold text-[hsl(var(--mn-text))] dark:text-[hsl(var(--mn-text))]">{oborName}</h2>
+                    <h2 className="text-lg font-semibold text-[hsl(var(--mn-text))]">{oborName}</h2>
                     <Badge variant="outline" className="text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))] text-xs">
                       {topics.length}
                     </Badge>

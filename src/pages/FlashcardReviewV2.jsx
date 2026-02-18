@@ -186,7 +186,7 @@ export default function FlashcardReviewV2() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-[hsl(var(--mn-accent))] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -248,7 +248,7 @@ export default function FlashcardReviewV2() {
             variant="outline"
             className="flex-col h-auto py-4"
           >
-            <XCircle className="w-6 h-6 mb-2 text-red-500" />
+            <XCircle className="w-6 h-6 mb-2 text-[hsl(var(--mn-danger))]" />
             <span>Again</span>
           </Button>
 
@@ -266,7 +266,7 @@ export default function FlashcardReviewV2() {
             variant="outline"
             className="flex-col h-auto py-4"
           >
-            <TrendingUp className="w-6 h-6 mb-2 text-blue-500" />
+            <TrendingUp className="w-6 h-6 mb-2 text-[hsl(var(--mn-accent-2))]" />
             <span>Good</span>
           </Button>
 
@@ -275,7 +275,7 @@ export default function FlashcardReviewV2() {
             variant="outline"
             className="flex-col h-auto py-4"
           >
-            <CheckCircle className="w-6 h-6 mb-2 text-green-500" />
+            <CheckCircle className="w-6 h-6 mb-2 text-[hsl(var(--mn-success))]" />
             <span>Easy</span>
           </Button>
         </div>

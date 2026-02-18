@@ -234,7 +234,7 @@ export default function ReviewToday() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-[hsl(var(--mn-accent))] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -253,7 +253,7 @@ export default function ReviewToday() {
                   onClick={() => setDueOnly(!dueOnly)}
                   className={`text-xs px-3 py-1.5 rounded-xl border transition-colors ${
                     dueOnly 
-                      ? 'bg-purple-100 dark:bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-500/30'
+                      ? 'bg-[hsl(var(--mn-accent)/0.1)] text-[hsl(var(--mn-accent))] border-[hsl(var(--mn-accent)/0.3)]'
                       : 'text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))] hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]'
                   }`}
                 >
@@ -319,7 +319,7 @@ export default function ReviewToday() {
 
         <Card>
           <CardContent className="p-12 text-center">
-            <Zap className="w-16 h-16 mx-auto mb-4 text-teal-600" />
+            <Zap className="w-16 h-16 mx-auto mb-4 text-[hsl(var(--mn-accent))]" />
             <h2 className="text-2xl font-bold mb-2">Žádné kartičky!</h2>
             <p className="text-muted-foreground mb-6">
               {selectedObor !== 'all' || selectedOkruh !== 'all' || selectedTopic !== 'all'
@@ -367,7 +367,7 @@ export default function ReviewToday() {
                 onClick={() => setDueOnly(!dueOnly)}
                 className={`text-xs px-3 py-1.5 rounded-xl border transition-colors ${
                   dueOnly 
-                    ? 'bg-purple-100 dark:bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-500/30'
+                    ? 'bg-[hsl(var(--mn-accent)/0.1)] text-[hsl(var(--mn-accent))] border-[hsl(var(--mn-accent)/0.3)]'
                     : 'text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))] hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]'
                 }`}
               >
@@ -479,7 +479,7 @@ export default function ReviewToday() {
             variant="outline"
             className="flex-col h-auto py-4"
           >
-            <XCircle className="w-6 h-6 mb-2 text-red-500" />
+            <XCircle className="w-6 h-6 mb-2 text-[hsl(var(--mn-danger))]" />
             <span>Špatně</span>
           </Button>
 
@@ -497,7 +497,7 @@ export default function ReviewToday() {
             variant="outline"
             className="flex-col h-auto py-4"
           >
-            <CheckCircle className="w-6 h-6 mb-2 text-green-500" />
+            <CheckCircle className="w-6 h-6 mb-2 text-[hsl(var(--mn-success))]" />
             <span>Dobře</span>
           </Button>
 
@@ -506,7 +506,7 @@ export default function ReviewToday() {
             variant="outline"
             className="flex-col h-auto py-4"
           >
-            <Zap className="w-6 h-6 mb-2 text-blue-500" />
+            <Zap className="w-6 h-6 mb-2 text-[hsl(var(--mn-accent-2))]" />
             <span>Snadné</span>
           </Button>
         </div>
