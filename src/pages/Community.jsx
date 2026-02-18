@@ -28,19 +28,19 @@ import { cs } from 'date-fns/locale';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 const GROUP_TYPES = [
-  { value: 'atestace', label: 'Příprava na atestaci', icon: GraduationCap, color: 'bg-purple-500/10 text-purple-400 border-purple-500/20' },
-  { value: 'kmen', label: 'Základní kmen', icon: BookOpen, color: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
-  { value: 'vyzkum', label: 'Výzkumná skupina', icon: Microscope, color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
-  { value: 'kazuistiky', label: 'Kazuistiky', icon: Stethoscope, color: 'bg-amber-500/10 text-amber-400 border-amber-500/20' },
+  { value: 'atestace', label: 'Příprava na atestaci', icon: GraduationCap, color: 'bg-[#a855f7/0.1] text-[#a855f7] border-[#a855f7/0.2]' },
+  { value: 'kmen', label: 'Základní kmen', icon: BookOpen, color: 'bg-[hsl(var(--mn-accent-2))]/10 text-[hsl(var(--mn-accent-2))] border-[hsl(var(--mn-accent-2)/0.2)]' },
+  { value: 'vyzkum', label: 'Výzkumná skupina', icon: Microscope, color: 'bg-[hsl(var(--mn-success))]/10 text-[hsl(var(--mn-success))] border-[hsl(var(--mn-success)/0.2)]' },
+  { value: 'kazuistiky', label: 'Kazuistiky', icon: Stethoscope, color: 'bg-[hsl(var(--mn-warn))]/10 text-[hsl(var(--mn-warn))] border-[hsl(var(--mn-warn)/0.2)]' },
   { value: 'general', label: 'Obecná', icon: Users, color: 'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))]' },
 ];
 
 const THREAD_CATEGORIES = [
-  { value: 'otazka', label: 'Otázka', color: 'bg-blue-500/10 text-blue-400' },
-  { value: 'diskuze', label: 'Diskuze', color: 'bg-emerald-500/10 text-emerald-400' },
-  { value: 'kazuistika', label: 'Kazuistika', color: 'bg-amber-500/10 text-amber-400' },
-  { value: 'tip', label: 'Tip & trik', color: 'bg-purple-500/10 text-purple-400' },
-  { value: 'zdroj', label: 'Sdílení zdroje', color: 'bg-pink-500/10 text-pink-400' },
+  { value: 'otazka', label: 'Otázka', color: 'bg-[hsl(var(--mn-accent-2))]/10 text-[hsl(var(--mn-accent-2))]' },
+  { value: 'diskuze', label: 'Diskuze', color: 'bg-[hsl(var(--mn-success))]/10 text-[hsl(var(--mn-success))]' },
+  { value: 'kazuistika', label: 'Kazuistika', color: 'bg-[hsl(var(--mn-warn))]/10 text-[hsl(var(--mn-warn))]' },
+  { value: 'tip', label: 'Tip & trik', color: 'bg-[#a855f7/0.1] text-[#a855f7]' },
+  { value: 'zdroj', label: 'Sdílení zdroje', color: 'bg-[#ec4899/0.1] text-[#ec4899]' },
 ];
 
 function timeAgo(date) {
@@ -251,7 +251,7 @@ function StudyGroupsTab() {
             const isOwner = group.owner_id === user?.id;
             return (
               <Card key={group.id} className="group hover:shadow-md transition-all relative overflow-hidden">
-                <div className={`absolute top-0 left-0 right-0 h-1 ${typeInfo.color.includes('purple') ? 'bg-purple-500' : typeInfo.color.includes('blue') ? 'bg-blue-500' : typeInfo.color.includes('emerald') ? 'bg-emerald-500' : typeInfo.color.includes('amber') ? 'bg-amber-500' : 'bg-[hsl(var(--mn-border))]'}`} />
+                <div className={`absolute top-0 left-0 right-0 h-1 ${typeInfo.color.includes('purple') ? 'bg-purple-500' : typeInfo.color.includes('blue') ? 'bg-[hsl(var(--mn-accent-2))]' : typeInfo.color.includes('emerald') ? 'bg-[hsl(var(--mn-success))]' : typeInfo.color.includes('amber') ? 'bg-[hsl(var(--mn-warn))]' : 'bg-[hsl(var(--mn-border))]'}`} />
                 <CardContent className="p-5 pt-6">
                   <div className="flex items-start gap-3 mb-3">
                     <div className={`p-2.5 rounded-xl border ${typeInfo.color}`}>
@@ -285,7 +285,7 @@ function StudyGroupsTab() {
                     {isMember ? (
                       <Link to={createPageUrl('StudyGroup') + `?id=${group.id}`}>
                         <Button size="sm" variant="outline" className="text-xs">
-                          {isOwner && <Crown className="w-3 h-3 mr-1 text-amber-500" />}
+                          {isOwner && <Crown className="w-3 h-3 mr-1 text-[hsl(var(--mn-warn))]" />}
                           Otevřít
                           <ArrowUpRight className="w-3 h-3 ml-1" />
                         </Button>
@@ -501,20 +501,20 @@ function DiscussionsTab() {
             const catInfo = THREAD_CATEGORIES.find(c => c.value === thread.category);
             const myVote = votesMap[thread.id] || 0;
             return (
-              <Card key={thread.id} className={`transition-all hover:shadow-sm ${thread.is_pinned ? 'border-amber-500/30 bg-amber-50/5' : ''}`}>
+              <Card key={thread.id} className={`transition-all hover:shadow-sm ${thread.is_pinned ? 'border-[hsl(var(--mn-warn)/0.3)] bg-[hsl(var(--mn-warn)/0.05)]' : ''}`}>
                 <CardContent className="p-4">
                   <div className="flex gap-3">
                     {/* Vote column */}
                     <div className="flex flex-col items-center gap-0.5 min-w-[40px]">
                       <button onClick={() => voteMutation.mutate({ threadId: thread.id, value: 1 })}
-                        className={`p-1 rounded hover:bg-accent ${myVote === 1 ? 'text-emerald-500' : 'text-muted-foreground'}`}>
+                        className={`p-1 rounded hover:bg-accent ${myVote === 1 ? 'text-[hsl(var(--mn-success))]' : 'text-muted-foreground'}`}>
                         <ChevronUp className="w-5 h-5" />
                       </button>
-                      <span className={`text-sm font-semibold ${(thread.upvotes || 0) > 0 ? 'text-emerald-500' : (thread.upvotes || 0) < 0 ? 'text-red-500' : 'text-muted-foreground'}`}>
+                      <span className={`text-sm font-semibold ${(thread.upvotes || 0) > 0 ? 'text-[hsl(var(--mn-success))]' : (thread.upvotes || 0) < 0 ? 'text-[hsl(var(--mn-danger))]' : 'text-muted-foreground'}`}>
                         {thread.upvotes || 0}
                       </span>
                       <button onClick={() => voteMutation.mutate({ threadId: thread.id, value: -1 })}
-                        className={`p-1 rounded hover:bg-accent ${myVote === -1 ? 'text-red-500' : 'text-muted-foreground'}`}>
+                        className={`p-1 rounded hover:bg-accent ${myVote === -1 ? 'text-[hsl(var(--mn-danger))]' : 'text-muted-foreground'}`}>
                         <ChevronDown className="w-5 h-5" />
                       </button>
                     </div>
@@ -522,7 +522,7 @@ function DiscussionsTab() {
                     {/* Content */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        {thread.is_pinned && <Pin className="w-3.5 h-3.5 text-amber-500" />}
+                        {thread.is_pinned && <Pin className="w-3.5 h-3.5 text-[hsl(var(--mn-warn))]" />}
                         {thread.is_locked && <Lock className="w-3.5 h-3.5 text-muted-foreground" />}
                         {catInfo && <Badge variant="outline" className={`text-[10px] px-1.5 py-0 ${catInfo.color}`}>{catInfo.label}</Badge>}
                         {thread.tags?.map(tag => (

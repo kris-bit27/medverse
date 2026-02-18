@@ -86,7 +86,7 @@ export default function StudyPlansV2() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-[hsl(var(--mn-accent))] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -175,7 +175,7 @@ export default function StudyPlansV2() {
                 <div className="flex items-start justify-between">
                   <CardTitle>{plan.title}</CardTitle>
                   <Button variant="ghost" size="sm" onClick={() => deletePlan.mutate(plan.id)}>
-                    <Trash2 className="w-4 h-4 text-red-500" />
+                    <Trash2 className="w-4 h-4 text-[hsl(var(--mn-danger))]" />
                   </Button>
                 </div>
               </CardHeader>

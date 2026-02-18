@@ -99,17 +99,17 @@ export default function Tools() {
 
       <Tabs defaultValue="ai" className="space-y-6">
         <TabsList className="grid w-full grid-cols-3 p-1 bg-[hsl(var(--mn-surface-2))] rounded-xl">
-          <TabsTrigger value="ai" className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:shadow-md transition-all">
+          <TabsTrigger value="ai" className="flex items-center gap-2 data-[state=active]:bg-[hsl(var(--mn-surface))] data-[state=active]:shadow-md transition-all">
             <Brain className="w-4 h-4" />
             <span className="hidden sm:inline">AI Asistenti</span>
             <span className="sm:hidden">AI</span>
           </TabsTrigger>
-          <TabsTrigger value="algorithms" className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:shadow-md transition-all">
+          <TabsTrigger value="algorithms" className="flex items-center gap-2 data-[state=active]:bg-[hsl(var(--mn-surface))] data-[state=active]:shadow-md transition-all">
             <GitBranch className="w-4 h-4" />
             <span className="hidden sm:inline">Algoritmy</span>
             <span className="sm:hidden">Algo</span>
           </TabsTrigger>
-          <TabsTrigger value="cases" className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:shadow-md transition-all">
+          <TabsTrigger value="cases" className="flex items-center gap-2 data-[state=active]:bg-[hsl(var(--mn-surface))] data-[state=active]:shadow-md transition-all">
             <Stethoscope className="w-4 h-4" />
             <span className="hidden sm:inline">Moje případy</span>
             <span className="sm:hidden">Případy</span>
@@ -123,10 +123,10 @@ export default function Tools() {
             animate={{ opacity: 1, y: 0 }}
           >
             <motion.div whileHover={{ scale: 1.02 }} transition={{ type: "spring", stiffness: 300 }}>
-              <Card className="hover:shadow-xl transition-all duration-300 border-2 border-teal-200 dark:border-teal-800 hover:border-teal-300 dark:hover:border-teal-700 cursor-pointer h-full">
+              <Card className="hover:shadow-xl transition-all duration-300 border-2 border-[hsl(var(--mn-accent)/0.2)] hover:border-[hsl(var(--mn-accent)/0.4)] cursor-pointer h-full">
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-teal-500/30 group-hover:scale-110 transition-transform">
+                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))] flex items-center justify-center shadow-lg shadow-[hsl(var(--mn-accent)/0.3)] group-hover:scale-110 transition-transform">
                       <Brain className="w-7 h-7 text-[hsl(var(--mn-text))]" />
                     </div>
                     <div className="flex-1">
@@ -143,10 +143,10 @@ export default function Tools() {
             </motion.div>
 
             <motion.div whileHover={{ scale: 1.02 }} transition={{ type: "spring", stiffness: 300 }}>
-              <Card className="hover:shadow-xl transition-all duration-300 border-2 border-teal-200 dark:border-teal-800 hover:border-teal-300 dark:hover:border-teal-700 cursor-pointer h-full">
+              <Card className="hover:shadow-xl transition-all duration-300 border-2 border-[hsl(var(--mn-accent)/0.2)] hover:border-[hsl(var(--mn-accent)/0.4)] cursor-pointer h-full">
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-teal-500/30 group-hover:scale-110 transition-transform">
+                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))] flex items-center justify-center shadow-lg shadow-[hsl(var(--mn-accent)/0.3)] group-hover:scale-110 transition-transform">
                       <Pill className="w-7 h-7 text-[hsl(var(--mn-text))]" />
                     </div>
                     <div className="flex-1">
@@ -226,16 +226,16 @@ export default function Tools() {
                     transition={{ delay: i * 0.05 }}
                   >
                     <Link to={createPageUrl('ToolDetail') + `?id=${tool.id}`}>
-                      <Card className="h-full hover:shadow-lg transition-all hover:border-teal-200 dark:hover:border-[hsl(var(--mn-accent)/0.4)] group">
+                      <Card className="h-full hover:shadow-lg transition-all hover:border-[hsl(var(--mn-accent)/0.2)] dark:hover:border-[hsl(var(--mn-accent)/0.4)] group">
                         <CardContent className="p-6">
                           <div className="flex items-start gap-4">
-                            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-teal-500/10 to-cyan-500/10 flex items-center justify-center flex-shrink-0">
-                              <GitBranch className="w-7 h-7 text-teal-600" />
+                            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[hsl(var(--mn-accent))]/10 to-[hsl(var(--mn-accent-2))]/10 flex items-center justify-center flex-shrink-0">
+                              <GitBranch className="w-7 h-7 text-[hsl(var(--mn-accent))]" />
                             </div>
 
                             <div className="flex-1 min-w-0">
                               <div className="flex items-start justify-between gap-2 mb-2">
-                                <h3 className="font-semibold text-lg text-[hsl(var(--mn-text))] group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                                <h3 className="font-semibold text-lg text-[hsl(var(--mn-text))] group-hover:text-[hsl(var(--mn-accent))] dark:group-hover:text-[hsl(var(--mn-accent))] transition-colors">
                                   {tool.title}
                                 </h3>
                                 {tool.visibility && tool.visibility !== 'public' && (
@@ -260,7 +260,7 @@ export default function Tools() {
                                     {nodeCount} kroků
                                   </span>
                                 </div>
-                                <ChevronRight className="w-4 h-4 text-[hsl(var(--mn-muted))] group-hover:text-teal-600 transition-colors" />
+                                <ChevronRight className="w-4 h-4 text-[hsl(var(--mn-muted))] group-hover:text-[hsl(var(--mn-accent))] transition-colors" />
                               </div>
                             </div>
                           </div>
@@ -334,8 +334,8 @@ function SavedCases() {
         const isAIDifferential = caseLog.case_type === 'ai_differential';
         const IconComponent = isAIDifferential ? Brain : Pill;
         const bgColor = isAIDifferential 
-          ? 'from-teal-500 to-cyan-600' 
-          : 'from-teal-500 to-cyan-600';
+          ? 'from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))]' 
+          : 'from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))]';
 
         return (
           <motion.div

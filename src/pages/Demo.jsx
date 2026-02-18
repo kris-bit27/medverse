@@ -110,8 +110,8 @@ function MCQDemo({ questions }) {
           const isSelected = key === selected;
           let cls = 'border-[hsl(var(--mn-border))] hover:border-[hsl(var(--mn-accent)/0.4)]';
           if (selected) {
-            if (isCorrect) cls = 'border-emerald-500 bg-emerald-500/10';
-            else if (isSelected) cls = 'border-red-500 bg-red-500/10';
+            if (isCorrect) cls = 'border-[hsl(var(--mn-success))] bg-[hsl(var(--mn-success))]/10';
+            else if (isSelected) cls = 'border-[hsl(var(--mn-danger))] bg-[hsl(var(--mn-danger))]/10';
             else cls = 'border-[hsl(var(--mn-border))] opacity-50';
           }
           return (
@@ -119,8 +119,8 @@ function MCQDemo({ questions }) {
               className={`w-full text-left p-4 rounded-xl border ${cls} transition-all flex items-start gap-3`}
             >
               <span className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${
-                selected && isCorrect ? 'bg-emerald-500 text-white' :
-                selected && isSelected ? 'bg-red-500 text-white' :
+                selected && isCorrect ? 'bg-[hsl(var(--mn-success))] text-white' :
+                selected && isSelected ? 'bg-[hsl(var(--mn-danger))] text-white' :
                 'bg-[hsl(var(--mn-surface-2))]'
               }`}>
                 {selected && isCorrect ? <CheckCircle2 className="w-4 h-4" /> :
@@ -166,7 +166,7 @@ function TopicPreview({ topic }) {
       {/* Topic header — mirroring TopicDetailV5 style */}
       <div>
         <div className="flex items-center gap-2 mb-2">
-          <Badge variant="outline" className="text-xs text-teal-600 dark:text-teal-400 border-teal-500/30 bg-teal-500/10">{topic.obor}</Badge>
+          <Badge variant="outline" className="text-xs text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))] border-[hsl(var(--mn-accent))]/30 bg-[hsl(var(--mn-accent))]/10">{topic.obor}</Badge>
           {topic.okruh && <Badge variant="outline" className="text-xs text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))]">{topic.okruh}</Badge>}
         </div>
         <h3 className="text-xl sm:text-2xl font-bold mb-2" style={{ letterSpacing: '-0.02em' }}>
@@ -174,7 +174,7 @@ function TopicPreview({ topic }) {
         </h3>
         <div className="flex flex-wrap items-center gap-3 text-xs text-[hsl(var(--mn-muted))]">
           <span className="flex items-center gap-1">
-            <Sparkles className="w-3.5 h-3.5 text-teal-500" /> {topic.ai_model?.includes('opus') ? 'Opus 4' : 'Sonnet 4'}
+            <Sparkles className="w-3.5 h-3.5 text-[hsl(var(--mn-accent))]" /> {topic.ai_model?.includes('opus') ? 'Opus 4' : 'Sonnet 4'}
           </span>
           {wordCount > 0 && (
             <span className="flex items-center gap-1">
@@ -201,7 +201,7 @@ function TopicPreview({ topic }) {
           >
             <tab.icon className="w-4 h-4" />
             {tab.label}
-            {tab.has && mode === tab.id && <div className="w-1.5 h-1.5 rounded-full bg-teal-500" />}
+            {tab.has && mode === tab.id && <div className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--mn-accent))]" />}
           </button>
         ))}
       </div>

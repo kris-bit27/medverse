@@ -97,7 +97,7 @@ export default function ToolDetail() {
     <div className="p-6 lg:p-8 max-w-4xl mx-auto">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-[hsl(var(--mn-muted))] mb-6">
-        <Link to={createPageUrl('Tools')} className="hover:text-teal-600 transition-colors flex items-center gap-1">
+        <Link to={createPageUrl('Tools')} className="hover:text-[hsl(var(--mn-accent))] transition-colors flex items-center gap-1">
           <ChevronLeft className="w-4 h-4" />
           Nástroje
         </Link>
@@ -107,8 +107,8 @@ export default function ToolDetail() {
       <header className="mb-8">
         <div className="flex items-start justify-between gap-4 mb-4">
           <div className="flex items-start gap-4">
-            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-teal-500/10 to-cyan-500/10 flex items-center justify-center flex-shrink-0">
-              <GitBranch className="w-7 h-7 text-teal-600" />
+            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[hsl(var(--mn-accent))]/10 to-[hsl(var(--mn-accent-2))]/10 flex items-center justify-center flex-shrink-0">
+              <GitBranch className="w-7 h-7 text-[hsl(var(--mn-accent))]" />
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-2">
@@ -124,7 +124,7 @@ export default function ToolDetail() {
             variant="ghost"
             size="icon"
             onClick={() => bookmarkMutation.mutate()}
-            className={bookmark ? 'text-amber-500' : 'text-[hsl(var(--mn-muted))]'}
+            className={bookmark ? 'text-[hsl(var(--mn-warn))]' : 'text-[hsl(var(--mn-muted))]'}
           >
             {bookmark ? <BookmarkCheck className="w-5 h-5" /> : <Bookmark className="w-5 h-5" />}
           </Button>
@@ -150,14 +150,14 @@ export default function ToolDetail() {
           </CardContent>
         </Card>
       ) : (
-        <Card className="p-8 text-center bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800">
+        <Card className="p-8 text-center bg-[hsl(var(--mn-warn)/0.06)] border-[hsl(var(--mn-warn)/0.2)]">
           <h3 className="text-lg font-semibold text-[hsl(var(--mn-text))] mb-2">
             Premium obsah
           </h3>
           <p className="text-[hsl(var(--mn-muted))] mb-4">
             Tento nástroj je dostupný pouze pro Premium uživatele
           </p>
-          <Button asChild className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600">
+          <Button asChild className="bg-[hsl(var(--mn-warn))] hover:bg-[hsl(var(--mn-warn)/0.85)]">
             <Link to={createPageUrl('Pricing')}>
               Upgradovat na Premium
             </Link>

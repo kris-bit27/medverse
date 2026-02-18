@@ -35,37 +35,37 @@ const features = [
     icon: BookOpen,
     title: 'Strukturovaný obsah dle VP 2019',
     desc: 'Každé téma obsahuje plný text, high-yield shrnutí a je mapováno na vzdělávací program MZČR.',
-    accent: 'from-teal-500 to-emerald-500',
+    accent: 'from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-success))]',
   },
   {
     icon: Brain,
     title: 'AI Copilot pro medicínu',
     desc: 'Ptejte se na cokoliv z medicíny. Claude analyzuje kontext a odpovídá přesně v rámci vašeho oboru.',
-    accent: 'from-cyan-500 to-blue-500',
+    accent: 'from-[hsl(var(--mn-accent-2))] to-[hsl(168,60%,35%)]',
   },
   {
     icon: RefreshCw,
     title: 'Spaced Repetition kartičky',
     desc: 'Automaticky generované flashcards s algoritmem opakování. Systém ví, co potřebujete zopakovat.',
-    accent: 'from-violet-500 to-purple-500',
+    accent: 'from-[#8b5cf6] to-[#a855f7]',
   },
   {
     icon: Zap,
     title: 'Generátor testů',
     desc: 'MCQ testy z libovolného oboru a okruhu. Okamžité vyhodnocení s vysvětlením správných odpovědí.',
-    accent: 'from-amber-500 to-orange-500',
+    accent: 'from-[hsl(var(--mn-warn))] to-[#f97316]',
   },
   {
     icon: ClipboardList,
     title: 'Logbook & VP Tracker',
     desc: 'Sledujte plnění vzdělávacího programu. Vizuální přehled splněných požadavků pro každý obor.',
-    accent: 'from-rose-500 to-pink-500',
+    accent: 'from-[#f43f5e] to-[#ec4899]',
   },
   {
     icon: Search,
     title: 'Med Search s PubMed',
     desc: 'Hledejte napříč obsahem i v PubMed databázi. AI zpracuje výsledky a shrne klíčové informace.',
-    accent: 'from-teal-500 to-cyan-500',
+    accent: 'from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))]',
   },
 ];
 
@@ -118,7 +118,7 @@ export default function Landing() {
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface)/0.5)] text-xs font-medium text-[hsl(var(--mn-muted))] mb-8">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--mn-success))] animate-pulse" />
               Připraveno pro atestaci 2026
             </div>
 
@@ -264,7 +264,7 @@ export default function Landing() {
               { icon: CheckCircle2, text: '727 VP požadavků' },
             ].map((item, i) => (
               <div key={i} className="flex items-center gap-2 justify-center text-sm">
-                <item.icon className="w-4 h-4 text-emerald-500 shrink-0" />
+                <item.icon className="w-4 h-4 text-[hsl(var(--mn-success))] shrink-0" />
                 <span>{item.text}</span>
               </div>
             ))}

@@ -56,17 +56,17 @@ export default function Pricing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link to={createPageUrl('Landing')} className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-teal-500/20">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))] flex items-center justify-center shadow-lg shadow-[hsl(var(--mn-accent)/0.2)]">
                 <Stethoscope className="w-6 h-6 text-[hsl(var(--mn-text))]" />
               </div>
               <span className="font-bold text-xl text-[hsl(var(--mn-text))]">MedVerse</span>
             </Link>
             
             <div className="hidden md:flex items-center gap-8">
-              <Link to={createPageUrl('Demo')} className="text-sm font-medium text-[hsl(var(--mn-muted))] hover:text-teal-600 transition-colors">
+              <Link to={createPageUrl('Demo')} className="text-sm font-medium text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-accent))] transition-colors">
                 Demo
               </Link>
-              <Link to={createPageUrl('Pricing')} className="text-sm font-medium text-teal-600 dark:text-teal-400">
+              <Link to={createPageUrl('Pricing')} className="text-sm font-medium text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))]">
                 Ceník
               </Link>
             </div>
@@ -76,7 +76,7 @@ export default function Pricing() {
                 Přihlásit
               </Button>
               <Button 
-                className="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700"
+                className="bg-gradient-to-r from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))] hover:opacity-90"
                 onClick={() => { window.location.href = `/login?redirectTo=${encodeURIComponent(createPageUrl('Dashboard'))}`; }}
               >
                 Začít
@@ -94,7 +94,7 @@ export default function Pricing() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400 text-sm font-medium mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[hsl(var(--mn-accent)/0.08)] text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))] text-sm font-medium mb-6">
               <Sparkles className="w-4 h-4" />
               Jednoduchý ceník
             </div>
@@ -121,12 +121,12 @@ export default function Pricing() {
               >
                 <Card className={`p-8 h-full relative ${
                   plan.highlighted 
-                    ? 'border-2 border-teal-500 shadow-xl shadow-teal-500/10' 
+                    ? 'border-2 border-[hsl(var(--mn-accent))] shadow-xl shadow-[hsl(var(--mn-accent)/0.1)]' 
                     : 'border border-[hsl(var(--mn-border))]'
                 }`}>
                   {plan.highlighted && (
                     <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                      <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-teal-600 to-cyan-600 text-white text-sm font-medium shadow-lg">
+                      <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))] text-white text-sm font-medium shadow-lg">
                         <Crown className="w-4 h-4" />
                         Nejoblíbenější
                       </div>
@@ -153,7 +153,7 @@ export default function Pricing() {
                   <ul className="space-y-4 mb-8">
                     {plan.features.map((feature, j) => (
                       <li key={j} className="flex items-start gap-3">
-                        <Check className="w-5 h-5 text-teal-600 dark:text-teal-400 mt-0.5 flex-shrink-0" />
+                        <Check className="w-5 h-5 text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))] mt-0.5 flex-shrink-0" />
                         <span className="text-[hsl(var(--mn-muted))]">
                           {feature}
                         </span>
@@ -164,7 +164,7 @@ export default function Pricing() {
                   <Button 
                     className={`w-full h-12 ${
                       plan.highlighted 
-                        ? 'bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 shadow-lg shadow-teal-500/25' 
+                        ? 'bg-gradient-to-r from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))] hover:opacity-90 shadow-lg shadow-[hsl(var(--mn-accent)/0.25)]' 
                         : ''
                     }`}
                     variant={plan.highlighted ? 'default' : 'outline'}
@@ -223,7 +223,7 @@ export default function Pricing() {
       <footer className="py-12 px-4 sm:px-6 lg:px-8 border-t border-[hsl(var(--mn-border))]">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))] flex items-center justify-center">
               <Stethoscope className="w-5 h-5 text-[hsl(var(--mn-text))]" />
             </div>
             <span className="font-semibold text-[hsl(var(--mn-text))]">MedVerse</span>
