@@ -20,14 +20,18 @@ export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    const { user_id, mode = 'weekly_digest' } = req.body || {};
-    if (!user_id) return res.status(400).json({ error: 'Missing user_id' });
+    const { mode = 'weekly_digest' } = req.body || {};
+
+    // Authenticate user from JWT — never trust user_id from request body
+    const { getUserId } = await import('./_auth.js');
+    const userId = await getUserId(req, res);
+    if (!userId) return; // 401 already sent
 
     // Token check
     try {
       const { checkTokens, deductTokens } = await import('./_token-utils');
       const operation = mode === 'weekly_digest' ? 'weekly_report' : 'study_insights';
-      const check = await checkTokens(supabase, user_id, operation);
+      const check = await checkTokens(supabase, userId, operation);
       if (!check.allowed) {
         return res.status(402).json({
           error: `Nedostatek AI kreditů. Potřeba: ${check.cost}, zbývá: ${check.remaining}`,
@@ -35,7 +39,7 @@ export default async function handler(req: any, res: any) {
           tokens_needed: check.cost,
         });
       }
-      await deductTokens(supabase, user_id, operation, `AI Report: ${mode}`);
+      await deductTokens(supabase, userId, operation, `AI Report: ${mode}`);
     } catch (tokenErr: any) {
       console.warn('[user-report] token deduction failed:', tokenErr.message);
     }
@@ -44,24 +48,24 @@ export default async function handler(req: any, res: any) {
     const [masteryRes, sessionsRes, testsRes, profileRes] = await Promise.all([
       supabase.from('user_topic_mastery')
         .select('topic_id, mastery_score, total_study_seconds, flashcards_correct, flashcards_reviewed, questions_correct, questions_answered, last_studied_at')
-        .eq('user_id', user_id)
+        .eq('user_id', userId)
         .order('last_studied_at', { ascending: false })
         .limit(50),
       supabase.from('study_sessions')
         .select('topic_id, session_type, duration_seconds, items_reviewed, created_at')
-        .eq('user_id', user_id)
+        .eq('user_id', userId)
         .gte('created_at', new Date(Date.now() - 7 * 86400000).toISOString())
         .order('created_at', { ascending: false }),
       supabase.from('test_sessions')
         .select('score, correct_answers, total_questions, time_spent_seconds, created_at')
-        .eq('user_id', user_id)
+        .eq('user_id', userId)
         .eq('status', 'completed')
         .gte('created_at', new Date(Date.now() - 30 * 86400000).toISOString())
         .order('created_at', { ascending: false })
         .limit(20),
       supabase.from('user_profiles')
         .select('display_name, current_specialization')
-        .eq('user_id', user_id)
+        .eq('user_id', userId)
         .single(),
     ]);
 

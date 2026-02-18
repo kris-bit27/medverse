@@ -12,7 +12,7 @@ export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    const { studySetId, topicIds, title, mode = 'summary', user_id } = req.body || {};
+    const { studySetId, topicIds, title, mode = 'summary' } = req.body || {};
 
     if (!topicIds?.length) {
       return res.status(400).json({ error: 'No topics selected' });
@@ -21,12 +21,16 @@ export default async function handler(req: any, res: any) {
       return res.status(400).json({ error: 'Maximum 20 topics per set' });
     }
 
+    // Authenticate user from JWT — never trust user_id from request body
+    const { getOptionalUserId } = await import('./_auth.js');
+    const userId = await getOptionalUserId(req);
+
     // Token check
-    if (user_id) {
+    if (userId) {
       try {
         const { checkTokens, deductTokens } = await import('./_token-utils');
         const operation = `study_set_${mode}`;
-        const check = await checkTokens(supabase, user_id, operation);
+        const check = await checkTokens(supabase, userId, operation);
         if (!check.allowed) {
           return res.status(402).json({
             error: `Nedostatek AI kreditů. Potřeba: ${check.cost}, zbývá: ${check.remaining}`,
@@ -34,7 +38,7 @@ export default async function handler(req: any, res: any) {
             tokens_needed: check.cost,
           });
         }
-        await deductTokens(supabase, user_id, operation, `StudySet ${mode}: ${title?.substring(0, 40) || 'untitled'}`);
+        await deductTokens(supabase, userId, operation, `StudySet ${mode}: ${title?.substring(0, 40) || 'untitled'}`);
       } catch (tokenErr: any) {
         console.warn('[study-set] token deduction failed:', tokenErr.message);
       }

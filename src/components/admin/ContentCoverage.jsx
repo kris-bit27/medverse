@@ -82,7 +82,9 @@ export default function ContentCoverage() {
   const runPipeline = async () => {
     setPipelineRunning(true);
     try {
-      const resp = await fetch(`${import.meta.env.VITE_SUPABASE_URL || 'https://rrjohtzqqyhgqfpkvrbu.supabase.co'}/functions/v1/post-generation-pipeline`, {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      if (!supabaseUrl) { toast.error('Missing VITE_SUPABASE_URL'); return; }
+      const resp = await fetch(`${supabaseUrl}/functions/v1/post-generation-pipeline`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY || '' },
         body: JSON.stringify({ mode: 'batch' }),

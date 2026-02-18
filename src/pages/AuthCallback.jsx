@@ -19,10 +19,11 @@ export default function AuthCallback() {
       const url = new URL(window.location.href);
       const params = new URLSearchParams(url.search);
       const code = params.get('code');
-      const redirectTo = params.get('redirectTo') || '/dashboard';
       const errorParam = params.get('error_description') || params.get('error');
 
-      console.log('[AuthCallback] params', Object.fromEntries(params.entries()));
+      // Prevent open redirect — only allow relative paths
+      const rawRedirect = params.get('redirectTo') || '/dashboard';
+      const redirectTo = rawRedirect.startsWith('/') && !rawRedirect.startsWith('//') ? rawRedirect : '/dashboard';
 
       if (errorParam) {
         setError(errorParam);
@@ -32,7 +33,6 @@ export default function AuthCallback() {
       try {
         if (code) {
           const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
-          console.log('[AuthCallback] exchange result', { error: exchangeError });
           if (exchangeError) {
             setError(exchangeError.message);
             return;
@@ -46,14 +46,12 @@ export default function AuthCallback() {
               access_token: accessToken,
               refresh_token: refreshToken
             });
-            console.log('[AuthCallback] setSession result', { error: setSessionError });
             if (setSessionError) {
               setError(setSessionError.message);
               return;
             }
           } else {
             const { error: sessionError } = await supabase.auth.getSession();
-            console.log('[AuthCallback] getSession result', { error: sessionError });
             if (sessionError) {
               setError(sessionError.message);
               return;

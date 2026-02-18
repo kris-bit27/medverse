@@ -166,6 +166,11 @@ export default async function handler(req: any, res: any) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
+  // Admin-only endpoint — requires valid Bearer token with admin/editor role
+  const { requireAdmin } = await import('./_auth.js');
+  const adminId = await requireAdmin(req, res);
+  if (!adminId) return; // 401/403 already sent
+
   const authHeader = req.headers.authorization;
   const { action, topic_ids, modes } = req.body || {};
 

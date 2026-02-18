@@ -1,11 +1,15 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { createClient } from '@supabase/supabase-js';
+import { supabaseAdmin as supabase } from './_supabaseAdmin.js';
+import { requireAdmin } from './_auth.js';
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
 export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
+
+  // Admin-only endpoint — requires valid Bearer token with admin/editor role
+  const adminId = await requireAdmin(req, res);
+  if (!adminId) return; // 401/403 already sent
 
   const { feedback_id, auto } = req.body || {};
 
