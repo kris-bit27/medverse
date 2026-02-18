@@ -56,7 +56,8 @@ export const PAGES = {
   "Tools":              L(() => import('./pages/ToolsHub')),          // alias → ToolsHub
   "ClinicalCalculators": L(() => import('./pages/ClinicalCalculatorsV2')),
   "DrugDatabase":       L(() => import('./pages/DrugDatabaseV2')),
-  "ClinicalGuidelines": L(() => import('./pages/ClinicalGuidelines')),
+  "ClinicalGuidelines": L(() => import('./pages/ClinicalAlgorithmsV2')),
+  "ClinicalAlgorithms": L(() => import('./pages/ClinicalAlgorithmsV2')),
   "ToolDetail":         L(() => import('./pages/ToolsHub')),          // alias → ToolsHub
 
   // === Social ===

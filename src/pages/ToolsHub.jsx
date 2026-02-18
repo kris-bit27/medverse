@@ -32,8 +32,7 @@ const SECTIONS = [
     icon: GitBranch,
     color: '#3b82f6',
     link: 'ClinicalGuidelines',
-    countKey: 'guidelines',
-    badge: 'Připravujeme',
+    countKey: 'algorithms',
   },
   {
     key: 'ai',
@@ -50,12 +49,13 @@ export default function ToolsHub() {
   const { data: counts = {} } = useQuery({
     queryKey: ['tools-counts'],
     queryFn: async () => {
-      const [t, d, g] = await Promise.all([
+      const [t, d, g, a] = await Promise.all([
         supabase.from('clinical_tools').select('id', { count: 'exact', head: true }),
         supabase.from('drugs').select('id', { count: 'exact', head: true }),
         supabase.from('clinical_guidelines').select('id', { count: 'exact', head: true }),
+        supabase.from('clinical_algorithms').select('id', { count: 'exact', head: true }),
       ]);
-      return { tools: t.count || 0, drugs: d.count || 0, guidelines: g.count || 0 };
+      return { tools: t.count || 0, drugs: d.count || 0, guidelines: g.count || 0, algorithms: a.count || 0 };
     },
   });
 
