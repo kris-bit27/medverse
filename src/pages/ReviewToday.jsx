@@ -243,7 +243,7 @@ export default function ReviewToday() {
     return (
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
         {/* Filters */}
-        <Card className="bg-[hsl(var(--mn-surface))] border-[hsl(var(--mn-border))]">
+        <Card>
           <CardContent className="p-6">
             <div className="flex items-center gap-2 mb-4">
               <Filter className="w-4 h-4" />
@@ -254,7 +254,7 @@ export default function ReviewToday() {
                   className={`text-xs px-3 py-1.5 rounded-xl border transition-colors ${
                     dueOnly 
                       ? 'bg-[hsl(var(--mn-accent)/0.1)] text-[hsl(var(--mn-accent))] border-[hsl(var(--mn-accent)/0.3)]'
-                      : 'text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))] hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]'
+                      : 'text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))] hover:bg-[hsl(var(--mn-surface-2))]'
                   }`}
                 >
                   {dueOnly ? '📅 Jen k opakování' : 'Všechny kartičky'}
@@ -357,7 +357,7 @@ export default function ReviewToday() {
       </div>
 
       {/* Filters */}
-      <Card className="bg-[hsl(var(--mn-surface))] border-[hsl(var(--mn-border))]">
+      <Card>
         <CardContent className="p-4">
           <div className="flex items-center gap-2 mb-3">
             <Filter className="w-4 h-4" />
@@ -368,7 +368,7 @@ export default function ReviewToday() {
                 className={`text-xs px-3 py-1.5 rounded-xl border transition-colors ${
                   dueOnly 
                     ? 'bg-[hsl(var(--mn-accent)/0.1)] text-[hsl(var(--mn-accent))] border-[hsl(var(--mn-accent)/0.3)]'
-                    : 'text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))] hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]'
+                    : 'text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))] hover:bg-[hsl(var(--mn-surface-2))]'
                 }`}
               >
                 {dueOnly ? '📅 Jen k opakování' : 'Všechny kartičky'}
@@ -445,7 +445,7 @@ export default function ReviewToday() {
         onClick={() => setIsFlipped(!isFlipped)}
         className="cursor-pointer"
       >
-        <Card className="min-h-[400px] hover:shadow-lg transition-shadow bg-[hsl(var(--mn-surface))] border-[hsl(var(--mn-border))]">
+        <Card className="min-h-[400px] hover:shadow-lg transition-shadow">
           <CardContent className="p-12 flex items-center justify-center">
             <div className="text-center w-full">
               {!isFlipped ? (
@@ -513,7 +513,7 @@ export default function ReviewToday() {
       )}
 
       {/* Stats */}
-      <Card className="bg-[hsl(var(--mn-surface))] border-[hsl(var(--mn-border))]">
+      <Card>
         <CardContent className="p-4">
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center gap-2">

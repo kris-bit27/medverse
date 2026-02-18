@@ -269,7 +269,7 @@ export default function LogbookV2() {
         <p className="text-sm text-[hsl(var(--mn-muted))] mt-1">Sleduj plnění vzdělávacího programu dle MZČR 2019.</p></div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {obory.map(o => { const has = !!profiles[o.id]; return (
-          <button key={o.id} onClick={() => setSel(o.id)} className={`flex items-center gap-3 p-3.5 rounded-xl border text-left transition-all hover:border-[hsl(var(--mn-accent)/0.3)] hover:bg-[hsl(var(--mn-accent)/0.05)] ${has ? 'border-[hsl(var(--mn-accent)/0.2)] bg-[hsl(var(--mn-accent)/0.05)]' : 'border-[hsl(var(--mn-border))]'}`}>
+          <button key={o.id} onClick={() => setSel(o.id)} className={`flex items-center gap-3 p-3.5 rounded-xl border text-left transition-all hover:border-[hsl(var(--mn-accent)/0.3)] hover:-translate-y-0.5 ${has ? 'border-[hsl(var(--mn-accent)/0.2)] bg-[hsl(var(--mn-accent)/0.08)]' : 'border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))]'}`} style={{ boxShadow: 'var(--mn-shadow-1)' }}>
             <div className="w-9 h-9 rounded-lg bg-[hsl(var(--mn-accent)/0.1)] flex items-center justify-center flex-shrink-0"><Award className="w-4 h-4 text-[hsl(var(--mn-accent))]" /></div>
             <div className="flex-1 min-w-0"><div className="text-sm font-semibold truncate">{o.name}</div><div className="text-xs text-[hsl(var(--mn-muted))]">{o.min_years} let · {o.kmen_type || '—'} kmen{has && ' · ✅'}</div></div>
             <ChevronRight className="w-4 h-4 text-[hsl(var(--mn-muted))] flex-shrink-0" />
@@ -280,7 +280,7 @@ export default function LogbookV2() {
 
   // Detail
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-4">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-6">
       <div className="flex items-center justify-between">
         <Button variant="ghost" size="sm" onClick={() => { setSel(null); setFPh('all'); setFTy('all'); }}><ChevronLeft className="w-4 h-4 mr-1" />Zpět</Button>
         <Button variant="ghost" size="sm" onClick={() => setShowOB(true)}><Settings className="w-4 h-4 mr-1" />Profil</Button>

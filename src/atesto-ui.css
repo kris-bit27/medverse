@@ -76,19 +76,19 @@ body {
 /* Dark mode — activated by Tailwind html.dark class */
 html.dark {
   --mn-bg: 222 24% 5%;
-  --mn-surface: 222 20% 8%;
-  --mn-surface-2: 222 18% 10%;
-  --mn-elevated: 222 16% 12%;
-  --mn-border: 220 14% 20%;
+  --mn-surface: 222 20% 9%;
+  --mn-surface-2: 222 18% 12%;
+  --mn-elevated: 222 16% 15%;
+  --mn-border: 220 14% 22%;
   --mn-text: 210 40% 93%;
-  --mn-muted: 215 18% 68%;
+  --mn-muted: 215 18% 65%;
   --mn-accent: 173 58% 39%;
   --mn-accent-2: 188 76% 42%;
   --mn-success: 160 60% 45%;
   --mn-warn: 38 92% 55%;
   --mn-danger: 0 72% 55%;
-  --mn-shadow-1: 0 2px 12px rgba(0, 0, 0, 0.25);
-  --mn-shadow-2: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --mn-shadow-1: 0 2px 12px rgba(0, 0, 0, 0.3);
+  --mn-shadow-2: 0 8px 24px rgba(0, 0, 0, 0.4);
   --mn-focus: 173 58% 39%;
 }
 
