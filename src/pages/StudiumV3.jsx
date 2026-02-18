@@ -76,7 +76,7 @@ function TopicCard({ topic, mastery }) {
 
   return (
     <Link to={`${createPageUrl('TopicDetailV2')}?id=${topic.id}`}>
-      <div className={`group relative rounded-xl border ${theme.border} bg-[hsl(var(--mn-surface))]/50 hover:bg-[hsl(var(--mn-surface-2))] transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 overflow-hidden`}>
+      <div className={`group relative rounded-xl border ${theme.border} bg-[hsl(var(--mn-surface-2))] hover:bg-[hsl(var(--mn-elevated))] transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 overflow-hidden`}>
         {/* Top accent bar — shows mastery if studied */}
         {score > 0 ? (
           <div className="h-1 w-full bg-[hsl(var(--mn-border))]">
@@ -166,12 +166,12 @@ function TopicCard({ topic, mastery }) {
 /* ─── Stat Card ─── */
 function StatCard({ icon: Icon, label, value, accent }) {
   return (
-    <div className={`flex items-center gap-3 p-4 rounded-xl bg-[hsl(var(--mn-surface))]/50 border border-[hsl(var(--mn-border))]`}>
+    <div className="flex items-center gap-3 p-4 rounded-xl bg-[hsl(var(--mn-surface-2))] border border-[hsl(var(--mn-border))]" style={{ boxShadow: "var(--mn-shadow-1)" }}>
       <div className={`p-2 rounded-xl ${accent || 'bg-[hsl(var(--mn-surface-2))]'}`}>
         <Icon className="w-5 h-5 text-[hsl(var(--mn-muted))]" />
       </div>
       <div>
-        <p className="text-2xl font-bold text-[hsl(var(--mn-text))]">{value}</p>
+        <p className="mn-mono-font text-2xl font-bold text-[hsl(var(--mn-text))]">{value}</p>
         <p className="text-xs text-[hsl(var(--mn-muted))]">{label}</p>
       </div>
     </div>
@@ -332,14 +332,15 @@ export default function StudiumV3() {
   }, [okruhy, selectedObor, allTopics]);
 
   return (
-    <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
 
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <GraduationCap className="w-6 h-6 text-[hsl(var(--mn-accent))]" />
-              <h1 className="text-2xl font-bold text-[hsl(var(--mn-text))] tracking-tight">Studium</h1>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-2 h-2 rounded-full bg-[hsl(var(--mn-accent))]" />
+              
+              <h1 className="mn-serif-font text-[28px] font-bold text-[hsl(var(--mn-text))] tracking-tight">Studium</h1>
             </div>
             <p className="text-sm text-[hsl(var(--mn-muted))]">
               {stats.total} témat • {stats.withFulltext} s plným textem • {stats.oboryCount} oborů

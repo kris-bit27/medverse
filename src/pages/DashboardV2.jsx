@@ -206,7 +206,6 @@ export default function DashboardV2() {
 
         {/* ═══ STUDY TODAY + ATTESTATION ═══ */}
         <motion.section {...up(3)}>
-          <Caption>Co studovat dnes</Caption>
           <div className="grid lg:grid-cols-2 gap-4">
             <StudyTodayWidget />
             <AttestationProgress />
@@ -215,7 +214,6 @@ export default function DashboardV2() {
 
         {/* ═══ WEAK SPOTS ═══ */}
         <motion.section {...up(4)}>
-          <Caption>Slabé oblasti</Caption>
           <WeakSpotsWidget />
         </motion.section>
 
@@ -231,7 +229,6 @@ export default function DashboardV2() {
 
         {/* ═══ AI DIGEST ═══ */}
         <motion.section {...up(6)}>
-          <Caption>AI studijní report</Caption>
           <GeminiWeeklyDigest />
         </motion.section>
 
