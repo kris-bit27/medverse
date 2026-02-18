@@ -122,13 +122,13 @@ export default function Layout({ children, currentPageName }) {
             <MedVerseLogo size={32} />
             <div className="flex items-center gap-2">
               <span className="font-bold text-[hsl(var(--mn-text))]">MedVerse</span>
-              <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400">
+              <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-[hsl(var(--mn-accent)/0.1)] text-[hsl(var(--mn-accent))]">
                 EDU
               </span>
             </div>
           </Link>
         </div>
-        <Link to={createPageUrl('Search')} className="p-2 text-[hsl(var(--mn-muted))] hover:text-slate-700 dark:hover:text-[hsl(var(--mn-text))]">
+        <Link to={createPageUrl('Search')} className="p-2 text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))]">
           <Search className="w-5 h-5" />
         </Link>
       </header>
@@ -155,13 +155,13 @@ export default function Layout({ children, currentPageName }) {
               <div>
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-lg text-[hsl(var(--mn-text))]">MedVerse</span>
-                  <span className="text-xs font-semibold px-2 py-0.5 rounded bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400">
+                  <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[hsl(var(--mn-accent)/0.1)] text-[hsl(var(--mn-accent))]">
                     EDU
                   </span>
                 </div>
                 <div className="flex items-center gap-2 mt-1">
                   {user?.plan === 'premium' && (
-                    <div className="flex items-center gap-1 text-amber-600">
+                    <div className="flex items-center gap-1 text-[hsl(var(--mn-warn))]">
                       <Crown className="w-3 h-3" />
                       <span className="text-xs font-medium">Premium</span>
                     </div>
@@ -203,10 +203,10 @@ export default function Layout({ children, currentPageName }) {
                         "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
                         hasActiveSubmenu 
                           ? "is-active" 
-                          : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]"
+                          : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))]"
                       )}
                     >
-                      <Icon className={cn("w-5 h-5", hasActiveSubmenu && "text-teal-600 dark:text-teal-400")} />
+                      <Icon className={cn("w-5 h-5", hasActiveSubmenu && "text-[hsl(var(--mn-accent))]")} />
                       {item.name}
                       <ChevronRight 
                         className={cn(
@@ -230,8 +230,8 @@ export default function Layout({ children, currentPageName }) {
                               className={cn(
                                 "flex items-center gap-3 px-4 py-2 rounded-xl text-sm font-medium transition-all",
                                 isActive 
-                                  ? "bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400" 
-                                  : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]"
+                                  ? "bg-[hsl(var(--mn-accent)/0.1)] text-[hsl(var(--mn-accent))]" 
+                                  : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))]"
                               )}
                             >
                               <SubIcon className="w-4 h-4" />
@@ -260,10 +260,10 @@ export default function Layout({ children, currentPageName }) {
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
                     "mn-sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
-                    isActive ? "is-active" : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]"
+                    isActive ? "is-active" : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))]"
                   )}
                 >
-                  <Icon className={cn("w-5 h-5", isActive && "text-teal-600 dark:text-teal-400")} />
+                  <Icon className={cn("w-5 h-5", isActive && "text-[hsl(var(--mn-accent))]")} />
                   {item.name}
                   {isActive && <ChevronRight className="w-4 h-4 ml-auto" />}
                 </Link>
@@ -284,7 +284,7 @@ export default function Layout({ children, currentPageName }) {
                     "mn-sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
                     currentPageName === 'AdminConsole'
                       ? "is-active"
-                      : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]"
+                      : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))]"
                   )}
                 >
                   <Shield className="w-5 h-5" />
@@ -297,7 +297,7 @@ export default function Layout({ children, currentPageName }) {
                     "mn-sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
                     currentPageName === 'AdminBatchMonitor'
                       ? "is-active"
-                      : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]"
+                      : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))]"
                   )}
                 >
                   <Zap className="w-5 h-5" />
@@ -310,7 +310,7 @@ export default function Layout({ children, currentPageName }) {
                     "mn-sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
                     currentPageName === 'AdminFeedback'
                       ? "is-active"
-                      : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))]"
+                      : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))]"
                   )}
                 >
                   <Flag className="w-5 h-5" />
@@ -324,7 +324,7 @@ export default function Layout({ children, currentPageName }) {
           <div className="p-4 border-t border-[hsl(var(--mn-border))]">
             <div className="flex items-center gap-3 p-3 rounded-xl bg-[hsl(var(--mn-surface-2))]/50">
               <Avatar className="w-10 h-10">
-                <AvatarFallback className="bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300">
+                <AvatarFallback className="bg-[hsl(var(--mn-accent)/0.12)] text-[hsl(var(--mn-accent))]">
                   {user?.full_name?.charAt(0) || user?.email?.charAt(0) || 'U'}
                 </AvatarFallback>
               </Avatar>
@@ -370,7 +370,7 @@ export default function Layout({ children, currentPageName }) {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="atesto-btn atesto-btn-ghost gap-2">
                   <Avatar className="w-8 h-8">
-                    <AvatarFallback className="bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300 text-sm">
+                    <AvatarFallback className="bg-[hsl(var(--mn-accent)/0.12)] text-[hsl(var(--mn-accent))] text-sm">
                       {user?.full_name?.charAt(0) || 'U'}
                     </AvatarFallback>
                   </Avatar>
@@ -399,7 +399,7 @@ export default function Layout({ children, currentPageName }) {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="text-red-600 dark:text-red-400">
+                <DropdownMenuItem onClick={handleLogout} className="text-[hsl(var(--mn-danger))]">
                   <LogOut className="w-4 h-4 mr-2" />
                   Odhlásit se
                 </DropdownMenuItem>
