@@ -36,7 +36,7 @@ export default function GeminiWeeklyDigest() {
           <Sparkles className="w-4 h-4 text-[hsl(var(--mn-accent))]" />
           <h3 className="mn-ui-font text-sm font-semibold">AI Studijní Report</h3>
           <span className="mn-ui-font text-[9px] px-2 py-0.5 rounded-full border border-[hsl(var(--mn-border))] text-[hsl(var(--mn-muted))] flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" /> Gemini Flash
+            <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--mn-success))] inline-block" /> Gemini Flash
           </span>
         </div>
         {report && (

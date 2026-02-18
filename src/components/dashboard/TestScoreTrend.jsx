@@ -24,7 +24,7 @@ export default function TestScoreTrend() {
   });
 
   const TrendIcon = data?.trend > 2 ? ArrowUp : data?.trend < -2 ? ArrowDown : Minus;
-  const trendColor = data?.trend > 2 ? 'text-emerald-500' : data?.trend < -2 ? 'text-[hsl(var(--mn-danger))]' : 'text-[hsl(var(--mn-muted))]';
+  const trendColor = data?.trend > 2 ? 'text-[hsl(var(--mn-success))]' : data?.trend < -2 ? 'text-[hsl(var(--mn-danger))]' : 'text-[hsl(var(--mn-muted))]';
 
   return (
     <div className="p-6 rounded-2xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface)/0.5)]">

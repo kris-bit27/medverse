@@ -129,7 +129,7 @@ export default function DashboardV2() {
                style={{ background: 'hsl(var(--mn-accent) / 0.15)' }} />
           <div className="relative px-6 sm:px-8 py-8 sm:py-10">
             <div className="flex items-center gap-2 mb-3">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-[hsl(var(--mn-success))] animate-pulse" />
               <span style={{ fontFamily: uFont, fontSize: 12, fontWeight: 600, letterSpacing: '0.06em', color: 'hsl(var(--mn-muted))' }} className="uppercase">
                 Dashboard
               </span>

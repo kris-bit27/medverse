@@ -6,9 +6,9 @@ import { Brain } from 'lucide-react';
 
 const LEVELS = [
   { label: 'Nové', min: 0, max: 20, color: 'hsl(var(--mn-muted))', bg: 'bg-[hsl(var(--mn-muted)/0.4)]' },
-  { label: 'Začátečník', min: 20, max: 50, color: '#f59e0b', bg: 'bg-amber-500' },
-  { label: 'Pokročilý', min: 50, max: 80, color: '#3b82f6', bg: 'bg-blue-500' },
-  { label: 'Zvládnuto', min: 80, max: 101, color: '#22c55e', bg: 'bg-emerald-500' },
+  { label: 'Začátečník', min: 20, max: 50, color: '#f59e0b', bg: '' },
+  { label: 'Pokročilý', min: 50, max: 80, color: '#3b82f6', bg: '' },
+  { label: 'Zvládnuto', min: 80, max: 101, color: '#22c55e', bg: '' },
 ];
 
 export default function MasteryOverview() {
