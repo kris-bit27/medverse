@@ -286,7 +286,7 @@ export default function TestGeneratorV2() {
                     {okruhy.map((okruh) => (
                       <div
                         key={okruh.id}
-                        className="flex items-center space-x-2 p-3 rounded-xl border hover:bg-[hsl(var(--mn-surface))] hover:bg-[hsl(var(--mn-surface-2))] cursor-pointer"
+                        className="flex items-center space-x-2 p-3 rounded-xl border hover:bg-[hsl(var(--mn-surface-2))] cursor-pointer"
                         onClick={() => handleOkruhToggle(okruh.id)}
                       >
                         <Checkbox
@@ -334,7 +334,7 @@ export default function TestGeneratorV2() {
                     {topics.map((topic) => (
                       <div
                         key={topic.id}
-                        className="flex items-center space-x-2 p-3 rounded-xl border hover:bg-[hsl(var(--mn-surface))] hover:bg-[hsl(var(--mn-surface-2))] cursor-pointer"
+                        className="flex items-center space-x-2 p-3 rounded-xl border hover:bg-[hsl(var(--mn-surface-2))] cursor-pointer"
                         onClick={() => handleTopicToggle(topic.id)}
                       >
                         <Checkbox
@@ -445,7 +445,7 @@ export default function TestGeneratorV2() {
 
         {/* Right Column - Summary */}
         <div className="space-y-6">
-          <Card className="sticky top-6">
+          <Card className="md:sticky md:top-6">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Settings className="w-5 h-5" />

@@ -285,7 +285,7 @@ function AIGenerationTab() {
                 {recent.map(item => {
                   const cost = item.result ? Object.values(item.result).reduce((s, r) => s + parseFloat(r?.cost || 0), 0) : 0;
                   return (
-                    <tr key={item.id} className="hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))]/50">
+                    <tr key={item.id} className="hover:bg-[hsl(var(--mn-surface))]/50">
                       <td className="p-2.5 max-w-xs truncate">{item.topics?.title}</td>
                       <td className="p-2.5 hidden md:table-cell text-[hsl(var(--mn-muted))] text-xs">{item.topics?.obory?.name}</td>
                       <td className="p-2.5 text-center">
@@ -344,7 +344,7 @@ function AIGenerationTab() {
               </thead>
               <tbody className="divide-y">
                 {avail.map(t => (
-                  <tr key={t.id} className="hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))]/30">
+                  <tr key={t.id} className="hover:bg-[hsl(var(--mn-surface))]/30">
                     <td className="p-2.5 text-center">
                       <Checkbox checked={selIds.has(t.id)} onCheckedChange={ch => setSelIds(p => { const n = new Set(p); ch ? n.add(t.id) : n.delete(t.id); return n; })} />
                     </td>
@@ -426,7 +426,7 @@ function ContentOverviewTab() {
             <Card key={obor.id} className={isExp ? 'ring-2 ring-[#a855f7/0.4]' : ''}>
               <CardContent className="p-0">
                 <button onClick={() => setExpandedObor(isExp ? null : obor.id)}
-                  className="w-full p-3 flex items-center gap-3 text-left hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))]/50 transition-colors">
+                  className="w-full p-3 flex items-center gap-3 text-left hover:bg-[hsl(var(--mn-surface))]/50 transition-colors">
                   <ChevronRight className={`w-4 h-4 text-[hsl(var(--mn-muted))] transition-transform ${isExp ? 'rotate-90' : ''}`} />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">

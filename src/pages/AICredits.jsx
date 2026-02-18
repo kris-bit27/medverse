@@ -245,7 +245,7 @@ export default function AICredits() {
                 return (
                   <div 
                     key={transaction.id}
-                    className="flex items-center justify-between p-3 rounded-lg border hover:bg-[hsl(var(--mn-surface))] hover:bg-[hsl(var(--mn-surface-2))] transition-colors"
+                    className="flex items-center justify-between p-3 rounded-lg border hover:bg-[hsl(var(--mn-surface-2))] transition-colors"
                   >
                     <div className="flex-1">
                       <div className="font-medium">{transaction.type}</div>
@@ -293,7 +293,7 @@ export default function AICredits() {
                 {tokens.monthly_limit?.toLocaleString() || 1000} 💎/měsíc • {tokens.plan_price_czk || 250} Kč
               </p>
             </div>
-            <button className="px-4 py-2 border rounded-lg hover:bg-[hsl(var(--mn-surface))] hover:bg-[hsl(var(--mn-surface-2))] transition-colors">
+            <button className="px-4 py-2 border rounded-lg hover:bg-[hsl(var(--mn-surface-2))] transition-colors">
               Změnit plán
             </button>
           </div>

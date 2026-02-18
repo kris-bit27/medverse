@@ -58,6 +58,8 @@ body {
   --card-foreground: var(--mn-text);
   --popover: var(--mn-elevated);
   --popover-foreground: var(--mn-text);
+  --card: var(--mn-surface-2);
+  --card-foreground: var(--mn-text);
   --primary: var(--mn-accent);
   --primary-foreground: 210 40% 98%;
   --secondary: var(--mn-surface-2);
@@ -249,6 +251,20 @@ html:not(.dark) .atesto-btn.bg-background:hover {
 
 .atesto-tab[data-state="inactive"]:hover {
   background: hsl(var(--mn-elevated) / 0.6);
+}
+
+/* Dropdowns / popovers — ensure solid opaque background */
+[data-radix-popper-content-wrapper] {
+  z-index: 60 !important;
+}
+
+[role="listbox"],
+[data-radix-select-content],
+[data-radix-dropdown-menu-content],
+[data-radix-popover-content] {
+  background: hsl(var(--mn-elevated)) !important;
+  border-color: hsl(var(--mn-border)) !important;
+  box-shadow: var(--mn-shadow-2) !important;
 }
 
 /* Shell + layout primitives */

@@ -325,7 +325,7 @@ Vrať JSON s týdenním rozpisu úkolů.`;
                 {disciplines.map(d => (
                   <div 
                     key={d.id}
-                    className="flex items-center space-x-2 p-3 rounded-lg border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))] transition-colors"
+                    className="flex items-center space-x-2 p-3 rounded-lg border hover:bg-[hsl(var(--mn-surface))] transition-colors"
                   >
                     <Checkbox
                       id={`disc-${d.id}`}

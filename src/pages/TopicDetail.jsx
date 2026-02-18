@@ -170,7 +170,7 @@ export default function TopicDetail() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
         <div className={`grid gap-6 ${sidebarPanel ? 'lg:grid-cols-3' : 'max-w-5xl mx-auto'}`}>
           {/* Main Content */}
           <div className={sidebarPanel ? 'lg:col-span-2' : ''}>
@@ -226,7 +226,7 @@ export default function TopicDetail() {
                         className={`flex-1 px-6 py-4 font-medium transition-colors flex items-center justify-center gap-2 ${
                           isActive
                             ? 'bg-[hsl(var(--mn-accent)/0.06)] text-[hsl(var(--mn-accent))] border-b-2 border-[hsl(var(--mn-accent))]'
-                            : 'text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))]'
+                            : 'text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface))]'
                         }`}
                       >
                         <Icon className="w-4 h-4" />
@@ -287,7 +287,7 @@ export default function TopicDetail() {
                       <Link
                         key={related.id}
                         to={`/TopicDetail/${related.id}`}
-                        className="block p-3 rounded-lg border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))] transition-colors"
+                        className="block p-3 rounded-lg border hover:bg-[hsl(var(--mn-surface))] transition-colors"
                       >
                         <p className="font-medium">{related.title}</p>
                       </Link>

@@ -61,7 +61,7 @@ function Onboarding({ obor, onComplete, onCancel }) {
           {[{ v: true, l: 'Ano, mám hotový kmen', desc: 'Kmenové požadavky se automaticky splní', ic: '✅' },
             { v: false, l: 'Ne, jsem v kmeni', desc: 'Uvidíš i kmenové požadavky', ic: '📖' }].map(o => (
             <button key={String(o.v)} onClick={() => setD(x => ({ ...x, kmenDone: o.v }))}
-              className={`p-4 rounded-xl border text-left transition-all ${d.kmenDone === o.v ? 'border-[hsl(var(--mn-accent)/0.5)] bg-[hsl(var(--mn-accent)/0.05)]' : 'border-[hsl(var(--mn-border))] hover:border-[hsl(var(--mn-border))] dark:hover:border-[hsl(var(--mn-accent)/0.3)]'}`}>
+              className={`p-4 rounded-xl border text-left transition-all ${d.kmenDone === o.v ? 'border-[hsl(var(--mn-accent)/0.5)] bg-[hsl(var(--mn-accent)/0.05)]' : 'border-[hsl(var(--mn-border))] hover:border-[hsl(var(--mn-border))]'}`}>
               <div className="text-xl mb-2">{o.ic}</div>
               <div className={`text-sm font-semibold ${d.kmenDone === o.v ? 'text-[hsl(var(--mn-accent))]' : ''}`}>{o.l}</div>
               <div className="text-xs text-[hsl(var(--mn-muted))] mt-1">{o.desc}</div>

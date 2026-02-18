@@ -378,7 +378,7 @@ export default function StudyPlanDetail() {
                     <Link
                       key={p.id}
                       to={createPageUrl('StudyPackageDetail') + `?id=${p.id}`}
-                      className="block p-3 rounded-lg border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))] transition-colors"
+                      className="block p-3 rounded-lg border hover:bg-[hsl(var(--mn-surface))] transition-colors"
                     >
                       <p className="text-sm font-medium">{p.title}</p>
                     </Link>
