@@ -121,7 +121,7 @@ export default function Layout({ children, currentPageName }) {
           <Link to={createPageUrl('Dashboard')} className="flex items-center gap-2">
             <MedVerseLogo size={32} />
             <div className="flex items-center gap-2">
-              <span className="font-bold text-[hsl(var(--mn-text))]">MedVerse</span>
+              <span className="mn-serif-font font-bold text-[hsl(var(--mn-text))]">MedVerse</span>
               <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-[hsl(var(--mn-accent)/0.1)] text-[hsl(var(--mn-accent))]">
                 EDU
               </span>
@@ -154,7 +154,7 @@ export default function Layout({ children, currentPageName }) {
               <MedVerseLogo size={40} />
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-lg text-[hsl(var(--mn-text))]">MedVerse</span>
+                  <span className="mn-serif-font font-bold text-lg text-[hsl(var(--mn-text))]">MedVerse</span>
                   <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[hsl(var(--mn-accent)/0.1)] text-[hsl(var(--mn-accent))]">
                     EDU
                   </span>
@@ -259,7 +259,7 @@ export default function Layout({ children, currentPageName }) {
                   to={createPageUrl(item.page)}
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
-                    "mn-sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
+                    "mn-sidebar-link mn-ui-font flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
                     isActive ? "is-active" : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))]"
                   )}
                 >
@@ -273,7 +273,7 @@ export default function Layout({ children, currentPageName }) {
             {hasAdminAccess && (
               <>
                 <div className="pt-4 pb-2">
-                  <p className="px-4 text-xs font-semibold text-[hsl(var(--mn-muted))] uppercase tracking-wider">
+                  <p className="px-4 mn-caption text-[hsl(var(--mn-muted))] !mb-0">
                     Admin
                   </p>
                 </div>
@@ -281,7 +281,7 @@ export default function Layout({ children, currentPageName }) {
                   to={createPageUrl('AdminConsole')}
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
-                    "mn-sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
+                    "mn-sidebar-link mn-ui-font flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
                     currentPageName === 'AdminConsole'
                       ? "is-active"
                       : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))]"
@@ -294,7 +294,7 @@ export default function Layout({ children, currentPageName }) {
                   to={createPageUrl('AdminBatchMonitor')}
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
-                    "mn-sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
+                    "mn-sidebar-link mn-ui-font flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
                     currentPageName === 'AdminBatchMonitor'
                       ? "is-active"
                       : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))]"
@@ -307,7 +307,7 @@ export default function Layout({ children, currentPageName }) {
                   to={createPageUrl('AdminFeedback')}
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
-                    "mn-sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
+                    "mn-sidebar-link mn-ui-font flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
                     currentPageName === 'AdminFeedback'
                       ? "is-active"
                       : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))]"
@@ -322,7 +322,7 @@ export default function Layout({ children, currentPageName }) {
 
           {/* User section */}
           <div className="p-4 border-t border-[hsl(var(--mn-border))]">
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-[hsl(var(--mn-surface-2))]/50">
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-[hsl(var(--mn-surface-2))]">
               <Avatar className="w-10 h-10">
                 <AvatarFallback className="bg-[hsl(var(--mn-accent)/0.12)] text-[hsl(var(--mn-accent))]">
                   {user?.full_name?.charAt(0) || user?.email?.charAt(0) || 'U'}
@@ -330,7 +330,7 @@ export default function Layout({ children, currentPageName }) {
               </Avatar>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <p className="text-sm font-medium text-[hsl(var(--mn-text))] truncate">
+                  <p className="mn-ui-font text-sm font-medium text-[hsl(var(--mn-text))] truncate">
                     {user?.full_name || 'Uživatel'}
                   </p>
                   {user?.role && (

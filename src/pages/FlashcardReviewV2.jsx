@@ -197,7 +197,7 @@ export default function FlashcardReviewV2() {
         <Card>
           <CardContent className="p-12 text-center">
             <Zap className="w-16 h-16 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold mb-2">All done!</h2>
+            <h2 className="mn-serif-font text-2xl font-bold mb-2">All done!</h2>
             <p className="mb-6">No cards due today</p>
             <Button onClick={() => navigate('/Dashboard')}>Dashboard</Button>
           </CardContent>
@@ -221,14 +221,14 @@ export default function FlashcardReviewV2() {
             <div className="text-center">
               {!isFlipped ? (
                 <>
-                  <h3 className="text-2xl font-bold">{card.question}</h3>
+                  <h3 className="mn-serif-font text-2xl font-bold">{card.question}</h3>
                   <p className="text-sm text-muted-foreground mt-4">
                     Click to reveal
                   </p>
                 </>
               ) : (
                 <>
-                  <h3 className="text-xl font-bold mb-4">{card.answer}</h3>
+                  <h3 className="mn-ui-font text-xl font-bold mb-4">{card.answer}</h3>
                   {card.explanation && (
                     <p className="text-sm text-muted-foreground mt-4">
                       {card.explanation}

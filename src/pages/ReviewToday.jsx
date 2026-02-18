@@ -320,7 +320,7 @@ export default function ReviewToday() {
         <Card>
           <CardContent className="p-12 text-center">
             <Zap className="w-16 h-16 mx-auto mb-4 text-[hsl(var(--mn-accent))]" />
-            <h2 className="text-2xl font-bold mb-2">Žádné kartičky!</h2>
+            <h2 className="mn-serif-font text-2xl font-bold mb-2">Žádné kartičky!</h2>
             <p className="text-muted-foreground mb-6">
               {selectedObor !== 'all' || selectedOkruh !== 'all' || selectedTopic !== 'all'
                 ? 'Zkuste změnit filtry nebo vytvořte nové kartičky'
@@ -450,7 +450,7 @@ export default function ReviewToday() {
             <div className="text-center w-full">
               {!isFlipped ? (
                 <>
-                  <h3 className="text-2xl font-bold mb-4">{card.question}</h3>
+                  <h3 className="mn-serif-font text-2xl font-bold mb-4">{card.question}</h3>
                   <p className="text-sm text-muted-foreground mt-4">
                     Klikněte pro zobrazení odpovědi
                   </p>
@@ -458,7 +458,7 @@ export default function ReviewToday() {
               ) : (
                 <>
                   <p className="text-sm text-muted-foreground mb-2">Odpověď:</p>
-                  <h3 className="text-xl font-bold mb-4">{card.answer}</h3>
+                  <h3 className="mn-ui-font text-xl font-bold mb-4">{card.answer}</h3>
                   {card.explanation && (
                     <p className="text-sm text-muted-foreground mt-4">
                       {card.explanation}

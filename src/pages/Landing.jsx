@@ -85,9 +85,9 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
           <div className="flex items-center gap-3">
             <MedVerseLogo size={36} />
-            <span className="font-bold text-lg">MedVerse</span>
+            <span className="mn-serif-font font-bold text-lg">MedVerse</span>
           </div>
-          <div className="hidden md:flex items-center gap-6 text-sm">
+          <div className="hidden md:flex items-center gap-6 text-sm mn-ui-font">
             <a href="#features" className="text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))] transition-colors">Funkce</a>
             <a href="#workflow" className="text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))] transition-colors">Jak to funguje</a>
             <Link to={createPageUrl('Demo')} className="text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))] transition-colors">Demo</Link>
@@ -108,8 +108,8 @@ export default function Landing() {
       <section className="relative pt-32 pb-24 px-4 sm:px-6">
         {/* Subtle grid background */}
         <div className="absolute inset-0 opacity-[0.03]" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--mn-text)) 1px, transparent 0)`,
-          backgroundSize: '32px 32px'
+          backgroundImage: 'radial-gradient(circle at 1px 1px, hsl(var(--mn-text)) 0.5px, transparent 0)',
+          backgroundSize: '24px 24px'
         }} />
         {/* Glow */}
         <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[hsl(var(--mn-accent)/0.08)] rounded-full blur-[120px] pointer-events-none" />
@@ -117,12 +117,12 @@ export default function Landing() {
         <div className="max-w-5xl mx-auto text-center relative">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface)/0.5)] text-xs font-medium text-[hsl(var(--mn-muted))] mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))] text-xs font-medium text-[hsl(var(--mn-muted))] mb-8">
               <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--mn-success))] animate-pulse" />
               Připraveno pro atestaci 2026
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight mb-6">
+            <h1 className="mn-serif-font text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight mb-6">
               Připravte se na atestaci
               <br />
               <span className="bg-gradient-to-r from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))] bg-clip-text text-transparent">
@@ -159,8 +159,8 @@ export default function Landing() {
           >
             {stats.map((s, i) => (
               <div key={i} className="bg-[hsl(var(--mn-surface))] px-6 py-5 text-center">
-                <p className="text-2xl sm:text-3xl font-bold tracking-tight">{s.value}</p>
-                <p className="text-xs text-[hsl(var(--mn-muted))] mt-1 uppercase tracking-wider">{s.label}</p>
+                <p className="mn-mono-font text-2xl sm:text-3xl font-bold tracking-tight">{s.value}</p>
+                <p className="mn-caption text-[hsl(var(--mn-muted))] !mb-0 mt-1">{s.label}</p>
               </div>
             ))}
           </motion.div>
@@ -171,8 +171,8 @@ export default function Landing() {
       <section id="features" className="py-24 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-xs font-semibold uppercase tracking-widest text-[hsl(var(--mn-accent))] mb-3">Funkce</p>
-            <h2 className="text-3xl sm:text-4xl font-bold">
+            <p className="mn-caption text-[hsl(var(--mn-accent))] !mb-3">Funkce</p>
+            <h2 className="mn-serif-font text-3xl sm:text-4xl font-bold">
               Vše co potřebujete pro přípravu
             </h2>
           </div>
@@ -187,12 +187,12 @@ export default function Landing() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: '-40px' }}
                   transition={{ delay: i * 0.07 }}
-                  className="group relative p-6 rounded-2xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface)/0.5)] hover:bg-[hsl(var(--mn-surface))] hover:border-[hsl(var(--mn-accent)/0.3)] transition-all duration-300"
+                  className="group relative p-6 rounded-2xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))] hover:bg-[hsl(var(--mn-elevated))] hover:border-[hsl(var(--mn-accent)/0.3)] transition-all duration-300"
                 >
                   <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${f.accent} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
                     <Icon className="w-5 h-5 text-white" />
                   </div>
-                  <h3 className="text-base font-semibold mb-2">{f.title}</h3>
+                  <h3 className="mn-ui-font text-base font-semibold mb-2">{f.title}</h3>
                   <p className="text-sm text-[hsl(var(--mn-muted))] leading-relaxed">{f.desc}</p>
                 </motion.div>
               );
@@ -205,8 +205,8 @@ export default function Landing() {
       <section id="workflow" className="py-24 px-4 sm:px-6 bg-[hsl(var(--mn-surface)/0.3)]">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-xs font-semibold uppercase tracking-widest text-[hsl(var(--mn-accent))] mb-3">Jak to funguje</p>
-            <h2 className="text-3xl sm:text-4xl font-bold">
+            <p className="mn-caption text-[hsl(var(--mn-accent))] !mb-3">Jak to funguje</p>
+            <h2 className="mn-serif-font text-3xl sm:text-4xl font-bold">
               Od prvního otevření po zvládnutou atestaci
             </h2>
           </div>
@@ -226,12 +226,12 @@ export default function Landing() {
                   {i < workflow.length - 1 && (
                     <div className="hidden lg:block absolute top-8 left-[calc(100%_-_12px)] w-[calc(100%_-_56px)] h-px bg-gradient-to-r from-[hsl(var(--mn-border))] to-transparent z-0" />
                   )}
-                  <div className="relative z-10 p-5 rounded-2xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface)/0.5)]">
+                  <div className="relative z-10 p-5 rounded-2xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))]">
                     <div className="flex items-center gap-3 mb-3">
-                      <span className="text-xs font-bold text-[hsl(var(--mn-accent))] tracking-widest">{w.step}</span>
+                      <span className="mn-mono-font text-xs font-bold text-[hsl(var(--mn-accent))] tracking-widest">{w.step}</span>
                       <Icon className="w-4 h-4 text-[hsl(var(--mn-muted))]" />
                     </div>
-                    <h3 className="font-semibold mb-1.5">{w.title}</h3>
+                    <h3 className="mn-ui-font font-semibold mb-1.5">{w.title}</h3>
                     <p className="text-sm text-[hsl(var(--mn-muted))] leading-relaxed">{w.desc}</p>
                   </div>
                 </motion.div>
@@ -248,7 +248,7 @@ export default function Landing() {
             <Stethoscope className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
             <span className="text-sm font-medium text-[hsl(var(--mn-muted))]">Navrženo lékaři pro lékaře</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold mb-6">
+          <h2 className="mn-serif-font text-3xl sm:text-4xl font-bold mb-6">
             Obsah dle vzdělávacího programu<br />
             <span className="text-[hsl(var(--mn-accent))]">MZČR 2019</span>
           </h2>
@@ -282,7 +282,7 @@ export default function Landing() {
 
             <div className="relative p-8 sm:p-12 text-center">
               <Sparkles className="w-10 h-10 mx-auto mb-5 text-[hsl(var(--mn-accent))]" />
-              <h2 className="text-2xl sm:text-3xl font-bold mb-4">
+              <h2 className="mn-serif-font text-2xl sm:text-3xl font-bold mb-4">
                 Začněte se připravovat ještě dnes
               </h2>
               <p className="text-[hsl(var(--mn-muted))] mb-8 max-w-lg mx-auto leading-relaxed">

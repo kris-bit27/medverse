@@ -44,19 +44,19 @@ function Onboarding({ obor, onComplete, onCancel }) {
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={onCancel}><ChevronLeft className="w-4 h-4 mr-1" />Zpět</Button>
-        <div><h2 className="text-xl font-bold">{obor.name}</h2><p className="text-xs text-muted-foreground">{obor.kmen_type} kmen · {obor.min_years} let</p></div>
+        <div><h2 className="mn-serif-font text-xl font-bold">{obor.name}</h2><p className="text-xs text-[hsl(var(--mn-muted))]">{obor.kmen_type} kmen · {obor.min_years} let</p></div>
       </div>
       <div className="flex gap-2">
         {['Kmen','Termíny','Přerušení'].map((s,i) => (
           <div key={i} className="flex-1">
             <div className={`h-1 rounded-full mb-1 ${i <= step ? 'bg-[hsl(var(--mn-accent))]' : 'bg-[hsl(var(--mn-border))]'}`} />
-            <span className={`text-[10px] font-medium ${i <= step ? 'text-[hsl(var(--mn-accent))]' : 'text-muted-foreground'}`}>{s}</span>
+            <span className={`text-[10px] font-medium ${i <= step ? 'text-[hsl(var(--mn-accent))]' : 'text-[hsl(var(--mn-muted))]'}`}>{s}</span>
           </div>
         ))}
       </div>
 
       {step === 0 && <div className="space-y-4">
-        <div><h3 className="text-lg font-bold">Základní kmen</h3><p className="text-sm text-muted-foreground">Máš absolvovaný {obor.kmen_type || 'základní'} kmen?</p></div>
+        <div><h3 className="mn-ui-font text-lg font-semibold">Základní kmen</h3><p className="text-sm text-[hsl(var(--mn-muted))]">Máš absolvovaný {obor.kmen_type || 'základní'} kmen?</p></div>
         <div className="grid grid-cols-2 gap-3">
           {[{ v: true, l: 'Ano, mám hotový kmen', desc: 'Kmenové požadavky se automaticky splní', ic: '✅' },
             { v: false, l: 'Ne, jsem v kmeni', desc: 'Uvidíš i kmenové požadavky', ic: '📖' }].map(o => (
@@ -64,7 +64,7 @@ function Onboarding({ obor, onComplete, onCancel }) {
               className={`p-4 rounded-xl border text-left transition-all ${d.kmenDone === o.v ? 'border-[hsl(var(--mn-accent)/0.5)] bg-[hsl(var(--mn-accent)/0.05)]' : 'border-[hsl(var(--mn-border))] hover:border-[hsl(var(--mn-border))] dark:hover:border-[hsl(var(--mn-accent)/0.3)]'}`}>
               <div className="text-xl mb-2">{o.ic}</div>
               <div className={`text-sm font-semibold ${d.kmenDone === o.v ? 'text-[hsl(var(--mn-accent))]' : ''}`}>{o.l}</div>
-              <div className="text-xs text-muted-foreground mt-1">{o.desc}</div>
+              <div className="text-xs text-[hsl(var(--mn-muted))] mt-1">{o.desc}</div>
             </button>
           ))}
         </div>
@@ -72,21 +72,21 @@ function Onboarding({ obor, onComplete, onCancel }) {
       </div>}
 
       {step === 1 && <div className="space-y-4">
-        <div><h3 className="text-lg font-bold">Termíny vzdělávání</h3><p className="text-sm text-muted-foreground">Kdy jsi se zapsal/a do oboru?</p></div>
+        <div><h3 className="mn-ui-font text-lg font-semibold">Termíny vzdělávání</h3><p className="text-sm text-[hsl(var(--mn-muted))]">Kdy jsi se zapsal/a do oboru?</p></div>
         <div><Label className="text-xs">Datum zápisu do specializačního vzdělávání</Label><Input type="date" value={d.enrollDate} onChange={e => setD(x => ({ ...x, enrollDate: e.target.value }))} className="w-48 mt-1" /></div>
         <div><Label className="text-xs">Plánovaný termín atestace (volitelné)</Label><Input type="date" value={d.expectedEnd} onChange={e => setD(x => ({ ...x, expectedEnd: e.target.value }))} className="w-48 mt-1" />
-          <p className="text-xs text-muted-foreground mt-1">Min. délka: {obor.min_years || 5} let ({(obor.min_years || 5) * 12} měsíců)</p></div>
+          <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">Min. délka: {obor.min_years || 5} let ({(obor.min_years || 5) * 12} měsíců)</p></div>
       </div>}
 
       {step === 2 && <div className="space-y-4">
-        <div><h3 className="text-lg font-bold">Přerušení přípravy</h3><p className="text-sm text-muted-foreground">Mateřská, PN apod. — doba se připočte k celkovému času.</p></div>
+        <div><h3 className="mn-ui-font text-lg font-semibold">Přerušení přípravy</h3><p className="text-sm text-[hsl(var(--mn-muted))]">Mateřská, PN apod. — doba se připočte k celkovému času.</p></div>
         {d.ints.length > 0 && <div className="space-y-2">
           {d.ints.map(int => { const it = INT_TYPES.find(t => t.id === int.type) || INT_TYPES[3]; const Ic = it.icon; return (
             <div key={int.id} className="flex items-center gap-3 p-3 rounded-lg border border-[hsl(var(--mn-border))]">
-              <Ic className="w-4 h-4 text-muted-foreground" /><div className="flex-1"><div className="text-sm font-medium">{it.label}</div><div className="text-xs text-muted-foreground">{fD(int.from)} – {fD(int.to)} · {mBetween(int.from, int.to)} měs.</div></div>
-              <button onClick={() => setD(x => ({ ...x, ints: x.ints.filter(i => i.id !== int.id) }))} className="text-muted-foreground hover:text-[hsl(var(--mn-danger))] text-sm">×</button>
+              <Ic className="w-4 h-4 text-[hsl(var(--mn-muted))]" /><div className="flex-1"><div className="text-sm font-medium">{it.label}</div><div className="text-xs text-[hsl(var(--mn-muted))]">{fD(int.from)} – {fD(int.to)} · {mBetween(int.from, int.to)} měs.</div></div>
+              <button onClick={() => setD(x => ({ ...x, ints: x.ints.filter(i => i.id !== int.id) }))} className="text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-danger))] text-sm">×</button>
             </div>); })}
-          <p className="text-xs text-muted-foreground">Celkem: <strong className="text-[hsl(var(--mn-warn))]">{intM} měs.</strong></p>
+          <p className="text-xs text-[hsl(var(--mn-muted))]">Celkem: <strong className="text-[hsl(var(--mn-warn))]">{intM} měs.</strong></p>
         </div>}
         {d.adding ? (
           <Card><CardContent className="p-4 space-y-3">
@@ -142,15 +142,15 @@ function ReqCard({ req, done, auto, onToggle }) {
       <div className="flex items-center gap-3 p-3 cursor-pointer" onClick={() => setExp(!exp)}>
         <button onClick={e => { e.stopPropagation(); onToggle(); }} className={`w-5 h-5 rounded-md border-2 flex-shrink-0 flex items-center justify-center transition-all ${done ? 'border-[hsl(var(--mn-accent))] bg-[hsl(var(--mn-accent))]' : 'border-[hsl(var(--mn-border))] border-[hsl(var(--mn-border))]'}`}>
           {done && <Check className="w-3 h-3 text-[hsl(var(--mn-text))]" />}</button>
-        <Icon className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+        <Icon className="w-4 h-4 text-[hsl(var(--mn-muted))] flex-shrink-0" />
         <div className="flex-1 min-w-0">
-          <div className={`text-sm font-medium truncate ${done ? 'line-through text-muted-foreground' : ''}`}>{req.title}</div>
-          {det.length > 0 && <div className="text-xs text-muted-foreground">{det.join(' · ')}</div>}
+          <div className={`text-sm font-medium truncate ${done ? 'line-through text-[hsl(var(--mn-muted))]' : ''}`}>{req.title}</div>
+          {det.length > 0 && <div className="text-xs text-[hsl(var(--mn-muted))]">{det.join(' · ')}</div>}
         </div>
         <Badge variant="outline" className="text-[10px] px-1.5 py-0 flex-shrink-0">{PHASE_LABELS[req.phase] || 'SPEC'}</Badge>
-        {exp ? <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" /> : <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />}
+        {exp ? <ChevronDown className="w-3.5 h-3.5 text-[hsl(var(--mn-muted))]" /> : <ChevronRight className="w-3.5 h-3.5 text-[hsl(var(--mn-muted))]" />}
       </div>
-      {exp && <div className="px-3 pb-3 border-t border-[hsl(var(--mn-border))]"><div className="pt-2 space-y-1 text-xs text-muted-foreground">
+      {exp && <div className="px-3 pb-3 border-t border-[hsl(var(--mn-border))]"><div className="pt-2 space-y-1 text-xs text-[hsl(var(--mn-muted))]">
         {req.description && <p>{req.description}</p>}
         {req.workplace_type && <p>📍 {req.workplace_type}</p>}
         {req.min_supervised > 0 && <p>👨‍⚕️ Min. pod dohledem: {req.min_supervised}×</p>}
@@ -169,10 +169,10 @@ function CustCard({ entry }) {
       <div className="flex items-center gap-3 p-3 cursor-pointer" onClick={() => setExp(!exp)}>
         <div className="w-5 h-5 rounded-md border-2 border-[hsl(var(--mn-success))] bg-[hsl(var(--mn-success))] flex-shrink-0 flex items-center justify-center"><Check className="w-3 h-3 text-[hsl(var(--mn-text))]" /></div>
         <FileText className="w-4 h-4 text-[hsl(var(--mn-success))] flex-shrink-0" />
-        <div className="flex-1 min-w-0"><div className="text-sm font-medium truncate">{entry.procedure_name}</div><div className="text-xs text-muted-foreground">{fD(entry.date)}</div></div>
+        <div className="flex-1 min-w-0"><div className="text-sm font-medium truncate">{entry.procedure_name}</div><div className="text-xs text-[hsl(var(--mn-muted))]">{fD(entry.date)}</div></div>
         <Badge className="bg-[hsl(var(--mn-success)/0.1)] text-[hsl(var(--mn-success))] border-[hsl(var(--mn-success)/0.2)] text-[10px]">VLASTNÍ</Badge>
       </div>
-      {exp && <div className="px-3 pb-3 border-t border-[hsl(var(--mn-success)/0.1)]"><div className="pt-2 space-y-1 text-xs text-muted-foreground">
+      {exp && <div className="px-3 pb-3 border-t border-[hsl(var(--mn-success)/0.1)]"><div className="pt-2 space-y-1 text-xs text-[hsl(var(--mn-muted))]">
         {entry.description && <p>{entry.description}</p>}{entry.was_supervised && <p>👨‍⚕️ Pod dohledem</p>}
       </div></div>}
     </div>
@@ -265,14 +265,14 @@ export default function LogbookV2() {
   // Overview
   if (!sel) return (
     <div className="container max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
-      <div><h1 className="text-2xl font-bold flex items-center gap-3"><ClipboardList className="w-7 h-7 text-[hsl(var(--mn-accent))]" />Logbook & Plánovač VP</h1>
-        <p className="text-sm text-muted-foreground mt-1">Sleduj plnění vzdělávacího programu dle MZČR 2019.</p></div>
+      <div><h1 className="mn-serif-font text-[28px] font-bold flex items-center gap-3"><ClipboardList className="w-7 h-7 text-[hsl(var(--mn-accent))]" />Logbook & Plánovač VP</h1>
+        <p className="text-sm text-[hsl(var(--mn-muted))] mt-1">Sleduj plnění vzdělávacího programu dle MZČR 2019.</p></div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {obory.map(o => { const has = !!profiles[o.id]; return (
           <button key={o.id} onClick={() => setSel(o.id)} className={`flex items-center gap-3 p-3.5 rounded-xl border text-left transition-all hover:border-[hsl(var(--mn-accent)/0.3)] hover:bg-[hsl(var(--mn-accent)/0.05)] ${has ? 'border-[hsl(var(--mn-accent)/0.2)] bg-[hsl(var(--mn-accent)/0.05)]' : 'border-[hsl(var(--mn-border))]'}`}>
             <div className="w-9 h-9 rounded-lg bg-[hsl(var(--mn-accent)/0.1)] flex items-center justify-center flex-shrink-0"><Award className="w-4 h-4 text-[hsl(var(--mn-accent))]" /></div>
-            <div className="flex-1 min-w-0"><div className="text-sm font-semibold truncate">{o.name}</div><div className="text-xs text-muted-foreground">{o.min_years} let · {o.kmen_type || '—'} kmen{has && ' · ✅'}</div></div>
-            <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+            <div className="flex-1 min-w-0"><div className="text-sm font-semibold truncate">{o.name}</div><div className="text-xs text-[hsl(var(--mn-muted))]">{o.min_years} let · {o.kmen_type || '—'} kmen{has && ' · ✅'}</div></div>
+            <ChevronRight className="w-4 h-4 text-[hsl(var(--mn-muted))] flex-shrink-0" />
           </button>); })}
       </div>
     </div>
@@ -287,13 +287,13 @@ export default function LogbookV2() {
       </div>
 
       <div className="flex items-center gap-4">
-        <ProgressRing progress={stats.pct} size={64} strokeWidth={5}><span className="text-sm font-bold">{stats.pct}%</span></ProgressRing>
-        <div><h1 className="text-xl font-bold">{obor?.name}</h1><p className="text-xs text-muted-foreground">{obor?.kmen_type} kmen · {obor?.min_years} let · {stats.c}/{stats.t} splněno{profile?.kmen_done && ' · kmen ✅'}</p></div>
+        <ProgressRing progress={stats.pct} size={64} strokeWidth={5}><span className="mn-mono-font text-sm font-bold">{stats.pct}%</span></ProgressRing>
+        <div><h1 className="mn-serif-font text-xl font-bold">{obor?.name}</h1><p className="text-xs text-[hsl(var(--mn-muted))]">{obor?.kmen_type} kmen · {obor?.min_years} let · {stats.c}/{stats.t} splněno{profile?.kmen_done && ' · kmen ✅'}</p></div>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <Card><CardContent className="p-3"><div className="text-[10px] font-bold text-[hsl(var(--mn-accent-2))] mb-1.5">KMEN {profile?.kmen_done && '✅'}</div><Progress value={kR.length > 0 ? (kD / kR.length) * 100 : 0} className="h-1.5" /><div className="text-[10px] text-muted-foreground mt-1">{kD}/{kR.length}</div></CardContent></Card>
-        <Card><CardContent className="p-3"><div className="text-[10px] font-bold text-[#a855f7] mb-1.5">SPECIALIZACE</div><Progress value={sR.length > 0 ? (sD / sR.length) * 100 : 0} className="h-1.5" /><div className="text-[10px] text-muted-foreground mt-1">{sD}/{sR.length}</div></CardContent></Card>
+        <Card><CardContent className="p-3"><div className="text-[10px] font-bold text-[hsl(var(--mn-accent-2))] mb-1.5">KMEN {profile?.kmen_done && '✅'}</div><Progress value={kR.length > 0 ? (kD / kR.length) * 100 : 0} className="h-1.5" /><div className="text-[10px] text-[hsl(var(--mn-muted))] mt-1">{kD}/{kR.length}</div></CardContent></Card>
+        <Card><CardContent className="p-3"><div className="text-[10px] font-bold text-[#a855f7] mb-1.5">SPECIALIZACE</div><Progress value={sR.length > 0 ? (sD / sR.length) * 100 : 0} className="h-1.5" /><div className="text-[10px] text-[hsl(var(--mn-muted))] mt-1">{sD}/{sR.length}</div></CardContent></Card>
       </div>
 
       <Countdown profile={profile} obor={obor} />
@@ -319,7 +319,7 @@ export default function LogbookV2() {
           </>}
           {profile?.kmen_done && kR.length > 0 && (
             <div className="flex items-center gap-3 p-3 rounded-xl border border-[hsl(var(--mn-accent-2)/0.15)] bg-[hsl(var(--mn-accent-2)/0.05)]">
-              <Check className="w-5 h-5 text-[hsl(var(--mn-accent-2))]" /><div><div className="text-sm font-semibold text-[hsl(var(--mn-accent-2))]">Kmen absolvován</div><div className="text-xs text-muted-foreground">{kR.length} požadavků auto-splněno{profile.kmen_date && ` · ${fD(profile.kmen_date)}`}</div></div>
+              <Check className="w-5 h-5 text-[hsl(var(--mn-accent-2))]" /><div><div className="text-sm font-semibold text-[hsl(var(--mn-accent-2))]">Kmen absolvován</div><div className="text-xs text-[hsl(var(--mn-muted))]">{kR.length} požadavků auto-splněno{profile.kmen_date && ` · ${fD(profile.kmen_date)}`}</div></div>
             </div>
           )}
           <h3 className="text-xs font-bold text-[#a855f7] tracking-wider mt-4">SPECIALIZOVANÝ VÝCVIK</h3>
@@ -330,7 +330,7 @@ export default function LogbookV2() {
           </>}
         </>) : (<>
           {filtered.length > 0 ? filtered.map(r => <ReqCard key={r.id} req={r} done={eProg[r.id]?.status === 'completed'} auto={eProg[r.id]?.auto} onToggle={() => toggle(r.id)} />)
-            : <p className="text-center text-sm text-muted-foreground py-8">Žádné požadavky</p>}
+            : <p className="text-center text-sm text-[hsl(var(--mn-muted))] py-8">Žádné požadavky</p>}
         </>)}
       </div>
 
