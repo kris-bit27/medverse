@@ -62,7 +62,7 @@ export default function TestResultsV2() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-[hsl(var(--mn-accent))] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -72,7 +72,7 @@ export default function TestResultsV2() {
       <div className="container max-w-2xl mx-auto p-6">
         <Card>
           <CardContent className="p-12 text-center">
-            <AlertCircle className="w-16 h-16 mx-auto mb-4 text-red-500" />
+            <AlertCircle className="w-16 h-16 mx-auto mb-4 text-[hsl(var(--mn-danger))]" />
             <h2 className="text-2xl font-bold mb-2">Výsledky nenalezeny</h2>
             <Button onClick={() => navigate(createPageUrl('Dashboard'))}>
               Zpět na Dashboard
@@ -95,10 +95,10 @@ export default function TestResultsV2() {
   };
 
   const getGradeColor = (score) => {
-    if (score >= 90) return 'text-green-600';
-    if (score >= 75) return 'text-blue-600';
+    if (score >= 90) return 'text-[hsl(var(--mn-success))]';
+    if (score >= 75) return 'text-[hsl(var(--mn-accent-2))]';
     if (score >= 60) return 'text-yellow-600';
-    return 'text-red-600';
+    return 'text-[hsl(var(--mn-danger))]';
   };
 
   const getGradeText = (score) => {
@@ -166,9 +166,9 @@ export default function TestResultsV2() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Správně</p>
-                <p className="text-3xl font-bold text-green-600">{correctAnswers}</p>
+                <p className="text-3xl font-bold text-[hsl(var(--mn-success))]">{correctAnswers}</p>
               </div>
-              <CheckCircle2 className="w-12 h-12 text-green-600" />
+              <CheckCircle2 className="w-12 h-12 text-[hsl(var(--mn-success))]" />
             </div>
           </CardContent>
         </Card>
@@ -178,9 +178,9 @@ export default function TestResultsV2() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Špatně</p>
-                <p className="text-3xl font-bold text-red-600">{totalQuestions - correctAnswers}</p>
+                <p className="text-3xl font-bold text-[hsl(var(--mn-danger))]">{totalQuestions - correctAnswers}</p>
               </div>
-              <XCircle className="w-12 h-12 text-red-600" />
+              <XCircle className="w-12 h-12 text-[hsl(var(--mn-danger))]" />
             </div>
           </CardContent>
         </Card>
@@ -237,16 +237,16 @@ export default function TestResultsV2() {
                 key={answer.id}
                 className={`p-4 rounded-lg border-2 ${
                   answer.is_correct
-                    ? 'border-green-200 bg-green-50 dark:bg-green-950/20'
-                    : 'border-red-200 bg-red-50 dark:bg-red-950/20'
+                    ? 'border-[hsl(var(--mn-success)/0.3)] bg-[hsl(var(--mn-success)/0.06)]'
+                    : 'border-[hsl(var(--mn-danger)/0.3)] bg-[hsl(var(--mn-danger)/0.06)]'
                 }`}
               >
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0">
                     {answer.is_correct ? (
-                      <CheckCircle2 className="w-6 h-6 text-green-600" />
+                      <CheckCircle2 className="w-6 h-6 text-[hsl(var(--mn-success))]" />
                     ) : (
-                      <XCircle className="w-6 h-6 text-red-600" />
+                      <XCircle className="w-6 h-6 text-[hsl(var(--mn-danger))]" />
                     )}
                   </div>
 
@@ -259,11 +259,11 @@ export default function TestResultsV2() {
                       <div className="space-y-1 text-sm">
                         <p>
                           <span className="text-muted-foreground">Vaše odpověď:</span>{' '}
-                          <span className="text-red-600">{answer.user_answer || 'Nezodpovězeno'}</span>
+                          <span className="text-[hsl(var(--mn-danger))]">{answer.user_answer || 'Nezodpovězeno'}</span>
                         </p>
                         <p>
                           <span className="text-muted-foreground">Správná odpověď:</span>{' '}
-                          <span className="text-green-600">{answer.questions?.correct_answer}</span>
+                          <span className="text-[hsl(var(--mn-success))]">{answer.questions?.correct_answer}</span>
                         </p>
                       </div>
                     )}

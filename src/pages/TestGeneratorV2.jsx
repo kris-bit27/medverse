@@ -224,7 +224,7 @@ export default function TestGeneratorV2() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <span className="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-900 text-teal-600 dark:text-teal-300 flex items-center justify-center font-bold">
+                <span className="w-8 h-8 rounded-full bg-[hsl(var(--mn-accent)/0.12)] text-[hsl(var(--mn-accent))] flex items-center justify-center font-bold">
                   1
                 </span>
                 Vyberte obor
@@ -262,7 +262,7 @@ export default function TestGeneratorV2() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
-                    <span className="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-900 text-teal-600 dark:text-teal-300 flex items-center justify-center font-bold">
+                    <span className="w-8 h-8 rounded-full bg-[hsl(var(--mn-accent)/0.12)] text-[hsl(var(--mn-accent))] flex items-center justify-center font-bold">
                       2
                     </span>
                     Vyberte okruhy
@@ -286,7 +286,7 @@ export default function TestGeneratorV2() {
                     {okruhy.map((okruh) => (
                       <div
                         key={okruh.id}
-                        className="flex items-center space-x-2 p-3 rounded-xl border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900 cursor-pointer"
+                        className="flex items-center space-x-2 p-3 rounded-xl border hover:bg-[hsl(var(--mn-surface))] hover:bg-[hsl(var(--mn-surface-2))] cursor-pointer"
                         onClick={() => handleOkruhToggle(okruh.id)}
                       >
                         <Checkbox
@@ -310,7 +310,7 @@ export default function TestGeneratorV2() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
-                    <span className="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-900 text-teal-600 dark:text-teal-300 flex items-center justify-center font-bold">
+                    <span className="w-8 h-8 rounded-full bg-[hsl(var(--mn-accent)/0.12)] text-[hsl(var(--mn-accent))] flex items-center justify-center font-bold">
                       3
                     </span>
                     Vyberte témata
@@ -334,7 +334,7 @@ export default function TestGeneratorV2() {
                     {topics.map((topic) => (
                       <div
                         key={topic.id}
-                        className="flex items-center space-x-2 p-3 rounded-xl border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900 cursor-pointer"
+                        className="flex items-center space-x-2 p-3 rounded-xl border hover:bg-[hsl(var(--mn-surface))] hover:bg-[hsl(var(--mn-surface-2))] cursor-pointer"
                         onClick={() => handleTopicToggle(topic.id)}
                       >
                         <Checkbox
@@ -357,7 +357,7 @@ export default function TestGeneratorV2() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <span className="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-900 text-teal-600 dark:text-teal-300 flex items-center justify-center font-bold">
+                  <span className="w-8 h-8 rounded-full bg-[hsl(var(--mn-accent)/0.12)] text-[hsl(var(--mn-accent))] flex items-center justify-center font-bold">
                     4
                   </span>
                   Nastavení testu
@@ -512,7 +512,7 @@ export default function TestGeneratorV2() {
               )}
 
               {availableQuestionsCount < questionCount && selectedTopics.length > 0 && (
-                <p className="text-xs text-red-600 text-center">
+                <p className="text-xs text-[hsl(var(--mn-danger))] text-center">
                   Nedostatek otázek ({availableQuestionsCount}/{questionCount})
                 </p>
               )}

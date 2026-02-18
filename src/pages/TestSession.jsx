@@ -179,7 +179,7 @@ export default function TestSession() {
   if (!session || !sessionId) {
     return (
       <div className="text-center py-20">
-        <AlertTriangle className="w-12 h-12 mx-auto text-amber-500 mb-4" />
+        <AlertTriangle className="w-12 h-12 mx-auto text-[hsl(var(--mn-warn))] mb-4" />
         <h2 className="text-xl font-bold mb-2">Test nenalezen</h2>
         <Button asChild><Link to={createPageUrl('TestGeneratorV2')}>Vytvořit nový test</Link></Button>
       </div>
@@ -209,25 +209,25 @@ export default function TestSession() {
       <div className="max-w-2xl mx-auto px-4 py-8">
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center">
           <div className={`w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center ${
-            score >= 80 ? 'bg-gradient-to-br from-emerald-400 to-teal-500' :
-            score >= 60 ? 'bg-gradient-to-br from-amber-400 to-orange-500' :
-            'bg-gradient-to-br from-red-400 to-pink-500'
+            score >= 80 ? 'bg-gradient-to-br from-[hsl(var(--mn-success))] to-[hsl(var(--mn-accent))]' :
+            score >= 60 ? 'bg-gradient-to-br from-[hsl(var(--mn-warn))] to-[hsl(var(--mn-danger))]' :
+            'bg-gradient-to-br from-[hsl(var(--mn-danger))] to-[hsl(var(--mn-danger))]'
           }`}>
             <Trophy className="w-12 h-12 text-[hsl(var(--mn-text))]" />
           </div>
           <h1 className="text-3xl font-bold mb-2">Test dokončen!</h1>
-          <p className="text-5xl font-bold text-teal-600 mb-2">{score}%</p>
+          <p className="text-5xl font-bold text-[hsl(var(--mn-accent))] mb-2">{score}%</p>
           <p className="text-sm text-muted-foreground mb-6">
             {correct}/{total} správně • {Math.floor(elapsed / 60)}:{(elapsed % 60).toString().padStart(2, '0')} min
           </p>
 
           <div className="grid grid-cols-2 gap-4 mb-8">
-            <Card className="p-4 bg-emerald-50 dark:bg-emerald-900/20">
-              <div className="text-2xl font-bold text-emerald-600">{correct}</div>
+            <Card className="p-4 bg-[hsl(var(--mn-success)/0.08)]">
+              <div className="text-2xl font-bold text-[hsl(var(--mn-success))]">{correct}</div>
               <p className="text-sm text-muted-foreground">Správně</p>
             </Card>
-            <Card className="p-4 bg-red-50 dark:bg-red-900/20">
-              <div className="text-2xl font-bold text-red-600">{wrong}</div>
+            <Card className="p-4 bg-[hsl(var(--mn-danger)/0.08)]">
+              <div className="text-2xl font-bold text-[hsl(var(--mn-danger))]">{wrong}</div>
               <p className="text-sm text-muted-foreground">Špatně</p>
             </Card>
           </div>
@@ -238,11 +238,11 @@ export default function TestSession() {
               <h3 className="font-semibold mb-3 text-sm text-muted-foreground uppercase">Chybné odpovědi</h3>
               <div className="space-y-3">
                 {questions.filter(q => answers[q.id] && !answers[q.id].isCorrect).map(q => (
-                  <Card key={q.id} className="p-4 border-red-200 dark:border-red-900/30">
+                  <Card key={q.id} className="p-4 border-[hsl(var(--mn-danger)/0.3)]">
                     <p className="text-sm font-medium mb-2">{q.question_text}</p>
                     <div className="flex gap-4 text-xs">
-                      <span className="text-red-500">Vaše: {answers[q.id]?.selected}</span>
-                      <span className="text-emerald-500">Správně: {q.correct_answer}</span>
+                      <span className="text-[hsl(var(--mn-danger))]">Vaše: {answers[q.id]?.selected}</span>
+                      <span className="text-[hsl(var(--mn-success))]">Správně: {q.correct_answer}</span>
                     </div>
                     {q.explanation && (
                       <p className="text-xs text-muted-foreground mt-2 border-t pt-2">{q.explanation}</p>
@@ -257,7 +257,7 @@ export default function TestSession() {
             <Button asChild variant="outline">
               <Link to={createPageUrl('TestGeneratorV2')}><RotateCcw className="w-4 h-4 mr-2" />Nový test</Link>
             </Button>
-            <Button asChild className="bg-teal-600 hover:bg-teal-700">
+            <Button asChild className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]">
               <Link to={createPageUrl('Dashboard')}>Zpět na dashboard</Link>
             </Button>
           </div>
@@ -317,13 +317,13 @@ export default function TestSession() {
               const isSelected = selectedAnswer === key;
               const isCorrectOption = key === currentQuestion.correct_answer;
               
-              let style = 'border-[hsl(var(--mn-border))] hover:border-teal-300 dark:hover:border-teal-600';
+              let style = 'border-[hsl(var(--mn-border))] hover:border-[hsl(var(--mn-accent)/0.4)]';
               if (isRevealed) {
-                if (isCorrectOption) style = 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20';
-                else if (isSelected && !isCorrectOption) style = 'border-red-500 bg-red-50 dark:bg-red-900/20';
+                if (isCorrectOption) style = 'border-[hsl(var(--mn-success))] bg-[hsl(var(--mn-success)/0.08)]';
+                else if (isSelected && !isCorrectOption) style = 'border-[hsl(var(--mn-danger))] bg-[hsl(var(--mn-danger)/0.08)]';
                 else style = 'border-[hsl(var(--mn-border))] opacity-60';
               } else if (isSelected) {
-                style = 'border-teal-500 bg-teal-50 dark:bg-teal-900/20 ring-2 ring-teal-500/30';
+                style = 'border-[hsl(var(--mn-accent))] bg-[hsl(var(--mn-accent)/0.08)] ring-2 ring-[hsl(var(--mn-accent)/0.3)]';
               }
 
               return (
@@ -335,19 +335,19 @@ export default function TestSession() {
                 >
                   <div className="flex items-start gap-3">
                     <span className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 ${
-                      isRevealed && isCorrectOption ? 'bg-emerald-500 text-white border-emerald-500' :
-                      isRevealed && isSelected && !isCorrectOption ? 'bg-red-500 text-white border-red-500' :
-                      isSelected ? 'bg-teal-500 text-white border-teal-500' :
-                      'border-[hsl(var(--mn-border))] dark:border-slate-600 text-[hsl(var(--mn-muted))]'
+                      isRevealed && isCorrectOption ? 'bg-[hsl(var(--mn-success))] text-white border-[hsl(var(--mn-success))]' :
+                      isRevealed && isSelected && !isCorrectOption ? 'bg-[hsl(var(--mn-danger))] text-white border-[hsl(var(--mn-danger))]' :
+                      isSelected ? 'bg-[hsl(var(--mn-accent))] text-white border-[hsl(var(--mn-accent))]' :
+                      'border-[hsl(var(--mn-border))] border-[hsl(var(--mn-border))] text-[hsl(var(--mn-muted))]'
                     }`}>
                       {key}
                     </span>
                     <span className="text-sm leading-relaxed pt-1">{value}</span>
                     {isRevealed && isCorrectOption && (
-                      <CheckCircle2 className="w-5 h-5 text-emerald-500 ml-auto shrink-0 mt-1" />
+                      <CheckCircle2 className="w-5 h-5 text-[hsl(var(--mn-success))] ml-auto shrink-0 mt-1" />
                     )}
                     {isRevealed && isSelected && !isCorrectOption && (
-                      <XCircle className="w-5 h-5 text-red-500 ml-auto shrink-0 mt-1" />
+                      <XCircle className="w-5 h-5 text-[hsl(var(--mn-danger))] ml-auto shrink-0 mt-1" />
                     )}
                   </div>
                 </button>
@@ -357,9 +357,9 @@ export default function TestSession() {
 
           {/* Explanation (after reveal) */}
           {isRevealed && currentQuestion.explanation && (
-            <Card className="mb-6 border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/10">
+            <Card className="mb-6 border-[hsl(var(--mn-accent-2)/0.3)] bg-[hsl(var(--mn-accent-2)/0.06)]">
               <CardContent className="p-4">
-                <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-1">Vysvětlení</p>
+                <p className="text-xs font-semibold text-[hsl(var(--mn-accent-2))] mb-1">Vysvětlení</p>
                 <p className="text-sm text-[hsl(var(--mn-muted))] leading-relaxed">
                   {currentQuestion.explanation}
                 </p>
@@ -373,14 +373,14 @@ export default function TestSession() {
               <Button
                 onClick={handleConfirm}
                 disabled={!selectedAnswer}
-                className="flex-1 h-12 bg-teal-600 hover:bg-teal-700"
+                className="flex-1 h-12 bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]"
               >
                 Potvrdit odpověď
               </Button>
             ) : (
               <Button
                 onClick={handleNext}
-                className="flex-1 h-12 bg-teal-600 hover:bg-teal-700"
+                className="flex-1 h-12 bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]"
               >
                 {currentIndex < questions.length - 1 ? (
                   <>Další otázka <ChevronRight className="w-4 h-4 ml-1" /></>
