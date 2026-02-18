@@ -125,7 +125,7 @@ export default function StudyPlanner() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-3xl font-bold text-[hsl(var(--mn-text))] flex items-center gap-3">
-            <CalendarIcon className="w-8 h-8 text-teal-600" />
+            <CalendarIcon className="w-8 h-8 text-[hsl(var(--mn-accent))]" />
             Studijní plánovač
           </h1>
           <p className="text-[hsl(var(--mn-muted))] mt-1">
@@ -139,7 +139,7 @@ export default function StudyPlanner() {
               AI Personalizace
             </Link>
           </Button>
-          <Button asChild className="bg-teal-600 hover:bg-teal-700">
+          <Button asChild className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]">
             <Link to={createPageUrl('StudyPlanCreate')}>
               <Plus className="w-4 h-4 mr-2" />
               Nový plán
@@ -150,12 +150,12 @@ export default function StudyPlanner() {
 
       {/* Active plan banner */}
       {activePlan && (
-        <Card className="mb-6 bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 border-teal-200 dark:border-teal-800">
+        <Card className="mb-6 bg-[hsl(var(--mn-accent)/0.06)] border-[hsl(var(--mn-accent)/0.2)]">
           <CardContent className="pt-6">
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <Target className="w-5 h-5 text-teal-600" />
+                  <Target className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
                   <h3 className="font-semibold text-[hsl(var(--mn-text))]">
                     {activePlan.title}
                   </h3>
@@ -172,11 +172,11 @@ export default function StudyPlanner() {
                 <div className="flex items-center gap-4">
                   <div className="flex-1 bg-[hsl(var(--mn-elevated))] rounded-full h-2 overflow-hidden">
                     <div 
-                      className="h-full bg-teal-600 transition-all"
+                      className="h-full bg-[hsl(var(--mn-accent))] transition-all"
                       style={{ width: `${activePlan.progress_percentage || 0}%` }}
                     />
                   </div>
-                  <span className="text-sm font-medium text-teal-600">
+                  <span className="text-sm font-medium text-[hsl(var(--mn-accent))]">
                     {activePlan.progress_percentage || 0}%
                   </span>
                 </div>
@@ -202,11 +202,11 @@ export default function StudyPlanner() {
                   {completedTodayCount}/{totalTodayCount}
                 </p>
               </div>
-              <div className="w-12 h-12 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center">
-                <CheckCircle2 className="w-6 h-6 text-teal-600" />
+              <div className="w-12 h-12 rounded-full bg-[hsl(var(--mn-accent)/0.12)] flex items-center justify-center">
+                <CheckCircle2 className="w-6 h-6 text-[hsl(var(--mn-accent))]" />
               </div>
             </div>
-            <div className="mt-2 text-xs text-teal-600 font-medium">
+            <div className="mt-2 text-xs text-[hsl(var(--mn-accent))] font-medium">
               {todayProgress}% dokončeno
             </div>
           </CardContent>
@@ -221,8 +221,8 @@ export default function StudyPlanner() {
                   {upcomingTasks.length}
                 </p>
               </div>
-              <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                <Clock className="w-6 h-6 text-blue-600" />
+              <div className="w-12 h-12 rounded-full bg-[hsl(var(--mn-accent-2)/0.12)] flex items-center justify-center">
+                <Clock className="w-6 h-6 text-[hsl(var(--mn-accent-2))]" />
               </div>
             </div>
           </CardContent>
@@ -237,8 +237,8 @@ export default function StudyPlanner() {
                   {overdueTasks.length}
                 </p>
               </div>
-              <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                <AlertCircle className="w-6 h-6 text-red-600" />
+              <div className="w-12 h-12 rounded-full bg-[hsl(var(--mn-danger)/0.12)] flex items-center justify-center">
+                <AlertCircle className="w-6 h-6 text-[hsl(var(--mn-danger))]" />
               </div>
             </div>
           </CardContent>
@@ -253,8 +253,8 @@ export default function StudyPlanner() {
                   {plans.filter(p => p.is_active).length}
                 </p>
               </div>
-              <div className="w-12 h-12 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-teal-600" />
+              <div className="w-12 h-12 rounded-full bg-[hsl(var(--mn-accent)/0.12)] flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-[hsl(var(--mn-accent))]" />
               </div>
             </div>
           </CardContent>

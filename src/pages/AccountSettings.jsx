@@ -224,7 +224,7 @@ export default function AccountSettings() {
 
           <div className="flex items-center justify-between p-4 rounded-xl border">
             <div className="flex items-center gap-3">
-              <Lock className="w-5 h-5 text-teal-600" />
+              <Lock className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
               <div>
                 <div className="font-medium">Dvoufaktorové ověření (2FA)</div>
                 <p className="text-sm text-muted-foreground">
@@ -343,7 +343,7 @@ export default function AccountSettings() {
       </Card>
 
       {/* Privacy & Data (GDPR) */}
-      <Card className="border-teal-200">
+      <Card className="border-[hsl(var(--mn-accent)/0.2)]">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Database className="w-5 h-5" />
@@ -420,7 +420,7 @@ export default function AccountSettings() {
 
             <Button 
               variant="outline" 
-              className="w-full justify-start text-red-600 hover:text-red-700"
+              className="w-full justify-start text-[hsl(var(--mn-danger))] hover:text-[hsl(var(--mn-danger))]"
               onClick={() => setShowDeleteConfirm(true)}
             >
               <Trash2 className="w-4 h-4 mr-2" />
@@ -435,7 +435,7 @@ export default function AccountSettings() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <Card className="max-w-md mx-4">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-red-600">
+              <CardTitle className="flex items-center gap-2 text-[hsl(var(--mn-danger))]">
                 <AlertTriangle className="w-5 h-5" />
                 Smazat účet?
               </CardTitle>
@@ -507,7 +507,7 @@ function DataConsentToggle({ label, description, bonus, checked, onChange, requi
             <Badge variant="secondary" className="text-xs">Povinné</Badge>
           )}
           {bonus > 0 && (
-            <Badge variant="default" className="text-xs bg-teal-500">
+            <Badge variant="default" className="text-xs bg-[hsl(var(--mn-accent))]">
               +{bonus} 💎
             </Badge>
           )}

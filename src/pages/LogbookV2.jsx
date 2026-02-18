@@ -49,8 +49,8 @@ function Onboarding({ obor, onComplete, onCancel }) {
       <div className="flex gap-2">
         {['Kmen','Termíny','Přerušení'].map((s,i) => (
           <div key={i} className="flex-1">
-            <div className={`h-1 rounded-full mb-1 ${i <= step ? 'bg-teal-500' : 'bg-slate-200 dark:bg-slate-700'}`} />
-            <span className={`text-[10px] font-medium ${i <= step ? 'text-teal-600 dark:text-teal-400' : 'text-muted-foreground'}`}>{s}</span>
+            <div className={`h-1 rounded-full mb-1 ${i <= step ? 'bg-[hsl(var(--mn-accent))]' : 'bg-[hsl(var(--mn-border))]'}`} />
+            <span className={`text-[10px] font-medium ${i <= step ? 'text-[hsl(var(--mn-accent))]' : 'text-muted-foreground'}`}>{s}</span>
           </div>
         ))}
       </div>
@@ -61,9 +61,9 @@ function Onboarding({ obor, onComplete, onCancel }) {
           {[{ v: true, l: 'Ano, mám hotový kmen', desc: 'Kmenové požadavky se automaticky splní', ic: '✅' },
             { v: false, l: 'Ne, jsem v kmeni', desc: 'Uvidíš i kmenové požadavky', ic: '📖' }].map(o => (
             <button key={String(o.v)} onClick={() => setD(x => ({ ...x, kmenDone: o.v }))}
-              className={`p-4 rounded-xl border text-left transition-all ${d.kmenDone === o.v ? 'border-teal-500/50 bg-teal-500/5' : 'border-[hsl(var(--mn-border))] hover:border-[hsl(var(--mn-border))] dark:hover:border-[hsl(var(--mn-accent)/0.3)]'}`}>
+              className={`p-4 rounded-xl border text-left transition-all ${d.kmenDone === o.v ? 'border-[hsl(var(--mn-accent)/0.5)] bg-[hsl(var(--mn-accent)/0.05)]' : 'border-[hsl(var(--mn-border))] hover:border-[hsl(var(--mn-border))] dark:hover:border-[hsl(var(--mn-accent)/0.3)]'}`}>
               <div className="text-xl mb-2">{o.ic}</div>
-              <div className={`text-sm font-semibold ${d.kmenDone === o.v ? 'text-teal-600 dark:text-teal-400' : ''}`}>{o.l}</div>
+              <div className={`text-sm font-semibold ${d.kmenDone === o.v ? 'text-[hsl(var(--mn-accent))]' : ''}`}>{o.l}</div>
               <div className="text-xs text-muted-foreground mt-1">{o.desc}</div>
             </button>
           ))}
@@ -84,15 +84,15 @@ function Onboarding({ obor, onComplete, onCancel }) {
           {d.ints.map(int => { const it = INT_TYPES.find(t => t.id === int.type) || INT_TYPES[3]; const Ic = it.icon; return (
             <div key={int.id} className="flex items-center gap-3 p-3 rounded-lg border border-[hsl(var(--mn-border))]">
               <Ic className="w-4 h-4 text-muted-foreground" /><div className="flex-1"><div className="text-sm font-medium">{it.label}</div><div className="text-xs text-muted-foreground">{fD(int.from)} – {fD(int.to)} · {mBetween(int.from, int.to)} měs.</div></div>
-              <button onClick={() => setD(x => ({ ...x, ints: x.ints.filter(i => i.id !== int.id) }))} className="text-muted-foreground hover:text-red-500 text-sm">×</button>
+              <button onClick={() => setD(x => ({ ...x, ints: x.ints.filter(i => i.id !== int.id) }))} className="text-muted-foreground hover:text-[hsl(var(--mn-danger))] text-sm">×</button>
             </div>); })}
-          <p className="text-xs text-muted-foreground">Celkem: <strong className="text-amber-500">{intM} měs.</strong></p>
+          <p className="text-xs text-muted-foreground">Celkem: <strong className="text-[hsl(var(--mn-warn))]">{intM} měs.</strong></p>
         </div>}
         {d.adding ? (
           <Card><CardContent className="p-4 space-y-3">
             <div className="flex gap-2 flex-wrap">{INT_TYPES.map(it => { const Ic = it.icon; return (
               <button key={it.id} onClick={() => setD(x => ({ ...x, tmp: { ...x.tmp, type: it.id } }))}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium ${d.tmp.type === it.id ? 'border-teal-500/50 bg-teal-500/10 text-teal-600 dark:text-teal-400' : 'border-[hsl(var(--mn-border))]'}`}><Ic className="w-3 h-3" />{it.label}</button>); })}</div>
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium ${d.tmp.type === it.id ? 'border-[hsl(var(--mn-accent)/0.5)] bg-[hsl(var(--mn-accent)/0.1)] text-[hsl(var(--mn-accent))]' : 'border-[hsl(var(--mn-border))]'}`}><Ic className="w-3 h-3" />{it.label}</button>); })}</div>
             <div className="flex gap-3"><div className="flex-1"><Label className="text-xs">Od</Label><Input type="date" value={d.tmp.from} onChange={e => setD(x => ({ ...x, tmp: { ...x.tmp, from: e.target.value } }))} className="mt-1" /></div>
               <div className="flex-1"><Label className="text-xs">Do</Label><Input type="date" value={d.tmp.to} onChange={e => setD(x => ({ ...x, tmp: { ...x.tmp, to: e.target.value } }))} className="mt-1" /></div></div>
             <div className="flex gap-2 justify-end"><Button variant="ghost" size="sm" onClick={() => setD(x => ({ ...x, adding: false }))}>Zrušit</Button><Button size="sm" onClick={addInt} disabled={!d.tmp.from || !d.tmp.to}>Přidat</Button></div>
@@ -120,12 +120,12 @@ function Countdown({ profile, obor }) {
   const pct = Math.min(100, Math.round((elapsed / adj) * 100));
   const exp = new Date(profile.enroll_date); exp.setMonth(exp.getMonth() + adj);
   const u = rem <= 6 ? 'red' : rem <= 12 ? 'amber' : 'emerald';
-  const cls = { red: 'bg-red-500/5 border-red-500/20 text-red-600 dark:text-red-400', amber: 'bg-amber-500/5 border-amber-500/20 text-amber-600 dark:text-amber-400', emerald: 'bg-emerald-500/5 border-emerald-500/20 text-emerald-600 dark:text-emerald-400' };
-  const bar = { red: 'bg-red-500', amber: 'bg-amber-500', emerald: 'bg-emerald-500' };
+  const cls = { red: 'bg-[hsl(var(--mn-danger)/0.05)] border-[hsl(var(--mn-danger)/0.2)] text-[hsl(var(--mn-danger))]', amber: 'bg-[hsl(var(--mn-warn)/0.05)] border-[hsl(var(--mn-warn)/0.2)] text-[hsl(var(--mn-warn))]', emerald: 'bg-[hsl(var(--mn-success)/0.05)] border-[hsl(var(--mn-success)/0.2)] text-[hsl(var(--mn-success))]' };
+  const bar = { red: 'bg-[hsl(var(--mn-danger))]', amber: 'bg-[hsl(var(--mn-warn))]', emerald: 'bg-[hsl(var(--mn-success))]' };
   return (
     <div className={`rounded-xl border p-3 ${cls[u]}`}>
       <div className="flex items-center justify-between mb-2"><div className="flex items-center gap-2 text-sm font-bold"><Timer className="w-4 h-4" />Zbývá {rem} měsíců</div><span className="text-xs opacity-60">{pct}% uplynulo</span></div>
-      <div className="h-1.5 rounded-full bg-slate-200 dark:bg-slate-700"><div className={`h-full rounded-full transition-all ${bar[u]}`} style={{ width: `${pct}%` }} /></div>
+      <div className="h-1.5 rounded-full bg-[hsl(var(--mn-border))]"><div className={`h-full rounded-full transition-all ${bar[u]}`} style={{ width: `${pct}%` }} /></div>
       <div className="flex justify-between mt-1.5 text-[10px] opacity-50"><span>Zápis: {fD(profile.enroll_date)}</span><span>Cíl: {fD(exp.toISOString().split('T')[0])}</span></div>
       {intM > 0 && <p className="text-[10px] opacity-40 mt-1">Přerušeno {intM} měs. → celkem {adj} měs.</p>}
     </div>
@@ -138,9 +138,9 @@ function ReqCard({ req, done, auto, onToggle }) {
   const Icon = TYPE_ICONS[req.requirement_type] || FileText;
   const det = []; if (req.duration_months) det.push(`${req.duration_months} měs.`); if (req.hours) det.push(`${req.hours} hod.`); if (req.min_count) det.push(`min. ${req.min_count}×`);
   return (
-    <div className={`rounded-xl border transition-all ${done ? 'border-teal-500/20 bg-teal-500/5' : 'border-[hsl(var(--mn-border))]'} ${auto ? 'opacity-50' : ''}`}>
+    <div className={`rounded-xl border transition-all ${done ? 'border-[hsl(var(--mn-accent)/0.2)] bg-[hsl(var(--mn-accent)/0.05)]' : 'border-[hsl(var(--mn-border))]'} ${auto ? 'opacity-50' : ''}`}>
       <div className="flex items-center gap-3 p-3 cursor-pointer" onClick={() => setExp(!exp)}>
-        <button onClick={e => { e.stopPropagation(); onToggle(); }} className={`w-5 h-5 rounded-md border-2 flex-shrink-0 flex items-center justify-center transition-all ${done ? 'border-teal-500 bg-teal-500' : 'border-[hsl(var(--mn-border))] dark:border-slate-600'}`}>
+        <button onClick={e => { e.stopPropagation(); onToggle(); }} className={`w-5 h-5 rounded-md border-2 flex-shrink-0 flex items-center justify-center transition-all ${done ? 'border-[hsl(var(--mn-accent))] bg-[hsl(var(--mn-accent))]' : 'border-[hsl(var(--mn-border))] border-[hsl(var(--mn-border))]'}`}>
           {done && <Check className="w-3 h-3 text-[hsl(var(--mn-text))]" />}</button>
         <Icon className="w-4 h-4 text-muted-foreground flex-shrink-0" />
         <div className="flex-1 min-w-0">
@@ -150,12 +150,12 @@ function ReqCard({ req, done, auto, onToggle }) {
         <Badge variant="outline" className="text-[10px] px-1.5 py-0 flex-shrink-0">{PHASE_LABELS[req.phase] || 'SPEC'}</Badge>
         {exp ? <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" /> : <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />}
       </div>
-      {exp && <div className="px-3 pb-3 border-t border-slate-100 dark:border-[hsl(var(--mn-border))]"><div className="pt-2 space-y-1 text-xs text-muted-foreground">
+      {exp && <div className="px-3 pb-3 border-t border-[hsl(var(--mn-border))]"><div className="pt-2 space-y-1 text-xs text-muted-foreground">
         {req.description && <p>{req.description}</p>}
         {req.workplace_type && <p>📍 {req.workplace_type}</p>}
         {req.min_supervised > 0 && <p>👨‍⚕️ Min. pod dohledem: {req.min_supervised}×</p>}
-        {!req.is_mandatory && <p className="text-amber-500">⚡ Doporučené</p>}
-        {auto && <p className="text-teal-500">✅ Auto-splněno (kmen absolvován)</p>}
+        {!req.is_mandatory && <p className="text-[hsl(var(--mn-warn))]">⚡ Doporučené</p>}
+        {auto && <p className="text-[hsl(var(--mn-accent))]">✅ Auto-splněno (kmen absolvován)</p>}
       </div></div>}
     </div>
   );
@@ -165,14 +165,14 @@ function ReqCard({ req, done, auto, onToggle }) {
 function CustCard({ entry }) {
   const [exp, setExp] = useState(false);
   return (
-    <div className="rounded-xl border border-emerald-500/15 bg-emerald-500/5">
+    <div className="rounded-xl border border-[hsl(var(--mn-success)/0.15)] bg-[hsl(var(--mn-success)/0.05)]">
       <div className="flex items-center gap-3 p-3 cursor-pointer" onClick={() => setExp(!exp)}>
-        <div className="w-5 h-5 rounded-md border-2 border-emerald-500 bg-emerald-500 flex-shrink-0 flex items-center justify-center"><Check className="w-3 h-3 text-[hsl(var(--mn-text))]" /></div>
-        <FileText className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+        <div className="w-5 h-5 rounded-md border-2 border-[hsl(var(--mn-success))] bg-[hsl(var(--mn-success))] flex-shrink-0 flex items-center justify-center"><Check className="w-3 h-3 text-[hsl(var(--mn-text))]" /></div>
+        <FileText className="w-4 h-4 text-[hsl(var(--mn-success))] flex-shrink-0" />
         <div className="flex-1 min-w-0"><div className="text-sm font-medium truncate">{entry.procedure_name}</div><div className="text-xs text-muted-foreground">{fD(entry.date)}</div></div>
-        <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 text-[10px]">VLASTNÍ</Badge>
+        <Badge className="bg-[hsl(var(--mn-success)/0.1)] text-[hsl(var(--mn-success))] border-[hsl(var(--mn-success)/0.2)] text-[10px]">VLASTNÍ</Badge>
       </div>
-      {exp && <div className="px-3 pb-3 border-t border-emerald-500/10"><div className="pt-2 space-y-1 text-xs text-muted-foreground">
+      {exp && <div className="px-3 pb-3 border-t border-[hsl(var(--mn-success)/0.1)]"><div className="pt-2 space-y-1 text-xs text-muted-foreground">
         {entry.description && <p>{entry.description}</p>}{entry.was_supervised && <p>👨‍⚕️ Pod dohledem</p>}
       </div></div>}
     </div>
@@ -260,17 +260,17 @@ export default function LogbookV2() {
       <Onboarding obor={obor} onComplete={data => { setProfiles(p => ({ ...p, [sel]: data })); setShowOB(false); }} onCancel={() => { setSel(null); setShowOB(false); }} />
     </div>
   );
-  if (sel && !profile && obor) { if (!showOB) setTimeout(() => setShowOB(true), 0); return <div className="flex items-center justify-center min-h-[50vh]"><div className="w-8 h-8 border-4 border-[hsl(var(--mn-border))] border-t-teal-500 rounded-full animate-spin" /></div>; }
+  if (sel && !profile && obor) { if (!showOB) setTimeout(() => setShowOB(true), 0); return <div className="flex items-center justify-center min-h-[50vh]"><div className="w-8 h-8 border-4 border-[hsl(var(--mn-border))] border-t-[hsl(var(--mn-accent))] rounded-full animate-spin" /></div>; }
 
   // Overview
   if (!sel) return (
     <div className="container max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
-      <div><h1 className="text-2xl font-bold flex items-center gap-3"><ClipboardList className="w-7 h-7 text-teal-500" />Logbook & Plánovač VP</h1>
+      <div><h1 className="text-2xl font-bold flex items-center gap-3"><ClipboardList className="w-7 h-7 text-[hsl(var(--mn-accent))]" />Logbook & Plánovač VP</h1>
         <p className="text-sm text-muted-foreground mt-1">Sleduj plnění vzdělávacího programu dle MZČR 2019.</p></div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {obory.map(o => { const has = !!profiles[o.id]; return (
-          <button key={o.id} onClick={() => setSel(o.id)} className={`flex items-center gap-3 p-3.5 rounded-xl border text-left transition-all hover:border-teal-500/30 hover:bg-teal-500/5 ${has ? 'border-teal-500/20 bg-teal-500/5' : 'border-[hsl(var(--mn-border))]'}`}>
-            <div className="w-9 h-9 rounded-lg bg-teal-500/10 flex items-center justify-center flex-shrink-0"><Award className="w-4 h-4 text-teal-500" /></div>
+          <button key={o.id} onClick={() => setSel(o.id)} className={`flex items-center gap-3 p-3.5 rounded-xl border text-left transition-all hover:border-[hsl(var(--mn-accent)/0.3)] hover:bg-[hsl(var(--mn-accent)/0.05)] ${has ? 'border-[hsl(var(--mn-accent)/0.2)] bg-[hsl(var(--mn-accent)/0.05)]' : 'border-[hsl(var(--mn-border))]'}`}>
+            <div className="w-9 h-9 rounded-lg bg-[hsl(var(--mn-accent)/0.1)] flex items-center justify-center flex-shrink-0"><Award className="w-4 h-4 text-[hsl(var(--mn-accent))]" /></div>
             <div className="flex-1 min-w-0"><div className="text-sm font-semibold truncate">{o.name}</div><div className="text-xs text-muted-foreground">{o.min_years} let · {o.kmen_type || '—'} kmen{has && ' · ✅'}</div></div>
             <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
           </button>); })}
@@ -292,7 +292,7 @@ export default function LogbookV2() {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <Card><CardContent className="p-3"><div className="text-[10px] font-bold text-blue-500 mb-1.5">KMEN {profile?.kmen_done && '✅'}</div><Progress value={kR.length > 0 ? (kD / kR.length) * 100 : 0} className="h-1.5" /><div className="text-[10px] text-muted-foreground mt-1">{kD}/{kR.length}</div></CardContent></Card>
+        <Card><CardContent className="p-3"><div className="text-[10px] font-bold text-[hsl(var(--mn-accent-2))] mb-1.5">KMEN {profile?.kmen_done && '✅'}</div><Progress value={kR.length > 0 ? (kD / kR.length) * 100 : 0} className="h-1.5" /><div className="text-[10px] text-muted-foreground mt-1">{kD}/{kR.length}</div></CardContent></Card>
         <Card><CardContent className="p-3"><div className="text-[10px] font-bold text-purple-500 mb-1.5">SPECIALIZACE</div><Progress value={sR.length > 0 ? (sD / sR.length) * 100 : 0} className="h-1.5" /><div className="text-[10px] text-muted-foreground mt-1">{sD}/{sR.length}</div></CardContent></Card>
       </div>
 
@@ -303,7 +303,7 @@ export default function LogbookV2() {
         {[{ k: 'all', l: 'Vše' }, { k: 'kmen', l: 'Kmen' }, { k: 'specializace', l: 'Spec' }].map(f => (
           <Button key={f.k} variant={fPh === f.k ? 'default' : 'outline'} size="sm" className="text-xs h-7 px-3" onClick={() => setFPh(f.k)}>{f.l}</Button>
         ))}
-        <div className="w-px h-5 bg-slate-200 dark:bg-slate-700 self-center mx-1" />
+        <div className="w-px h-5 bg-[hsl(var(--mn-border))] self-center mx-1" />
         {Object.entries(TYPE_ICONS).map(([k, Ic]) => (
           <Button key={k} variant={fTy === k ? 'default' : 'outline'} size="sm" className="text-xs h-7 px-2.5" onClick={() => setFTy(fTy === k ? 'all' : k)}>
             <Ic className="w-3 h-3 mr-1" />{k.charAt(0).toUpperCase() + k.slice(1)}</Button>
@@ -314,18 +314,18 @@ export default function LogbookV2() {
       <div className="space-y-2 pb-20">
         {!isF ? (<>
           {!profile?.kmen_done && kR.length > 0 && <>
-            <h3 className="text-xs font-bold text-blue-500 tracking-wider mt-2">ZÁKLADNÍ KMEN ({obor?.kmen_type})</h3>
+            <h3 className="text-xs font-bold text-[hsl(var(--mn-accent-2))] tracking-wider mt-2">ZÁKLADNÍ KMEN ({obor?.kmen_type})</h3>
             {kR.map(r => <ReqCard key={r.id} req={r} done={eProg[r.id]?.status === 'completed'} auto={eProg[r.id]?.auto} onToggle={() => toggle(r.id)} />)}
           </>}
           {profile?.kmen_done && kR.length > 0 && (
-            <div className="flex items-center gap-3 p-3 rounded-xl border border-blue-500/15 bg-blue-500/5">
-              <Check className="w-5 h-5 text-blue-500" /><div><div className="text-sm font-semibold text-blue-600 dark:text-blue-400">Kmen absolvován</div><div className="text-xs text-muted-foreground">{kR.length} požadavků auto-splněno{profile.kmen_date && ` · ${fD(profile.kmen_date)}`}</div></div>
+            <div className="flex items-center gap-3 p-3 rounded-xl border border-[hsl(var(--mn-accent-2)/0.15)] bg-[hsl(var(--mn-accent-2)/0.05)]">
+              <Check className="w-5 h-5 text-[hsl(var(--mn-accent-2))]" /><div><div className="text-sm font-semibold text-[hsl(var(--mn-accent-2))]">Kmen absolvován</div><div className="text-xs text-muted-foreground">{kR.length} požadavků auto-splněno{profile.kmen_date && ` · ${fD(profile.kmen_date)}`}</div></div>
             </div>
           )}
           <h3 className="text-xs font-bold text-purple-500 tracking-wider mt-4">SPECIALIZOVANÝ VÝCVIK</h3>
           {sR.map(r => <ReqCard key={r.id} req={r} done={eProg[r.id]?.status === 'completed'} auto={false} onToggle={() => toggle(r.id)} />)}
           {custEntries.length > 0 && <>
-            <h3 className="text-xs font-bold text-emerald-500 tracking-wider mt-4">VLASTNÍ ZÁZNAMY ({custEntries.length})</h3>
+            <h3 className="text-xs font-bold text-[hsl(var(--mn-success))] tracking-wider mt-4">VLASTNÍ ZÁZNAMY ({custEntries.length})</h3>
             {custEntries.map(e => <CustCard key={e.id} entry={e} />)}
           </>}
         </>) : (<>
@@ -334,7 +334,7 @@ export default function LogbookV2() {
         </>)}
       </div>
 
-      <Button size="lg" className="fixed bottom-6 right-6 rounded-xl shadow-lg h-12 w-12 p-0 bg-emerald-500 hover:bg-emerald-600" onClick={() => setShowAdd(true)}><Plus className="w-5 h-5" /></Button>
+      <Button size="lg" className="fixed bottom-6 right-6 rounded-xl shadow-lg h-12 w-12 p-0 bg-[hsl(var(--mn-success))] hover:bg-[hsl(var(--mn-success)/0.85)]" onClick={() => setShowAdd(true)}><Plus className="w-5 h-5" /></Button>
       <AddDialog open={showAdd} onOpenChange={setShowAdd} userId={user?.id} />
     </div>
   );

@@ -255,21 +255,21 @@ export default function MyProfile() {
       </div>
 
       {/* Gamification Progress */}
-      <Card className="bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-950/20 dark:to-cyan-950/20 border-teal-200">
+      <Card className="bg-[hsl(var(--mn-accent)/0.06)] border-[hsl(var(--mn-accent)/0.2)]">
         <CardContent className="p-6">
           <div className="flex items-start gap-4">
-            <div className="p-3 bg-teal-100 dark:bg-teal-900 rounded-xl">
-              <Gift className="w-6 h-6 text-teal-600" />
+            <div className="p-3 bg-[hsl(var(--mn-accent)/0.12)] rounded-xl">
+              <Gift className="w-6 h-6 text-[hsl(var(--mn-accent))]" />
             </div>
             <div className="flex-1">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="font-semibold text-lg">Získej kredity za vyplnění profilu!</h3>
-                <span className="text-2xl font-bold text-teal-600">{earnedTokens} / {maxTokens} 💎</span>
+                <span className="text-2xl font-bold text-[hsl(var(--mn-accent))]">{earnedTokens} / {maxTokens} 💎</span>
               </div>
               
-              <div className="w-full bg-teal-200 dark:bg-teal-900 rounded-full h-3 mb-4">
+              <div className="w-full bg-[hsl(var(--mn-accent)/0.2)] rounded-full h-3 mb-4">
                 <div 
-                  className="bg-gradient-to-r from-teal-500 to-cyan-500 h-3 rounded-full transition-all duration-500"
+                  className="bg-[hsl(var(--mn-accent))] h-3 rounded-full transition-all duration-500"
                   style={{ width: `${(earnedTokens / maxTokens) * 100}%` }}
                 />
               </div>
@@ -377,7 +377,7 @@ function AchievementBadge({ icon, label, tokens, earned }) {
     <div className={`
       flex flex-col items-center p-2 rounded-xl border-2 transition-all
       ${earned 
-        ? 'bg-green-50 border-green-300 dark:bg-green-950/20' 
+        ? 'bg-[hsl(var(--mn-success)/0.06)] border-[hsl(var(--mn-success)/0.3)]' 
         : 'bg-[hsl(var(--mn-bg))] border-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-surface)/0.5)] opacity-60'
       }
     `}>
@@ -572,7 +572,7 @@ function ProfileForm({ profile, user, isEditing, onSave, isSaving }) {
                   className={`
                     p-3 rounded-xl border-2 text-left transition-all
                     ${formData.career_paths.includes(path.value)
-                      ? 'border-teal-500 bg-teal-50 dark:bg-teal-950/20'
+                      ? 'border-[hsl(var(--mn-accent))] bg-[hsl(var(--mn-accent)/0.06)]'
                       : 'border-[hsl(var(--mn-border))] hover:border-[hsl(var(--mn-border))]'
                     }
                     ${!isEditing && 'opacity-60 cursor-not-allowed'}
@@ -612,7 +612,7 @@ function ProfileForm({ profile, user, isEditing, onSave, isSaving }) {
                 className={`
                   px-3 py-1 rounded-full text-sm transition-all
                   ${formData.areas_of_interest.includes(field)
-                    ? 'bg-teal-500 text-[hsl(var(--mn-text))]'
+                    ? 'bg-[hsl(var(--mn-accent))] text-white'
                     : 'bg-[hsl(var(--mn-surface-2))] hover:bg-[hsl(var(--mn-surface-2))]'
                   }
                   ${!isEditing && 'opacity-60 cursor-not-allowed'}
