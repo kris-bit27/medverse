@@ -60,10 +60,10 @@ export default function TopicDetailV4() {
 
   if (!topic) {
     return (
-      <div className="container max-w-4xl mx-auto p-6">
+      <div className="max-w-4xl mx-auto p-6">
         <Card>
           <CardContent className="p-12 text-center">
-            <p className="text-muted-foreground">Téma nenalezeno</p>
+            <p className="text-[hsl(var(--mn-muted))]">Téma nenalezeno</p>
           </CardContent>
         </Card>
       </div>
@@ -82,7 +82,7 @@ export default function TopicDetailV4() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Top Bar */}
       <div className="bg-white dark:bg-slate-900 border-b sticky top-0 z-10">
-        <div className="container max-w-7xl mx-auto px-6 py-4">
+        <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <Button 
               variant="ghost" 
@@ -122,7 +122,7 @@ export default function TopicDetailV4() {
         </div>
       </div>
 
-      <div className="container max-w-7xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto p-6">
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Main Content - 2/3 width */}
           <div className="lg:col-span-2 space-y-6">

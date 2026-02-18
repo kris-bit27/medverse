@@ -117,11 +117,11 @@ export default function Search() {
   const totalResults = topics.length + questions.length + flashcards.length + tools.length + drugs.length;
 
   return (
-    <div className="container max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
       <div className="space-y-2">
         <h1 className="text-2xl font-bold">Vyhledávání</h1>
         <div className="relative">
-          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[hsl(var(--mn-muted))]" />
           <Input
             placeholder="Hledej témata, otázky, kartičky, nástroje..."
             value={searchQuery}
@@ -131,7 +131,7 @@ export default function Search() {
           />
         </div>
         {debouncedQuery.length >= 2 && (
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-[hsl(var(--mn-muted))]">
             {isLoading ? (
               <span className="flex items-center gap-2"><Loader2 className="h-3 w-3 animate-spin" /> Hledám...</span>
             ) : (
@@ -158,7 +158,7 @@ export default function Search() {
             {tools.length > 0 && <ResultSection title="Nástroje" icon={<Stethoscope className="h-4 w-4" />} items={tools} type="tool" />}
             {drugs.length > 0 && <ResultSection title="Léky" icon={<Pill className="h-4 w-4" />} items={drugs} type="drug" />}
             {!isLoading && totalResults === 0 && (
-              <Card><CardContent className="p-8 text-center text-muted-foreground">
+              <Card><CardContent className="p-8 text-center text-[hsl(var(--mn-muted))]">
                 Nic nenalezeno pro „{debouncedQuery}"
               </CardContent></Card>
             )}
@@ -203,9 +203,9 @@ function ResultSection({ title, icon, items, type, expanded }) {
             <CardContent className="p-4 flex items-center justify-between">
               <div className="flex-1 min-w-0">
                 <p className="font-medium truncate">{getResultTitle(item, type)}</p>
-                <p className="text-sm text-muted-foreground truncate">{getResultSubtitle(item, type)}</p>
+                <p className="text-sm text-[hsl(var(--mn-muted))] truncate">{getResultSubtitle(item, type)}</p>
               </div>
-              <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0 ml-2" />
+              <ChevronRight className="h-4 w-4 text-[hsl(var(--mn-muted))] flex-shrink-0 ml-2" />
             </CardContent>
           </Card>
         </Link>

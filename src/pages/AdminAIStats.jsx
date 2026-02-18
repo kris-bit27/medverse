@@ -71,7 +71,7 @@ export default function AdminAIStats() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold">${stats.totalCost}</div>
-              <div className="text-sm text-muted-foreground">Avg: ${stats.avgCost}/topic</div>
+              <div className="text-sm text-[hsl(var(--mn-muted))]">Avg: ${stats.avgCost}/topic</div>
             </CardContent>
           </Card>
         </div>

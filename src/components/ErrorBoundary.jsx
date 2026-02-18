@@ -23,7 +23,7 @@ export class ErrorBoundary extends React.Component {
           <div className="text-center max-w-md space-y-4">
             <AlertTriangle className="w-12 h-12 mx-auto text-yellow-500" />
             <h2 className="text-xl font-bold">Něco se pokazilo</h2>
-            <p className="text-muted-foreground text-sm">
+            <p className="text-[hsl(var(--mn-muted))] text-sm">
               {this.state.error?.message || 'Neočekávaná chyba'}
             </p>
             <button

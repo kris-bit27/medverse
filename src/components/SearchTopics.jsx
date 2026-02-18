@@ -88,7 +88,7 @@ export const SearchTopics = () => {
       {!loading && searched && results.length === 0 && (
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-muted-foreground">
+            <p className="text-[hsl(var(--mn-muted))]">
               Žádné výsledky pro "{query}"
             </p>
           </CardContent>
@@ -97,7 +97,7 @@ export const SearchTopics = () => {
 
       {!loading && results.length > 0 && (
         <div className="space-y-3">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-[hsl(var(--mn-muted))]">
             Nalezeno {results.length} témat
           </p>
 
@@ -116,7 +116,7 @@ export const SearchTopics = () => {
                     </Link>
 
                     {result.description && (
-                      <p className="text-sm text-muted-foreground mb-3">
+                      <p className="text-sm text-[hsl(var(--mn-muted))] mb-3">
                         {result.description.substring(0, 200)}
                         {result.description.length > 200 && '...'}
                       </p>

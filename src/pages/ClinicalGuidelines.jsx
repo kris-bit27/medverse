@@ -60,11 +60,11 @@ export default function ClinicalGuidelines() {
   }
 
   return (
-    <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
       {/* Header */}
       <div>
         <h1 className="text-2xl lg:text-3xl font-bold mb-2">Klinické Postupy</h1>
-        <p className="text-muted-foreground">
+        <p className="text-[hsl(var(--mn-muted))]">
           Evidence-based guidelines pro klinickou praxi
         </p>
       </div>
@@ -72,7 +72,7 @@ export default function ClinicalGuidelines() {
       {/* Search & Filter */}
       <div className="grid md:grid-cols-2 gap-4">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(var(--mn-muted))]" />
           <Input
             placeholder="Hledat v postupech..."
             value={searchQuery}
@@ -119,7 +119,7 @@ export default function ClinicalGuidelines() {
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-sm line-clamp-2">{guideline.title}</p>
                         {guideline.summary && (
-                          <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
+                          <p className="text-xs text-[hsl(var(--mn-muted))] line-clamp-2 mt-1">
                             {guideline.summary}
                           </p>
                         )}
@@ -128,7 +128,7 @@ export default function ClinicalGuidelines() {
                             {guideline.category}
                           </Badge>
                           {guideline.source && (
-                            <span className="text-xs text-muted-foreground truncate">
+                            <span className="text-xs text-[hsl(var(--mn-muted))] truncate">
                               {guideline.source}
                             </span>
                           )}
@@ -142,7 +142,7 @@ export default function ClinicalGuidelines() {
           </div>
 
           {filteredGuidelines.length === 0 && (
-            <p className="text-center text-muted-foreground py-8">
+            <p className="text-center text-[hsl(var(--mn-muted))] py-8">
               Žádné postupy nenalezeny
             </p>
           )}
@@ -163,14 +163,14 @@ export default function ClinicalGuidelines() {
                   </div>
                   <CardTitle className="text-2xl">{selectedGuideline.title}</CardTitle>
                   {selectedGuideline.summary && (
-                    <p className="text-muted-foreground mt-2">
+                    <p className="text-[hsl(var(--mn-muted))] mt-2">
                       {selectedGuideline.summary}
                     </p>
                   )}
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {/* Meta Info */}
-                  <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-[hsl(var(--mn-muted))]">
                     {selectedGuideline.source && (
                       <div className="flex items-center gap-1">
                         <BookOpen className="w-4 h-4" />
@@ -193,7 +193,7 @@ export default function ClinicalGuidelines() {
                   {/* Keywords */}
                   {selectedGuideline.keywords && selectedGuideline.keywords.length > 0 && (
                     <div className="flex items-center gap-2 flex-wrap">
-                      <Tag className="w-4 h-4 text-muted-foreground" />
+                      <Tag className="w-4 h-4 text-[hsl(var(--mn-muted))]" />
                       {selectedGuideline.keywords.map((keyword, idx) => (
                         <Badge key={idx} variant="secondary">{keyword}</Badge>
                       ))}
@@ -227,9 +227,9 @@ export default function ClinicalGuidelines() {
           ) : (
             <Card>
               <CardContent className="p-12 text-center">
-                <FileText className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                <FileText className="w-16 h-16 mx-auto mb-4 text-[hsl(var(--mn-muted))]" />
                 <h3 className="text-xl font-bold mb-2">Vyberte postup</h3>
-                <p className="text-muted-foreground">
+                <p className="text-[hsl(var(--mn-muted))]">
                   Klikněte na postup vlevo pro zobrazení obsahu
                 </p>
               </CardContent>

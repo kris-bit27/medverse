@@ -118,13 +118,13 @@ export default function DashboardV2() {
     : 0;
 
   return (
-    <div className="container max-w-7xl mx-auto p-6 space-y-6">
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
       {/* Welcome Header */}
       <div>
         <h1 className="text-3xl font-bold mb-2">
           Vítej zpět, {user?.email?.split('@')[0] || 'Student'}! 👋
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-[hsl(var(--mn-muted))]">
           Zde je tvůj dnešní přehled
         </p>
       </div>
@@ -145,7 +145,7 @@ export default function DashboardV2() {
                 {tokens?.current_tokens?.toLocaleString() || 0} 💎
               </p>
               <Progress value={tokenPercentage} className="h-2" />
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-[hsl(var(--mn-muted))]">
                 {tokens?.monthly_limit?.toLocaleString() || 1000} limit
               </p>
             </div>
@@ -162,7 +162,7 @@ export default function DashboardV2() {
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{dueCardsCount}</p>
-            <p className="text-xs text-muted-foreground mt-2">
+            <p className="text-xs text-[hsl(var(--mn-muted))] mt-2">
               {dueCardsCount === 0 ? 'All done!' : 'cards waiting'}
             </p>
             {dueCardsCount > 0 && (
@@ -185,7 +185,7 @@ export default function DashboardV2() {
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{studyStreak} dní</p>
-            <p className="text-xs text-muted-foreground mt-2">
+            <p className="text-xs text-[hsl(var(--mn-muted))] mt-2">
               Keep it going!
             </p>
           </CardContent>
@@ -201,7 +201,7 @@ export default function DashboardV2() {
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{recentAchievements.length}</p>
-            <p className="text-xs text-muted-foreground mt-2">
+            <p className="text-xs text-[hsl(var(--mn-muted))] mt-2">
               unlocked
             </p>
           </CardContent>
@@ -223,11 +223,11 @@ export default function DashboardV2() {
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold mb-1">Studuj téma</h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-[hsl(var(--mn-muted))]">
                       Procházej AI-generovaný obsah
                     </p>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                  <ChevronRight className="w-5 h-5 text-[hsl(var(--mn-muted))]" />
                 </CardContent>
               </Card>
             </Link>
@@ -240,11 +240,11 @@ export default function DashboardV2() {
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold mb-1">Review Flashcards</h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-[hsl(var(--mn-muted))]">
                       {dueCardsCount} cards čeká
                     </p>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                  <ChevronRight className="w-5 h-5 text-[hsl(var(--mn-muted))]" />
                 </CardContent>
               </Card>
             </Link>
@@ -257,11 +257,11 @@ export default function DashboardV2() {
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold mb-1">Practice Test</h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-[hsl(var(--mn-muted))]">
                       Vyzkoušej své znalosti
                     </p>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                  <ChevronRight className="w-5 h-5 text-[hsl(var(--mn-muted))]" />
                 </CardContent>
               </Card>
             </Link>
@@ -291,7 +291,7 @@ export default function DashboardV2() {
                     </div>
                     <div>
                       <p className="font-medium">{achievement.achievement_name}</p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-[hsl(var(--mn-muted))]">
                         {new Date(achievement.unlocked_at).toLocaleDateString('cs-CZ')}
                       </p>
                     </div>

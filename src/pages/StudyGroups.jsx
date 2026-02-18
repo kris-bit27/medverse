@@ -159,12 +159,12 @@ export default function StudyGroups() {
   }
 
   return (
-    <div className="container max-w-6xl mx-auto p-6 space-y-6">
+    <div className="max-w-6xl mx-auto p-6 space-y-6">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl lg:text-3xl font-bold mb-2">Studijní Skupiny</h1>
-          <p className="text-muted-foreground">
+          <p className="text-[hsl(var(--mn-muted))]">
             Spolupracujte a učte se společně s kolegy
           </p>
         </div>
@@ -195,7 +195,7 @@ export default function StudyGroups() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                  <p className="text-sm text-[hsl(var(--mn-muted))] mb-3 line-clamp-2">
                     {group.description}
                   </p>
 
@@ -208,7 +208,7 @@ export default function StudyGroups() {
                   )}
 
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-4 text-sm text-[hsl(var(--mn-muted))]">
                       <div className="flex items-center gap-1">
                         <Users className="w-4 h-4" />
                         <span>{group.members?.[0]?.count || 0}</span>
@@ -302,7 +302,7 @@ export default function StudyGroups() {
           <h2 className="text-xl font-bold">Všechny skupiny</h2>
           
           <div className="relative w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(var(--mn-muted))]" />
             <Input
               placeholder="Hledat skupiny..."
               value={searchQuery}
@@ -331,7 +331,7 @@ export default function StudyGroups() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                  <p className="text-sm text-[hsl(var(--mn-muted))] mb-3 line-clamp-2">
                     {group.description || 'Bez popisu'}
                   </p>
 
@@ -351,7 +351,7 @@ export default function StudyGroups() {
                   )}
 
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1 text-sm text-[hsl(var(--mn-muted))]">
                       <Users className="w-4 h-4" />
                       <span>{group.members?.[0]?.count || 0}</span>
                     </div>
@@ -381,9 +381,9 @@ export default function StudyGroups() {
         {filteredGroups.length === 0 && (
           <Card>
             <CardContent className="p-12 text-center">
-              <Users className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+              <Users className="w-16 h-16 mx-auto mb-4 text-[hsl(var(--mn-muted))]" />
               <h3 className="text-xl font-bold mb-2">Žádné skupiny nenalezeny</h3>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-[hsl(var(--mn-muted))] mb-6">
                 Zkuste změnit vyhledávací dotaz
               </p>
             </CardContent>

@@ -30,7 +30,7 @@ export default function AdminCostAnalytics() {
     return (
       <div className="p-6 text-center">
         <h2 className="text-xl font-semibold mb-2">Přístup odepřen</h2>
-        <p className="text-muted-foreground">
+        <p className="text-[hsl(var(--mn-muted))]">
           Nemáte oprávnění pro přístup k cost analytics
         </p>
       </div>
@@ -56,7 +56,7 @@ export default function AdminCostAnalytics() {
             AI Cost Management
           </h1>
         </div>
-        <p className="text-muted-foreground">
+        <p className="text-[hsl(var(--mn-muted))]">
           Monitor AI usage, costs, and configure budgets
         </p>
       </div>

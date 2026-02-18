@@ -168,25 +168,25 @@ export default function BatchGenerationPanel() {
         <Card>
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold">{topics.length}</div>
-            <div className="text-xs text-muted-foreground">Celkem témat</div>
+            <div className="text-xs text-[hsl(var(--mn-muted))]">Celkem témat</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-[hsl(var(--mn-success))]">{topicsWithContent}</div>
-            <div className="text-xs text-muted-foreground">S fulltextem</div>
+            <div className="text-xs text-[hsl(var(--mn-muted))]">S fulltextem</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-[hsl(var(--mn-warn))]">{topics.length - topicsWithContent}</div>
-            <div className="text-xs text-muted-foreground">Bez obsahu</div>
+            <div className="text-xs text-[hsl(var(--mn-muted))]">Bez obsahu</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-[hsl(var(--mn-accent))]">{pendingInQueue + processingInQueue}</div>
-            <div className="text-xs text-muted-foreground">Ve frontě</div>
+            <div className="text-xs text-[hsl(var(--mn-muted))]">Ve frontě</div>
           </CardContent>
         </Card>
       </div>
@@ -211,7 +211,7 @@ export default function BatchGenerationPanel() {
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 ${
                     selectedModes.includes(mode) 
                       ? cfg.color + ' ring-2 ring-offset-1 ring-[hsl(var(--mn-accent))]' 
-                      : 'bg-[hsl(var(--mn-surface-2))] text-muted-foreground'
+                      : 'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))]'
                   }`}
                 >
                   <span>{cfg.icon}</span>
@@ -264,7 +264,7 @@ export default function BatchGenerationPanel() {
                 />
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium truncate">{topic.title}</div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-xs text-[hsl(var(--mn-muted))]">
                     {topic.obory?.name} → {topic.okruhy?.name}
                   </div>
                 </div>
@@ -282,7 +282,7 @@ export default function BatchGenerationPanel() {
 
           {/* Actions */}
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm text-muted-foreground">
+            <span className="text-sm text-[hsl(var(--mn-muted))]">
               {selectedTopics.size} vybraných · {selectedModes.length} kroků pipeline
             </span>
             <div className="flex gap-2">

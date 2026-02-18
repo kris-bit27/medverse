@@ -237,12 +237,12 @@ export default function MyProfile() {
   }
 
   return (
-    <div className="container max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl lg:mn-mono-font text-3xl font-bold mb-2">Můj profil</h1>
-          <p className="text-muted-foreground">
+          <p className="text-[hsl(var(--mn-muted))]">
             Spravuj své informace a personalizuj AI asistenta
           </p>
         </div>
@@ -329,7 +329,7 @@ export default function MyProfile() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <p className="text-sm text-muted-foreground mb-4">
+            <p className="text-sm text-[hsl(var(--mn-muted))] mb-4">
               🤖 AI analyzuje tvou aktivitu a automaticky určí úroveň znalostí
             </p>
             
@@ -337,7 +337,7 @@ export default function MyProfile() {
               <div key={subject.id} className="flex items-center justify-between p-3 rounded-xl border">
                 <div className="flex-1">
                   <div className="font-medium capitalize">{subject.subject}</div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-xs text-[hsl(var(--mn-muted))]">
                     Na základě: {subject.topics_studied} témat, {Math.round(subject.average_score)}% úspěšnost
                   </div>
                 </div>
@@ -383,7 +383,7 @@ function AchievementBadge({ icon, label, tokens, earned }) {
     `}>
       <span className="text-2xl mb-1">{earned ? '✅' : icon}</span>
       <span className="text-xs font-medium text-center">{label}</span>
-      <span className="text-xs text-muted-foreground">
+      <span className="text-xs text-[hsl(var(--mn-muted))]">
         {earned ? `+${tokens} 💎` : `${tokens} 💎`}
       </span>
     </div>
@@ -466,7 +466,7 @@ function ProfileForm({ profile, user, isEditing, onSave, isSaving }) {
               placeholder="Student 5. ročníku se zájmem o molekulární onkologii..."
               rows={3}
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-[hsl(var(--mn-muted))]">
               Získej +10 💎 za bio (min. 20 znaků)
             </p>
           </div>
@@ -552,7 +552,7 @@ function ProfileForm({ profile, user, isEditing, onSave, isSaving }) {
                 <option key={spec} value={spec}>{spec}</option>
               ))}
             </select>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-[hsl(var(--mn-muted))]">
               Získej +50 💎 za vybraný obor
             </p>
           </div>
@@ -596,7 +596,7 @@ function ProfileForm({ profile, user, isEditing, onSave, isSaving }) {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-[hsl(var(--mn-muted))]">
             Vyber min. 2 oblasti pro personalizované doporučení AI (+30 💎)
           </p>
           <div className="flex flex-wrap gap-2">
@@ -663,7 +663,7 @@ function ProfileForm({ profile, user, isEditing, onSave, isSaving }) {
             onChange={(val) => setFormData({ ...formData, text_vs_visual: val })}
             disabled={!isEditing}
           />
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-[hsl(var(--mn-muted))]">
             💡 Získej +20 💎 za nastavení stylu učení
           </p>
         </CardContent>
@@ -686,7 +686,7 @@ function LearningSlider({ label, leftLabel, rightLabel, value, onChange, disable
     <div className="space-y-2">
       <Label>{label}</Label>
       <div className="flex items-center gap-4">
-        <span className="text-xs text-muted-foreground w-24 text-right">{leftLabel}</span>
+        <span className="text-xs text-[hsl(var(--mn-muted))] w-24 text-right">{leftLabel}</span>
         <input
           type="range"
           min="1"
@@ -696,7 +696,7 @@ function LearningSlider({ label, leftLabel, rightLabel, value, onChange, disable
           disabled={disabled}
           className="flex-1"
         />
-        <span className="text-xs text-muted-foreground w-24">{rightLabel}</span>
+        <span className="text-xs text-[hsl(var(--mn-muted))] w-24">{rightLabel}</span>
       </div>
     </div>
   );

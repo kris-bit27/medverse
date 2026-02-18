@@ -75,7 +75,7 @@ export default function UserAIUsageDashboard({ user }) {
       {/* Header */}
       <div>
         <h2 className="text-2xl font-bold mb-2">AI Usage & Costs</h2>
-        <p className="text-muted-foreground">
+        <p className="text-[hsl(var(--mn-muted))]">
           Your AI usage for {new Date().toLocaleString('cs-CZ', { month: 'long', year: 'numeric' })}
         </p>
       </div>
@@ -115,13 +115,13 @@ export default function UserAIUsageDashboard({ user }) {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Total Cost</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <DollarSign className="h-4 w-4 text-[hsl(var(--mn-muted))]" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
               ${usedCost.toFixed(2)}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">
               of ${monthlyBudget} budget
             </p>
             <Progress 
@@ -135,16 +135,16 @@ export default function UserAIUsageDashboard({ user }) {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">AI Requests</CardTitle>
-            <Zap className="h-4 w-4 text-muted-foreground" />
+            <Zap className="h-4 w-4 text-[hsl(var(--mn-muted))]" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
               {usage?.request_count || 0}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">
               this month
             </p>
-            <div className="flex items-center gap-2 mt-3 text-xs text-muted-foreground">
+            <div className="flex items-center gap-2 mt-3 text-xs text-[hsl(var(--mn-muted))]">
               <TrendingUp className="h-3 w-3" />
               Avg: ${usedCost > 0 ? (usedCost / (usage?.request_count || 1)).toFixed(2) : '0.00'}/request
             </div>
@@ -155,16 +155,16 @@ export default function UserAIUsageDashboard({ user }) {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Tokens Used</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
+            <Calendar className="h-4 w-4 text-[hsl(var(--mn-muted))]" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
               {(usage?.total_tokens || 0).toLocaleString()}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">
               total tokens
             </p>
-            <div className="flex items-center gap-2 mt-3 text-xs text-muted-foreground">
+            <div className="flex items-center gap-2 mt-3 text-xs text-[hsl(var(--mn-muted))]">
               ~{Math.round((usage?.total_tokens || 0) / (usage?.request_count || 1)).toLocaleString()} tokens/request
             </div>
           </CardContent>
@@ -191,11 +191,11 @@ export default function UserAIUsageDashboard({ user }) {
                          item.model === 'claude-sonnet-4' ? '⚡ Sonnet' : 
                          '✨ Gemini'}
                       </Badge>
-                      <span className="text-sm text-muted-foreground">
+                      <span className="text-sm text-[hsl(var(--mn-muted))]">
                         {item.mode?.replace('topic_generate_', '').replace('_', ' ')}
                       </span>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">
                       {formatDistanceToNow(new Date(item.created_at), { 
                         addSuffix: true,
                         locale: cs 
@@ -206,7 +206,7 @@ export default function UserAIUsageDashboard({ user }) {
                     <div className="font-semibold">
                       ${parseFloat(item.cost).toFixed(4)}
                     </div>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-[hsl(var(--mn-muted))]">
                       {item.tokens_used?.toLocaleString()} tokens
                     </p>
                   </div>

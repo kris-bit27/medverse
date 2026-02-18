@@ -133,7 +133,7 @@ export default function TestSessionV2() {
 
   if (!session || !questions.length) {
     return (
-      <div className="container max-w-2xl mx-auto p-6">
+      <div className="max-w-2xl mx-auto p-6">
         <Card>
           <CardContent className="p-12 text-center">
             <AlertCircle className="w-16 h-16 mx-auto mb-4 text-red-500" />
@@ -158,14 +158,14 @@ export default function TestSessionV2() {
   };
 
   return (
-    <div className="container max-w-6xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto p-6">
       <div className="mb-6 space-y-4">
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
             <span className="font-medium">
               Otázka {currentQuestionIndex + 1} z {questions.length}
             </span>
-            <span className="text-muted-foreground">
+            <span className="text-[hsl(var(--mn-muted))]">
               Zodpovězeno: {answeredCount}/{questions.length}
             </span>
           </div>

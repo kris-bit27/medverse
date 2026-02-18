@@ -22,7 +22,7 @@ export default function ExistingFlashcards({ topicId }) {
   });
 
   if (isLoading) {
-    return <div className="text-sm text-muted-foreground">Načítání...</div>;
+    return <div className="text-sm text-[hsl(var(--mn-muted))]">Načítání...</div>;
   }
 
   if (!flashcards.length) {
@@ -59,7 +59,7 @@ export default function ExistingFlashcards({ topicId }) {
                   <p className="font-medium text-sm mb-1 truncate">
                     {card.question}
                   </p>
-                  <p className="text-xs text-muted-foreground line-clamp-2">
+                  <p className="text-xs text-[hsl(var(--mn-muted))] line-clamp-2">
                     {card.answer}
                   </p>
                 </div>
@@ -75,7 +75,7 @@ export default function ExistingFlashcards({ topicId }) {
         ))}
       </div>
 
-      <p className="text-xs text-muted-foreground mt-3">
+      <p className="text-xs text-[hsl(var(--mn-muted))] mt-3">
         💡 Procvičujte kartičky v sekci Opakování
       </p>
     </div>

@@ -151,7 +151,7 @@ function StudyGroupsTab() {
       {/* Controls */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(var(--mn-muted))]" />
           <Input placeholder="Hledat skupiny..." value={search} onChange={e => setSearch(e.target.value)}
             className="pl-9" />
         </div>
@@ -233,8 +233,8 @@ function StudyGroupsTab() {
       {filtered.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center">
-            <Users className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-            <p className="text-muted-foreground">
+            <Users className="w-12 h-12 text-[hsl(var(--mn-muted))] mx-auto mb-3" />
+            <p className="text-[hsl(var(--mn-muted))]">
               {filterType === 'my' ? 'Zatím nejsi členem žádné skupiny' : 'Žádné skupiny nenalezeny'}
             </p>
             <Button className="mt-4" onClick={() => setCreateOpen(true)}>
@@ -260,20 +260,20 @@ function StudyGroupsTab() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <h3 className="font-semibold truncate">{group.name}</h3>
-                        {group.is_private && <Lock className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />}
+                        {group.is_private && <Lock className="w-3.5 h-3.5 text-[hsl(var(--mn-muted))] flex-shrink-0" />}
                       </div>
                       {group.obory?.name && (
-                        <p className="text-xs text-muted-foreground mt-0.5">{group.obory.name}</p>
+                        <p className="text-xs text-[hsl(var(--mn-muted))] mt-0.5">{group.obory.name}</p>
                       )}
                     </div>
                   </div>
 
                   {group.description && (
-                    <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{group.description}</p>
+                    <p className="text-sm text-[hsl(var(--mn-muted))] line-clamp-2 mb-4">{group.description}</p>
                   )}
 
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-3 text-xs text-[hsl(var(--mn-muted))]">
                       <span className="flex items-center gap-1">
                         <Users className="w-3.5 h-3.5" />
                         {group.member_count || 0}
@@ -420,7 +420,7 @@ function DiscussionsTab() {
       {/* Controls */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(var(--mn-muted))]" />
           <Input placeholder="Hledat v diskuzích..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
         </div>
         <Select value={filterCategory} onValueChange={setFilterCategory}>
@@ -488,8 +488,8 @@ function DiscussionsTab() {
       {filtered.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center">
-            <MessageSquare className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-            <p className="text-muted-foreground">Zatím žádné diskuze</p>
+            <MessageSquare className="w-12 h-12 text-[hsl(var(--mn-muted))] mx-auto mb-3" />
+            <p className="text-[hsl(var(--mn-muted))]">Zatím žádné diskuze</p>
             <Button className="mt-4" onClick={() => setCreateOpen(true)}>
               <Plus className="w-4 h-4 mr-2" />Zahájit diskuzi
             </Button>
@@ -507,14 +507,14 @@ function DiscussionsTab() {
                     {/* Vote column */}
                     <div className="flex flex-col items-center gap-0.5 min-w-[40px]">
                       <button onClick={() => voteMutation.mutate({ threadId: thread.id, value: 1 })}
-                        className={`p-1 rounded hover:bg-accent ${myVote === 1 ? 'text-[hsl(var(--mn-success))]' : 'text-muted-foreground'}`}>
+                        className={`p-1 rounded hover:bg-accent ${myVote === 1 ? 'text-[hsl(var(--mn-success))]' : 'text-[hsl(var(--mn-muted))]'}`}>
                         <ChevronUp className="w-5 h-5" />
                       </button>
-                      <span className={`text-sm font-semibold ${(thread.upvotes || 0) > 0 ? 'text-[hsl(var(--mn-success))]' : (thread.upvotes || 0) < 0 ? 'text-[hsl(var(--mn-danger))]' : 'text-muted-foreground'}`}>
+                      <span className={`text-sm font-semibold ${(thread.upvotes || 0) > 0 ? 'text-[hsl(var(--mn-success))]' : (thread.upvotes || 0) < 0 ? 'text-[hsl(var(--mn-danger))]' : 'text-[hsl(var(--mn-muted))]'}`}>
                         {thread.upvotes || 0}
                       </span>
                       <button onClick={() => voteMutation.mutate({ threadId: thread.id, value: -1 })}
-                        className={`p-1 rounded hover:bg-accent ${myVote === -1 ? 'text-[hsl(var(--mn-danger))]' : 'text-muted-foreground'}`}>
+                        className={`p-1 rounded hover:bg-accent ${myVote === -1 ? 'text-[hsl(var(--mn-danger))]' : 'text-[hsl(var(--mn-muted))]'}`}>
                         <ChevronDown className="w-5 h-5" />
                       </button>
                     </div>
@@ -523,7 +523,7 @@ function DiscussionsTab() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1 flex-wrap">
                         {thread.is_pinned && <Pin className="w-3.5 h-3.5 text-[hsl(var(--mn-warn))]" />}
-                        {thread.is_locked && <Lock className="w-3.5 h-3.5 text-muted-foreground" />}
+                        {thread.is_locked && <Lock className="w-3.5 h-3.5 text-[hsl(var(--mn-muted))]" />}
                         {catInfo && <Badge variant="outline" className={`text-[10px] px-1.5 py-0 ${catInfo.color}`}>{catInfo.label}</Badge>}
                         {thread.tags?.map(tag => (
                           <Badge key={tag} variant="outline" className="text-[10px] px-1.5 py-0">
@@ -538,10 +538,10 @@ function DiscussionsTab() {
                       </Link>
 
                       {thread.content && (
-                        <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{thread.content}</p>
+                        <p className="text-sm text-[hsl(var(--mn-muted))] line-clamp-2 mt-1">{thread.content}</p>
                       )}
 
-                      <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-4 mt-2 text-xs text-[hsl(var(--mn-muted))]">
                         <span className="flex items-center gap-1">
                           <Avatar className="w-4 h-4">
                             <AvatarFallback className="text-[8px]">{getInitials(thread.author_name)}</AvatarFallback>
@@ -575,10 +575,10 @@ export default function Community() {
   const [activeTab, setActiveTab] = useState('skupiny');
 
   return (
-    <div className="container max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
       <div className="mb-6">
         <h1 className="text-2xl lg:text-3xl font-bold mb-2">Komunita</h1>
-        <p className="text-muted-foreground">Studijní skupiny, diskuze a spolupráce</p>
+        <p className="text-[hsl(var(--mn-muted))]">Studijní skupiny, diskuze a spolupráce</p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>

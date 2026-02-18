@@ -151,7 +151,7 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
             <Loader2 className="h-8 w-8 animate-spin text-[hsl(var(--mn-accent-2))] mr-3" />
             <div>
               <p className="font-medium">AI analyzuje obsah...</p>
-              <p className="text-sm text-muted-foreground">Claude kontroluje bezpečnost, úplnost a přesnost</p>
+              <p className="text-sm text-[hsl(var(--mn-muted))]">Claude kontroluje bezpečnost, úplnost a přesnost</p>
             </div>
           </div>
         </CardContent>
@@ -165,19 +165,19 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
               <div className={`text-2xl font-bold ${getScoreColor(review.confidence * 100)}`}>
                 {(review.confidence * 100).toFixed(0)}%
               </div>
-              <div className="text-xs text-muted-foreground">Confidence</div>
+              <div className="text-xs text-[hsl(var(--mn-muted))]">Confidence</div>
             </div>
             <div className="text-center p-3 bg-[hsl(var(--mn-bg))] rounded">
               <div className={`text-2xl font-bold ${getScoreColor(review.safety_score)}`}>
                 {review.safety_score}
               </div>
-              <div className="text-xs text-muted-foreground">Safety</div>
+              <div className="text-xs text-[hsl(var(--mn-muted))]">Safety</div>
             </div>
             <div className="text-center p-3 bg-[hsl(var(--mn-bg))] rounded">
               <div className={`text-2xl font-bold ${getScoreColor(review.completeness_score)}`}>
                 {review.completeness_score}
               </div>
-              <div className="text-xs text-muted-foreground">Kompletnost</div>
+              <div className="text-xs text-[hsl(var(--mn-muted))]">Kompletnost</div>
             </div>
           </div>
 
@@ -221,7 +221,7 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
               </h4>
               <ul className="space-y-1">
                 {review.strengths.map((s, i) => (
-                  <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
+                  <li key={i} className="text-sm text-[hsl(var(--mn-muted))] flex items-start gap-2">
                     <CheckCircle className="h-3 w-3 text-[hsl(var(--mn-success))] mt-1 flex-shrink-0" />
                     {s}
                   </li>
@@ -239,7 +239,7 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
               </h4>
               <ul className="space-y-1">
                 {review.missing_sections.map((s, i) => (
-                  <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
+                  <li key={i} className="text-sm text-[hsl(var(--mn-muted))] flex items-start gap-2">
                     <AlertTriangle className="h-3 w-3 text-[hsl(var(--mn-warn))] mt-1 flex-shrink-0" />
                     {s}
                   </li>
@@ -249,7 +249,7 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
           )}
 
           {/* Metadata */}
-          <div className="text-xs text-muted-foreground pt-3 border-t flex justify-between">
+          <div className="text-xs text-[hsl(var(--mn-muted))] pt-3 border-t flex justify-between">
             <span>Model: {review.metadata?.model}</span>
             <span>{new Date(review.metadata?.reviewedAt).toLocaleString('cs-CZ')}</span>
           </div>

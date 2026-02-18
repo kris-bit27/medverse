@@ -143,12 +143,12 @@ export default function StudiumV2() {
   }, [allTopics, filteredTopics, obory, okruhy]);
 
   return (
-    <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-3xl font-bold mb-2">Studium</h1>
-          <p className="text-muted-foreground">
+          <p className="text-[hsl(var(--mn-muted))]">
             Procházejte AI-generované studijní materiály
           </p>
         </div>
@@ -165,10 +165,10 @@ export default function StudiumV2() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Obory</p>
+                <p className="text-sm text-[hsl(var(--mn-muted))]">Obory</p>
                 <p className="text-2xl font-bold">{stats.oboryCount}</p>
               </div>
-              <BookOpen className="w-8 h-8 text-muted-foreground" />
+              <BookOpen className="w-8 h-8 text-[hsl(var(--mn-muted))]" />
             </div>
           </CardContent>
         </Card>
@@ -177,10 +177,10 @@ export default function StudiumV2() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Okruhy</p>
+                <p className="text-sm text-[hsl(var(--mn-muted))]">Okruhy</p>
                 <p className="text-2xl font-bold">{stats.okruhyCount}</p>
               </div>
-              <Target className="w-8 h-8 text-muted-foreground" />
+              <Target className="w-8 h-8 text-[hsl(var(--mn-muted))]" />
             </div>
           </CardContent>
         </Card>
@@ -189,10 +189,10 @@ export default function StudiumV2() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Témata</p>
+                <p className="text-sm text-[hsl(var(--mn-muted))]">Témata</p>
                 <p className="text-2xl font-bold">{stats.totalTopics}</p>
               </div>
-              <Zap className="w-8 h-8 text-muted-foreground" />
+              <Zap className="w-8 h-8 text-[hsl(var(--mn-muted))]" />
             </div>
           </CardContent>
         </Card>
@@ -201,10 +201,10 @@ export default function StudiumV2() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Zobrazeno</p>
+                <p className="text-sm text-[hsl(var(--mn-muted))]">Zobrazeno</p>
                 <p className="text-2xl font-bold">{stats.filteredTopics}</p>
               </div>
-              <Filter className="w-8 h-8 text-muted-foreground" />
+              <Filter className="w-8 h-8 text-[hsl(var(--mn-muted))]" />
             </div>
           </CardContent>
         </Card>
@@ -221,7 +221,7 @@ export default function StudiumV2() {
         <CardContent className="space-y-4">
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(var(--mn-muted))]" />
             <Input
               placeholder="Hledat témata..."
               value={searchQuery}
@@ -304,7 +304,7 @@ export default function StudiumV2() {
           {/* Active Filters */}
           {(searchQuery || selectedObor !== 'all' || selectedOkruh !== 'all' || selectedModel !== 'all') && (
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-sm text-muted-foreground">Aktivní filtry:</span>
+              <span className="text-sm text-[hsl(var(--mn-muted))]">Aktivní filtry:</span>
               
               {searchQuery && (
                 <Badge variant="secondary">
@@ -379,9 +379,9 @@ export default function StudiumV2() {
       ) : filteredTopics.length === 0 ? (
         <Card>
           <CardContent className="p-12 text-center">
-            <BookOpen className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+            <BookOpen className="w-16 h-16 mx-auto mb-4 text-[hsl(var(--mn-muted))]" />
             <h3 className="text-xl font-bold mb-2">Žádná témata nenalezena</h3>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-[hsl(var(--mn-muted))] mb-6">
               Zkuste změnit filtry nebo vygenerovat nové téma
             </p>
             <Button>
@@ -425,13 +425,13 @@ export default function StudiumV2() {
 
                   {/* Description */}
                   {topic.description && (
-                    <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                    <p className="text-sm text-[hsl(var(--mn-muted))] mb-3 line-clamp-2">
                       {topic.description}
                     </p>
                   )}
 
                   {/* Okruh */}
-                  <p className="text-xs text-muted-foreground mb-3">
+                  <p className="text-xs text-[hsl(var(--mn-muted))] mb-3">
                     {topic.okruhy?.name}
                   </p>
 
@@ -447,7 +447,7 @@ export default function StudiumV2() {
                       )}
                     </div>
 
-                    <div className="text-xs text-muted-foreground">
+                    <div className="text-xs text-[hsl(var(--mn-muted))]">
                       {new Date(topic.created_at).toLocaleDateString('cs-CZ')}
                     </div>
                   </div>

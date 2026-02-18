@@ -28,10 +28,10 @@ export default function UserSettings() {
 
   if (!user) {
     return (
-      <div className="container max-w-6xl mx-auto p-6">
+      <div className="max-w-6xl mx-auto p-6">
         <Card>
           <CardContent className="p-8 text-center">
-            <p className="text-muted-foreground">Please sign in to view settings</p>
+            <p className="text-[hsl(var(--mn-muted))]">Please sign in to view settings</p>
           </CardContent>
         </Card>
       </div>
@@ -39,10 +39,10 @@ export default function UserSettings() {
   }
 
   return (
-    <div className="container max-w-6xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto p-6">
       <div className="mb-6">
         <h1 className="text-3xl font-bold mb-2">Nastavení</h1>
-        <p className="text-muted-foreground">
+        <p className="text-[hsl(var(--mn-muted))]">
           Spravujte svůj účet a AI usage
         </p>
       </div>
@@ -88,7 +88,7 @@ export default function UserSettings() {
                   disabled 
                   className="bg-slate-50 dark:bg-slate-900"
                 />
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-[hsl(var(--mn-muted))]">
                   Email nelze změnit
                 </p>
               </div>
@@ -132,7 +132,7 @@ export default function UserSettings() {
               <div className="flex items-center justify-between p-3 rounded-lg border">
                 <div>
                   <Label className="font-medium">Budget Alerts</Label>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-[hsl(var(--mn-muted))]">
                     Email když dosáhnete 80% budgetu
                   </p>
                 </div>
@@ -141,7 +141,7 @@ export default function UserSettings() {
               <div className="flex items-center justify-between p-3 rounded-lg border">
                 <div>
                   <Label className="font-medium">Týdenní souhrn</Label>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-[hsl(var(--mn-muted))]">
                     Týdenní přehled AI usage
                   </p>
                 </div>
@@ -150,7 +150,7 @@ export default function UserSettings() {
               <div className="flex items-center justify-between p-3 rounded-lg border">
                 <div>
                   <Label className="font-medium">Nový obsah</Label>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-[hsl(var(--mn-muted))]">
                     Notifikace o nových tématech a článcích
                   </p>
                 </div>
@@ -176,7 +176,7 @@ export default function UserSettings() {
                   <option value="sonnet">Claude Sonnet 4 (Vyvážený, ~$0.15)</option>
                   <option value="gemini">Gemini Flash (Zdarma)</option>
                 </select>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-[hsl(var(--mn-muted))]">
                   Auto používá nejlepší model podle typu obsahu
                 </p>
               </div>
@@ -184,7 +184,7 @@ export default function UserSettings() {
               <div className="flex items-center justify-between p-3 rounded-lg border">
                 <div>
                   <Label className="font-medium">Auto-save koncepty</Label>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-[hsl(var(--mn-muted))]">
                     Automaticky uložit vygenerovaný obsah
                   </p>
                 </div>
@@ -194,7 +194,7 @@ export default function UserSettings() {
               <div className="flex items-center justify-between p-3 rounded-lg border">
                 <div>
                   <Label className="font-medium">Cache preference</Label>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-[hsl(var(--mn-muted))]">
                     Použít cached výsledky když jsou dostupné (rychlejší)
                   </p>
                 </div>

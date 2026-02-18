@@ -113,11 +113,11 @@ export default function OrganizationManagement() {
   }
 
   return (
-    <div className="container max-w-7xl mx-auto p-6 space-y-6">
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-2xl lg:text-3xl font-bold mb-2">Správa Organizací</h1>
-        <p className="text-muted-foreground">
+        <p className="text-[hsl(var(--mn-muted))]">
           Centrální řízení pro týmy a instituce
         </p>
       </div>
@@ -125,9 +125,9 @@ export default function OrganizationManagement() {
       {userOrgs.length === 0 && (
         <Card>
           <CardContent className="p-12 text-center">
-            <Building2 className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+            <Building2 className="w-16 h-16 mx-auto mb-4 text-[hsl(var(--mn-muted))]" />
             <h3 className="text-xl font-bold mb-2">Nejste členem žádné organizace</h3>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-[hsl(var(--mn-muted))] mb-6">
               Kontaktujte svého správce nebo vytvořte novou organizaci
             </p>
             <Button>
@@ -170,7 +170,7 @@ export default function OrganizationManagement() {
                         </Badge>
                       </div>
                     </div>
-                    <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                    <ChevronRight className="w-5 h-5 text-[hsl(var(--mn-muted))]" />
                   </div>
                 </CardContent>
               </Card>
@@ -209,31 +209,31 @@ export default function OrganizationManagement() {
                   <div className="grid md:grid-cols-3 gap-4">
                     <div className="p-4 rounded-lg bg-[hsl(var(--mn-surface))]">
                       <div className="flex items-center gap-2 mb-1">
-                        <Users className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-sm text-muted-foreground">Členové</span>
+                        <Users className="w-4 h-4 text-[hsl(var(--mn-muted))]" />
+                        <span className="text-sm text-[hsl(var(--mn-muted))]">Členové</span>
                       </div>
                       <p className="text-2xl font-bold">{orgMembers.length}</p>
-                      <p className="text-xs text-muted-foreground">z {selectedOrg.max_users} max</p>
+                      <p className="text-xs text-[hsl(var(--mn-muted))]">z {selectedOrg.max_users} max</p>
                     </div>
 
                     {orgStats && (
                       <>
                         <div className="p-4 rounded-lg bg-[hsl(var(--mn-surface))]">
                           <div className="flex items-center gap-2 mb-1">
-                            <TrendingUp className="w-4 h-4 text-muted-foreground" />
-                            <span className="text-sm text-muted-foreground">Průměrné skóre</span>
+                            <TrendingUp className="w-4 h-4 text-[hsl(var(--mn-muted))]" />
+                            <span className="text-sm text-[hsl(var(--mn-muted))]">Průměrné skóre</span>
                           </div>
                           <p className="text-2xl font-bold">{orgStats.avgScore.toFixed(1)}%</p>
-                          <p className="text-xs text-muted-foreground">za posledních 30 dní</p>
+                          <p className="text-xs text-[hsl(var(--mn-muted))]">za posledních 30 dní</p>
                         </div>
 
                         <div className="p-4 rounded-lg bg-[hsl(var(--mn-surface))]">
                           <div className="flex items-center gap-2 mb-1">
-                            <Shield className="w-4 h-4 text-muted-foreground" />
-                            <span className="text-sm text-muted-foreground">Testů dokončeno</span>
+                            <Shield className="w-4 h-4 text-[hsl(var(--mn-muted))]" />
+                            <span className="text-sm text-[hsl(var(--mn-muted))]">Testů dokončeno</span>
                           </div>
                           <p className="text-2xl font-bold">{orgStats.totalTests}</p>
-                          <p className="text-xs text-muted-foreground">za posledních 30 dní</p>
+                          <p className="text-xs text-[hsl(var(--mn-muted))]">za posledních 30 dní</p>
                         </div>
                       </>
                     )}
@@ -267,7 +267,7 @@ export default function OrganizationManagement() {
                           </div>
                           <div>
                             <p className="font-medium">{member.user?.email}</p>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-xs text-[hsl(var(--mn-muted))]">
                               Připojen {new Date(member.joined_at).toLocaleDateString('cs-CZ')}
                             </p>
                           </div>
@@ -284,7 +284,7 @@ export default function OrganizationManagement() {
                   </div>
 
                   {orgMembers.length === 0 && (
-                    <p className="text-center text-muted-foreground py-8">
+                    <p className="text-center text-[hsl(var(--mn-muted))] py-8">
                       Žádní členové
                     </p>
                   )}
@@ -300,15 +300,15 @@ export default function OrganizationManagement() {
                   <CardContent>
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-muted-foreground">Aktivní uživatelé</span>
+                        <span className="text-sm text-[hsl(var(--mn-muted))]">Aktivní uživatelé</span>
                         <span className="font-semibold">{orgStats.activeUsers}</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-muted-foreground">Dokončených testů</span>
+                        <span className="text-sm text-[hsl(var(--mn-muted))]">Dokončených testů</span>
                         <span className="font-semibold">{orgStats.totalTests}</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-muted-foreground">Průměrné skóre</span>
+                        <span className="text-sm text-[hsl(var(--mn-muted))]">Průměrné skóre</span>
                         <span className="font-semibold">{orgStats.avgScore.toFixed(1)}%</span>
                       </div>
                     </div>
@@ -319,9 +319,9 @@ export default function OrganizationManagement() {
           ) : (
             <Card>
               <CardContent className="p-12 text-center">
-                <Building2 className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                <Building2 className="w-16 h-16 mx-auto mb-4 text-[hsl(var(--mn-muted))]" />
                 <h3 className="text-xl font-bold mb-2">Vyberte organizaci</h3>
-                <p className="text-muted-foreground">
+                <p className="text-[hsl(var(--mn-muted))]">
                   Klikněte na organizaci vlevo pro zobrazení detailů
                 </p>
               </CardContent>

@@ -56,10 +56,10 @@ export default function TopicDetailV2() {
 
   if (!topic) {
     return (
-      <div className="container max-w-4xl mx-auto p-6">
+      <div className="max-w-4xl mx-auto p-6">
         <Card>
           <CardContent className="p-12 text-center">
-            <p className="text-muted-foreground">Téma nenalezeno</p>
+            <p className="text-[hsl(var(--mn-muted))]">Téma nenalezeno</p>
             <Button onClick={() => navigate(-1)} variant="outline" className="mt-4">
               Zpět
             </Button>
@@ -76,9 +76,9 @@ export default function TopicDetailV2() {
   ];
 
   return (
-    <div className="container max-w-5xl mx-auto p-6 space-y-6">
+    <div className="max-w-5xl mx-auto p-6 space-y-6">
       {/* Breadcrumbs */}
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+      <div className="flex items-center gap-2 text-sm text-[hsl(var(--mn-muted))]">
         <Link to={createPageUrl('StudiumV2')} className="hover:text-foreground">
           Studium
         </Link>
@@ -118,7 +118,7 @@ export default function TopicDetailV2() {
               className={`px-4 py-2 font-medium border-b-2 transition-colors flex items-center gap-2 ${
                 isActive
                   ? 'border-purple-600 text-purple-600'
-                  : 'border-transparent text-muted-foreground hover:text-foreground'
+                  : 'border-transparent text-[hsl(var(--mn-muted))] hover:text-foreground'
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -139,7 +139,7 @@ export default function TopicDetailV2() {
                   <ReactMarkdown>{topic.full_text_content}</ReactMarkdown>
                 </div>
               ) : (
-                <p className="text-muted-foreground">Obsah není k dispozici</p>
+                <p className="text-[hsl(var(--mn-muted))]">Obsah není k dispozici</p>
               )
             )}
 
@@ -149,7 +149,7 @@ export default function TopicDetailV2() {
                   <ReactMarkdown>{topic.bullet_points_summary}</ReactMarkdown>
                 </div>
               ) : (
-                <p className="text-muted-foreground">Souhrn není k dispozici</p>
+                <p className="text-[hsl(var(--mn-muted))]">Souhrn není k dispozici</p>
               )
             )}
 
@@ -159,7 +159,7 @@ export default function TopicDetailV2() {
                   <ReactMarkdown>{topic.deep_dive_content}</ReactMarkdown>
                 </div>
               ) : (
-                <p className="text-muted-foreground">Deep dive obsah není k dispozici</p>
+                <p className="text-[hsl(var(--mn-muted))]">Deep dive obsah není k dispozici</p>
               )
             )}
           </CardContent>
@@ -187,7 +187,7 @@ export default function TopicDetailV2() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-[hsl(var(--mn-muted))]">
               Vygenerujte otázky pro procvičení tohoto tématu pomocí AI
             </p>
             <FlashcardGenerator 

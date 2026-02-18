@@ -289,6 +289,10 @@ html:not(.dark) .mn-topbar {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.atesto-card:hover {
+  border-color: hsl(var(--mn-border));
+}
+
 .atesto-card-inner {
   padding: 1.5rem;
 }

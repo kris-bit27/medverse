@@ -97,9 +97,9 @@ export default function TopicDetail() {
 
   if (!topic) {
     return (
-      <div className="container max-w-4xl mx-auto p-6">
+      <div className="max-w-4xl mx-auto p-6">
         <Card><CardContent className="p-12 text-center">
-          <p className="text-muted-foreground">Téma nenalezeno</p>
+          <p className="text-[hsl(var(--mn-muted))]">Téma nenalezeno</p>
           <Button onClick={() => navigate(-1)} variant="outline" className="mt-4">Zpět</Button>
         </CardContent></Card>
       </div>
@@ -120,9 +120,9 @@ export default function TopicDetail() {
     <div className="min-h-screen bg-[hsl(var(--mn-bg))]">
       {/* Sticky Top Bar */}
       <div className="bg-[hsl(var(--mn-surface))] border-b sticky top-0 z-10">
-        <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground min-w-0">
+            <div className="flex items-center gap-2 text-sm text-[hsl(var(--mn-muted))] min-w-0">
               <Button variant="ghost" size="sm" onClick={() => navigate(createPageUrl('StudiumV2'))}>
                 <ArrowLeft className="w-4 h-4 mr-1" /> Studium
               </Button>
@@ -170,7 +170,7 @@ export default function TopicDetail() {
         </div>
       </div>
 
-      <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
         <div className={`grid gap-6 ${sidebarPanel ? 'lg:grid-cols-3' : 'max-w-5xl mx-auto'}`}>
           {/* Main Content */}
           <div className={sidebarPanel ? 'lg:col-span-2' : ''}>
@@ -179,7 +179,7 @@ export default function TopicDetail() {
               <div className="bg-[hsl(var(--mn-surface))] rounded-xl p-8 shadow-sm">
                 <h1 className="text-3xl font-bold mb-3 leading-tight">{topic.title}</h1>
                 {topic.description && (
-                  <p className="text-muted-foreground mb-4">{topic.description}</p>
+                  <p className="text-[hsl(var(--mn-muted))] mb-4">{topic.description}</p>
                 )}
                 <div className="flex flex-wrap gap-2">
                   {topic.obory && <Badge variant="outline">{topic.obory.name}</Badge>}
@@ -252,7 +252,7 @@ export default function TopicDetail() {
                       <ReactMarkdown>{currentContent}</ReactMarkdown>
                     </article>
                   ) : (
-                    <div className="text-center py-12 text-muted-foreground">
+                    <div className="text-center py-12 text-[hsl(var(--mn-muted))]">
                       Obsah není k dispozici
                     </div>
                   )}
@@ -324,17 +324,17 @@ export default function TopicDetail() {
                       <div className="grid grid-cols-3 gap-2 text-center text-sm">
                         <div className="bg-[hsl(var(--mn-surface-2))] rounded-lg p-2">
                           <div className="font-bold text-lg">{flashcards.length}</div>
-                          <div className="text-muted-foreground text-xs">Celkem</div>
+                          <div className="text-[hsl(var(--mn-muted))] text-xs">Celkem</div>
                         </div>
                         <div className="bg-[hsl(var(--mn-success)/0.06)] rounded-lg p-2">
                           <div className="font-bold text-lg text-[hsl(var(--mn-success))]">{masteredCount}</div>
-                          <div className="text-muted-foreground text-xs">Zvládnuto</div>
+                          <div className="text-[hsl(var(--mn-muted))] text-xs">Zvládnuto</div>
                         </div>
                         <div className="bg-[hsl(var(--mn-accent)/0.06)] rounded-lg p-2">
                           <div className="font-bold text-lg text-[hsl(var(--mn-accent))]">
                             {flashcards.length > 0 ? Math.round((masteredCount / flashcards.length) * 100) : 0}%
                           </div>
-                          <div className="text-muted-foreground text-xs">Progres</div>
+                          <div className="text-[hsl(var(--mn-muted))] text-xs">Progres</div>
                         </div>
                       </div>
                     )}
@@ -344,7 +344,7 @@ export default function TopicDetail() {
 
                     {/* Generator */}
                     <div className="border-t pt-4">
-                      <p className="text-sm text-muted-foreground mb-3">Vygenerovat nové kartičky z obsahu</p>
+                      <p className="text-sm text-[hsl(var(--mn-muted))] mb-3">Vygenerovat nové kartičky z obsahu</p>
                       <FlashcardGenerator 
                         topicId={topicId} 
                         topicContent={currentContent}
@@ -362,7 +362,7 @@ export default function TopicDetail() {
                     <div className="space-y-3">
                       {(topic.sources || []).map((source, idx) => (
                         <div key={idx} className="flex items-start gap-3 p-3 rounded-lg border">
-                          <FileText className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                          <FileText className="w-4 h-4 text-[hsl(var(--mn-muted))] mt-0.5 flex-shrink-0" />
                           <div className="min-w-0">
                             <p className="font-medium text-sm">{source.title || `Zdroj ${idx + 1}`}</p>
                             {source.url && (
@@ -372,7 +372,7 @@ export default function TopicDetail() {
                               </a>
                             )}
                             {source.description && (
-                              <p className="text-xs text-muted-foreground mt-1">{source.description}</p>
+                              <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">{source.description}</p>
                             )}
                           </div>
                         </div>

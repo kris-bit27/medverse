@@ -59,17 +59,17 @@ export const CacheManagement = () => {
           <div className="grid grid-cols-3 gap-4">
             <div>
               <div className="text-2xl font-bold">{stats.total_entries}</div>
-              <div className="text-sm text-muted-foreground">Total Entries</div>
+              <div className="text-sm text-[hsl(var(--mn-muted))]">Total Entries</div>
             </div>
             <div>
               <div className="text-2xl font-bold">{stats.total_hits}</div>
-              <div className="text-sm text-muted-foreground">Total Hits</div>
+              <div className="text-sm text-[hsl(var(--mn-muted))]">Total Hits</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-[hsl(var(--mn-success))]">
                 ${parseFloat(stats.total_cost_saved || 0).toFixed(2)}
               </div>
-              <div className="text-sm text-muted-foreground">Cost Saved</div>
+              <div className="text-sm text-[hsl(var(--mn-muted))]">Cost Saved</div>
             </div>
           </div>
           
@@ -101,7 +101,7 @@ export const CacheManagement = () => {
               <div key={mode} className="flex items-center justify-between p-2 border rounded">
                 <div>
                   <div className="font-medium">{mode}</div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-sm text-[hsl(var(--mn-muted))]">
                     {data.count} entries • {data.hits} hits • ${parseFloat(data.cost_saved || 0).toFixed(2)} saved
                   </div>
                 </div>

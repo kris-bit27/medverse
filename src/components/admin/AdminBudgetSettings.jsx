@@ -36,7 +36,7 @@ export default function AdminBudgetSettings() {
     <div className="space-y-6 max-w-4xl">
       <div>
         <h2 className="text-2xl font-bold">Budget & Cost Control</h2>
-        <p className="text-muted-foreground">
+        <p className="text-[hsl(var(--mn-muted))]">
           Configure AI usage budgets and cost limits
         </p>
       </div>
@@ -58,7 +58,7 @@ export default function AdminBudgetSettings() {
                 <Label className="text-base font-semibold">
                   Enable Budget Limits
                 </Label>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="text-sm text-[hsl(var(--mn-muted))] mt-1">
                   Enforce monthly spending caps per user
                 </p>
               </div>
@@ -79,7 +79,7 @@ export default function AdminBudgetSettings() {
                   Monthly Budget per User (USD)
                 </Label>
                 <div className="relative">
-                  <DollarSign className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <DollarSign className="absolute left-3 top-3 h-4 w-4 text-[hsl(var(--mn-muted))]" />
                   <Input
                     id="monthlyBudget"
                     type="number"
@@ -95,7 +95,7 @@ export default function AdminBudgetSettings() {
                     className="pl-9"
                   />
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-[hsl(var(--mn-muted))]">
                   Users will be blocked from generating content after exceeding this amount
                 </p>
               </div>
@@ -119,7 +119,7 @@ export default function AdminBudgetSettings() {
                     }))
                   }
                 />
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-[hsl(var(--mn-muted))]">
                   Show warning when user reaches this percentage of their budget
                 </p>
               </div>
@@ -128,7 +128,7 @@ export default function AdminBudgetSettings() {
               <div className="flex items-center justify-between p-3 rounded-lg border">
                 <div>
                   <Label>Email Alerts</Label>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">
                     Notify users when they reach 80% and 100% of budget
                   </p>
                 </div>
@@ -144,7 +144,7 @@ export default function AdminBudgetSettings() {
               <div className="flex items-center justify-between p-3 rounded-lg border">
                 <div>
                   <Label>Grace Period</Label>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">
                     Allow 1 additional request after budget is exceeded
                   </p>
                 </div>
@@ -198,7 +198,7 @@ export default function AdminBudgetSettings() {
         <CardContent className="space-y-3">
           <div className="grid grid-cols-2 gap-4">
             <div className="p-3 rounded-lg border">
-              <div className="text-xs text-muted-foreground mb-1">
+              <div className="text-xs text-[hsl(var(--mn-muted))] mb-1">
                 Monthly budget
               </div>
               <div className="text-2xl font-bold">
@@ -206,7 +206,7 @@ export default function AdminBudgetSettings() {
               </div>
             </div>
             <div className="p-3 rounded-lg border">
-              <div className="text-xs text-muted-foreground mb-1">
+              <div className="text-xs text-[hsl(var(--mn-muted))] mb-1">
                 Warning at
               </div>
               <div className="text-2xl font-bold">
@@ -233,7 +233,7 @@ export default function AdminBudgetSettings() {
         <CardHeader>
           <CardTitle className="text-base">📝 Implementation Notes</CardTitle>
         </CardHeader>
-        <CardContent className="text-sm space-y-2 text-muted-foreground">
+        <CardContent className="text-sm space-y-2 text-[hsl(var(--mn-muted))]">
           <p>
             To activate these settings in production:
           </p>

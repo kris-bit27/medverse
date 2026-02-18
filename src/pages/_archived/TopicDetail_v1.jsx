@@ -130,7 +130,7 @@ export default function TopicDetailV2() {
 
   if (error || !topic) {
     return (
-      <div className="container max-w-4xl mx-auto p-6">
+      <div className="max-w-4xl mx-auto p-6">
         <Card className="border-red-200">
           <CardContent className="p-6">
             <p className="text-red-600">Téma nenalezeno</p>
@@ -144,9 +144,9 @@ export default function TopicDetailV2() {
   }
 
   return (
-    <div className="container max-w-6xl mx-auto p-6 space-y-6">
+    <div className="max-w-6xl mx-auto p-6 space-y-6">
       {/* Breadcrumbs */}
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+      <div className="flex items-center gap-2 text-sm text-[hsl(var(--mn-muted))]">
         <Link to="/Studium" className="hover:text-foreground">
           Studium
         </Link>
@@ -167,7 +167,7 @@ export default function TopicDetailV2() {
         <div className="flex-1">
           <h1 className="text-3xl font-bold mb-2">{topic.title}</h1>
           {topic.description && (
-            <p className="text-muted-foreground">{topic.description}</p>
+            <p className="text-[hsl(var(--mn-muted))]">{topic.description}</p>
           )}
           
           <div className="flex items-center gap-3 mt-4">
@@ -290,7 +290,7 @@ export default function TopicDetailV2() {
                   <Card key={idx} className="border-slate-200">
                     <CardContent className="p-4">
                       <div className="flex items-start gap-3">
-                        <FileText className="w-5 h-5 text-muted-foreground mt-0.5" />
+                        <FileText className="w-5 h-5 text-[hsl(var(--mn-muted))] mt-0.5" />
                         <div className="flex-1">
                           <p className="font-medium">{source.title || `Source ${idx + 1}`}</p>
                           {source.url && (
@@ -304,7 +304,7 @@ export default function TopicDetailV2() {
                             </a>
                           )}
                           {source.description && (
-                            <p className="text-sm text-muted-foreground mt-1">
+                            <p className="text-sm text-[hsl(var(--mn-muted))] mt-1">
                               {source.description}
                             </p>
                           )}
@@ -377,7 +377,7 @@ export default function TopicDetailV2() {
                         )}
                       </div>
                       <p className="font-medium mb-2">{card.question}</p>
-                      <p className="text-sm text-muted-foreground line-clamp-2">
+                      <p className="text-sm text-[hsl(var(--mn-muted))] line-clamp-2">
                         {card.answer}
                       </p>
                     </CardContent>
@@ -415,7 +415,7 @@ export default function TopicDetailV2() {
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between mb-2">
                       <Badge variant="outline">{note.category || 'Note'}</Badge>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-xs text-[hsl(var(--mn-muted))]">
                         {new Date(note.created_at).toLocaleDateString()}
                       </span>
                     </div>
@@ -460,7 +460,7 @@ export default function TopicDetailV2() {
 
 function EmptyContent({ message }) {
   return (
-    <div className="text-center py-12 text-muted-foreground">
+    <div className="text-center py-12 text-[hsl(var(--mn-muted))]">
       <p>{message}</p>
     </div>
   );

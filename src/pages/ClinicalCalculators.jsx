@@ -203,11 +203,11 @@ export default function ClinicalCalculators() {
   }
 
   return (
-    <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
       {/* Header */}
       <div>
         <h1 className="text-2xl lg:text-3xl font-bold mb-2">Klinické Kalkulačky</h1>
-        <p className="text-muted-foreground">
+        <p className="text-[hsl(var(--mn-muted))]">
           Praktické nástroje pro každodenní klinickou praxi
         </p>
       </div>
@@ -215,7 +215,7 @@ export default function ClinicalCalculators() {
       {/* Filters */}
       <div className="grid md:grid-cols-2 gap-4">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(var(--mn-muted))]" />
           <Input
             placeholder="Hledat kalkulačku..."
             value={searchQuery}
@@ -267,7 +267,7 @@ export default function ClinicalCalculators() {
                     </div>
                     <div className="flex-1">
                       <p className="font-medium text-sm">{tool.name}</p>
-                      <p className="text-xs text-muted-foreground line-clamp-2">
+                      <p className="text-xs text-[hsl(var(--mn-muted))] line-clamp-2">
                         {tool.description}
                       </p>
                       <div className="flex items-center gap-2 mt-2">
@@ -275,7 +275,7 @@ export default function ClinicalCalculators() {
                           {tool.subcategory}
                         </Badge>
                         {tool.usage_count > 0 && (
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-xs text-[hsl(var(--mn-muted))]">
                             {tool.usage_count}× použito
                           </span>
                         )}
@@ -288,7 +288,7 @@ export default function ClinicalCalculators() {
           })}
 
           {filteredTools.length === 0 && (
-            <p className="text-center text-muted-foreground py-8">
+            <p className="text-center text-[hsl(var(--mn-muted))] py-8">
               Žádné kalkulačky nenalezeny
             </p>
           )}
@@ -302,7 +302,7 @@ export default function ClinicalCalculators() {
                 <div className="flex items-start justify-between">
                   <div>
                     <CardTitle>{selectedTool.name}</CardTitle>
-                    <p className="text-sm text-muted-foreground mt-1">
+                    <p className="text-sm text-[hsl(var(--mn-muted))] mt-1">
                       {selectedTool.description}
                     </p>
                   </div>
@@ -386,7 +386,7 @@ export default function ClinicalCalculators() {
 
                       return (
                         <div key={field.name} className="p-4 rounded-lg bg-[hsl(var(--mn-surface))]">
-                          <p className="text-sm text-muted-foreground">{field.label}</p>
+                          <p className="text-sm text-[hsl(var(--mn-muted))]">{field.label}</p>
                           <p className="text-2xl font-bold">
                             {value} {field.unit || ''}
                           </p>
@@ -423,9 +423,9 @@ export default function ClinicalCalculators() {
           ) : (
             <Card>
               <CardContent className="p-12 text-center">
-                <Calculator className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                <Calculator className="w-16 h-16 mx-auto mb-4 text-[hsl(var(--mn-muted))]" />
                 <h3 className="text-xl font-bold mb-2">Vyberte kalkulačku</h3>
-                <p className="text-muted-foreground">
+                <p className="text-[hsl(var(--mn-muted))]">
                   Klikněte na kalkulačku vlevo pro začátek výpočtu
                 </p>
               </CardContent>

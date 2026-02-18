@@ -208,11 +208,11 @@ export default function TestGeneratorV2() {
   };
 
   return (
-    <div className="container max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
       {/* Header */}
       <div>
-        <h1 className="mn-mono-font text-3xl font-bold mb-2">Generátor Testů</h1>
-        <p className="text-muted-foreground">
+        <h1 className="mn-serif-font text-[28px] font-bold mb-2">Generátor Testů</h1>
+        <p className="text-[hsl(var(--mn-muted))]">
           Vytvořte si vlastní test podle vašich potřeb
         </p>
       </div>
@@ -278,7 +278,7 @@ export default function TestGeneratorV2() {
               </CardHeader>
               <CardContent>
                 {okruhy.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-[hsl(var(--mn-muted))]">
                     Žádné okruhy k dispozici
                   </p>
                 ) : (
@@ -326,7 +326,7 @@ export default function TestGeneratorV2() {
               </CardHeader>
               <CardContent>
                 {topics.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-[hsl(var(--mn-muted))]">
                     Žádná témata k dispozici pro vybrané okruhy
                   </p>
                 ) : (
@@ -377,7 +377,7 @@ export default function TestGeneratorV2() {
                     max={Math.min(100, availableQuestionsCount)}
                     step={5}
                   />
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-[hsl(var(--mn-muted))]">
                     K dispozici: {availableQuestionsCount} otázek
                   </p>
                 </div>
@@ -456,23 +456,23 @@ export default function TestGeneratorV2() {
               {/* Selected Items */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Okruhy:</span>
+                  <span className="text-[hsl(var(--mn-muted))]">Okruhy:</span>
                   <Badge>{selectedOkruhy.length}</Badge>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Témata:</span>
+                  <span className="text-[hsl(var(--mn-muted))]">Témata:</span>
                   <Badge>{selectedTopics.length}</Badge>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Otázky:</span>
+                  <span className="text-[hsl(var(--mn-muted))]">Otázky:</span>
                   <Badge>{questionCount}</Badge>
                 </div>
               </div>
 
               <div className="border-t pt-4 space-y-2">
                 <div className="flex items-center gap-2 text-sm">
-                  <Target className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">
+                  <Target className="w-4 h-4 text-[hsl(var(--mn-muted))]" />
+                  <span className="text-[hsl(var(--mn-muted))]">
                     {difficulty === 'mixed' ? 'Smíšená obtížnost' : 
                      difficulty === 'easy' ? 'Snadné' :
                      difficulty === 'medium' ? 'Střední' : 'Těžké'}
@@ -482,13 +482,13 @@ export default function TestGeneratorV2() {
                 <div className="flex items-center gap-2 text-sm">
                   {mode === 'timed' ? (
                     <>
-                      <Clock className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">{timeLimit} minut</span>
+                      <Clock className="w-4 h-4 text-[hsl(var(--mn-muted))]" />
+                      <span className="text-[hsl(var(--mn-muted))]">{timeLimit} minut</span>
                     </>
                   ) : (
                     <>
-                      <Brain className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">Bez časového limitu</span>
+                      <Brain className="w-4 h-4 text-[hsl(var(--mn-muted))]" />
+                      <span className="text-[hsl(var(--mn-muted))]">Bez časového limitu</span>
                     </>
                   )}
                 </div>
@@ -506,7 +506,7 @@ export default function TestGeneratorV2() {
               </Button>
 
               {selectedTopics.length === 0 && (
-                <p className="text-xs text-muted-foreground text-center">
+                <p className="text-xs text-[hsl(var(--mn-muted))] text-center">
                   Vyberte témata pro vytvoření testu
                 </p>
               )}

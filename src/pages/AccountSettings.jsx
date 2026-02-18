@@ -178,11 +178,11 @@ export default function AccountSettings() {
   }
 
   return (
-    <div className="container max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
       {/* Header */}
       <div>
         <h1 className="text-2xl lg:mn-mono-font text-3xl font-bold mb-2">Nastavení účtu</h1>
-        <p className="text-muted-foreground">
+        <p className="text-[hsl(var(--mn-muted))]">
           Spravuj zabezpečení, notifikace a soukromí
         </p>
       </div>
@@ -217,7 +217,7 @@ export default function AccountSettings() {
               />
               <Button variant="outline">Změnit heslo</Button>
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-[hsl(var(--mn-muted))]">
               Poslední změna: Před 30 dny
             </p>
           </div>
@@ -227,7 +227,7 @@ export default function AccountSettings() {
               <Lock className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
               <div>
                 <div className="font-medium">Dvoufaktorové ověření (2FA)</div>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-[hsl(var(--mn-muted))]">
                   Doporučeno pro zvýšenou bezpečnost
                 </p>
               </div>
@@ -241,7 +241,7 @@ export default function AccountSettings() {
               <div className="flex items-center justify-between p-3 rounded border">
                 <div>
                   <div className="font-medium">MacBook Pro (tento přístroj)</div>
-                  <p className="text-xs text-muted-foreground">Praha, Česko • Nyní</p>
+                  <p className="text-xs text-[hsl(var(--mn-muted))]">Praha, Česko • Nyní</p>
                 </div>
                 <Badge variant="outline">Aktivní</Badge>
               </div>
@@ -351,7 +351,7 @@ export default function AccountSettings() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground mb-4">
+          <p className="text-sm text-[hsl(var(--mn-muted))] mb-4">
             Máte plnou kontrolu nad tím, jak jsou vaše data používána.
           </p>
 
@@ -390,7 +390,7 @@ export default function AccountSettings() {
 
           <div className="pt-4 border-t">
             <h4 className="font-medium mb-2">Co sbíráme:</h4>
-            <ul className="text-sm text-muted-foreground space-y-1 mb-4">
+            <ul className="text-sm text-[hsl(var(--mn-muted))] space-y-1 mb-4">
               <li>✓ Studijní pokrok a výsledky testů</li>
               <li>✓ Preference a nastavení</li>
               <li>✓ Využití AI funkcí</li>
@@ -398,7 +398,7 @@ export default function AccountSettings() {
             </ul>
 
             <h4 className="font-medium mb-2">Co NIKDY nesbíráme:</h4>
-            <ul className="text-sm text-muted-foreground space-y-1">
+            <ul className="text-sm text-[hsl(var(--mn-muted))] space-y-1">
               <li>✗ Zdravotní informace pacientů</li>
               <li>✗ Osobní identifikátory (rodné číslo atd.)</li>
               <li>✗ Lokační data v reálném čase</li>
@@ -445,10 +445,10 @@ export default function AccountSettings() {
                 Tato akce je <strong>nevratná</strong>. Všechna vaše data budou
                 trvale smazána do 30 dnů.
               </p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-[hsl(var(--mn-muted))]">
                 Co bude smazáno:
               </p>
-              <ul className="text-sm text-muted-foreground space-y-1">
+              <ul className="text-sm text-[hsl(var(--mn-muted))] space-y-1">
                 <li>• Profil a nastavení</li>
                 <li>• Studijní pokrok</li>
                 <li>• Poznámky a flashcards</li>
@@ -486,7 +486,7 @@ function NotificationToggle({ label, description, defaultChecked }) {
     <div className="flex items-center justify-between p-3 rounded-xl border">
       <div className="flex-1">
         <div className="font-medium">{label}</div>
-        <p className="text-sm text-muted-foreground">{description}</p>
+        <p className="text-sm text-[hsl(var(--mn-muted))]">{description}</p>
       </div>
       <Switch
         checked={checked}
@@ -512,7 +512,7 @@ function DataConsentToggle({ label, description, bonus, checked, onChange, requi
             </Badge>
           )}
         </div>
-        <p className="text-sm text-muted-foreground mt-1">{description}</p>
+        <p className="text-sm text-[hsl(var(--mn-muted))] mt-1">{description}</p>
       </div>
       <Switch
         checked={checked}

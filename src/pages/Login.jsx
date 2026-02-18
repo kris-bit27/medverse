@@ -146,7 +146,7 @@ export default function Login() {
             <h2 className="text-xl font-semibold">
               {mode === 'reset-sent' ? 'Odkaz pro reset odeslán!' : 'Registrace dokončena!'}
             </h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-[hsl(var(--mn-muted))]">
               {mode === 'reset-sent'
                 ? `Odkaz pro obnovení hesla jsme poslali na ${email}. Platí 24 hodin.`
                 : `Potvrzovací e-mail jsme poslali na ${email}. Klikněte na odkaz pro aktivaci účtu.`}
@@ -179,12 +179,12 @@ export default function Login() {
                 {mode === 'register' && 'Registrace'}
                 {mode === 'reset' && 'Obnovení hesla'}
               </h1>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-[hsl(var(--mn-muted))]">
                 {mode === 'login' && 'Pokračujte do studijního prostoru. Přihlaste se heslem nebo přes OAuth.'}
                 {mode === 'register' && 'Vytvořte si účet a začněte se připravovat na atestaci.'}
                 {mode === 'reset' && 'Pošleme odkaz pro nastavení nového hesla.'}
               </p>
-              <div className="mt-8 grid grid-cols-2 gap-3 text-xs text-muted-foreground">
+              <div className="mt-8 grid grid-cols-2 gap-3 text-xs text-[hsl(var(--mn-muted))]">
                 {['Přístup k premium obsahu', 'Synchronizace napříč zařízeními', 'Ověřené AI výstupy', 'Individuální plán učení'].map((t, i) => (
                   <div key={i} className="rounded-xl border border-[hsl(var(--mn-border))] p-4">{t}</div>
                 ))}
@@ -195,7 +195,7 @@ export default function Login() {
           <div className="p-8 md:p-10 bg-white/70 dark:bg-[hsl(var(--mn-bg))]/70">
             {/* ═══ LOGIN ═══ */}
             {mode === 'login' && (<>
-              <div className="text-sm uppercase tracking-[0.25em] text-muted-foreground">Přihlášení</div>
+              <div className="text-sm uppercase tracking-[0.25em] text-[hsl(var(--mn-muted))]">Přihlášení</div>
               <div className="mt-1 text-2xl font-semibold">Vítejte zpět</div>
               {providers.length > 0 && (
                 <div className="mt-6 space-y-2">
@@ -206,19 +206,19 @@ export default function Login() {
                         <p.Logo />
                         Pokračovat přes {p.label}
                       </span>
-                      <span className="text-xs text-muted-foreground group-hover:text-[hsl(var(--mn-accent))]">→</span>
+                      <span className="text-xs text-[hsl(var(--mn-muted))] group-hover:text-[hsl(var(--mn-accent))]">→</span>
                     </button>
                   ))}
                 </div>
               )}
-              <div className="my-5 flex items-center gap-3 text-xs text-muted-foreground">
+              <div className="my-5 flex items-center gap-3 text-xs text-[hsl(var(--mn-muted))]">
                 <div className="h-px flex-1 bg-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-surface-2))]" />nebo e-mailem<div className="h-px flex-1 bg-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-surface-2))]" />
               </div>
               <form onSubmit={handleLogin} className="space-y-3">
                 <div className="space-y-1">
                   <Label htmlFor="email">E-mail</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(var(--mn-muted))]" />
                     <Input id="email" type="email" placeholder="vas@email.cz" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-9" autoComplete="email" />
                   </div>
                 </div>
@@ -228,9 +228,9 @@ export default function Login() {
                     <button type="button" className="text-xs text-[hsl(var(--mn-accent))] hover:text-[hsl(var(--mn-accent))]" onClick={() => setMode('reset')}>Zapomněli jste heslo?</button>
                   </div>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(var(--mn-muted))]" />
                     <Input id="password" type={showPassword ? 'text' : 'password'} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-9 pr-10" autoComplete="current-password" />
-                    <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground" onClick={() => setShowPassword(!showPassword)}>
+                    <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-[hsl(var(--mn-muted))] hover:text-foreground" onClick={() => setShowPassword(!showPassword)}>
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
@@ -239,29 +239,29 @@ export default function Login() {
                   {submitting ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Přihlašuji...</> : 'Přihlásit se'}
                 </Button>
               </form>
-              <div className="mt-4 text-center text-sm text-muted-foreground">
+              <div className="mt-4 text-center text-sm text-[hsl(var(--mn-muted))]">
                 Nemáte účet?{' '}<button type="button" className="text-[hsl(var(--mn-accent))] hover:text-[hsl(var(--mn-accent))] font-medium" onClick={() => { setMode('register'); setPassword(''); setConfirmPassword(''); }}>Zaregistrujte se</button>
               </div>
             </>)}
 
             {/* ═══ REGISTER ═══ */}
             {mode === 'register' && (<>
-              <div className="text-sm uppercase tracking-[0.25em] text-muted-foreground">Registrace</div>
+              <div className="text-sm uppercase tracking-[0.25em] text-[hsl(var(--mn-muted))]">Registrace</div>
               <div className="mt-1 text-2xl font-semibold">Vytvořit účet</div>
               <form onSubmit={handleRegister} className="mt-6 space-y-3">
                 <div className="space-y-1">
                   <Label htmlFor="reg-email">E-mail</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(var(--mn-muted))]" />
                     <Input id="reg-email" type="email" placeholder="vas@email.cz" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-9" autoComplete="email" />
                   </div>
                 </div>
                 <div className="space-y-1">
                   <Label htmlFor="reg-password">Heslo</Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(var(--mn-muted))]" />
                     <Input id="reg-password" type={showPassword ? 'text' : 'password'} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-9 pr-10" autoComplete="new-password" />
-                    <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground" onClick={() => setShowPassword(!showPassword)}>
+                    <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-[hsl(var(--mn-muted))] hover:text-foreground" onClick={() => setShowPassword(!showPassword)}>
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
@@ -274,7 +274,7 @@ export default function Login() {
                       </div>
                       <div className="grid grid-cols-2 gap-1 text-[11px]">
                         {passwordStrength.checks.map((c, i) => (
-                          <span key={i} className={c.passed ? 'text-[hsl(var(--mn-success))]' : 'text-muted-foreground'}>{c.passed ? '✓' : '○'} {c.label}</span>
+                          <span key={i} className={c.passed ? 'text-[hsl(var(--mn-success))]' : 'text-[hsl(var(--mn-muted))]'}>{c.passed ? '✓' : '○'} {c.label}</span>
                         ))}
                       </div>
                     </div>
@@ -283,7 +283,7 @@ export default function Login() {
                 <div className="space-y-1">
                   <Label htmlFor="reg-confirm">Potvrzení hesla</Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(var(--mn-muted))]" />
                     <Input id="reg-confirm" type={showPassword ? 'text' : 'password'} placeholder="••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="pl-9" autoComplete="new-password" />
                   </div>
                   {confirmPassword && password !== confirmPassword && <p className="text-xs text-[hsl(var(--mn-danger))] mt-1">Hesla se neshodují</p>}
@@ -292,20 +292,20 @@ export default function Login() {
                   {submitting ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Registruji...</> : 'Vytvořit účet'}
                 </Button>
               </form>
-              <div className="mt-4 text-center text-sm text-muted-foreground">
+              <div className="mt-4 text-center text-sm text-[hsl(var(--mn-muted))]">
                 Již máte účet?{' '}<button type="button" className="text-[hsl(var(--mn-accent))] hover:text-[hsl(var(--mn-accent))] font-medium" onClick={() => { setMode('login'); setPassword(''); setConfirmPassword(''); }}>Přihlaste se</button>
               </div>
             </>)}
 
             {/* ═══ RESET ═══ */}
             {mode === 'reset' && (<>
-              <div className="text-sm uppercase tracking-[0.25em] text-muted-foreground">Reset hesla</div>
+              <div className="text-sm uppercase tracking-[0.25em] text-[hsl(var(--mn-muted))]">Reset hesla</div>
               <div className="mt-1 text-2xl font-semibold">Obnovení hesla</div>
               <form onSubmit={handleReset} className="mt-6 space-y-3">
                 <div className="space-y-1">
                   <Label htmlFor="reset-email">E-mail</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(var(--mn-muted))]" />
                     <Input id="reset-email" type="email" placeholder="vas@email.cz" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-9" autoComplete="email" />
                   </div>
                 </div>
@@ -314,14 +314,14 @@ export default function Login() {
                 </Button>
               </form>
               <div className="mt-4">
-                <button type="button" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setMode('login')}>
+                <button type="button" className="flex items-center gap-2 text-sm text-[hsl(var(--mn-muted))] hover:text-foreground" onClick={() => setMode('login')}>
                   <ArrowLeft className="w-3.5 h-3.5" />Zpět na přihlášení
                 </button>
               </div>
             </>)}
 
             <div className="pt-5 mt-4 border-t border-[hsl(var(--mn-border))]">
-              <Button variant="ghost" className="w-full text-muted-foreground text-sm" onClick={() => navigate('/')}>Zpět na web</Button>
+              <Button variant="ghost" className="w-full text-[hsl(var(--mn-muted))] text-sm" onClick={() => navigate('/')}>Zpět na web</Button>
             </div>
           </div>
         </CardContent>

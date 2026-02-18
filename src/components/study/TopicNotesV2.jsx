@@ -263,7 +263,7 @@ export default function TopicNotesV2({ topicId, user }) {
 
       {/* Notes List */}
       {isLoading ? (
-        <div className="text-center py-8 text-muted-foreground">
+        <div className="text-center py-8 text-[hsl(var(--mn-muted))]">
           Načítání poznámek...
         </div>
       ) : notes.length === 0 ? (

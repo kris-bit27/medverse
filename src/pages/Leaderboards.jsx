@@ -90,7 +90,7 @@ export default function Leaderboards() {
     if (rank === 1) return <Crown className="w-6 h-6 text-yellow-500" />;
     if (rank === 2) return <Medal className="w-6 h-6 text-[hsl(var(--mn-muted))]" />;
     if (rank === 3) return <Medal className="w-6 h-6 text-[hsl(var(--mn-warn))]" />;
-    return <span className="text-lg font-bold text-muted-foreground">#{rank}</span>;
+    return <span className="text-lg font-bold text-[hsl(var(--mn-muted))]">#{rank}</span>;
   };
 
   const getRankBadge = (rank) => {
@@ -111,12 +111,12 @@ export default function Leaderboards() {
   }
 
   return (
-    <div className="container max-w-6xl mx-auto p-6 space-y-6">
+    <div className="max-w-6xl mx-auto p-6 space-y-6">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl lg:text-3xl font-bold mb-2">Žebříčky</h1>
-          <p className="text-muted-foreground">
+          <p className="text-[hsl(var(--mn-muted))]">
             Soutěžte s ostatními a sledujte svůj pokrok
           </p>
         </div>
@@ -144,7 +144,7 @@ export default function Leaderboards() {
                 </div>
                 <div>
                   <p className="font-semibold">Vaše pozice</p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-[hsl(var(--mn-muted))]">
                     {myRank.total_points.toLocaleString()} bodů
                   </p>
                 </div>
@@ -270,7 +270,7 @@ export default function Leaderboards() {
                         {isMe && <Badge variant="outline">You</Badge>}
                         {badge && <Badge variant={badge.variant} className={badge.className}>{badge.label}</Badge>}
                       </div>
-                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-4 text-xs text-[hsl(var(--mn-muted))]">
                         <span>{entry.tests_completed} testů</span>
                         <span>Průměr: {entry.avg_score.toFixed(1)}%</span>
                       </div>
@@ -281,7 +281,7 @@ export default function Leaderboards() {
                     <p className="text-xl font-bold">
                       {entry.total_points.toLocaleString()}
                     </p>
-                    <p className="text-xs text-muted-foreground">bodů</p>
+                    <p className="text-xs text-[hsl(var(--mn-muted))]">bodů</p>
                   </div>
                 </div>
               );
@@ -290,8 +290,8 @@ export default function Leaderboards() {
 
           {leaderboard.length === 0 && (
             <div className="text-center py-12">
-              <Trophy className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-              <p className="text-muted-foreground">
+              <Trophy className="w-16 h-16 mx-auto mb-4 text-[hsl(var(--mn-muted))]" />
+              <p className="text-[hsl(var(--mn-muted))]">
                 Žebříček je prázdný. Buďte první!
               </p>
             </div>

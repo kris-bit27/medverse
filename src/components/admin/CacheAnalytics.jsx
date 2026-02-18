@@ -140,11 +140,11 @@ export const CacheAnalytics = () => {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">
+                <p className="text-sm font-medium text-[hsl(var(--mn-muted))]">
                   Cache Hit Rate
                 </p>
                 <p className="text-3xl font-bold mt-2">{stats.hitRate}%</p>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">
                   {stats.cacheRequests} / {stats.totalHits} requests
                 </p>
               </div>
@@ -158,13 +158,13 @@ export const CacheAnalytics = () => {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">
+                <p className="text-sm font-medium text-[hsl(var(--mn-muted))]">
                   Total Spent
                 </p>
                 <p className="text-3xl font-bold mt-2">
                   ${stats.totalCost.toFixed(2)}
                 </p>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">
                   {stats.apiCalls} API calls
                 </p>
               </div>
@@ -178,13 +178,13 @@ export const CacheAnalytics = () => {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">
+                <p className="text-sm font-medium text-[hsl(var(--mn-muted))]">
                   Cost Saved
                 </p>
                 <p className="text-3xl font-bold mt-2 text-[hsl(var(--mn-success))]">
                   ${stats.costSaved.toFixed(2)}
                 </p>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">
                   via caching
                 </p>
               </div>
@@ -198,11 +198,11 @@ export const CacheAnalytics = () => {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">
+                <p className="text-sm font-medium text-[hsl(var(--mn-muted))]">
                   Cache Entries
                 </p>
                 <p className="text-3xl font-bold mt-2">{stats.totalEntries}</p>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">
                   unique generations
                 </p>
               </div>
@@ -238,7 +238,7 @@ export const CacheAnalytics = () => {
                     <p className="font-medium">
                       {model.includes('haiku') ? 'Claude Haiku 4' : 'Claude Sonnet 4'}
                     </p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-[hsl(var(--mn-muted))]">
                       {data.count} generations • {data.hits} total hits
                     </p>
                   </div>
@@ -283,7 +283,7 @@ export const CacheAnalytics = () => {
                       </Badge>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between text-sm text-muted-foreground">
+                  <div className="flex items-center justify-between text-sm text-[hsl(var(--mn-muted))]">
                     <span>{data.hits} total hits</span>
                     <Button
                       onClick={() => clearCache(mode)}
@@ -313,7 +313,7 @@ export const CacheAnalytics = () => {
           >
             Clear All Cache
           </Button>
-          <p className="text-sm text-muted-foreground mt-2">
+          <p className="text-sm text-[hsl(var(--mn-muted))] mt-2">
             This will remove all cached generations. Next requests will call Claude API.
           </p>
         </CardContent>

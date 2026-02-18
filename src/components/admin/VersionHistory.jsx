@@ -95,7 +95,7 @@ export const VersionHistory = ({ topicId, onRestore }) => {
                       )}
                     </div>
 
-                    <p className="text-sm text-muted-foreground mb-2">
+                    <p className="text-sm text-[hsl(var(--mn-muted))] mb-2">
                       {new Date(version.created_at).toLocaleString('cs-CZ')}
                     </p>
 
@@ -105,7 +105,7 @@ export const VersionHistory = ({ topicId, onRestore }) => {
                       </p>
                     )}
 
-                    <div className="flex gap-2 text-xs text-muted-foreground">
+                    <div className="flex gap-2 text-xs text-[hsl(var(--mn-muted))]">
                       {version.ai_confidence && (
                         <span>Confidence: {(version.ai_confidence * 100).toFixed(0)}%</span>
                       )}

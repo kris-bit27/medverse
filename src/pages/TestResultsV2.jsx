@@ -69,7 +69,7 @@ export default function TestResultsV2() {
 
   if (!session) {
     return (
-      <div className="container max-w-2xl mx-auto p-6">
+      <div className="max-w-2xl mx-auto p-6">
         <Card>
           <CardContent className="p-12 text-center">
             <AlertCircle className="w-16 h-16 mx-auto mb-4 text-[hsl(var(--mn-danger))]" />
@@ -138,12 +138,12 @@ export default function TestResultsV2() {
     .sort((a, b) => a.percentage - b.percentage);
 
   return (
-    <div className="container max-w-6xl mx-auto p-6 space-y-6">
+    <div className="max-w-6xl mx-auto p-6 space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
         <Trophy className={`w-16 h-16 mx-auto ${getGradeColor(score)}`} />
         <h1 className="mn-mono-font text-4xl font-bold">{getGradeText(score)}</h1>
-        <p className="text-muted-foreground">Test dokončen</p>
+        <p className="text-[hsl(var(--mn-muted))]">Test dokončen</p>
       </div>
 
       {/* Score Card */}
@@ -152,7 +152,7 @@ export default function TestResultsV2() {
           <div className="text-6xl font-bold mb-2 ${getGradeColor(score)}">
             {score.toFixed(1)}%
           </div>
-          <p className="text-muted-foreground mb-6">
+          <p className="text-[hsl(var(--mn-muted))] mb-6">
             {correctAnswers} z {totalQuestions} správně
           </p>
           <Progress value={score} className="h-3 mb-4" />
@@ -165,7 +165,7 @@ export default function TestResultsV2() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Správně</p>
+                <p className="text-sm text-[hsl(var(--mn-muted))]">Správně</p>
                 <p className="mn-mono-font text-3xl font-bold text-[hsl(var(--mn-success))]">{correctAnswers}</p>
               </div>
               <CheckCircle2 className="w-12 h-12 text-[hsl(var(--mn-success))]" />
@@ -177,7 +177,7 @@ export default function TestResultsV2() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Špatně</p>
+                <p className="text-sm text-[hsl(var(--mn-muted))]">Špatně</p>
                 <p className="mn-mono-font text-3xl font-bold text-[hsl(var(--mn-danger))]">{totalQuestions - correctAnswers}</p>
               </div>
               <XCircle className="w-12 h-12 text-[hsl(var(--mn-danger))]" />
@@ -189,10 +189,10 @@ export default function TestResultsV2() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Čas</p>
+                <p className="text-sm text-[hsl(var(--mn-muted))]">Čas</p>
                 <p className="mn-mono-font text-3xl font-bold">{formatTime(timeSpent)}</p>
               </div>
-              <Clock className="w-12 h-12 text-muted-foreground" />
+              <Clock className="w-12 h-12 text-[hsl(var(--mn-muted))]" />
             </div>
           </CardContent>
         </Card>
@@ -258,11 +258,11 @@ export default function TestResultsV2() {
                     {!answer.is_correct && (
                       <div className="space-y-1 text-sm">
                         <p>
-                          <span className="text-muted-foreground">Vaše odpověď:</span>{' '}
+                          <span className="text-[hsl(var(--mn-muted))]">Vaše odpověď:</span>{' '}
                           <span className="text-[hsl(var(--mn-danger))]">{answer.user_answer || 'Nezodpovězeno'}</span>
                         </p>
                         <p>
-                          <span className="text-muted-foreground">Správná odpověď:</span>{' '}
+                          <span className="text-[hsl(var(--mn-muted))]">Správná odpověď:</span>{' '}
                           <span className="text-[hsl(var(--mn-success))]">{answer.questions?.correct_answer}</span>
                         </p>
                       </div>

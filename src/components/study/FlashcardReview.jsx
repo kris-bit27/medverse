@@ -133,7 +133,7 @@ export default function FlashcardReview({ topicId, user, onClose }) {
     return (
       <div className="text-center py-12">
         <Brain className="w-12 h-12 text-[hsl(var(--mn-accent))] mx-auto mb-4 animate-pulse" />
-        <p className="text-muted-foreground">Načítání kartiček...</p>
+        <p className="text-[hsl(var(--mn-muted))]">Načítání kartiček...</p>
       </div>
     );
   }
@@ -144,7 +144,7 @@ export default function FlashcardReview({ topicId, user, onClose }) {
         <CardContent className="p-8 text-center">
           <Award className="w-16 h-16 text-[hsl(var(--mn-accent))] mx-auto mb-4" />
           <h3 className="text-xl font-semibold mb-2">Všechno hotovo! 🎉</h3>
-          <p className="text-muted-foreground mb-4">
+          <p className="text-[hsl(var(--mn-muted))] mb-4">
             Nemáte žádné kartičky k procvičení
           </p>
           <div className="flex gap-3 justify-center">
@@ -165,7 +165,7 @@ export default function FlashcardReview({ topicId, user, onClose }) {
       {/* Progress Bar */}
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">
+          <span className="text-[hsl(var(--mn-muted))]">
             Kartička {currentIndex + 1} z {flashcards.length}
           </span>
           <span className="font-medium">
@@ -219,7 +219,7 @@ export default function FlashcardReview({ topicId, user, onClose }) {
                 {currentCard.explanation && (
                   <div className="pt-4 border-t">
                     <Badge variant="outline" className="mb-2">Vysvětlení</Badge>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-[hsl(var(--mn-muted))]">
                       {currentCard.explanation}
                     </p>
                   </div>
@@ -233,7 +233,7 @@ export default function FlashcardReview({ topicId, user, onClose }) {
       {/* Rating Buttons */}
       {showAnswer && (
         <div className="space-y-3">
-          <p className="text-center text-sm text-muted-foreground">
+          <p className="text-center text-sm text-[hsl(var(--mn-muted))]">
             Jak dobře jste znali odpověď?
           </p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">

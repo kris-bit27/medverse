@@ -80,7 +80,7 @@ export default function TopBar({ user }) {
               {/* User Info */}
               <div className="px-4 py-3 border-b border-[hsl(var(--mn-border))]">
                 <p className="font-medium truncate">{user?.email}</p>
-                <p className="text-xs text-muted-foreground">Student účet</p>
+                <p className="text-xs text-[hsl(var(--mn-muted))]">Student účet</p>
               </div>
 
               {/* Menu Items */}
@@ -140,7 +140,7 @@ function UserMenuItem({ icon, label, description, to, onClick }) {
       </div>
       <div className="flex-1 min-w-0">
         <p className="font-medium text-sm">{label}</p>
-        <p className="text-xs text-muted-foreground truncate">{description}</p>
+        <p className="text-xs text-[hsl(var(--mn-muted))] truncate">{description}</p>
       </div>
     </Link>
   );

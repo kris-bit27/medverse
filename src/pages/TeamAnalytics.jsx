@@ -158,12 +158,12 @@ export default function TeamAnalytics() {
 
   if (userOrgs.length === 0) {
     return (
-      <div className="container max-w-4xl mx-auto p-6">
+      <div className="max-w-4xl mx-auto p-6">
         <Card>
           <CardContent className="p-12 text-center">
-            <BarChart3 className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+            <BarChart3 className="w-16 h-16 mx-auto mb-4 text-[hsl(var(--mn-muted))]" />
             <h3 className="text-xl font-bold mb-2">Není přístup k analytice</h3>
-            <p className="text-muted-foreground">
+            <p className="text-[hsl(var(--mn-muted))]">
               Pouze administrátoři organizací mají přístup k týmové analytice
             </p>
           </CardContent>
@@ -181,12 +181,12 @@ export default function TeamAnalytics() {
   }
 
   return (
-    <div className="container max-w-7xl mx-auto p-6 space-y-6">
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-3xl font-bold mb-2">Týmová Analytika</h1>
-          <p className="text-muted-foreground">
+          <p className="text-[hsl(var(--mn-muted))]">
             Sledujte výkon a pokrok vašeho týmu
           </p>
         </div>
@@ -225,20 +225,20 @@ export default function TeamAnalytics() {
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-2">
-                  <Users className="w-5 h-5 text-muted-foreground" />
+                  <Users className="w-5 h-5 text-[hsl(var(--mn-muted))]" />
                   <Badge variant={analytics.activeUsers / analytics.totalMembers > 0.5 ? 'default' : 'secondary'}>
                     {((analytics.activeUsers / analytics.totalMembers) * 100).toFixed(0)}% aktivních
                   </Badge>
                 </div>
                 <p className="text-2xl font-bold">{analytics.activeUsers}</p>
-                <p className="text-sm text-muted-foreground">z {analytics.totalMembers} členů</p>
+                <p className="text-sm text-[hsl(var(--mn-muted))]">z {analytics.totalMembers} členů</p>
               </CardContent>
             </Card>
 
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-2">
-                  <Target className="w-5 h-5 text-muted-foreground" />
+                  <Target className="w-5 h-5 text-[hsl(var(--mn-muted))]" />
                   {analytics.scoreTrend !== 0 && (
                     <div className="flex items-center gap-1">
                       {analytics.scoreTrend > 0 ? (
@@ -253,27 +253,27 @@ export default function TeamAnalytics() {
                   )}
                 </div>
                 <p className="text-2xl font-bold">{analytics.avgScore.toFixed(1)}%</p>
-                <p className="text-sm text-muted-foreground">Průměrné skóre</p>
+                <p className="text-sm text-[hsl(var(--mn-muted))]">Průměrné skóre</p>
               </CardContent>
             </Card>
 
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-2">
-                  <Activity className="w-5 h-5 text-muted-foreground" />
+                  <Activity className="w-5 h-5 text-[hsl(var(--mn-muted))]" />
                 </div>
                 <p className="text-2xl font-bold">{analytics.totalTests}</p>
-                <p className="text-sm text-muted-foreground">Dokončených testů</p>
+                <p className="text-sm text-[hsl(var(--mn-muted))]">Dokončených testů</p>
               </CardContent>
             </Card>
 
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-2">
-                  <Clock className="w-5 h-5 text-muted-foreground" />
+                  <Clock className="w-5 h-5 text-[hsl(var(--mn-muted))]" />
                 </div>
                 <p className="text-2xl font-bold">{analytics.totalStudyTime}</p>
-                <p className="text-sm text-muted-foreground">Minut studia</p>
+                <p className="text-sm text-[hsl(var(--mn-muted))]">Minut studia</p>
               </CardContent>
             </Card>
           </div>
@@ -300,7 +300,7 @@ export default function TeamAnalytics() {
                         </div>
                         <div>
                           <p className="font-semibold">{performer.name}</p>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-sm text-[hsl(var(--mn-muted))]">
                             {performer.testsCompleted} testů dokončeno
                           </p>
                         </div>
@@ -308,13 +308,13 @@ export default function TeamAnalytics() {
                       
                       <div className="text-right">
                         <p className="text-xl font-bold">{performer.avgScore.toFixed(1)}%</p>
-                        <p className="text-xs text-muted-foreground">Průměr</p>
+                        <p className="text-xs text-[hsl(var(--mn-muted))]">Průměr</p>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-center text-muted-foreground py-8">
+                <p className="text-center text-[hsl(var(--mn-muted))] py-8">
                   Zatím žádná data
                 </p>
               )}

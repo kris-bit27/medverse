@@ -573,14 +573,14 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
               <div>
-                <Label className="text-xs text-muted-foreground">Model</Label>
+                <Label className="text-xs text-[hsl(var(--mn-muted))]">Model</Label>
                 <div className="font-medium">
                   {lastGenerated?.metadata?.model || content.ai_model || 'N/A'}
                 </div>
               </div>
 
               <div>
-                <Label className="text-xs text-muted-foreground">Confidence</Label>
+                <Label className="text-xs text-[hsl(var(--mn-muted))]">Confidence</Label>
                 <div className="font-medium">
                   {lastGenerated?.confidence
                     ? `${(lastGenerated.confidence * 100).toFixed(0)}%`
@@ -589,14 +589,14 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
               </div>
 
               <div>
-                <Label className="text-xs text-muted-foreground">Náklady</Label>
+                <Label className="text-xs text-[hsl(var(--mn-muted))]">Náklady</Label>
                 <div className="font-medium">
                   ${lastGenerated?.metadata?.cost?.total || content.ai_cost || '0.00'}
                 </div>
               </div>
 
               <div>
-                <Label className="text-xs text-muted-foreground">Zdroje</Label>
+                <Label className="text-xs text-[hsl(var(--mn-muted))]">Zdroje</Label>
                 <div className="font-medium">
                   {lastGenerated?.sources?.length || content.source_pack?.external_refs?.length || 0}
                 </div>
@@ -704,7 +704,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
               <Label>Plný studijní text</Label>
-              <span className="text-xs text-muted-foreground">Markdown</span>
+              <span className="text-xs text-[hsl(var(--mn-muted))]">Markdown</span>
             </div>
             <div className="flex gap-2">
               <Button

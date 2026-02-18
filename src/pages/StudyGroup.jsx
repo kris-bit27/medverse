@@ -124,25 +124,25 @@ export default function StudyGroup() {
 
   if (isLoading) return <LoadingSpinner />;
   if (!group) return (
-    <div className="container max-w-4xl mx-auto px-4 py-12 text-center">
-      <p className="text-muted-foreground">Skupina nenalezena</p>
+    <div className="max-w-4xl mx-auto px-4 py-12 text-center">
+      <p className="text-[hsl(var(--mn-muted))]">Skupina nenalezena</p>
       <Link to={createPageUrl('Community')}><Button className="mt-4" variant="outline"><ArrowLeft className="w-4 h-4 mr-2" />Zpět na komunitu</Button></Link>
     </div>
   );
 
   return (
-    <div className="container max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <Link to={createPageUrl('Community')} className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 mb-2">
+          <Link to={createPageUrl('Community')} className="text-sm text-[hsl(var(--mn-muted))] hover:text-foreground flex items-center gap-1 mb-2">
             <ArrowLeft className="w-3.5 h-3.5" />Zpět na komunitu
           </Link>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             {group.name}
             {group.is_private && <Badge variant="outline" className="text-xs">Soukromá</Badge>}
           </h1>
-          <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
+          <div className="flex items-center gap-3 mt-1 text-sm text-[hsl(var(--mn-muted))]">
             {group.obory?.name && <span>{group.obory.name}</span>}
             <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5" />{members.length} členů</span>
           </div>
@@ -163,7 +163,7 @@ export default function StudyGroup() {
       </div>
 
       {group.description && (
-        <p className="text-muted-foreground">{group.description}</p>
+        <p className="text-[hsl(var(--mn-muted))]">{group.description}</p>
       )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -182,7 +182,7 @@ export default function StudyGroup() {
             <>
               {!showPostForm ? (
                 <Card className="cursor-pointer hover:border-primary/50 transition-colors" onClick={() => setShowPostForm(true)}>
-                  <CardContent className="p-4 flex items-center gap-3 text-muted-foreground">
+                  <CardContent className="p-4 flex items-center gap-3 text-[hsl(var(--mn-muted))]">
                     <Avatar className="w-8 h-8">
                       <AvatarFallback className="text-xs">{user?.email?.[0]?.toUpperCase()}</AvatarFallback>
                     </Avatar>
@@ -221,8 +221,8 @@ export default function StudyGroup() {
           {posts.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center">
-                <MessageSquare className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-                <p className="text-muted-foreground">Zatím žádné příspěvky</p>
+                <MessageSquare className="w-10 h-10 text-[hsl(var(--mn-muted))] mx-auto mb-3" />
+                <p className="text-[hsl(var(--mn-muted))]">Zatím žádné příspěvky</p>
               </CardContent>
             </Card>
           ) : (
@@ -239,14 +239,14 @@ export default function StudyGroup() {
                       <div className="flex items-center gap-2 flex-wrap">
                         {post.is_pinned && <Pin className="w-3 h-3 text-[hsl(var(--mn-warn))]" />}
                         <span className="font-medium text-sm">{post.author_name || 'Anonym'}</span>
-                        <span className="text-xs text-muted-foreground">{timeAgo(post.created_at)}</span>
+                        <span className="text-xs text-[hsl(var(--mn-muted))]">{timeAgo(post.created_at)}</span>
                         <Badge variant="outline" className="text-[10px] px-1.5 py-0">
                           {POST_TYPES.find(t => t.value === post.post_type)?.label || post.post_type}
                         </Badge>
                       </div>
                       <h3 className="font-semibold mt-1">{post.title}</h3>
-                      <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">{post.content}</p>
-                      <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
+                      <p className="text-sm text-[hsl(var(--mn-muted))] mt-1 whitespace-pre-wrap">{post.content}</p>
+                      <div className="flex items-center gap-4 mt-3 text-xs text-[hsl(var(--mn-muted))]">
                         <button className="flex items-center gap-1 hover:text-foreground transition-colors">
                           <ChevronUp className="w-3.5 h-3.5" />{post.upvotes || 0}
                         </button>
@@ -279,7 +279,7 @@ export default function StudyGroup() {
                         </Avatar>
                         <div>
                           <p className="font-medium text-sm">{name || 'Anonym'}</p>
-                          <p className="text-xs text-muted-foreground">Členem {timeAgo(member.joined_at)}</p>
+                          <p className="text-xs text-[hsl(var(--mn-muted))]">Členem {timeAgo(member.joined_at)}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">

@@ -126,8 +126,8 @@ export default function TopicNotes({ topicId }) {
     return (
       <Card>
         <CardContent className="p-6 text-center">
-          <StickyNote className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">
+          <StickyNote className="w-12 h-12 mx-auto mb-3 text-[hsl(var(--mn-muted))]" />
+          <p className="text-sm text-[hsl(var(--mn-muted))]">
             Přihlaste se pro vytváření poznámek
           </p>
         </CardContent>
@@ -184,7 +184,7 @@ export default function TopicNotes({ topicId }) {
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <StickyNote className="w-4 h-4 text-[hsl(var(--mn-accent))]" />
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs text-[hsl(var(--mn-muted))]">
                       {new Date(note.created_at).toLocaleDateString('cs-CZ')}
                     </span>
                     {note.is_private && (
@@ -219,7 +219,7 @@ export default function TopicNotes({ topicId }) {
                 <p className="text-sm whitespace-pre-wrap">{note.note_text}</p>
                 
                 {note.updated_at !== note.created_at && (
-                  <p className="text-xs text-muted-foreground mt-2">
+                  <p className="text-xs text-[hsl(var(--mn-muted))] mt-2">
                     Upraveno {new Date(note.updated_at).toLocaleDateString('cs-CZ')}
                   </p>
                 )}
@@ -230,8 +230,8 @@ export default function TopicNotes({ topicId }) {
       ) : (
         <Card>
           <CardContent className="p-8 text-center">
-            <StickyNote className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
-            <p className="text-sm text-muted-foreground">
+            <StickyNote className="w-12 h-12 mx-auto mb-3 text-[hsl(var(--mn-muted))]" />
+            <p className="text-sm text-[hsl(var(--mn-muted))]">
               Zatím žádné poznámky. Začněte psát!
             </p>
           </CardContent>

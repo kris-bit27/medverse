@@ -174,7 +174,7 @@ const MenubarShortcut = ({
 }) => {
   return (
     (<span
-      className={cn("ml-auto text-xs tracking-widest text-muted-foreground", className)}
+      className={cn("ml-auto text-xs tracking-widest text-[hsl(var(--mn-muted))]", className)}
       {...props} />)
   );
 }

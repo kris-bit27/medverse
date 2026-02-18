@@ -95,7 +95,7 @@ export default function AICredits() {
 
   if (error) {
     return (
-      <div className="container max-w-4xl mx-auto p-6">
+      <div className="max-w-4xl mx-auto p-6">
         <Card className="border-[hsl(var(--mn-danger)/0.3)]">
           <CardContent className="p-6">
             <p className="text-[hsl(var(--mn-danger))]">Chyba: {error}</p>
@@ -113,7 +113,7 @@ export default function AICredits() {
 
   if (!tokens) {
     return (
-      <div className="container max-w-4xl mx-auto p-6">
+      <div className="max-w-4xl mx-auto p-6">
         <Card>
           <CardContent className="p-6">
             <p>Inicializuji tokeny...</p>
@@ -127,11 +127,11 @@ export default function AICredits() {
   const daysUntilReset = Math.ceil((new Date(tokens.next_reset_date) - new Date()) / (1000 * 60 * 60 * 24));
 
   return (
-    <div className="container max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
       {/* Header */}
       <div>
         <h1 className="text-2xl lg:text-3xl font-bold mb-2">AI Kredity & Billing</h1>
-        <p className="text-muted-foreground">
+        <p className="text-[hsl(var(--mn-muted))]">
           Sleduj využití AI a spravuj platby
         </p>
       </div>
@@ -141,7 +141,7 @@ export default function AICredits() {
         <CardContent className="p-6">
           <div className="flex items-start justify-between mb-4">
             <div>
-              <p className="text-sm text-muted-foreground mb-1">Tento měsíc</p>
+              <p className="text-sm text-[hsl(var(--mn-muted))] mb-1">Tento měsíc</p>
               <h2 className="text-4xl font-bold">
                 {tokens.current_tokens.toLocaleString()} / {tokens.monthly_limit.toLocaleString()} 💎
               </h2>
@@ -168,10 +168,10 @@ export default function AICredits() {
           </div>
 
           <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">
+            <span className="text-[hsl(var(--mn-muted))]">
               Zbývá: <strong>{tokens.current_tokens.toLocaleString()} 💎</strong>
             </span>
-            <span className="text-muted-foreground">
+            <span className="text-[hsl(var(--mn-muted))]">
               Reset za: <strong>{daysUntilReset} {daysUntilReset === 1 ? 'den' : 'dny'}</strong>
             </span>
           </div>
@@ -194,7 +194,7 @@ export default function AICredits() {
           <CardContent className="p-6">
             <div className="flex items-center gap-3 mb-2">
               <Zap className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
-              <span className="text-sm text-muted-foreground">Celkem generací</span>
+              <span className="text-sm text-[hsl(var(--mn-muted))]">Celkem generací</span>
             </div>
             <p className="text-2xl font-bold">{transactions.length}</p>
           </CardContent>
@@ -204,7 +204,7 @@ export default function AICredits() {
           <CardContent className="p-6">
             <div className="flex items-center gap-3 mb-2">
               <TrendingUp className="w-5 h-5 text-[hsl(var(--mn-success))]" />
-              <span className="text-sm text-muted-foreground">Získáno</span>
+              <span className="text-sm text-[hsl(var(--mn-muted))]">Získáno</span>
             </div>
             <p className="text-2xl font-bold text-[hsl(var(--mn-success))]">
               {tokens.total_tokens_earned?.toLocaleString() || 0} 💎
@@ -216,7 +216,7 @@ export default function AICredits() {
           <CardContent className="p-6">
             <div className="flex items-center gap-3 mb-2">
               <CreditCard className="w-5 h-5 text-[hsl(var(--mn-accent-2))]" />
-              <span className="text-sm text-muted-foreground">Utraceno</span>
+              <span className="text-sm text-[hsl(var(--mn-muted))]">Utraceno</span>
             </div>
             <p className="text-2xl font-bold">
               {tokens.total_tokens_used?.toLocaleString() || 0} 💎
@@ -236,7 +236,7 @@ export default function AICredits() {
         <CardContent>
           <div className="space-y-2">
             {transactions.length === 0 ? (
-              <p className="text-center text-muted-foreground py-8">
+              <p className="text-center text-[hsl(var(--mn-muted))] py-8">
                 Zatím žádná aktivita
               </p>
             ) : (
@@ -249,7 +249,7 @@ export default function AICredits() {
                   >
                     <div className="flex-1">
                       <div className="font-medium">{transaction.type}</div>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-[hsl(var(--mn-muted))]">
                         {new Date(transaction.created_at).toLocaleDateString('cs-CZ', {
                           day: 'numeric',
                           month: 'short',
@@ -258,7 +258,7 @@ export default function AICredits() {
                         })}
                       </p>
                       {transaction.description && (
-                        <p className="text-xs text-muted-foreground mt-1">
+                        <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">
                           {transaction.description}
                         </p>
                       )}
@@ -289,7 +289,7 @@ export default function AICredits() {
               <p className="text-2xl font-bold text-[hsl(var(--mn-accent))] mt-1">
                 {tokens.plan_tier?.charAt(0).toUpperCase() + tokens.plan_tier?.slice(1) || 'Student'}
               </p>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="text-sm text-[hsl(var(--mn-muted))] mt-1">
                 {tokens.monthly_limit?.toLocaleString() || 1000} 💎/měsíc • {tokens.plan_price_czk || 250} Kč
               </p>
             </div>

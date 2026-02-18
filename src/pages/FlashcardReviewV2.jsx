@@ -193,7 +193,7 @@ export default function FlashcardReviewV2() {
 
   if (!dueCards.length) {
     return (
-      <div className="container max-w-2xl mx-auto p-6">
+      <div className="max-w-2xl mx-auto p-6">
         <Card>
           <CardContent className="p-12 text-center">
             <Zap className="w-16 h-16 mx-auto mb-4" />
@@ -209,7 +209,7 @@ export default function FlashcardReviewV2() {
   const card = dueCards[currentIndex];
 
   return (
-    <div className="container max-w-3xl mx-auto p-6 space-y-6">
+    <div className="max-w-3xl mx-auto p-6 space-y-6">
       <Progress value={((currentIndex + 1) / dueCards.length) * 100} />
 
       <div 
@@ -222,7 +222,7 @@ export default function FlashcardReviewV2() {
               {!isFlipped ? (
                 <>
                   <h3 className="mn-serif-font text-2xl font-bold">{card.question}</h3>
-                  <p className="text-sm text-muted-foreground mt-4">
+                  <p className="text-sm text-[hsl(var(--mn-muted))] mt-4">
                     Click to reveal
                   </p>
                 </>
@@ -230,7 +230,7 @@ export default function FlashcardReviewV2() {
                 <>
                   <h3 className="mn-ui-font text-xl font-bold mb-4">{card.answer}</h3>
                   {card.explanation && (
-                    <p className="text-sm text-muted-foreground mt-4">
+                    <p className="text-sm text-[hsl(var(--mn-muted))] mt-4">
                       {card.explanation}
                     </p>
                   )}

@@ -92,11 +92,11 @@ export default function StudyPlansV2() {
   }
 
   return (
-    <div className="container max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-3xl font-bold mb-2">Studijní Plány</h1>
-          <p className="text-muted-foreground">
+          <p className="text-[hsl(var(--mn-muted))]">
             Naplánujte si studium a sledujte pokrok
           </p>
         </div>
@@ -159,7 +159,7 @@ export default function StudyPlansV2() {
       {plans.length === 0 ? (
         <Card>
           <CardContent className="p-12 text-center">
-            <Calendar className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+            <Calendar className="w-16 h-16 mx-auto mb-4 text-[hsl(var(--mn-muted))]" />
             <h3 className="text-xl font-bold mb-2">Žádné plány</h3>
             <Button onClick={() => setShowCreateForm(true)}>
               <Plus className="w-4 h-4 mr-2" />

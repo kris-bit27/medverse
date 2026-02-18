@@ -191,7 +191,7 @@ export default function TestSession() {
       <div className="text-center py-20">
         <BookOpen className="w-12 h-12 mx-auto text-[hsl(var(--mn-muted))] mb-4" />
         <h2 className="text-xl font-bold mb-2">Žádné otázky</h2>
-        <p className="text-muted-foreground mb-4">Pro vybraná témata nejsou dostupné otázky.</p>
+        <p className="text-[hsl(var(--mn-muted))] mb-4">Pro vybraná témata nejsou dostupné otázky.</p>
         <Button asChild><Link to={createPageUrl('TestGeneratorV2')}>Zpět na generátor</Link></Button>
       </div>
     );
@@ -217,25 +217,25 @@ export default function TestSession() {
           </div>
           <h1 className="mn-mono-font text-3xl font-bold mb-2">Test dokončen!</h1>
           <p className="mn-mono-font text-5xl font-bold text-[hsl(var(--mn-accent))] mb-2">{score}%</p>
-          <p className="text-sm text-muted-foreground mb-6">
+          <p className="text-sm text-[hsl(var(--mn-muted))] mb-6">
             {correct}/{total} správně • {Math.floor(elapsed / 60)}:{(elapsed % 60).toString().padStart(2, '0')} min
           </p>
 
           <div className="grid grid-cols-2 gap-4 mb-8">
             <Card className="p-4 bg-[hsl(var(--mn-success)/0.08)]">
               <div className="text-2xl font-bold text-[hsl(var(--mn-success))]">{correct}</div>
-              <p className="text-sm text-muted-foreground">Správně</p>
+              <p className="text-sm text-[hsl(var(--mn-muted))]">Správně</p>
             </Card>
             <Card className="p-4 bg-[hsl(var(--mn-danger)/0.08)]">
               <div className="text-2xl font-bold text-[hsl(var(--mn-danger))]">{wrong}</div>
-              <p className="text-sm text-muted-foreground">Špatně</p>
+              <p className="text-sm text-[hsl(var(--mn-muted))]">Špatně</p>
             </Card>
           </div>
 
           {/* Review wrong answers */}
           {wrong > 0 && (
             <div className="text-left mb-8">
-              <h3 className="font-semibold mb-3 text-sm text-muted-foreground uppercase">Chybné odpovědi</h3>
+              <h3 className="font-semibold mb-3 text-sm text-[hsl(var(--mn-muted))] uppercase">Chybné odpovědi</h3>
               <div className="space-y-3">
                 {questions.filter(q => answers[q.id] && !answers[q.id].isCorrect).map(q => (
                   <Card key={q.id} className="p-4 border-[hsl(var(--mn-danger)/0.3)]">
@@ -245,7 +245,7 @@ export default function TestSession() {
                       <span className="text-[hsl(var(--mn-success))]">Správně: {q.correct_answer}</span>
                     </div>
                     {q.explanation && (
-                      <p className="text-xs text-muted-foreground mt-2 border-t pt-2">{q.explanation}</p>
+                      <p className="text-xs text-[hsl(var(--mn-muted))] mt-2 border-t pt-2">{q.explanation}</p>
                     )}
                   </Card>
                 ))}
@@ -277,7 +277,7 @@ export default function TestSession() {
           </Link>
         </Button>
         <div className="flex items-center gap-3">
-          <span className="text-sm text-muted-foreground">{currentIndex + 1} / {questions.length}</span>
+          <span className="text-sm text-[hsl(var(--mn-muted))]">{currentIndex + 1} / {questions.length}</span>
           <Badge variant={session.mode === 'timed' ? 'destructive' : 'outline'} className="text-xs">
             {session.mode === 'timed' ? `⏱ ${session.time_limit_minutes} min` : 'Praxe'}
           </Badge>

@@ -131,7 +131,7 @@ export default function ContentCoverage() {
             <div key={i} className="p-4 rounded-xl bg-[hsl(var(--mn-surface-2))]/50 border">
               <item.icon className="w-5 h-5 text-[hsl(var(--mn-muted))] mb-2" />
               <p className="text-2xl font-bold">{item.value}</p>
-              <p className="text-xs text-muted-foreground">{item.label}</p>
+              <p className="text-xs text-[hsl(var(--mn-muted))]">{item.label}</p>
               <p className="text-[10px] text-[hsl(var(--mn-muted))] mt-1">{item.sub}</p>
             </div>
           ))}
@@ -140,7 +140,7 @@ export default function ContentCoverage() {
         {/* Completeness bar */}
         <div>
           <div className="flex justify-between text-sm mb-1">
-            <span className="text-muted-foreground">Kompletní topics (FC + Q + C)</span>
+            <span className="text-[hsl(var(--mn-muted))]">Kompletní topics (FC + Q + C)</span>
             <span className="font-bold">{completePct}%</span>
           </div>
           <Progress value={completePct} className="h-2" />
@@ -148,7 +148,7 @@ export default function ContentCoverage() {
 
         {/* Per-obor */}
         <div className="space-y-2">
-          <p className="text-sm font-medium text-muted-foreground">Coverage dle oborů</p>
+          <p className="text-sm font-medium text-[hsl(var(--mn-muted))]">Coverage dle oborů</p>
           {Object.entries(s.byObor).sort(([,a],[,b]) => b.total - a.total).map(([name, d]) => (
             <div key={name} className="flex items-center justify-between text-sm py-1.5 border-b border-[hsl(var(--mn-border))]">
               <span className="text-[hsl(var(--mn-muted))]">{name}</span>
@@ -175,7 +175,7 @@ export default function ContentCoverage() {
         )}
 
         {/* Batch queue */}
-        <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2 border-t">
+        <div className="flex items-center gap-4 text-xs text-[hsl(var(--mn-muted))] pt-2 border-t">
           <span>Batch queue: {s.pendingCount} pending / {s.completedCount} completed</span>
         </div>
       </CardContent>

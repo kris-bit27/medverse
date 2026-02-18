@@ -142,10 +142,10 @@ export default function TestResults() {
 
   if (!session || !analytics) {
     return (
-      <div className="container max-w-2xl mx-auto p-6">
+      <div className="max-w-2xl mx-auto p-6">
         <Card>
           <CardContent className="p-12 text-center">
-            <p className="text-muted-foreground">Výsledky nenalezeny</p>
+            <p className="text-[hsl(var(--mn-muted))]">Výsledky nenalezeny</p>
             <Button onClick={() => navigate(createPageUrl('Dashboard'))} className="mt-4">
               Zpět na Dashboard
             </Button>
@@ -173,11 +173,11 @@ export default function TestResults() {
   const ScoreIcon = scoreBadge.icon;
 
   return (
-    <div className="container max-w-6xl mx-auto p-6 space-y-6">
+    <div className="max-w-6xl mx-auto p-6 space-y-6">
       {/* Header */}
       <div className="text-center">
         <h1 className="text-3xl font-bold mb-2">Výsledky testu</h1>
-        <p className="text-muted-foreground">
+        <p className="text-[hsl(var(--mn-muted))]">
           Test dokončen {new Date(session.completed_at).toLocaleString('cs-CZ')}
         </p>
       </div>
@@ -200,22 +200,22 @@ export default function TestResults() {
           <div className="grid md:grid-cols-3 gap-6 mb-6">
             <div className="text-center">
               <div className="text-3xl font-bold text-green-600">{analytics.correct}</div>
-              <div className="text-sm text-muted-foreground">Správně</div>
+              <div className="text-sm text-[hsl(var(--mn-muted))]">Správně</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-red-600">{analytics.incorrect}</div>
-              <div className="text-sm text-muted-foreground">Chybně</div>
+              <div className="text-sm text-[hsl(var(--mn-muted))]">Chybně</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold">{analytics.total}</div>
-              <div className="text-sm text-muted-foreground">Celkem</div>
+              <div className="text-sm text-[hsl(var(--mn-muted))]">Celkem</div>
             </div>
           </div>
 
           <Progress value={analytics.score} className="h-4" />
 
           <div className="flex items-center justify-center gap-4 mt-6">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2 text-sm text-[hsl(var(--mn-muted))]">
               <Clock className="w-4 h-4" />
               <span>
                 Čas: {Math.floor(session.time_spent_seconds / 60)}:
@@ -243,14 +243,14 @@ export default function TestResults() {
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
                         <p className="font-medium text-sm">{topic.topicTitle}</p>
-                        <p className="text-xs text-muted-foreground">{topic.okruhName}</p>
+                        <p className="text-xs text-[hsl(var(--mn-muted))]">{topic.okruhName}</p>
                       </div>
                       <Badge variant="destructive">
                         {topic.successRate.toFixed(0)}%
                       </Badge>
                     </div>
                     <Progress value={topic.successRate} className="h-2" />
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-[hsl(var(--mn-muted))]">
                       {topic.correct}/{topic.total} správně
                     </p>
                   </div>
@@ -281,14 +281,14 @@ export default function TestResults() {
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
                         <p className="font-medium text-sm">{topic.topicTitle}</p>
-                        <p className="text-xs text-muted-foreground">{topic.okruhName}</p>
+                        <p className="text-xs text-[hsl(var(--mn-muted))]">{topic.okruhName}</p>
                       </div>
                       <Badge variant="default" className="bg-green-600">
                         {topic.successRate.toFixed(0)}%
                       </Badge>
                     </div>
                     <Progress value={topic.successRate} className="h-2" />
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-[hsl(var(--mn-muted))]">
                       {topic.correct}/{topic.total} správně
                     </p>
                   </div>
@@ -334,14 +334,14 @@ export default function TestResults() {
 
                     <div className="grid md:grid-cols-2 gap-3 text-sm">
                       <div>
-                        <span className="text-muted-foreground">Vaše odpověď: </span>
+                        <span className="text-[hsl(var(--mn-muted))]">Vaše odpověď: </span>
                         <span className={answer.is_correct ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}>
                           {answer.user_answer || 'Neodpovězeno'}
                         </span>
                       </div>
                       {!answer.is_correct && (
                         <div>
-                          <span className="text-muted-foreground">Správná odpověď: </span>
+                          <span className="text-[hsl(var(--mn-muted))]">Správná odpověď: </span>
                           <span className="text-green-600 font-medium">
                             {answer.questions?.correct_answer}
                           </span>
@@ -352,7 +352,7 @@ export default function TestResults() {
                     {answer.questions?.explanation && (
                       <div className="mt-3 p-3 bg-slate-100 dark:bg-slate-900 rounded text-sm">
                         <p className="font-medium mb-1">Vysvětlení:</p>
-                        <p className="text-muted-foreground">{answer.questions.explanation}</p>
+                        <p className="text-[hsl(var(--mn-muted))]">{answer.questions.explanation}</p>
                       </div>
                     )}
                   </div>

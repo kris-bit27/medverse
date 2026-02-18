@@ -181,7 +181,7 @@ export default function FlashcardGenerator({ topicId, topicContent }) {
           <CardContent className="p-6 text-center">
             <Sparkles className="w-12 h-12 mx-auto mb-3 text-[hsl(var(--mn-accent))]" />
             <h3 className="font-semibold mb-2">AI Generátor Kartiček</h3>
-            <p className="text-sm text-muted-foreground mb-4">
+            <p className="text-sm text-[hsl(var(--mn-muted))] mb-4">
               Automaticky vytvoř kartičky z obsahu tématu
             </p>
             <Button 
@@ -226,7 +226,7 @@ export default function FlashcardGenerator({ topicId, topicContent }) {
             </div>
           </div>
 
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-[hsl(var(--mn-muted))]">
             💡 Po uložení můžete vygenerovat nové kartičky z jiné části textu
           </p>
 
@@ -263,12 +263,12 @@ export default function FlashcardGenerator({ topicId, topicContent }) {
 
                     <div className="space-y-2">
                       <div>
-                        <p className="text-xs text-muted-foreground mb-1">Přední strana:</p>
+                        <p className="text-xs text-[hsl(var(--mn-muted))] mb-1">Přední strana:</p>
                         <p className="font-medium">{card.front}</p>
                       </div>
                       
                       <div>
-                        <p className="text-xs text-muted-foreground mb-1">Zadní strana:</p>
+                        <p className="text-xs text-[hsl(var(--mn-muted))] mb-1">Zadní strana:</p>
                         <p className="text-sm">{card.back}</p>
                       </div>
                     </div>

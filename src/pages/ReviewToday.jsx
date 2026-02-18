@@ -241,7 +241,7 @@ export default function ReviewToday() {
 
   if (!flashcards.length) {
     return (
-      <div className="container max-w-3xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
         {/* Filters */}
         <Card className="bg-[hsl(var(--mn-surface))] border-[hsl(var(--mn-border))]">
           <CardContent className="p-6">
@@ -264,7 +264,7 @@ export default function ReviewToday() {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="text-sm text-muted-foreground mb-2 block">Obor</label>
+                <label className="text-sm text-[hsl(var(--mn-muted))] mb-2 block">Obor</label>
                 <Select value={selectedObor} onValueChange={setSelectedObor}>
                   <SelectTrigger>
                     <SelectValue />
@@ -281,7 +281,7 @@ export default function ReviewToday() {
               </div>
 
               <div>
-                <label className="text-sm text-muted-foreground mb-2 block">Okruh</label>
+                <label className="text-sm text-[hsl(var(--mn-muted))] mb-2 block">Okruh</label>
                 <Select value={selectedOkruh} onValueChange={setSelectedOkruh}>
                   <SelectTrigger>
                     <SelectValue />
@@ -298,7 +298,7 @@ export default function ReviewToday() {
               </div>
 
               <div>
-                <label className="text-sm text-muted-foreground mb-2 block">Téma</label>
+                <label className="text-sm text-[hsl(var(--mn-muted))] mb-2 block">Téma</label>
                 <Select value={selectedTopic} onValueChange={setSelectedTopic}>
                   <SelectTrigger>
                     <SelectValue />
@@ -321,7 +321,7 @@ export default function ReviewToday() {
           <CardContent className="p-12 text-center">
             <Zap className="w-16 h-16 mx-auto mb-4 text-[hsl(var(--mn-accent))]" />
             <h2 className="mn-serif-font text-2xl font-bold mb-2">Žádné kartičky!</h2>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-[hsl(var(--mn-muted))] mb-6">
               {selectedObor !== 'all' || selectedOkruh !== 'all' || selectedTopic !== 'all'
                 ? 'Zkuste změnit filtry nebo vytvořte nové kartičky'
                 : 'Vytvořte si kartičky v sekci Studium'}
@@ -339,7 +339,7 @@ export default function ReviewToday() {
   const progressPercent = ((currentIndex + 1) / flashcards.length) * 100;
 
   return (
-    <div className="container max-w-3xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <Button
@@ -351,7 +351,7 @@ export default function ReviewToday() {
           Zpět
         </Button>
         
-        <div className="text-sm text-muted-foreground">
+        <div className="text-sm text-[hsl(var(--mn-muted))]">
           {currentIndex + 1} / {flashcards.length}
         </div>
       </div>
@@ -425,7 +425,7 @@ export default function ReviewToday() {
       {/* Progress */}
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">Postup</span>
+          <span className="text-[hsl(var(--mn-muted))]">Postup</span>
           <span className="font-medium">
             {sessionStats.reviewed} zkontrolováno • {sessionStats.correct} správně
           </span>
@@ -435,7 +435,7 @@ export default function ReviewToday() {
 
       {/* Topic Info */}
       {card.topics && (
-        <div className="text-sm text-muted-foreground">
+        <div className="text-sm text-[hsl(var(--mn-muted))]">
           {card.topics.obory?.name} → {card.topics.okruhy?.name} → {card.topics.title}
         </div>
       )}
@@ -451,16 +451,16 @@ export default function ReviewToday() {
               {!isFlipped ? (
                 <>
                   <h3 className="mn-serif-font text-2xl font-bold mb-4">{card.question}</h3>
-                  <p className="text-sm text-muted-foreground mt-4">
+                  <p className="text-sm text-[hsl(var(--mn-muted))] mt-4">
                     Klikněte pro zobrazení odpovědi
                   </p>
                 </>
               ) : (
                 <>
-                  <p className="text-sm text-muted-foreground mb-2">Odpověď:</p>
+                  <p className="text-sm text-[hsl(var(--mn-muted))] mb-2">Odpověď:</p>
                   <h3 className="mn-ui-font text-xl font-bold mb-4">{card.answer}</h3>
                   {card.explanation && (
-                    <p className="text-sm text-muted-foreground mt-4">
+                    <p className="text-sm text-[hsl(var(--mn-muted))] mt-4">
                       {card.explanation}
                     </p>
                   )}
@@ -524,7 +524,7 @@ export default function ReviewToday() {
                   : 0}%
               </span>
             </div>
-            <div className="text-muted-foreground">
+            <div className="text-[hsl(var(--mn-muted))]">
               {flashcards.length - currentIndex - 1} zbývá
             </div>
           </div>
