@@ -142,7 +142,7 @@ export default function TestResultsV2() {
       {/* Header */}
       <div className="text-center space-y-2">
         <Trophy className={`w-16 h-16 mx-auto ${getGradeColor(score)}`} />
-        <h1 className="text-4xl font-bold">{getGradeText(score)}</h1>
+        <h1 className="mn-mono-font text-4xl font-bold">{getGradeText(score)}</h1>
         <p className="text-muted-foreground">Test dokončen</p>
       </div>
 
@@ -166,7 +166,7 @@ export default function TestResultsV2() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Správně</p>
-                <p className="text-3xl font-bold text-[hsl(var(--mn-success))]">{correctAnswers}</p>
+                <p className="mn-mono-font text-3xl font-bold text-[hsl(var(--mn-success))]">{correctAnswers}</p>
               </div>
               <CheckCircle2 className="w-12 h-12 text-[hsl(var(--mn-success))]" />
             </div>
@@ -178,7 +178,7 @@ export default function TestResultsV2() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Špatně</p>
-                <p className="text-3xl font-bold text-[hsl(var(--mn-danger))]">{totalQuestions - correctAnswers}</p>
+                <p className="mn-mono-font text-3xl font-bold text-[hsl(var(--mn-danger))]">{totalQuestions - correctAnswers}</p>
               </div>
               <XCircle className="w-12 h-12 text-[hsl(var(--mn-danger))]" />
             </div>
@@ -190,7 +190,7 @@ export default function TestResultsV2() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Čas</p>
-                <p className="text-3xl font-bold">{formatTime(timeSpent)}</p>
+                <p className="mn-mono-font text-3xl font-bold">{formatTime(timeSpent)}</p>
               </div>
               <Clock className="w-12 h-12 text-muted-foreground" />
             </div>

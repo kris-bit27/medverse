@@ -241,7 +241,7 @@ export default function MyProfile() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold mb-2">Můj profil</h1>
+          <h1 className="text-2xl lg:mn-mono-font text-3xl font-bold mb-2">Můj profil</h1>
           <p className="text-muted-foreground">
             Spravuj své informace a personalizuj AI asistenta
           </p>
@@ -378,7 +378,7 @@ function AchievementBadge({ icon, label, tokens, earned }) {
       flex flex-col items-center p-2 rounded-xl border-2 transition-all
       ${earned 
         ? 'bg-[hsl(var(--mn-success)/0.06)] border-[hsl(var(--mn-success)/0.3)]' 
-        : 'bg-[hsl(var(--mn-bg))] border-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-surface)/0.5)] opacity-60'
+        : 'bg-[hsl(var(--mn-bg))] border-[hsl(var(--mn-border))] opacity-60'
       }
     `}>
       <span className="text-2xl mb-1">{earned ? '✅' : icon}</span>

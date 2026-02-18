@@ -181,7 +181,7 @@ export default function AccountSettings() {
     <div className="container max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl lg:text-3xl font-bold mb-2">Nastavení účtu</h1>
+        <h1 className="text-2xl lg:mn-mono-font text-3xl font-bold mb-2">Nastavení účtu</h1>
         <p className="text-muted-foreground">
           Spravuj zabezpečení, notifikace a soukromí
         </p>

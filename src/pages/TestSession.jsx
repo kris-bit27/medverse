@@ -215,8 +215,8 @@ export default function TestSession() {
           }`}>
             <Trophy className="w-12 h-12 text-[hsl(var(--mn-text))]" />
           </div>
-          <h1 className="text-3xl font-bold mb-2">Test dokončen!</h1>
-          <p className="text-5xl font-bold text-[hsl(var(--mn-accent))] mb-2">{score}%</p>
+          <h1 className="mn-mono-font text-3xl font-bold mb-2">Test dokončen!</h1>
+          <p className="mn-mono-font text-5xl font-bold text-[hsl(var(--mn-accent))] mb-2">{score}%</p>
           <p className="text-sm text-muted-foreground mb-6">
             {correct}/{total} správně • {Math.floor(elapsed / 60)}:{(elapsed % 60).toString().padStart(2, '0')} min
           </p>
