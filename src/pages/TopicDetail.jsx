@@ -90,7 +90,7 @@ export default function TopicDetail() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-[hsl(var(--mn-accent))] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -225,7 +225,7 @@ export default function TopicDetail() {
                         onClick={() => setActiveView(view.id)}
                         className={`flex-1 px-6 py-4 font-medium transition-colors flex items-center justify-center gap-2 ${
                           isActive
-                            ? 'bg-teal-50 dark:bg-teal-950/20 text-teal-600 border-b-2 border-teal-600'
+                            ? 'bg-[hsl(var(--mn-accent)/0.06)] text-[hsl(var(--mn-accent))] border-b-2 border-[hsl(var(--mn-accent))]'
                             : 'text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))]'
                         }`}
                       >
@@ -239,15 +239,15 @@ export default function TopicDetail() {
                 <div className="p-8">
                   {currentContent ? (
                     <article className="prose prose-lg dark:prose-invert max-w-none
-                      prose-headings:font-bold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
+                      prose-headings:font-bold prose-headings:text-[hsl(var(--mn-text))]
                       prose-h1:text-3xl prose-h1:mb-4 prose-h1:mt-8
                       prose-h2:text-2xl prose-h2:mb-3 prose-h2:mt-6 prose-h2:pb-2 prose-h2:border-b prose-h2:border-[hsl(var(--mn-border))]
                       prose-h3:text-xl prose-h3:mb-2 prose-h3:mt-4
-                      prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-p:leading-relaxed prose-p:mb-4
-                      prose-li:text-slate-700 dark:prose-li:text-slate-300 prose-li:leading-relaxed
-                      prose-strong:text-slate-900 dark:prose-strong:text-slate-100 prose-strong:font-semibold
-                      prose-code:text-teal-600 prose-code:bg-teal-50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
-                      prose-pre:bg-slate-100 dark:prose-pre:bg-slate-800 prose-pre:border prose-pre:border-[hsl(var(--mn-border))]
+                      prose-p:text-[hsl(var(--mn-text))] dark:prose-p:text-[hsl(var(--mn-muted))] prose-p:leading-relaxed prose-p:mb-4
+                      prose-li:text-[hsl(var(--mn-text))] dark:prose-li:text-[hsl(var(--mn-muted))] prose-li:leading-relaxed
+                      prose-strong:text-[hsl(var(--mn-text))] prose-strong:font-semibold
+                      prose-code:text-[hsl(var(--mn-accent))] prose-code:bg-[hsl(var(--mn-accent)/0.06)] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
+                      prose-pre:bg-[hsl(var(--mn-surface-2))] dark:prose-pre:bg-[hsl(var(--mn-surface-2))] prose-pre:border prose-pre:border-[hsl(var(--mn-border))]
                       prose-ul:my-4 prose-ol:my-4 prose-li:my-1">
                       <ReactMarkdown>{currentContent}</ReactMarkdown>
                     </article>
@@ -261,14 +261,14 @@ export default function TopicDetail() {
 
               {/* Learning Objectives */}
               {topic.learning_objectives?.length > 0 && (
-                <div className="bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-950/20 dark:to-cyan-950/20 rounded-xl p-6 shadow-sm">
+                <div className="bg-gradient-to-br from-[hsl(var(--mn-accent)/0.06)] to-[hsl(var(--mn-accent-2)/0.06)] rounded-xl p-6 shadow-sm">
                   <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                    <Target className="w-5 h-5 text-teal-600" /> Výukové cíle
+                    <Target className="w-5 h-5 text-[hsl(var(--mn-accent))]" /> Výukové cíle
                   </h3>
                   <ul className="space-y-2">
                     {topic.learning_objectives.map((obj, idx) => (
                       <li key={idx} className="flex items-start gap-3">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-teal-600 text-white text-xs font-bold flex items-center justify-center mt-0.5">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[hsl(var(--mn-accent))] text-white text-xs font-bold flex items-center justify-center mt-0.5">
                           {idx + 1}
                         </span>
                         <span className="text-[hsl(var(--mn-muted))] leading-relaxed">{obj}</span>
@@ -306,7 +306,7 @@ export default function TopicDetail() {
                 {sidebarPanel === 'notes' && (
                   <div className="bg-[hsl(var(--mn-surface))] rounded-xl p-6 shadow-sm">
                     <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                      <StickyNote className="w-5 h-5 text-orange-400" /> Moje poznámky
+                      <StickyNote className="w-5 h-5 text-[hsl(var(--mn-warn))]" /> Moje poznámky
                     </h3>
                     <TopicNotes topicId={topicId} />
                   </div>
@@ -316,7 +316,7 @@ export default function TopicDetail() {
                 {sidebarPanel === 'flashcards' && (
                   <div className="bg-[hsl(var(--mn-surface))] rounded-xl p-6 shadow-sm space-y-4">
                     <h3 className="font-bold text-lg flex items-center gap-2">
-                      <Sparkles className="w-5 h-5 text-teal-400" /> Kartičky
+                      <Sparkles className="w-5 h-5 text-[hsl(var(--mn-accent))]" /> Kartičky
                     </h3>
 
                     {/* Progress summary */}
@@ -326,12 +326,12 @@ export default function TopicDetail() {
                           <div className="font-bold text-lg">{flashcards.length}</div>
                           <div className="text-muted-foreground text-xs">Celkem</div>
                         </div>
-                        <div className="bg-green-50 dark:bg-green-950/20 rounded-lg p-2">
-                          <div className="font-bold text-lg text-green-600">{masteredCount}</div>
+                        <div className="bg-[hsl(var(--mn-success)/0.06)] rounded-lg p-2">
+                          <div className="font-bold text-lg text-[hsl(var(--mn-success))]">{masteredCount}</div>
                           <div className="text-muted-foreground text-xs">Zvládnuto</div>
                         </div>
-                        <div className="bg-teal-50 dark:bg-teal-950/20 rounded-lg p-2">
-                          <div className="font-bold text-lg text-teal-600">
+                        <div className="bg-[hsl(var(--mn-accent)/0.06)] rounded-lg p-2">
+                          <div className="font-bold text-lg text-[hsl(var(--mn-accent))]">
                             {flashcards.length > 0 ? Math.round((masteredCount / flashcards.length) * 100) : 0}%
                           </div>
                           <div className="text-muted-foreground text-xs">Progres</div>
@@ -357,7 +357,7 @@ export default function TopicDetail() {
                 {sidebarPanel === 'sources' && (
                   <div className="bg-[hsl(var(--mn-surface))] rounded-xl p-6 shadow-sm">
                     <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                      <LinkIcon className="w-5 h-5 text-blue-400" /> Zdroje
+                      <LinkIcon className="w-5 h-5 text-[hsl(var(--mn-accent-2))]" /> Zdroje
                     </h3>
                     <div className="space-y-3">
                       {(topic.sources || []).map((source, idx) => (
@@ -367,7 +367,7 @@ export default function TopicDetail() {
                             <p className="font-medium text-sm">{source.title || `Zdroj ${idx + 1}`}</p>
                             {source.url && (
                               <a href={source.url} target="_blank" rel="noopener noreferrer"
-                                className="text-xs text-teal-600 hover:underline truncate block">
+                                className="text-xs text-[hsl(var(--mn-accent))] hover:underline truncate block">
                                 {source.url}
                               </a>
                             )}

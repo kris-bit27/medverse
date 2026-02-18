@@ -322,7 +322,7 @@ export default function AdminQuestionEdit() {
             <Button 
               type="submit" 
               disabled={saveMutation.isPending}
-              className="bg-teal-600 hover:bg-teal-700"
+              className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]"
             >
               {saveMutation.isPending ? (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />

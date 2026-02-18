@@ -251,7 +251,7 @@ function StudyGroupsTab() {
             const isOwner = group.owner_id === user?.id;
             return (
               <Card key={group.id} className="group hover:shadow-md transition-all relative overflow-hidden">
-                <div className={`absolute top-0 left-0 right-0 h-1 ${typeInfo.color.includes('purple') ? 'bg-purple-500' : typeInfo.color.includes('blue') ? 'bg-[hsl(var(--mn-accent-2))]' : typeInfo.color.includes('emerald') ? 'bg-[hsl(var(--mn-success))]' : typeInfo.color.includes('amber') ? 'bg-[hsl(var(--mn-warn))]' : 'bg-[hsl(var(--mn-border))]'}`} />
+                <div className={`absolute top-0 left-0 right-0 h-1 ${typeInfo.color.includes('purple') ? 'bg-[#a855f7]' : typeInfo.color.includes('blue') ? 'bg-[hsl(var(--mn-accent-2))]' : typeInfo.color.includes('emerald') ? 'bg-[hsl(var(--mn-success))]' : typeInfo.color.includes('amber') ? 'bg-[hsl(var(--mn-warn))]' : 'bg-[hsl(var(--mn-border))]'}`} />
                 <CardContent className="p-5 pt-6">
                   <div className="flex items-start gap-3 mb-3">
                     <div className={`p-2.5 rounded-xl border ${typeInfo.color}`}>

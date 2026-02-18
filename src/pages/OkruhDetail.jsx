@@ -103,7 +103,7 @@ export default function OkruhDetail() {
     <div className="p-6 lg:p-8 max-w-6xl mx-auto">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-[hsl(var(--mn-muted))] mb-6">
-        <Link to={createPageUrl('Studium')} className="hover:text-teal-600 transition-colors flex items-center gap-1">
+        <Link to={createPageUrl('Studium')} className="hover:text-[hsl(var(--mn-accent))] transition-colors flex items-center gap-1">
           <ChevronLeft className="w-4 h-4" />
           Studium
         </Link>
@@ -134,7 +134,7 @@ export default function OkruhDetail() {
           </div>
         </div>
 
-        <Button asChild className="bg-teal-600 hover:bg-teal-700 flex-shrink-0">
+        <Button asChild className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)] flex-shrink-0">
           <Link to={createPageUrl('TestGenerator') + `?okruh=${okruhId}`}>
             <Play className="w-4 h-4 mr-2" />
             Spustit test
@@ -146,7 +146,7 @@ export default function OkruhDetail() {
       <Card className="mb-8 p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-[hsl(var(--mn-text))]">Celkový pokrok</h3>
-          <span className="text-2xl font-bold text-teal-600">{overallPercentage}%</span>
+          <span className="text-2xl font-bold text-[hsl(var(--mn-accent))]">{overallPercentage}%</span>
         </div>
         <Progress value={overallPercentage} className="h-3" />
         <p className="text-sm text-[hsl(var(--mn-muted))] mt-2">
@@ -169,17 +169,17 @@ export default function OkruhDetail() {
             whileHover={{ scale: 1.02, x: 5 }}
           >
             <Link to={createPageUrl('TopicDetail') + `?id=${topic.id}`}>
-              <Card className="hover:shadow-xl hover:border-teal-300 dark:hover:border-teal-700 transition-all duration-300 cursor-pointer group">
+              <Card className="hover:shadow-xl hover:border-[hsl(var(--mn-accent)/0.4)] transition-all duration-300 cursor-pointer group">
                 <CardContent className="p-4 sm:p-5">
                 <div className="flex items-center gap-4">
                   {/* Progress indicator */}
-                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/30 dark:to-cyan-900/30 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform border-2 border-teal-200 dark:border-teal-800">
-                    <span className="text-lg font-bold text-teal-600 dark:text-teal-400">{topic.percentage}%</span>
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[hsl(var(--mn-accent)/0.06)] to-[hsl(var(--mn-accent-2)/0.06)] flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform border-2 border-[hsl(var(--mn-accent)/0.2)] dark:border-[hsl(var(--mn-accent)/0.3)]">
+                    <span className="text-lg font-bold text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))]">{topic.percentage}%</span>
                   </div>
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-[hsl(var(--mn-text))] mb-2 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                    <h3 className="font-semibold text-[hsl(var(--mn-text))] mb-2 group-hover:text-[hsl(var(--mn-accent))] dark:group-hover:text-[hsl(var(--mn-accent))] transition-colors">
                       {topic.title}
                     </h3>
                     <div className="flex items-center gap-3 text-xs sm:text-sm text-[hsl(var(--mn-muted))] mb-2">
@@ -187,9 +187,9 @@ export default function OkruhDetail() {
                         <Target className="w-3.5 h-3.5" />
                         {topic.questionsCount} otázek
                       </span>
-                      <span className="text-[hsl(var(--mn-muted))] dark:text-slate-600">•</span>
+                      <span className="text-[hsl(var(--mn-muted))] dark:text-[hsl(var(--mn-muted))]">•</span>
                       <span className="flex items-center gap-1">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-teal-600" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[hsl(var(--mn-accent))]" />
                         {topic.mastered} zvládnuto
                       </span>
                     </div>
@@ -200,7 +200,7 @@ export default function OkruhDetail() {
                   {topic.tags && topic.tags.length > 0 && (
                     <div className="hidden sm:flex gap-1.5 flex-shrink-0">
                       {topic.tags.slice(0, 2).map((tag, i) => (
-                        <Badge key={i} variant="outline" className="text-xs group-hover:border-teal-300 dark:group-hover:border-teal-700 transition-colors">
+                        <Badge key={i} variant="outline" className="text-xs group-hover:border-[hsl(var(--mn-accent)/0.4)] transition-colors">
                           {tag}
                         </Badge>
                       ))}
@@ -236,16 +236,16 @@ export default function OkruhDetail() {
                 <Link
                   key={question.id}
                   to={createPageUrl('QuestionDetail') + `?id=${question.id}`}
-                  className="flex items-center gap-4 p-4 bg-[hsl(var(--mn-surface))] rounded-lg border border-[hsl(var(--mn-border))] hover:border-teal-300 dark:hover:border-teal-700 transition-colors group"
+                  className="flex items-center gap-4 p-4 bg-[hsl(var(--mn-surface))] rounded-lg border border-[hsl(var(--mn-border))] hover:border-[hsl(var(--mn-accent)/0.4)] transition-colors group"
                 >
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-[hsl(var(--mn-text))] group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors truncate">
+                    <p className="font-medium text-[hsl(var(--mn-text))] group-hover:text-[hsl(var(--mn-accent))] dark:group-hover:text-[hsl(var(--mn-accent))] transition-colors truncate">
                       {question.title}
                     </p>
                     <DifficultyIndicator level={question.difficulty || 1} />
                   </div>
                   <StatusBadge status={questionProgress?.status || 'new'} size="sm" />
-                  <ChevronRight className="w-4 h-4 text-[hsl(var(--mn-muted))] group-hover:text-teal-600 transition-colors" />
+                  <ChevronRight className="w-4 h-4 text-[hsl(var(--mn-muted))] group-hover:text-[hsl(var(--mn-accent))] transition-colors" />
                 </Link>
               );
             })}

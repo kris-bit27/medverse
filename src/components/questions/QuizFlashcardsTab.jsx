@@ -51,9 +51,9 @@ export default function QuizFlashcardsTab({ question, user, topic }) {
   if (!featureCheck.allowed) {
     const upsell = UPSELL_MESSAGES.quiz;
     return (
-      <Card className="bg-gradient-to-br from-teal-50 to-indigo-50 dark:from-teal-900/20 dark:to-indigo-900/20 border-teal-200 dark:border-teal-800">
+      <Card className="bg-gradient-to-br from-[hsl(var(--mn-accent)/0.06)] to-[#6366f1/0.06] border-[hsl(var(--mn-accent)/0.2)] dark:border-[hsl(var(--mn-accent)/0.3)]">
         <CardContent className="p-8 text-center">
-          <Brain className="w-12 h-12 mx-auto mb-4 text-teal-600" />
+          <Brain className="w-12 h-12 mx-auto mb-4 text-[hsl(var(--mn-accent))]" />
           <h3 className="text-lg font-semibold text-[hsl(var(--mn-text))] mb-2">
             {upsell.title}
           </h3>
@@ -63,7 +63,7 @@ export default function QuizFlashcardsTab({ question, user, topic }) {
           <p className="text-[hsl(var(--mn-muted))] mb-4 text-sm">
             {upsell.description}
           </p>
-          <Button asChild className="bg-gradient-to-r from-teal-500 to-indigo-500 hover:from-teal-600 hover:to-indigo-600">
+          <Button asChild className="bg-gradient-to-r from-[hsl(var(--mn-accent))] to-indigo-500 hover:from-[hsl(var(--mn-accent))] hover:to-indigo-600">
             <Link to={createPageUrl('Pricing')}>
               {upsell.cta}
             </Link>
@@ -77,7 +77,7 @@ export default function QuizFlashcardsTab({ question, user, topic }) {
     return (
       <Card>
         <CardContent className="p-8 text-center">
-          <Brain className="w-12 h-12 mx-auto mb-4 text-teal-600" />
+          <Brain className="w-12 h-12 mx-auto mb-4 text-[hsl(var(--mn-accent))]" />
           <h3 className="text-lg font-semibold text-[hsl(var(--mn-text))] mb-2">
             Hippo vytvoří kvíz
           </h3>
@@ -87,7 +87,7 @@ export default function QuizFlashcardsTab({ question, user, topic }) {
           <Button
             onClick={generateQuiz}
             disabled={isLoading}
-            className="bg-teal-600 hover:bg-teal-700"
+            className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]"
           >
             {isLoading ? (
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -103,11 +103,11 @@ export default function QuizFlashcardsTab({ question, user, topic }) {
 
   return (
     <div className="space-y-4">
-      <Card className="border-2 border-teal-200 dark:border-teal-800">
+      <Card className="border-2 border-[hsl(var(--mn-accent)/0.2)] dark:border-[hsl(var(--mn-accent)/0.3)]">
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Brain className="w-5 h-5 text-teal-600" />
-            <Badge className="bg-teal-600 hover:bg-teal-700">
+            <Brain className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
+            <Badge className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]">
               MCQ Kvíz
             </Badge>
             <span className="text-xs text-[hsl(var(--mn-muted))]">
@@ -135,16 +135,16 @@ export default function QuizFlashcardsTab({ question, user, topic }) {
                     let optionClass = 'p-3 rounded-lg border cursor-pointer transition-colors ';
                     if (showResult) {
                       if (isCorrectOption) {
-                        optionClass += 'border-green-500 bg-green-50 dark:bg-green-900/20';
+                        optionClass += 'border-[hsl(var(--mn-success))] bg-[hsl(var(--mn-success)/0.06)]';
                       } else if (isSelected) {
-                        optionClass += 'border-red-500 bg-red-50 dark:bg-red-900/20';
+                        optionClass += 'border-[hsl(var(--mn-danger))] bg-[hsl(var(--mn-danger)/0.06)]';
                       } else {
                         optionClass += 'border-[hsl(var(--mn-border))]';
                       }
                     } else {
                       optionClass += isSelected
-                        ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20'
-                        : 'border-[hsl(var(--mn-border))] hover:border-teal-300';
+                        ? 'border-[hsl(var(--mn-accent))] bg-[hsl(var(--mn-accent)/0.08)]'
+                        : 'border-[hsl(var(--mn-border))] hover:border-[hsl(var(--mn-accent)/0.4)]';
                     }
 
                     return (
@@ -157,10 +157,10 @@ export default function QuizFlashcardsTab({ question, user, topic }) {
                           <span className="font-semibold">{option})</span>
                           <span>{q.options[option]}</span>
                           {showResult && isCorrectOption && (
-                            <CheckCircle2 className="w-4 h-4 text-green-600 ml-auto" />
+                            <CheckCircle2 className="w-4 h-4 text-[hsl(var(--mn-success))] ml-auto" />
                           )}
                           {showResult && isSelected && !isCorrectOption && (
-                            <AlertCircle className="w-4 h-4 text-red-600 ml-auto" />
+                            <AlertCircle className="w-4 h-4 text-[hsl(var(--mn-danger))] ml-auto" />
                           )}
                         </div>
                       </div>
@@ -169,7 +169,7 @@ export default function QuizFlashcardsTab({ question, user, topic }) {
                 </div>
 
                 {showResult && (
-                  <div className={`p-3 rounded-lg text-sm ${isCorrect ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800' : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'}`}>
+                  <div className={`p-3 rounded-lg text-sm ${isCorrect ? 'bg-[hsl(var(--mn-success)/0.06)] border border-[hsl(var(--mn-success)/0.3)]' : 'bg-[hsl(var(--mn-danger)/0.06)] border border-[hsl(var(--mn-danger)/0.3)]'}`}>
                     <div className="font-semibold mb-1">
                       {isCorrect ? '✅ Správně!' : '❌ Špatně'}
                     </div>

@@ -17,19 +17,19 @@ import { toast } from 'sonner';
 import { canAccessAdmin } from '@/components/utils/permissions';
 
 const TYPE_META = {
-  error:      { label: 'Faktická chyba', icon: AlertTriangle, color: 'text-red-400 bg-red-500/10' },
-  outdated:   { label: 'Zastaralé',      icon: Clock,         color: 'text-amber-400 bg-amber-500/10' },
-  incomplete: { label: 'Chybí obsah',    icon: BookX,         color: 'text-orange-400 bg-orange-500/10' },
-  unclear:    { label: 'Nesrozumitelné', icon: HelpCircle,    color: 'text-blue-400 bg-blue-500/10' },
-  suggestion: { label: 'Návrh',          icon: Lightbulb,     color: 'text-teal-400 bg-teal-500/10' },
+  error:      { label: 'Faktická chyba', icon: AlertTriangle, color: 'text-[hsl(var(--mn-danger))] bg-[hsl(var(--mn-danger))]/10' },
+  outdated:   { label: 'Zastaralé',      icon: Clock,         color: 'text-[hsl(var(--mn-warn))] bg-[hsl(var(--mn-warn))]/10' },
+  incomplete: { label: 'Chybí obsah',    icon: BookX,         color: 'text-[hsl(var(--mn-warn))] bg-[hsl(var(--mn-warn))]/10' },
+  unclear:    { label: 'Nesrozumitelné', icon: HelpCircle,    color: 'text-[hsl(var(--mn-accent-2))] bg-[hsl(var(--mn-accent-2))]/10' },
+  suggestion: { label: 'Návrh',          icon: Lightbulb,     color: 'text-[hsl(var(--mn-accent))] bg-[hsl(var(--mn-accent))]/10' },
 };
 
 const STATUS_META = {
-  pending:   { label: 'Čeká',       color: 'bg-slate-500/20 text-[hsl(var(--mn-muted))]' },
-  analyzing: { label: 'Analyzuje',  color: 'bg-blue-500/20 text-blue-400' },
-  approved:  { label: 'Schváleno',  color: 'bg-green-500/20 text-green-400' },
-  rejected:  { label: 'Zamítnuto',  color: 'bg-red-500/20 text-red-400' },
-  applied:   { label: 'Aplikováno', color: 'bg-teal-500/20 text-teal-400' },
+  pending:   { label: 'Čeká',       color: 'bg-[hsl(var(--mn-muted)/0.2)] text-[hsl(var(--mn-muted))]' },
+  analyzing: { label: 'Analyzuje',  color: 'bg-[hsl(var(--mn-accent-2))]/20 text-[hsl(var(--mn-accent-2))]' },
+  approved:  { label: 'Schváleno',  color: 'bg-[hsl(var(--mn-success))]/20 text-[hsl(var(--mn-success))]' },
+  rejected:  { label: 'Zamítnuto',  color: 'bg-[hsl(var(--mn-danger))]/20 text-[hsl(var(--mn-danger))]' },
+  applied:   { label: 'Aplikováno', color: 'bg-[hsl(var(--mn-accent))]/20 text-[hsl(var(--mn-accent))]' },
 };
 
 function FeedbackCard({ fb, onApply, onReject, onAnalyze }) {
@@ -52,7 +52,7 @@ function FeedbackCard({ fb, onApply, onReject, onAnalyze }) {
               <div className="flex items-center gap-2 flex-wrap mb-1">
                 <Link
                   to={`${createPageUrl('TopicDetailV5')}?id=${fb.topic_id}`}
-                  className="text-sm font-medium text-white hover:text-teal-400 transition-colors truncate"
+                  className="text-sm font-medium text-white hover:text-[hsl(var(--mn-accent))] transition-colors truncate"
                 >
                   {fb.topics?.title || 'Neznámé téma'}
                 </Link>
@@ -87,9 +87,9 @@ function FeedbackCard({ fb, onApply, onReject, onAnalyze }) {
             {ai ? (
               <>
                 <div className="flex items-center gap-2 text-xs">
-                  <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+                  <Sparkles className="w-3.5 h-3.5 text-[hsl(var(--mn-accent))]" />
                   <span className="text-[hsl(var(--mn-muted))] font-medium">AI Analýza</span>
-                  <span className={`font-bold ${ai.valid ? 'text-green-400' : 'text-red-400'}`}>
+                  <span className={`font-bold ${ai.valid ? 'text-[hsl(var(--mn-success))]' : 'text-[hsl(var(--mn-danger))]'}`}>
                     {ai.valid ? 'Oprávněný' : 'Neoprávněný'}
                   </span>
                   <span className="text-[hsl(var(--mn-muted))]">· confidence: {(ai.confidence * 100).toFixed(0)}%</span>
@@ -101,8 +101,8 @@ function FeedbackCard({ fb, onApply, onReject, onAnalyze }) {
                   </div>
                 )}
                 {ai.suggested_fix && (
-                  <div className="bg-green-500/5 border border-green-500/20 rounded-lg p-3">
-                    <p className="text-[10px] text-green-400 font-medium mb-1">Navrhovaná oprava:</p>
+                  <div className="bg-[hsl(var(--mn-success))]/5 border border-[hsl(var(--mn-success))]/20 rounded-lg p-3">
+                    <p className="text-[10px] text-[hsl(var(--mn-success))] font-medium mb-1">Navrhovaná oprava:</p>
                     <p className="text-xs text-[hsl(var(--mn-muted))] whitespace-pre-wrap">{ai.suggested_fix}</p>
                     {ai.fix_location && (
                       <p className="text-[10px] text-[hsl(var(--mn-muted))] mt-1">Kde: {ai.fix_location}</p>
@@ -129,18 +129,18 @@ function FeedbackCard({ fb, onApply, onReject, onAnalyze }) {
               {fb.status !== 'applied' && fb.status !== 'rejected' && (
                 <>
                   <Button size="sm" onClick={() => onApply(fb)}
-                    className="text-xs h-7 gap-1.5 bg-green-600 hover:bg-green-500">
+                    className="text-xs h-7 gap-1.5 bg-[hsl(var(--mn-success))] hover:bg-[hsl(var(--mn-success))]">
                     <CheckCircle2 className="w-3 h-3" /> Aplikovat opravu
                   </Button>
                   <Button size="sm" variant="outline" onClick={() => onReject(fb.id)}
-                    className="text-xs h-7 gap-1.5 text-red-400 border-red-500/30 hover:bg-red-500/10">
+                    className="text-xs h-7 gap-1.5 text-[hsl(var(--mn-danger))] border-[hsl(var(--mn-danger))]/30 hover:bg-[hsl(var(--mn-danger))]/10">
                     <XCircle className="w-3 h-3" /> Zamítnout
                   </Button>
                 </>
               )}
               <Link
                 to={`${createPageUrl('TopicDetailV5')}?id=${fb.topic_id}`}
-                className="ml-auto text-[10px] text-[hsl(var(--mn-muted))] hover:text-teal-400 flex items-center gap-1"
+                className="ml-auto text-[10px] text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-accent))] flex items-center gap-1"
               >
                 <ExternalLink className="w-3 h-3" /> Otevřít téma
               </Link>
@@ -263,7 +263,7 @@ export default function AdminFeedback() {
         </Link>
         <div>
           <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <Flag className="w-5 h-5 text-amber-400" />
+            <Flag className="w-5 h-5 text-[hsl(var(--mn-warn))]" />
             Content Feedback
           </h1>
           <p className="text-sm text-[hsl(var(--mn-muted))]">
@@ -279,7 +279,7 @@ export default function AdminFeedback() {
             onClick={() => setStatusFilter(key)}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
               statusFilter === key
-                ? 'bg-teal-600 text-[hsl(var(--mn-text))]'
+                ? 'bg-[hsl(var(--mn-accent))] text-[hsl(var(--mn-text))]'
                 : 'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))] hover:bg-[hsl(var(--mn-elevated))]'
             }`}>
             {label} ({counts[key] || 0})

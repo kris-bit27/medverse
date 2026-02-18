@@ -479,8 +479,8 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
   const getStatusBadge = (status) => {
     const variants = {
       draft: { color: 'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))]', icon: AlertTriangle },
-      in_review: { color: 'bg-amber-100 text-amber-700', icon: Eye },
-      published: { color: 'bg-green-100 text-green-700', icon: CheckCircle }
+      in_review: { color: 'bg-[hsl(var(--mn-warn)/0.12)] text-[hsl(var(--mn-warn))]', icon: Eye },
+      published: { color: 'bg-[hsl(var(--mn-success)/0.12)] text-[hsl(var(--mn-success))]', icon: CheckCircle }
     };
     const variant = variants[status] || variants.draft;
     const Icon = variant.icon;
@@ -494,18 +494,18 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
 
   return (
     <div className="space-y-6">
-      <Alert className="bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800">
-        <AlertDescription className="text-sm text-teal-700 dark:text-teal-300 space-y-1">
+      <Alert className="bg-[hsl(var(--mn-accent)/0.08)] border-[hsl(var(--mn-accent)/0.2)] dark:border-[hsl(var(--mn-accent)/0.3)]">
+        <AlertDescription className="text-sm text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))] space-y-1">
           <div>
             Upravujete téma <strong>{topic.title}</strong> | AI verze: {AI_MODELS.VERSION_TAG}
           </div>
           {contextSummary && (
-            <div className="text-xs text-teal-700/80 dark:text-teal-300/80">
+            <div className="text-xs text-[hsl(var(--mn-accent))]/80 dark:text-[hsl(var(--mn-accent))]/80">
               {contextSummary}
             </div>
           )}
           {lastUpdatedLabel && (
-            <div className="text-xs text-teal-700/80 dark:text-teal-300/80">
+            <div className="text-xs text-[hsl(var(--mn-accent))]/80 dark:text-[hsl(var(--mn-accent))]/80">
               {lastUpdatedLabel}
             </div>
           )}
@@ -533,7 +533,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
 
       {/* AI Metadata & Review Panel */}
       {(content.ai_generated_at || lastGenerated) && (
-        <Card className="p-4 bg-blue-50 dark:bg-blue-950/20">
+        <Card className="p-4 bg-[hsl(var(--mn-accent-2)/0.06)]">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -549,10 +549,10 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
                       variant="outline"
                       className={
                         lastGenerated.metadata.provider === 'google'
-                          ? 'bg-teal-50 text-teal-700 border-teal-200'
+                          ? 'bg-[hsl(var(--mn-accent)/0.06)] text-[hsl(var(--mn-accent))] border-[hsl(var(--mn-accent)/0.2)]'
                           : lastGenerated.metadata.model.includes('haiku')
-                            ? 'bg-green-50 text-green-700 border-green-200'
-                            : 'bg-blue-50 text-blue-700 border-blue-200'
+                            ? 'bg-[hsl(var(--mn-success)/0.06)] text-[hsl(var(--mn-success))] border-[hsl(var(--mn-success)/0.3)]'
+                            : 'bg-[hsl(var(--mn-accent-2)/0.06)] text-[hsl(var(--mn-accent-2))] border-[hsl(var(--mn-accent-2)/0.3)]'
                       }
                     >
                       {lastGenerated.metadata.provider === 'google'
@@ -618,13 +618,13 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
             )}
 
             {lastGenerated?.sources?.length > 0 && (
-              <Alert className="bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800">
+              <Alert className="bg-[hsl(var(--mn-accent-2)/0.06)] border-[hsl(var(--mn-accent-2)/0.3)]">
                 <BookOpen className="h-4 w-4" />
                 <AlertDescription>
-                  <div className="font-semibold text-blue-900 dark:text-blue-100">
+                  <div className="font-semibold text-[hsl(var(--mn-accent-2))]">
                     📚 Citované zdroje ({lastGenerated.sources.length})
                   </div>
-                  <ul className="list-disc list-inside mt-2 space-y-1 text-sm text-blue-800 dark:text-blue-200">
+                  <ul className="list-disc list-inside mt-2 space-y-1 text-sm text-[hsl(var(--mn-accent-2))]">
                     {lastGenerated.sources.map((source, i) => (
                       <li key={i} className="text-xs">{source}</li>
                     ))}
@@ -811,7 +811,7 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
 
       {/* AI-Generated Sources & Warnings */}
       {(content.sources?.length > 0 || content.warnings?.length > 0) && (
-        <div className="space-y-3 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
+        <div className="space-y-3 p-4 bg-[hsl(var(--mn-accent-2)/0.06)] rounded-lg border border-[hsl(var(--mn-accent-2)/0.3)]">
           <Label className="text-sm font-semibold flex items-center gap-2">
             <Sparkles className="w-4 h-4" />
             AI-generované informace
@@ -819,12 +819,12 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
           
           {content.sources?.length > 0 && (
             <div className="space-y-2">
-              <div className="text-xs font-medium text-blue-700 dark:text-blue-300">
+              <div className="text-xs font-medium text-[hsl(var(--mn-accent-2))]">
                 📚 Citované zdroje ({content.sources.length})
               </div>
               <div className="space-y-1">
                 {content.sources.map((source, i) => (
-                  <div key={i} className="text-sm text-[hsl(var(--mn-muted))] pl-3 border-l-2 border-blue-300">
+                  <div key={i} className="text-sm text-[hsl(var(--mn-muted))] pl-3 border-l-2 border-[hsl(var(--mn-accent-2)/0.4)]">
                     {typeof source === 'string' ? source : source.title || source.citation || JSON.stringify(source)}
                   </div>
                 ))}
@@ -834,13 +834,13 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
 
           {content.warnings?.length > 0 && (
             <div className="space-y-2">
-              <div className="text-xs font-medium text-amber-700 dark:text-amber-300 flex items-center gap-1">
+              <div className="text-xs font-medium text-[hsl(var(--mn-warn))] flex items-center gap-1">
                 <AlertTriangle className="w-3 h-3" />
                 Varování k ověření ({content.warnings.length})
               </div>
               <div className="space-y-1">
                 {content.warnings.map((warning, i) => (
-                  <div key={i} className="text-sm text-amber-800 dark:text-amber-200 pl-3 border-l-2 border-amber-400 bg-amber-50 dark:bg-amber-900/20 p-2 rounded">
+                  <div key={i} className="text-sm text-[hsl(var(--mn-warn))] pl-3 border-l-2 border-[hsl(var(--mn-warn))] bg-[hsl(var(--mn-warn)/0.06)] p-2 rounded">
                     {typeof warning === 'string' ? warning : warning.message || warning.text || JSON.stringify(warning)}
                   </div>
                 ))}

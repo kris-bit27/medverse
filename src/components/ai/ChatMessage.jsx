@@ -9,14 +9,14 @@ export default function ChatMessage({ message, isStreaming }) {
   return (
     <div className={cn("flex gap-3", isUser ? "justify-end" : "justify-start")}>
       {!isUser && (
-        <div className="h-8 w-8 rounded-full bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center flex-shrink-0">
+        <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))] flex items-center justify-center flex-shrink-0">
           <Bot className="h-4 w-4 text-[hsl(var(--mn-text))]" />
         </div>
       )}
       <div className={cn(
         "max-w-[80%] rounded-2xl px-4 py-3",
         isUser 
-          ? "bg-teal-600 text-[hsl(var(--mn-text))]" 
+          ? "bg-[hsl(var(--mn-accent))] text-[hsl(var(--mn-text))]" 
           : "bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-text))]"
       )}>
         {isUser ? (
@@ -33,7 +33,7 @@ export default function ChatMessage({ message, isStreaming }) {
         )}
       </div>
       {isUser && (
-        <div className="h-8 w-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center flex-shrink-0">
+        <div className="h-8 w-8 rounded-full bg-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-elevated))] flex items-center justify-center flex-shrink-0">
           <User className="h-4 w-4 text-[hsl(var(--mn-muted))] dark:text-[hsl(var(--mn-muted))]" />
         </div>
       )}

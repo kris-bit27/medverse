@@ -29,7 +29,7 @@ export default function EmptyState({
         </p>
       )}
       {action && onAction && (
-        <Button onClick={onAction} className="bg-teal-600 hover:bg-teal-700">
+        <Button onClick={onAction} className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]">
           {action}
         </Button>
       )}

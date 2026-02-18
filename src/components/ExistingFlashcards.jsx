@@ -30,9 +30,9 @@ export default function ExistingFlashcards({ topicId }) {
   }
 
   const difficultyColors = {
-    1: 'bg-green-500/10 text-green-500 border-green-500/20',
+    1: 'bg-[hsl(var(--mn-success))]/10 text-[hsl(var(--mn-success))] border-[hsl(var(--mn-success))]/20',
     2: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20',
-    3: 'bg-red-500/10 text-red-500 border-red-500/20'
+    3: 'bg-[hsl(var(--mn-danger))]/10 text-[hsl(var(--mn-danger))] border-[hsl(var(--mn-danger))]/20'
   };
 
   const difficultyLabels = {
@@ -44,7 +44,7 @@ export default function ExistingFlashcards({ topicId }) {
   return (
     <div className="pt-4 border-t border-[hsl(var(--mn-border))]">
       <div className="flex items-center gap-2 mb-3">
-        <Sparkles className="w-4 h-4 text-teal-400" />
+        <Sparkles className="w-4 h-4 text-[hsl(var(--mn-accent))]" />
         <h4 className="font-semibold text-sm">
           Vaše kartičky ({flashcards.length})
         </h4>

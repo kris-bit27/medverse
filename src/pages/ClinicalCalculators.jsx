@@ -197,7 +197,7 @@ export default function ClinicalCalculators() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-[hsl(var(--mn-accent))] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -252,7 +252,7 @@ export default function ClinicalCalculators() {
               <Card
                 key={tool.id}
                 className={`cursor-pointer transition-colors ${
-                  isSelected ? 'border-teal-600 bg-teal-50 dark:bg-teal-950/20' : 'hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900'
+                  isSelected ? 'border-[hsl(var(--mn-accent))] bg-[hsl(var(--mn-accent)/0.06)]' : 'hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface))]'
                 }`}
                 onClick={() => {
                   setSelectedTool(tool);
@@ -262,8 +262,8 @@ export default function ClinicalCalculators() {
               >
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-teal-100 dark:bg-teal-900">
-                      <Icon className="w-5 h-5 text-teal-600 dark:text-teal-300" />
+                    <div className="p-2 rounded-lg bg-[hsl(var(--mn-accent)/0.12)]">
+                      <Icon className="w-5 h-5 text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))]" />
                     </div>
                     <div className="flex-1">
                       <p className="font-medium text-sm">{tool.name}</p>
@@ -318,7 +318,7 @@ export default function ClinicalCalculators() {
                     <div key={field.name} className="space-y-2">
                       <Label htmlFor={field.name}>
                         {field.label}
-                        {field.required && <span className="text-red-500 ml-1">*</span>}
+                        {field.required && <span className="text-[hsl(var(--mn-danger))] ml-1">*</span>}
                       </Label>
 
                       {field.type === 'number' && (
@@ -410,7 +410,7 @@ export default function ClinicalCalculators() {
                           href={citation.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm text-teal-600 hover:underline block"
+                          className="text-sm text-[hsl(var(--mn-accent))] hover:underline block"
                         >
                           {citation.title}
                         </a>

@@ -6,17 +6,17 @@ const statusConfig = {
   new: {
     label: 'Nová',
     icon: Circle,
-    className: 'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))] dark:bg-slate-800 dark:text-[hsl(var(--mn-muted))]'
+    className: 'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))] dark:bg-[hsl(var(--mn-surface-2))] dark:text-[hsl(var(--mn-muted))]'
   },
   learning: {
     label: 'Učím se',
     icon: RefreshCw,
-    className: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
+    className: 'bg-[hsl(var(--mn-warn)/0.12)] text-[hsl(var(--mn-warn))]'
   },
   mastered: {
     label: 'Umím',
     icon: CheckCircle2,
-    className: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+    className: 'bg-[hsl(var(--mn-success)/0.12)] text-[hsl(var(--mn-success))]'
   }
 };
 

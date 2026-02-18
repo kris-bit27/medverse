@@ -154,9 +154,9 @@ export default function ContentCoverage() {
               <span className="text-[hsl(var(--mn-muted))]">{name}</span>
               <div className="flex items-center gap-3">
                 <Badge variant="outline" className="text-[10px]">{d.total} topics</Badge>
-                <span className={`text-xs ${d.fc === d.total ? 'text-emerald-500' : 'text-amber-500'}`}>FC:{d.fc}/{d.total}</span>
-                <span className={`text-xs ${d.q === d.total ? 'text-emerald-500' : 'text-amber-500'}`}>Q:{d.q}/{d.total}</span>
-                <span className={`text-xs ${d.c === d.total ? 'text-emerald-500' : 'text-amber-500'}`}>C:{d.c}/{d.total}</span>
+                <span className={`text-xs ${d.fc === d.total ? 'text-[hsl(var(--mn-success))]' : 'text-[hsl(var(--mn-warn))]'}`}>FC:{d.fc}/{d.total}</span>
+                <span className={`text-xs ${d.q === d.total ? 'text-[hsl(var(--mn-success))]' : 'text-[hsl(var(--mn-warn))]'}`}>Q:{d.q}/{d.total}</span>
+                <span className={`text-xs ${d.c === d.total ? 'text-[hsl(var(--mn-success))]' : 'text-[hsl(var(--mn-warn))]'}`}>C:{d.c}/{d.total}</span>
               </div>
             </div>
           ))}
@@ -165,7 +165,7 @@ export default function ContentCoverage() {
         {/* Incomplete topics */}
         {s.incomplete.length > 0 && (
           <div>
-            <p className="text-sm font-medium text-amber-500 mb-2">Neúplné topics ({s.incomplete.length})</p>
+            <p className="text-sm font-medium text-[hsl(var(--mn-warn))] mb-2">Neúplné topics ({s.incomplete.length})</p>
             <div className="text-xs space-y-1 max-h-32 overflow-y-auto">
               {s.incomplete.map(t => (
                 <div key={t.id} className="text-[hsl(var(--mn-muted))]">{t.title}</div>

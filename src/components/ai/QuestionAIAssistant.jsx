@@ -25,9 +25,9 @@ function ConfidenceBadge({ confidence }) {
 
   const cls =
     level === 'high'
-      ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200'
+      ? 'bg-[hsl(var(--mn-success)/0.12)] text-[hsl(var(--mn-success))]'
       : level === 'medium'
-      ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200'
+      ? 'bg-[hsl(var(--mn-warn)/0.12)] text-[hsl(var(--mn-warn))]'
       : 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-200';
 
   return (
@@ -360,7 +360,7 @@ export default function QuestionAIAssistant({ question, user, onNoteSaved, topic
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="gap-2">
-          <Sparkles className="w-4 h-4 text-teal-600" />
+          <Sparkles className="w-4 h-4 text-[hsl(var(--mn-accent))]" />
           AI Asistent
         </Button>
       </DialogTrigger>
@@ -369,7 +369,7 @@ export default function QuestionAIAssistant({ question, user, onNoteSaved, topic
         <DialogHeader className="px-6 py-4 border-b border-[hsl(var(--mn-border))]">
           <div className="flex items-center justify-between">
             <DialogTitle className="flex items-center gap-2">
-              <Bot className="w-5 h-5 text-teal-600" />
+              <Bot className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
               AI Asistent — {(question.title || '').substring(0, 40)}{(question.title || '').length > 40 ? '…' : ''}
             </DialogTitle>
             <div className="flex gap-1 bg-[hsl(var(--mn-surface-2))] rounded-lg p-1">
@@ -377,7 +377,7 @@ export default function QuestionAIAssistant({ question, user, onNoteSaved, topic
                 variant={aiMode === 'EXAM' ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setAiMode('EXAM')}
-                className={aiMode === 'EXAM' ? 'bg-teal-600 hover:bg-teal-700' : ''}
+                className={aiMode === 'EXAM' ? 'bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]' : ''}
               >
                 EXAM
               </Button>
@@ -385,7 +385,7 @@ export default function QuestionAIAssistant({ question, user, onNoteSaved, topic
                 variant={aiMode === 'CHAT' ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setAiMode('CHAT')}
-                className={aiMode === 'CHAT' ? 'bg-teal-600 hover:bg-teal-700' : ''}
+                className={aiMode === 'CHAT' ? 'bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]' : ''}
               >
                 CHAT
               </Button>
@@ -416,8 +416,8 @@ export default function QuestionAIAssistant({ question, user, onNoteSaved, topic
 
           {/* Info banner pro CHAT režim */}
           {aiMode === 'CHAT' && (
-            <div className="p-3 bg-blue-50 dark:bg-blue-900/20 border-b border-blue-200 dark:border-blue-800">
-              <p className="text-xs text-blue-700 dark:text-blue-300">
+            <div className="p-3 bg-[hsl(var(--mn-accent-2)/0.06)] border-b border-[hsl(var(--mn-accent-2)/0.3)]">
+              <p className="text-xs text-[hsl(var(--mn-accent-2))]">
                 💬 CHAT režim: Volný rozhovor pro doplňující dotazy. Nepoužívá se pro generování oficiálních odpovědí.
               </p>
             </div>
@@ -471,7 +471,7 @@ export default function QuestionAIAssistant({ question, user, onNoteSaved, topic
               <Button
                 onClick={sendMessage}
                 disabled={!input.trim() || isLoading}
-                className="bg-teal-600 hover:bg-teal-700"
+                className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]"
               >
                 {isLoading ? (
                   <Loader2 className="w-4 h-4 animate-spin" />

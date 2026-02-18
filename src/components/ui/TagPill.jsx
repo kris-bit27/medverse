@@ -2,12 +2,12 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 
 const variants = {
-  default: 'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))] dark:bg-slate-800 dark:text-[hsl(var(--mn-muted))]',
-  primary: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-  success: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
-  warning: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
-  danger: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
-  premium: 'bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 dark:from-amber-900/30 dark:to-orange-900/30 dark:text-amber-400',
+  default: 'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))] dark:bg-[hsl(var(--mn-surface-2))] dark:text-[hsl(var(--mn-muted))]',
+  primary: 'bg-[hsl(var(--mn-accent-2)/0.12)] text-[hsl(var(--mn-accent-2))]',
+  success: 'bg-[hsl(var(--mn-success)/0.12)] text-[hsl(var(--mn-success))]',
+  warning: 'bg-[hsl(var(--mn-warn)/0.12)] text-[hsl(var(--mn-warn))]',
+  danger: 'bg-[hsl(var(--mn-danger)/0.12)] text-[hsl(var(--mn-danger))]',
+  premium: 'bg-[hsl(var(--mn-warn)/0.12)] text-[hsl(var(--mn-warn))]',
 };
 
 export default function TagPill({ 

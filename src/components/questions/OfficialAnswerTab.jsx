@@ -10,9 +10,9 @@ export default function OfficialAnswerTab({ question }) {
 
   if (!hasPublishedAnswer) {
     return (
-      <Card className="bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
+      <Card className="bg-[hsl(var(--mn-warn)/0.06)] border-[hsl(var(--mn-warn)/0.2)]">
         <CardContent className="p-8 text-center">
-          <AlertCircle className="w-12 h-12 mx-auto mb-4 text-amber-600" />
+          <AlertCircle className="w-12 h-12 mx-auto mb-4 text-[hsl(var(--mn-warn))]" />
           <h3 className="text-lg font-semibold text-[hsl(var(--mn-text))] mb-2">
             Oficiální odpověď zatím není k dispozici
           </h3>
@@ -26,11 +26,11 @@ export default function OfficialAnswerTab({ question }) {
 
   return (
     <div className="space-y-4">
-      <Card className="border-2 border-teal-200 dark:border-teal-800 bg-gradient-to-br from-white to-teal-50/30 dark:from-slate-900 dark:to-teal-900/10">
+      <Card className="border-2 border-[hsl(var(--mn-accent)/0.2)] dark:border-[hsl(var(--mn-accent)/0.3)] bg-gradient-to-br from-[hsl(var(--mn-surface))] to-[hsl(var(--mn-accent)/0.04)]">
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-5 h-5 text-teal-600" />
-            <Badge className="bg-teal-600 hover:bg-teal-700">
+            <CheckCircle2 className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
+            <Badge className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]">
               Oficiální odpověď
             </Badge>
             <span className="text-xs text-[hsl(var(--mn-muted))]">

@@ -13,12 +13,12 @@ export default function LogbookStats({ entries }) {
   };
 
   const statItems = [
-    { label: 'Výkonů', value: stats.procedures, icon: Scissors, color: 'text-blue-600 bg-blue-100' },
-    { label: 'Stáží', value: stats.internships, icon: GraduationCap, color: 'text-teal-600 bg-teal-100' },
-    { label: 'Kurzů', value: stats.courses, icon: BookOpen, color: 'text-green-600 bg-green-100' },
-    { label: 'Konferencí', value: stats.conferences, icon: Users, color: 'text-amber-600 bg-amber-100' },
-    { label: 'Publikací', value: stats.publications, icon: FileText, color: 'text-pink-600 bg-pink-100' },
-    { label: 'Ověřených', value: stats.verified, icon: TrendingUp, color: 'text-teal-600 bg-teal-100' },
+    { label: 'Výkonů', value: stats.procedures, icon: Scissors, color: 'text-[hsl(var(--mn-accent-2))] bg-[hsl(var(--mn-accent-2)/0.12)]' },
+    { label: 'Stáží', value: stats.internships, icon: GraduationCap, color: 'text-[hsl(var(--mn-accent))] bg-[hsl(var(--mn-accent)/0.12)]' },
+    { label: 'Kurzů', value: stats.courses, icon: BookOpen, color: 'text-[hsl(var(--mn-success))] bg-[hsl(var(--mn-success)/0.12)]' },
+    { label: 'Konferencí', value: stats.conferences, icon: Users, color: 'text-[hsl(var(--mn-warn))] bg-[hsl(var(--mn-warn)/0.12)]' },
+    { label: 'Publikací', value: stats.publications, icon: FileText, color: 'text-[#ec4899] bg-[#ec4899/0.12]' },
+    { label: 'Ověřených', value: stats.verified, icon: TrendingUp, color: 'text-[hsl(var(--mn-accent))] bg-[hsl(var(--mn-accent)/0.12)]' },
   ];
 
   return (

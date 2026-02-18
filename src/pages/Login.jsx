@@ -140,8 +140,8 @@ export default function Login() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(15,118,110,0.25),transparent_55%)]" />
         <Card className="relative w-full max-w-md border-[hsl(var(--mn-border))] bg-white/90 dark:bg-[hsl(var(--mn-bg))]/90 backdrop-blur shadow-xl">
           <CardContent className="p-8 text-center space-y-4">
-            <div className="mx-auto w-16 h-16 rounded-full bg-teal-500/10 flex items-center justify-center">
-              <CheckCircle2 className="w-8 h-8 text-teal-500" />
+            <div className="mx-auto w-16 h-16 rounded-full bg-[hsl(var(--mn-accent))]/10 flex items-center justify-center">
+              <CheckCircle2 className="w-8 h-8 text-[hsl(var(--mn-accent))]" />
             </div>
             <h2 className="text-xl font-semibold">
               {mode === 'reset-sent' ? 'Odkaz pro reset odeslán!' : 'Registrace dokončena!'}
@@ -165,11 +165,11 @@ export default function Login() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(15,118,110,0.25),transparent_55%),radial-gradient(circle_at_bottom,rgba(59,130,246,0.18),transparent_45%)]" />
       <Card className="relative w-full max-w-4xl overflow-hidden border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-bg)/0.8)] shadow-[0_30px_80px_-40px_rgba(15,118,110,0.7)] backdrop-blur">
         <CardContent className="grid gap-0 p-0 md:grid-cols-[1.1fr_1fr]">
-          <div className="p-10 md:p-12 border-b border-[hsl(var(--mn-border))] dark:border-slate-900 md:border-b-0 md:border-r">
+          <div className="p-10 md:p-12 border-b border-[hsl(var(--mn-border))] md:border-b-0 md:border-r">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-teal-400 to-cyan-500" />
+              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))]" />
               <div>
-                <div className="text-xs uppercase tracking-[0.3em] text-teal-600 dark:text-teal-300">MedVerse</div>
+                <div className="text-xs uppercase tracking-[0.3em] text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))]">MedVerse</div>
                 <div className="text-lg font-semibold">Klinické vzdělávání</div>
               </div>
             </div>
@@ -201,18 +201,18 @@ export default function Login() {
                 <div className="mt-6 space-y-2">
                   {providers.map((p) => (
                     <button key={p.id} type="button" onClick={() => handleOAuth(p.id)}
-                      className="group flex w-full items-center justify-between rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface))]/40 px-4 py-3 text-left text-sm font-medium transition hover:border-teal-500/40 hover:bg-teal-50 dark:hover:bg-slate-900">
+                      className="group flex w-full items-center justify-between rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface))]/40 px-4 py-3 text-left text-sm font-medium transition hover:border-[hsl(var(--mn-accent))]/40 hover:bg-[hsl(var(--mn-accent)/0.06)] dark:hover:bg-[hsl(var(--mn-surface))]">
                       <span className="flex items-center gap-3">
                         <p.Logo />
                         Pokračovat přes {p.label}
                       </span>
-                      <span className="text-xs text-muted-foreground group-hover:text-teal-500">→</span>
+                      <span className="text-xs text-muted-foreground group-hover:text-[hsl(var(--mn-accent))]">→</span>
                     </button>
                   ))}
                 </div>
               )}
               <div className="my-5 flex items-center gap-3 text-xs text-muted-foreground">
-                <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />nebo e-mailem<div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
+                <div className="h-px flex-1 bg-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-surface-2))]" />nebo e-mailem<div className="h-px flex-1 bg-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-surface-2))]" />
               </div>
               <form onSubmit={handleLogin} className="space-y-3">
                 <div className="space-y-1">
@@ -225,7 +225,7 @@ export default function Login() {
                 <div className="space-y-1">
                   <div className="flex justify-between items-center">
                     <Label htmlFor="password">Heslo</Label>
-                    <button type="button" className="text-xs text-teal-600 hover:text-teal-500" onClick={() => setMode('reset')}>Zapomněli jste heslo?</button>
+                    <button type="button" className="text-xs text-[hsl(var(--mn-accent))] hover:text-[hsl(var(--mn-accent))]" onClick={() => setMode('reset')}>Zapomněli jste heslo?</button>
                   </div>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -240,7 +240,7 @@ export default function Login() {
                 </Button>
               </form>
               <div className="mt-4 text-center text-sm text-muted-foreground">
-                Nemáte účet?{' '}<button type="button" className="text-teal-600 hover:text-teal-500 font-medium" onClick={() => { setMode('register'); setPassword(''); setConfirmPassword(''); }}>Zaregistrujte se</button>
+                Nemáte účet?{' '}<button type="button" className="text-[hsl(var(--mn-accent))] hover:text-[hsl(var(--mn-accent))] font-medium" onClick={() => { setMode('register'); setPassword(''); setConfirmPassword(''); }}>Zaregistrujte se</button>
               </div>
             </>)}
 
@@ -269,12 +269,12 @@ export default function Login() {
                     <div className="mt-2 space-y-1">
                       <div className="flex gap-1">
                         {[1,2,3,4].map(i => (
-                          <div key={i} className={`h-1 flex-1 rounded-full transition-colors ${i <= passwordStrength.score ? (passwordStrength.score <= 2 ? 'bg-red-500' : passwordStrength.score === 3 ? 'bg-amber-500' : 'bg-emerald-500') : 'bg-slate-200 dark:bg-slate-700'}`} />
+                          <div key={i} className={`h-1 flex-1 rounded-full transition-colors ${i <= passwordStrength.score ? (passwordStrength.score <= 2 ? 'bg-[hsl(var(--mn-danger))]' : passwordStrength.score === 3 ? 'bg-[hsl(var(--mn-warn))]' : 'bg-[hsl(var(--mn-success))]') : 'bg-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-elevated))]'}`} />
                         ))}
                       </div>
                       <div className="grid grid-cols-2 gap-1 text-[11px]">
                         {passwordStrength.checks.map((c, i) => (
-                          <span key={i} className={c.passed ? 'text-emerald-500' : 'text-muted-foreground'}>{c.passed ? '✓' : '○'} {c.label}</span>
+                          <span key={i} className={c.passed ? 'text-[hsl(var(--mn-success))]' : 'text-muted-foreground'}>{c.passed ? '✓' : '○'} {c.label}</span>
                         ))}
                       </div>
                     </div>
@@ -286,14 +286,14 @@ export default function Login() {
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input id="reg-confirm" type={showPassword ? 'text' : 'password'} placeholder="••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="pl-9" autoComplete="new-password" />
                   </div>
-                  {confirmPassword && password !== confirmPassword && <p className="text-xs text-red-500 mt-1">Hesla se neshodují</p>}
+                  {confirmPassword && password !== confirmPassword && <p className="text-xs text-[hsl(var(--mn-danger))] mt-1">Hesla se neshodují</p>}
                 </div>
                 <Button type="submit" className="w-full" disabled={submitting || passwordStrength.score < 4 || password !== confirmPassword}>
                   {submitting ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Registruji...</> : 'Vytvořit účet'}
                 </Button>
               </form>
               <div className="mt-4 text-center text-sm text-muted-foreground">
-                Již máte účet?{' '}<button type="button" className="text-teal-600 hover:text-teal-500 font-medium" onClick={() => { setMode('login'); setPassword(''); setConfirmPassword(''); }}>Přihlaste se</button>
+                Již máte účet?{' '}<button type="button" className="text-[hsl(var(--mn-accent))] hover:text-[hsl(var(--mn-accent))] font-medium" onClick={() => { setMode('login'); setPassword(''); setConfirmPassword(''); }}>Přihlaste se</button>
               </div>
             </>)}
 

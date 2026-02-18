@@ -60,13 +60,13 @@ export default function NotesTab({ question, user }) {
       {notes.length > 0 && (
         <div className="space-y-3">
           {notes.map(note => (
-            <Card key={note.id} className={note.is_ai_generated ? 'border-teal-200 dark:border-teal-800' : ''}>
+            <Card key={note.id} className={note.is_ai_generated ? 'border-[hsl(var(--mn-accent)/0.2)] dark:border-[hsl(var(--mn-accent)/0.3)]' : ''}>
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     {note.is_ai_generated && (
                       <>
-                        <Sparkles className="w-4 h-4 text-teal-600" />
+                        <Sparkles className="w-4 h-4 text-[hsl(var(--mn-accent))]" />
                         <Badge variant="outline" className="text-xs">AI generováno</Badge>
                       </>
                     )}
@@ -80,7 +80,7 @@ export default function NotesTab({ question, user }) {
                     onClick={() => deleteNoteMutation.mutate(note.id)}
                     disabled={deleteNoteMutation.isPending}
                   >
-                    <Trash2 className="w-4 h-4 text-red-600" />
+                    <Trash2 className="w-4 h-4 text-[hsl(var(--mn-danger))]" />
                   </Button>
                 </div>
               </CardHeader>

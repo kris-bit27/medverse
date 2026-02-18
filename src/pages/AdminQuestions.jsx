@@ -164,7 +164,7 @@ export default function AdminQuestions() {
               Smazat označené ({selectedIds.length})
             </Button>
           )}
-          <Button asChild className="bg-teal-600 hover:bg-teal-700">
+          <Button asChild className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]">
             <Link to={createPageUrl('AdminQuestionEdit')}>
               <Plus className="w-4 h-4 mr-2" />
               Nová otázka
@@ -256,7 +256,7 @@ export default function AdminQuestions() {
                         className="h-8 w-8"
                       >
                         {selectedIds.includes(question.id) ? (
-                          <CheckSquare className="w-4 h-4 text-teal-600" />
+                          <CheckSquare className="w-4 h-4 text-[hsl(var(--mn-accent))]" />
                         ) : (
                           <Square className="w-4 h-4" />
                         )}
@@ -302,7 +302,7 @@ export default function AdminQuestions() {
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem 
-                            className="text-red-600"
+                            className="text-[hsl(var(--mn-danger))]"
                             onClick={() => {
                               if (confirm('Opravdu smazat tuto otázku?')) {
                                 deleteMutation.mutate(question.id);

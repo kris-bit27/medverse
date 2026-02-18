@@ -18,12 +18,12 @@ import {
 import { toast } from 'sonner';
 
 const QUALITY_LABELS = [
-  { value: 0, label: 'Vůbec nevím', color: 'bg-red-500', emoji: '😵' },
-  { value: 1, label: 'Špatně', color: 'bg-orange-500', emoji: '😰' },
+  { value: 0, label: 'Vůbec nevím', color: 'bg-[hsl(var(--mn-danger))]', emoji: '😵' },
+  { value: 1, label: 'Špatně', color: 'bg-[hsl(var(--mn-warn))]', emoji: '😰' },
   { value: 2, label: 'Těžko', color: 'bg-yellow-500', emoji: '😓' },
-  { value: 3, label: 'S váháním', color: 'bg-blue-500', emoji: '🤔' },
-  { value: 4, label: 'Dobře', color: 'bg-green-500', emoji: '😊' },
-  { value: 5, label: 'Perfektně', color: 'bg-emerald-600', emoji: '🎯' },
+  { value: 3, label: 'S váháním', color: 'bg-[hsl(var(--mn-accent-2))]', emoji: '🤔' },
+  { value: 4, label: 'Dobře', color: 'bg-[hsl(var(--mn-success))]', emoji: '😊' },
+  { value: 5, label: 'Perfektně', color: 'bg-[hsl(var(--mn-success))]', emoji: '🎯' },
 ];
 
 export default function FlashcardReview({ topicId, user, onClose }) {
@@ -132,7 +132,7 @@ export default function FlashcardReview({ topicId, user, onClose }) {
   if (isLoading) {
     return (
       <div className="text-center py-12">
-        <Brain className="w-12 h-12 text-teal-500 mx-auto mb-4 animate-pulse" />
+        <Brain className="w-12 h-12 text-[hsl(var(--mn-accent))] mx-auto mb-4 animate-pulse" />
         <p className="text-muted-foreground">Načítání kartiček...</p>
       </div>
     );
@@ -140,9 +140,9 @@ export default function FlashcardReview({ topicId, user, onClose }) {
 
   if (flashcards.length === 0) {
     return (
-      <Card className="bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20">
+      <Card className="bg-gradient-to-br from-[hsl(var(--mn-accent)/0.06)] to-[hsl(var(--mn-accent-2)/0.06)]">
         <CardContent className="p-8 text-center">
-          <Award className="w-16 h-16 text-teal-500 mx-auto mb-4" />
+          <Award className="w-16 h-16 text-[hsl(var(--mn-accent))] mx-auto mb-4" />
           <h3 className="text-xl font-semibold mb-2">Všechno hotovo! 🎉</h3>
           <p className="text-muted-foreground mb-4">
             Nemáte žádné kartičky k procvičení
@@ -171,7 +171,7 @@ export default function FlashcardReview({ topicId, user, onClose }) {
           <span className="font-medium">
             {sessionStats.correct}/{sessionStats.reviewed} správně
             {sessionStats.streak > 0 && (
-              <span className="ml-2 text-green-600">
+              <span className="ml-2 text-[hsl(var(--mn-success))]">
                 🔥 {sessionStats.streak}
               </span>
             )}
@@ -188,7 +188,7 @@ export default function FlashcardReview({ topicId, user, onClose }) {
           <div className="flex flex-col items-center justify-center min-h-[250px]">
             {!showAnswer ? (
               <>
-                <Brain className="w-12 h-12 text-teal-500 mb-4" />
+                <Brain className="w-12 h-12 text-[hsl(var(--mn-accent))] mb-4" />
                 <h3 className="text-2xl font-semibold text-center mb-6">
                   {currentCard.question}
                 </h3>
@@ -210,7 +210,7 @@ export default function FlashcardReview({ topicId, user, onClose }) {
                 </div>
                 
                 <div>
-                  <Badge variant="default" className="mb-2 bg-green-600">Odpověď</Badge>
+                  <Badge variant="default" className="mb-2 bg-[hsl(var(--mn-success))]">Odpověď</Badge>
                   <p className="text-lg">
                     {currentCard.answer}
                   </p>
@@ -243,7 +243,7 @@ export default function FlashcardReview({ topicId, user, onClose }) {
                 onClick={() => handleRate(quality.value)}
                 variant="outline"
                 className={`h-auto py-3 ${
-                  quality.value >= 3 ? 'hover:bg-green-50 hover:border-green-500' : 'hover:bg-red-50 hover:border-red-500'
+                  quality.value >= 3 ? 'hover:bg-[hsl(var(--mn-success)/0.06)] hover:border-[hsl(var(--mn-success))]' : 'hover:bg-[hsl(var(--mn-danger)/0.06)] hover:border-[hsl(var(--mn-danger))]'
                 }`}
                 disabled={updateProgressMutation.isPending}
               >

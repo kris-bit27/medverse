@@ -12,15 +12,15 @@ import {
 import { toast } from 'sonner';
 
 const STATUS_CONFIG = {
-  pending: { label: 'Čeká', color: 'bg-amber-500', badge: 'bg-amber-500/20 text-amber-300 border-amber-500/30' },
-  processing: { label: 'Generuje se', color: 'bg-blue-500', badge: 'bg-blue-500/20 text-blue-300 border-blue-500/30' },
-  completed: { label: 'Hotovo', color: 'bg-emerald-500', badge: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' },
-  failed: { label: 'Chyba', color: 'bg-red-500', badge: 'bg-red-500/20 text-red-300 border-red-500/30' },
+  pending: { label: 'Čeká', color: 'bg-[hsl(var(--mn-warn))]', badge: 'bg-[hsl(var(--mn-warn))]/20 text-[hsl(var(--mn-warn))] border-[hsl(var(--mn-warn))]/30' },
+  processing: { label: 'Generuje se', color: 'bg-[hsl(var(--mn-accent-2))]', badge: 'bg-[hsl(var(--mn-accent-2))]/20 text-[hsl(var(--mn-accent-2))] border-[hsl(var(--mn-accent-2))]/30' },
+  completed: { label: 'Hotovo', color: 'bg-[hsl(var(--mn-success))]', badge: 'bg-[hsl(var(--mn-success))]/20 text-[hsl(var(--mn-success))] border-[hsl(var(--mn-success))]/30' },
+  failed: { label: 'Chyba', color: 'bg-[hsl(var(--mn-danger))]', badge: 'bg-[hsl(var(--mn-danger))]/20 text-[hsl(var(--mn-danger))] border-[hsl(var(--mn-danger))]/30' },
 };
 
 function StatBox({ icon: Icon, label, value, sub, accent }) {
   return (
-    <div className="p-4 rounded-xl bg-slate-900/70 border border-[hsl(var(--mn-border))]">
+    <div className="p-4 rounded-xl bg-[hsl(var(--mn-surface))]/70 border border-[hsl(var(--mn-border))]">
       <div className="flex items-center gap-3">
         <div className={`p-2 rounded-lg ${accent || 'bg-[hsl(var(--mn-surface-2))]'}`}>
           <Icon className="w-4 h-4 text-[hsl(var(--mn-muted))]" />
@@ -174,7 +174,7 @@ export default function AdminBatchMonitor() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-[hsl(var(--mn-text))] flex items-center gap-2">
-              <Database className="w-6 h-6 text-teal-400" />
+              <Database className="w-6 h-6 text-[hsl(var(--mn-accent))]" />
               Batch Generation Monitor
             </h1>
             <p className="text-sm text-[hsl(var(--mn-muted))] mt-1">
@@ -188,19 +188,19 @@ export default function AdminBatchMonitor() {
 
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-          <StatBox icon={Clock} label="Čekající" value={stats.pending} accent="bg-amber-500/20" />
-          <StatBox icon={Loader2} label="Probíhá" value={stats.processing} accent="bg-blue-500/20" />
-          <StatBox icon={CheckCircle2} label="Hotovo" value={stats.completed} accent="bg-emerald-500/20" />
-          <StatBox icon={XCircle} label="Chyby" value={stats.failed} accent="bg-red-500/20" />
-          <StatBox icon={DollarSign} label="API cost (7d)" value={`$${totalTrackedCost.toFixed(2)}`} accent="bg-teal-500/20" />
+          <StatBox icon={Clock} label="Čekající" value={stats.pending} accent="bg-[hsl(var(--mn-warn))]/20" />
+          <StatBox icon={Loader2} label="Probíhá" value={stats.processing} accent="bg-[hsl(var(--mn-accent-2))]/20" />
+          <StatBox icon={CheckCircle2} label="Hotovo" value={stats.completed} accent="bg-[hsl(var(--mn-success))]/20" />
+          <StatBox icon={XCircle} label="Chyby" value={stats.failed} accent="bg-[hsl(var(--mn-danger))]/20" />
+          <StatBox icon={DollarSign} label="API cost (7d)" value={`$${totalTrackedCost.toFixed(2)}`} accent="bg-[hsl(var(--mn-accent))]/20" />
           <StatBox icon={BarChart3} label="Odhad zbytku" value={`$${estimatedBatchCost.toFixed(0)}`} sub="Batch API 50%" accent="bg-cyan-500/20" />
         </div>
 
         {/* SAFETY WARNING */}
-        <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4 flex items-start gap-3">
-          <ShieldAlert className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+        <div className="rounded-xl border border-[hsl(var(--mn-warn))]/30 bg-[hsl(var(--mn-warn))]/5 p-4 flex items-start gap-3">
+          <ShieldAlert className="w-5 h-5 text-[hsl(var(--mn-warn))] flex-shrink-0 mt-0.5" />
           <div className="text-sm">
-            <p className="font-medium text-amber-300">Bezpečnostní režim aktivní</p>
+            <p className="font-medium text-[hsl(var(--mn-warn))]">Bezpečnostní režim aktivní</p>
             <p className="text-[hsl(var(--mn-muted))] mt-1">
               Masová generace je dostupná POUZE přes Anthropic Batch API (50% sleva, žádné retries/waste).
               Tlačítko "Generovat 1 topic" volá Messages API pro testování — max 1 topic najednou.
@@ -216,7 +216,7 @@ export default function AdminBatchMonitor() {
               <Button
                 onClick={() => submitBatch.mutate(stats.pending)}
                 disabled={submitBatch.isPending || stats.pending === 0}
-                className="bg-teal-600 hover:bg-teal-500 text-[hsl(var(--mn-text))]"
+                className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent))] text-[hsl(var(--mn-text))]"
               >
                 {submitBatch.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Send className="w-4 h-4 mr-2" />}
                 Odeslat Batch API ({stats.pending} topics, ~${estimatedBatchCost.toFixed(0)})
@@ -250,7 +250,7 @@ export default function AdminBatchMonitor() {
                 <Button
                   variant="outline" size="sm"
                   onClick={() => resetStuck.mutate()}
-                  className="border-amber-500/30 text-amber-400 hover:bg-amber-500/10"
+                  className="border-[hsl(var(--mn-warn))]/30 text-[hsl(var(--mn-warn))] hover:bg-[hsl(var(--mn-warn))]/10"
                 >
                   <RefreshCw className="w-4 h-4 mr-1" />
                   Reset zaseklých ({stats.processing})
@@ -267,18 +267,18 @@ export default function AdminBatchMonitor() {
               <CardTitle className="text-[hsl(var(--mn-muted))] text-lg">📦 Anthropic Batches</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-              <div className="divide-y divide-slate-800">
+              <div className="divide-y divide-[hsl(var(--mn-border))]">
                 {batches.map(b => (
                   <div key={b.id} className="flex items-center gap-4 px-5 py-3">
                     <Badge variant="outline" className={
-                      b.status === 'processed' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' :
-                      b.status === 'in_progress' ? 'bg-blue-500/20 text-blue-300 border-blue-500/30 animate-pulse' :
-                      'bg-slate-500/20 text-[hsl(var(--mn-muted))]'
+                      b.status === 'processed' ? 'bg-[hsl(var(--mn-success))]/20 text-[hsl(var(--mn-success))] border-[hsl(var(--mn-success))]/30' :
+                      b.status === 'in_progress' ? 'bg-[hsl(var(--mn-accent-2))]/20 text-[hsl(var(--mn-accent-2))] border-[hsl(var(--mn-accent-2))]/30 animate-pulse' :
+                      'bg-[hsl(var(--mn-muted)/0.2)] text-[hsl(var(--mn-muted))]'
                     }>{b.status}</Badge>
                     <span className="text-sm text-[hsl(var(--mn-muted))] font-mono">{b.batch_id?.substring(0, 25)}...</span>
                     <span className="text-sm text-[hsl(var(--mn-muted))]">{b.total_requests} req</span>
-                    {b.actual_cost && <span className="text-sm text-emerald-400">${Number(b.actual_cost).toFixed(2)}</span>}
-                    {b.cost_estimate && !b.actual_cost && <span className="text-sm text-amber-400">~${Number(b.cost_estimate).toFixed(2)}</span>}
+                    {b.actual_cost && <span className="text-sm text-[hsl(var(--mn-success))]">${Number(b.actual_cost).toFixed(2)}</span>}
+                    {b.cost_estimate && !b.actual_cost && <span className="text-sm text-[hsl(var(--mn-warn))]">~${Number(b.cost_estimate).toFixed(2)}</span>}
                     <span className="text-xs text-[hsl(var(--mn-muted))] ml-auto">{new Date(b.created_at).toLocaleString('cs')}</span>
                   </div>
                 ))}
@@ -300,7 +300,7 @@ export default function AdminBatchMonitor() {
             ) : queue.length === 0 ? (
               <div className="p-8 text-center text-[hsl(var(--mn-muted))]">Fronta je prázdná.</div>
             ) : (
-              <div className="divide-y divide-slate-800 max-h-[500px] overflow-y-auto">
+              <div className="divide-y divide-[hsl(var(--mn-border))] max-h-[500px] overflow-y-auto">
                 {queue.slice(0, 100).map(item => {
                   const sc = STATUS_CONFIG[item.status] || STATUS_CONFIG.pending;
                   const topic = item.topics;
@@ -319,17 +319,17 @@ export default function AdminBatchMonitor() {
                         <div className="flex items-center gap-3 mt-0.5 text-[11px] text-[hsl(var(--mn-muted))]">
                           <span>{topic?.obory?.name}</span>
                           <span>Modes: {item.modes?.join(', ')}</span>
-                          {topic?.ai_cost > 0 && <span className="text-emerald-500">${Number(topic.ai_cost).toFixed(3)}</span>}
+                          {topic?.ai_cost > 0 && <span className="text-[hsl(var(--mn-success))]">${Number(topic.ai_cost).toFixed(3)}</span>}
                         </div>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <div className={`w-2 h-2 rounded-full ${hasFulltext ? 'bg-emerald-400' : 'bg-slate-700'}`} title="Fulltext" />
-                        <div className={`w-2 h-2 rounded-full ${hasHY ? 'bg-emerald-400' : 'bg-slate-700'}`} title="High-Yield" />
+                        <div className={`w-2 h-2 rounded-full ${hasFulltext ? 'bg-[hsl(var(--mn-success))]' : 'bg-[hsl(var(--mn-elevated))]'}`} title="Fulltext" />
+                        <div className={`w-2 h-2 rounded-full ${hasHY ? 'bg-[hsl(var(--mn-success))]' : 'bg-[hsl(var(--mn-elevated))]'}`} title="High-Yield" />
                       </div>
                       {item.error_message && (
-                        <span className="text-xs text-red-400 max-w-[200px] truncate" title={item.error_message}>{item.error_message}</span>
+                        <span className="text-xs text-[hsl(var(--mn-danger))] max-w-[200px] truncate" title={item.error_message}>{item.error_message}</span>
                       )}
-                      <button onClick={() => deleteItem.mutate(item.id)} className="text-[hsl(var(--mn-muted))] hover:text-red-400 transition-colors p-1" title="Odstranit">
+                      <button onClick={() => deleteItem.mutate(item.id)} className="text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-danger))] transition-colors p-1" title="Odstranit">
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>

@@ -175,7 +175,7 @@ export default function TeamAnalytics() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-[hsl(var(--mn-accent))] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -242,11 +242,11 @@ export default function TeamAnalytics() {
                   {analytics.scoreTrend !== 0 && (
                     <div className="flex items-center gap-1">
                       {analytics.scoreTrend > 0 ? (
-                        <TrendingUp className="w-4 h-4 text-green-600" />
+                        <TrendingUp className="w-4 h-4 text-[hsl(var(--mn-success))]" />
                       ) : (
-                        <TrendingDown className="w-4 h-4 text-red-600" />
+                        <TrendingDown className="w-4 h-4 text-[hsl(var(--mn-danger))]" />
                       )}
-                      <span className={`text-sm ${analytics.scoreTrend > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                      <span className={`text-sm ${analytics.scoreTrend > 0 ? 'text-[hsl(var(--mn-success))]' : 'text-[hsl(var(--mn-danger))]'}`}>
                         {analytics.scoreTrend > 0 ? '+' : ''}{analytics.scoreTrend.toFixed(1)}%
                       </span>
                     </div>
@@ -295,7 +295,7 @@ export default function TeamAnalytics() {
                       className="flex items-center justify-between p-4 rounded-lg border"
                     >
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center text-white font-bold">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))] flex items-center justify-center text-white font-bold">
                           #{idx + 1}
                         </div>
                         <div>
@@ -336,9 +336,9 @@ export default function TeamAnalytics() {
                         {((analytics.activeUsers / analytics.totalMembers) * 100).toFixed(0)}%
                       </span>
                     </div>
-                    <div className="h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div className="h-2 bg-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-surface-2))] rounded-full overflow-hidden">
                       <div 
-                        className="h-full bg-green-600"
+                        className="h-full bg-[hsl(var(--mn-success))]"
                         style={{ width: `${(analytics.activeUsers / analytics.totalMembers) * 100}%` }}
                       />
                     </div>
@@ -351,9 +351,9 @@ export default function TeamAnalytics() {
                         {(analytics.totalTests / analytics.totalMembers).toFixed(1)}
                       </span>
                     </div>
-                    <div className="h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div className="h-2 bg-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-surface-2))] rounded-full overflow-hidden">
                       <div 
-                        className="h-full bg-teal-600"
+                        className="h-full bg-[hsl(var(--mn-accent))]"
                         style={{ width: `${Math.min(100, (analytics.totalTests / analytics.totalMembers) * 10)}%` }}
                       />
                     </div>

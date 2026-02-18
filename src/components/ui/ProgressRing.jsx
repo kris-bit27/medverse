@@ -22,7 +22,7 @@ export default function ProgressRing({
           fill="none"
           stroke="currentColor"
           strokeWidth={strokeWidth}
-          className="text-slate-200 dark:text-slate-700"
+          className="text-[hsl(var(--mn-border))]"
         />
         <circle
           cx={size / 2}
@@ -34,7 +34,7 @@ export default function ProgressRing({
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           strokeLinecap="round"
-          className="text-teal-500 transition-all duration-500 ease-out"
+          className="text-[hsl(var(--mn-accent))] transition-all duration-500 ease-out"
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">

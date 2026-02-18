@@ -65,12 +65,12 @@ export default function HighlightableText({
         <PopoverContent className="w-80">
           <div className="space-y-3">
             <div className="flex items-start gap-2">
-              <Highlighter className="w-4 h-4 text-amber-600 mt-1 flex-shrink-0" />
+              <Highlighter className="w-4 h-4 text-[hsl(var(--mn-warn))] mt-1 flex-shrink-0" />
               <div className="flex-1 text-sm">
                 <p className="font-medium text-[hsl(var(--mn-text))] mb-1">
                   Označený text:
                 </p>
-                <p className="text-xs text-[hsl(var(--mn-muted))] bg-amber-50 dark:bg-amber-900/20 p-2 rounded border border-amber-200 dark:border-amber-800">
+                <p className="text-xs text-[hsl(var(--mn-muted))] bg-[hsl(var(--mn-warn)/0.06)] p-2 rounded border border-[hsl(var(--mn-warn)/0.2)]">
                   {selection?.slice(0, 150)}
                   {selection?.length > 150 && '...'}
                 </p>

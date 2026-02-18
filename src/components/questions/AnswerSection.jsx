@@ -9,27 +9,27 @@ const sectionConfig = {
   definice: { 
     label: 'Definice', 
     icon: BookOpen,
-    color: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
+    color: 'bg-[hsl(var(--mn-accent-2)/0.06)] border-[hsl(var(--mn-accent-2)/0.3)]'
   },
   diagnostika: { 
     label: 'Diagnostika', 
     icon: Stethoscope,
-    color: 'bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800'
+    color: 'bg-[hsl(var(--mn-accent)/0.08)] border-[hsl(var(--mn-accent)/0.2)] dark:border-[hsl(var(--mn-accent)/0.3)]'
   },
   lecba: { 
     label: 'Léčba', 
     icon: ListChecks,
-    color: 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800'
+    color: 'bg-[hsl(var(--mn-success)/0.06)] border-[hsl(var(--mn-success)/0.3)]'
   },
   komplikace: { 
     label: 'Komplikace', 
     icon: AlertTriangle,
-    color: 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800'
+    color: 'bg-[hsl(var(--mn-warn)/0.06)] border-[hsl(var(--mn-warn)/0.2)]'
   },
   pearls: { 
     label: 'Klinické perly', 
     icon: Lightbulb,
-    color: 'bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800'
+    color: 'bg-[hsl(var(--mn-accent)/0.08)] border-[hsl(var(--mn-accent)/0.2)] dark:border-[hsl(var(--mn-accent)/0.3)]'
   }
 };
 
@@ -122,7 +122,7 @@ export default function AnswerSection({
                     href={ref.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-teal-600 dark:text-teal-400 hover:underline"
+                    className="text-sm text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))] hover:underline"
                   >
                     {ref.label || ref.url}
                   </a>

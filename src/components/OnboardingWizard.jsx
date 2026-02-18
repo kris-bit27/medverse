@@ -252,9 +252,9 @@ export default function OnboardingWizard({ onComplete }) {
               onClick={() => i < step && setStep(i)}
               className={`transition-all duration-300 rounded-full ${
                 i === step
-                  ? 'w-10 h-3 bg-teal-500'
+                  ? 'w-10 h-3 bg-[hsl(var(--mn-accent))]'
                   : i < step
-                  ? 'w-3 h-3 bg-teal-400 cursor-pointer hover:bg-teal-300'
+                  ? 'w-3 h-3 bg-[hsl(var(--mn-accent))] cursor-pointer hover:bg-[hsl(var(--mn-accent)/0.8)]'
                   : 'w-3 h-3 bg-[hsl(var(--mn-border))]'
               }`}
             />
@@ -267,7 +267,7 @@ export default function OnboardingWizard({ onComplete }) {
             {/* ===== STEP: WELCOME ===== */}
             {STEPS[step].id === 'welcome' && (
               <div className="text-center space-y-6">
-                <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-teal-500/20">
+                <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))] flex items-center justify-center shadow-lg shadow-[hsl(var(--mn-accent))]/20">
                   <Sparkles className="w-10 h-10 text-[hsl(var(--mn-text))]" />
                 </div>
                 <div>
@@ -284,7 +284,7 @@ export default function OnboardingWizard({ onComplete }) {
                     { icon: Building2, label: 'Pracoviště' },
                   ].map(({ icon: Icon, label }) => (
                     <div key={label} className="p-4 rounded-xl bg-[hsl(var(--mn-surface-2)/0.5)] border border-[hsl(var(--mn-border)/0.5)]">
-                      <Icon className="w-6 h-6 text-teal-400 mx-auto mb-2" />
+                      <Icon className="w-6 h-6 text-[hsl(var(--mn-accent))] mx-auto mb-2" />
                       <p className="text-sm text-[hsl(var(--mn-muted))]">{label}</p>
                     </div>
                   ))}
@@ -334,8 +334,8 @@ export default function OnboardingWizard({ onComplete }) {
                   </div>
 
                   {selectedObor && (
-                    <div className="p-4 rounded-xl bg-teal-500/10 border border-teal-500/20">
-                      <div className="flex items-center gap-2 text-teal-400 mb-1">
+                    <div className="p-4 rounded-xl bg-[hsl(var(--mn-accent))]/10 border border-[hsl(var(--mn-accent))]/20">
+                      <div className="flex items-center gap-2 text-[hsl(var(--mn-accent))] mb-1">
                         <CheckCircle className="w-4 h-4" />
                         <span className="font-medium">{selectedObor.name}</span>
                       </div>
@@ -392,7 +392,7 @@ export default function OnboardingWizard({ onComplete }) {
                           <p className="text-sm text-[hsl(var(--mn-muted))] mt-1">{opt.desc}</p>
                         </div>
                         {form.phase === opt.value && (
-                          <CheckCircle className="w-6 h-6 text-teal-400 flex-shrink-0" />
+                          <CheckCircle className="w-6 h-6 text-[hsl(var(--mn-accent))] flex-shrink-0" />
                         )}
                       </div>
                     </button>
@@ -574,12 +574,12 @@ export default function OnboardingWizard({ onComplete }) {
                     {form.interruptions.map((intItem, idx) => (
                       <div key={idx} className="p-4 rounded-xl bg-[hsl(var(--mn-surface-2)/0.5)] border border-[hsl(var(--mn-border))] space-y-3">
                         <div className="flex items-center justify-between">
-                          <Badge variant="outline" className="text-amber-400 border-amber-400/30">
+                          <Badge variant="outline" className="text-[hsl(var(--mn-warn))] border-[hsl(var(--mn-warn)/0.3)]">
                             Přerušení {idx + 1}
                           </Badge>
                           <button
                             onClick={() => removeInterruption(idx)}
-                            className="text-[hsl(var(--mn-muted))] hover:text-red-400 transition-colors"
+                            className="text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-danger))] transition-colors"
                           >
                             <X className="w-4 h-4" />
                           </button>
@@ -644,9 +644,9 @@ export default function OnboardingWizard({ onComplete }) {
                 )}
 
                 {!form.has_interruptions && (
-                  <div className="p-4 rounded-xl bg-green-500/10 border border-green-500/20 text-center">
-                    <CheckCircle className="w-6 h-6 text-green-400 mx-auto mb-2" />
-                    <p className="text-sm text-green-300">Bez přerušení – skvělé!</p>
+                  <div className="p-4 rounded-xl bg-[hsl(var(--mn-success))]/10 border border-[hsl(var(--mn-success))]/20 text-center">
+                    <CheckCircle className="w-6 h-6 text-[hsl(var(--mn-success))] mx-auto mb-2" />
+                    <p className="text-sm text-[hsl(var(--mn-success))]">Bez přerušení – skvělé!</p>
                   </div>
                 )}
               </div>
@@ -671,7 +671,7 @@ export default function OnboardingWizard({ onComplete }) {
               <Button
                 onClick={goNext}
                 disabled={!canGoNext() || isSubmitting}
-                className="bg-teal-600 hover:bg-teal-700 text-white min-w-[140px]"
+                className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)] text-white min-w-[140px]"
               >
                 {isSubmitting ? (
                   <Loader2 className="w-4 h-4 animate-spin" />

@@ -124,7 +124,7 @@ export const CacheAnalytics = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <RefreshCw className="animate-spin h-8 w-8 text-gray-400" />
+        <RefreshCw className="animate-spin h-8 w-8 text-[hsl(var(--mn-muted))]" />
       </div>
     );
   }
@@ -168,7 +168,7 @@ export const CacheAnalytics = () => {
                   {stats.apiCalls} API calls
                 </p>
               </div>
-              <DollarSign className="h-8 w-8 text-green-500" />
+              <DollarSign className="h-8 w-8 text-[hsl(var(--mn-success))]" />
             </div>
           </CardContent>
         </Card>
@@ -181,14 +181,14 @@ export const CacheAnalytics = () => {
                 <p className="text-sm font-medium text-muted-foreground">
                   Cost Saved
                 </p>
-                <p className="text-3xl font-bold mt-2 text-green-600">
+                <p className="text-3xl font-bold mt-2 text-[hsl(var(--mn-success))]">
                   ${stats.costSaved.toFixed(2)}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
                   via caching
                 </p>
               </div>
-              <TrendingUp className="h-8 w-8 text-green-500" />
+              <TrendingUp className="h-8 w-8 text-[hsl(var(--mn-success))]" />
             </div>
           </CardContent>
         </Card>
@@ -206,7 +206,7 @@ export const CacheAnalytics = () => {
                   unique generations
                 </p>
               </div>
-              <Brain className="h-8 w-8 text-blue-500" />
+              <Brain className="h-8 w-8 text-[hsl(var(--mn-accent-2))]" />
             </div>
           </CardContent>
         </Card>
@@ -230,9 +230,9 @@ export const CacheAnalytics = () => {
               >
                 <div className="flex items-center gap-3">
                   {model.includes('haiku') ? (
-                    <Rocket className="h-5 w-5 text-green-600" />
+                    <Rocket className="h-5 w-5 text-[hsl(var(--mn-success))]" />
                   ) : (
-                    <Brain className="h-5 w-5 text-blue-600" />
+                    <Brain className="h-5 w-5 text-[hsl(var(--mn-accent-2))]" />
                   )}
                   <div>
                     <p className="font-medium">
@@ -278,7 +278,7 @@ export const CacheAnalytics = () => {
                       <Badge variant="secondary">
                         ${data.cost.toFixed(3)} spent
                       </Badge>
-                      <Badge variant="default" className="bg-green-100 text-green-700">
+                      <Badge variant="default" className="bg-[hsl(var(--mn-success)/0.12)] text-[hsl(var(--mn-success))]">
                         ${data.saved.toFixed(3)} saved
                       </Badge>
                     </div>

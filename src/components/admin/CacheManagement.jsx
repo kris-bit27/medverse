@@ -66,7 +66,7 @@ export const CacheManagement = () => {
               <div className="text-sm text-muted-foreground">Total Hits</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-green-600">
+              <div className="text-2xl font-bold text-[hsl(var(--mn-success))]">
                 ${parseFloat(stats.total_cost_saved || 0).toFixed(2)}
               </div>
               <div className="text-sm text-muted-foreground">Cost Saved</div>

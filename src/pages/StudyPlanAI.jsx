@@ -254,7 +254,7 @@ Vrať JSON s týdenním rozpisu úkolů.`;
 
       <div className="mb-6">
         <h1 className="text-2xl lg:text-3xl font-bold text-[hsl(var(--mn-text))] mb-2 flex items-center gap-3">
-          <Sparkles className="w-8 h-8 text-teal-500" />
+          <Sparkles className="w-8 h-8 text-[hsl(var(--mn-accent))]" />
           AI Personalizovaný studijní plán
         </h1>
         <p className="text-[hsl(var(--mn-muted))]">
@@ -346,9 +346,9 @@ Vrať JSON s týdenním rozpisu úkolů.`;
             </CardContent>
           </Card>
 
-          <Alert className="bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800">
-            <Sparkles className="h-4 w-4 text-teal-600 dark:text-teal-400" />
-            <AlertDescription className="text-sm text-teal-700 dark:text-teal-300">
+          <Alert className="bg-[hsl(var(--mn-accent)/0.08)] border-[hsl(var(--mn-accent)/0.2)] dark:border-[hsl(var(--mn-accent)/0.3)]">
+            <Sparkles className="h-4 w-4 text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))]" />
+            <AlertDescription className="text-sm text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))]">
               AI analyzuje váš aktuální pokrok a vytvoří personalizovaný plán se zaměřením na oblasti, které potřebují posílit.
             </AlertDescription>
           </Alert>
@@ -356,7 +356,7 @@ Vrať JSON s týdenním rozpisu úkolů.`;
           <Button
             onClick={handleGeneratePlan}
             disabled={isGenerating || !goal || !targetDate || selectedDisciplines.length === 0}
-            className="w-full bg-teal-600 hover:bg-teal-700"
+            className="w-full bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]"
             size="lg"
           >
             {isGenerating ? (
@@ -376,10 +376,10 @@ Vrať JSON s týdenním rozpisu úkolů.`;
 
       {step === 2 && generatedPlan && (
         <div className="space-y-6">
-          <Card className="bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-pink-900/20 border-teal-200 dark:border-teal-800">
+          <Card className="bg-gradient-to-br from-[hsl(var(--mn-accent)/0.06)] to-[hsl(var(--mn-accent-2)/0.06)] border-[hsl(var(--mn-accent)/0.2)] dark:border-[hsl(var(--mn-accent)/0.3)]">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-teal-600" />
+                <Sparkles className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
                 {generatedPlan.plan.title}
               </CardTitle>
               <CardDescription>{generatedPlan.plan.description}</CardDescription>
@@ -387,19 +387,19 @@ Vrať JSON s týdenním rozpisu úkolů.`;
             <CardContent>
               <div className="grid md:grid-cols-3 gap-4 mb-4">
                 <div className="flex items-center gap-2 text-sm">
-                  <Target className="w-4 h-4 text-teal-600" />
+                  <Target className="w-4 h-4 text-[hsl(var(--mn-accent))]" />
                   <span className="font-medium">Cíl:</span>
                   <span className="text-[hsl(var(--mn-muted))]">{generatedPlan.plan.goal}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <Calendar className="w-4 h-4 text-teal-600" />
+                  <Calendar className="w-4 h-4 text-[hsl(var(--mn-accent))]" />
                   <span className="font-medium">Do:</span>
                   <span className="text-[hsl(var(--mn-muted))]">
                     {format(new Date(generatedPlan.plan.target_date), 'd. MMMM yyyy', { locale: cs })}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <BookOpen className="w-4 h-4 text-teal-600" />
+                  <BookOpen className="w-4 h-4 text-[hsl(var(--mn-accent))]" />
                   <span className="font-medium">Úkolů:</span>
                   <span className="text-[hsl(var(--mn-muted))]">{generatedPlan.tasks.length}</span>
                 </div>
@@ -413,7 +413,7 @@ Vrať JSON s týdenním rozpisu úkolů.`;
                   <ul className="space-y-1">
                     {generatedPlan.recommendations.map((rec, i) => (
                       <li key={i} className="text-sm text-[hsl(var(--mn-muted))] flex items-start gap-2">
-                        <span className="text-teal-600 mt-0.5">•</span>
+                        <span className="text-[hsl(var(--mn-accent))] mt-0.5">•</span>
                         {rec}
                       </li>
                     ))}
@@ -464,7 +464,7 @@ Vrať JSON s týdenním rozpisu úkolů.`;
             <Button
               onClick={handleCreatePlan}
               disabled={createPlanMutation.isPending}
-              className="flex-1 bg-teal-600 hover:bg-teal-700"
+              className="flex-1 bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]"
               size="lg"
             >
               {createPlanMutation.isPending ? (

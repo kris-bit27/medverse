@@ -53,7 +53,7 @@ export default function AdminBudgetSettings() {
           {/* Enable/Disable */}
           <div className="flex items-center justify-between p-4 rounded-lg border bg-[hsl(var(--mn-surface))]">
             <div className="flex items-start gap-3">
-              <Shield className="w-5 h-5 text-blue-600 mt-0.5" />
+              <Shield className="w-5 h-5 text-[hsl(var(--mn-accent-2))] mt-0.5" />
               <div>
                 <Label className="text-base font-semibold">
                   Enable Budget Limits
@@ -215,8 +215,8 @@ export default function AdminBudgetSettings() {
             </div>
           </div>
 
-          <Alert className="bg-blue-50 dark:bg-blue-950/20 border-blue-200">
-            <AlertDescription className="text-sm text-blue-900 dark:text-blue-100">
+          <Alert className="bg-[hsl(var(--mn-accent-2)/0.06)] border-[hsl(var(--mn-accent-2)/0.3)]">
+            <AlertDescription className="text-sm text-[hsl(var(--mn-accent-2))]">
               <strong>Example:</strong> With a ${settings.monthlyBudget} budget:
               <ul className="list-disc list-inside mt-2 space-y-1 text-xs">
                 <li>~{Math.floor(settings.monthlyBudget / 0.6)} Opus 4 requests (avg $0.60 each)</li>
@@ -238,8 +238,8 @@ export default function AdminBudgetSettings() {
             To activate these settings in production:
           </p>
           <ol className="list-decimal list-inside space-y-1 ml-2">
-            <li>Add <code className="bg-slate-200 dark:bg-slate-800 px-1 rounded">ENABLE_BUDGET_LIMIT=true</code> to Vercel env vars</li>
-            <li>Add <code className="bg-slate-200 dark:bg-slate-800 px-1 rounded">MONTHLY_BUDGET_USD={settings.monthlyBudget}</code></li>
+            <li>Add <code className="bg-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-surface-2))] px-1 rounded">ENABLE_BUDGET_LIMIT=true</code> to Vercel env vars</li>
+            <li>Add <code className="bg-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-surface-2))] px-1 rounded">MONTHLY_BUDGET_USD={settings.monthlyBudget}</code></li>
             <li>Redeploy the application</li>
             <li>Monitor usage in Admin Analytics</li>
           </ol>

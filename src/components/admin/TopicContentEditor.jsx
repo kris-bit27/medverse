@@ -139,8 +139,8 @@ ${fullTextSnippet}`;
 
   return (
     <div className="space-y-6">
-      <Alert className="bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800">
-        <AlertDescription className="text-sm text-teal-700 dark:text-teal-300">
+      <Alert className="bg-[hsl(var(--mn-accent)/0.08)] border-[hsl(var(--mn-accent)/0.2)] dark:border-[hsl(var(--mn-accent)/0.3)]">
+        <AlertDescription className="text-sm text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))]">
           Vytvořte studijní obsah pro téma <strong>{topic.title}</strong>. AI může generovat obsah na základě medicínské literatury.
         </AlertDescription>
       </Alert>

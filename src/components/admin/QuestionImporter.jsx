@@ -322,9 +322,9 @@ Otázky musí být relevantní pro české lékařské atestace a odpovídat bě
             />
           </div>
 
-          <Alert className="bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800">
-            <Sparkles className="h-4 w-4 text-teal-600 dark:text-teal-400" />
-            <AlertDescription className="text-sm text-teal-700 dark:text-teal-300">
+          <Alert className="bg-[hsl(var(--mn-accent)/0.08)] border-[hsl(var(--mn-accent)/0.2)] dark:border-[hsl(var(--mn-accent)/0.3)]">
+            <Sparkles className="h-4 w-4 text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))]" />
+            <AlertDescription className="text-sm text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))]">
               AI vygeneruje medicínské otázky s podrobnými odpověďmi na základě vybraného tématu, okruhu a klinického oboru.
             </AlertDescription>
           </Alert>

@@ -49,7 +49,7 @@ export const SearchTopics = () => {
       {/* Search Input */}
       <form onSubmit={handleSearch} className="flex gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[hsl(var(--mn-muted))]" />
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -62,7 +62,7 @@ export const SearchTopics = () => {
               onClick={clearSearch}
               className="absolute right-3 top-1/2 transform -translate-y-1/2"
             >
-              <X className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+              <X className="h-4 w-4 text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-muted))]" />
             </button>
           )}
         </div>
@@ -81,7 +81,7 @@ export const SearchTopics = () => {
       {/* Results */}
       {loading && (
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+          <Loader2 className="h-8 w-8 animate-spin text-[hsl(var(--mn-muted))]" />
         </div>
       )}
 
@@ -138,7 +138,7 @@ export const SearchTopics = () => {
 
                   <div className="ml-4 flex flex-col gap-1 items-end">
                     {result.has_content ? (
-                      <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-[10px]">
+                      <Badge className="bg-[hsl(var(--mn-success)/0.12)] text-[hsl(var(--mn-success))] text-[10px]">
                         Obsah ✓
                       </Badge>
                     ) : (

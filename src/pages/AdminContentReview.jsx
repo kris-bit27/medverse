@@ -17,16 +17,16 @@ import { canAccessAdmin } from '@/components/utils/permissions';
 import HTMLContent from '@/components/study/HTMLContent';
 
 const VERDICT_CONFIG = {
-  pass: { icon: CheckCircle, color: 'text-emerald-500', bg: 'bg-emerald-500/10', label: 'Schváleno' },
-  warn: { icon: AlertTriangle, color: 'text-amber-500', bg: 'bg-amber-500/10', label: 'Varování' },
-  fail: { icon: XCircle, color: 'text-red-500', bg: 'bg-red-500/10', label: 'Zamítnuto' },
-  error: { icon: XCircle, color: 'text-gray-500', bg: 'bg-gray-500/10', label: 'Chyba' },
+  pass: { icon: CheckCircle, color: 'text-[hsl(var(--mn-success))]', bg: 'bg-[hsl(var(--mn-success))]/10', label: 'Schváleno' },
+  warn: { icon: AlertTriangle, color: 'text-[hsl(var(--mn-warn))]', bg: 'bg-[hsl(var(--mn-warn))]/10', label: 'Varování' },
+  fail: { icon: XCircle, color: 'text-[hsl(var(--mn-danger))]', bg: 'bg-[hsl(var(--mn-danger))]/10', label: 'Zamítnuto' },
+  error: { icon: XCircle, color: 'text-[hsl(var(--mn-muted))]', bg: 'bg-[hsl(var(--mn-muted))]/10', label: 'Chyba' },
 };
 
 const SEVERITY_COLORS = {
-  critical: 'bg-red-500/10 text-red-400 border-red-500/30',
-  major: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-  minor: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
+  critical: 'bg-[hsl(var(--mn-danger))]/10 text-[hsl(var(--mn-danger))] border-[hsl(var(--mn-danger))]/30',
+  major: 'bg-[hsl(var(--mn-warn))]/10 text-[hsl(var(--mn-warn))] border-[hsl(var(--mn-warn))]/30',
+  minor: 'bg-[hsl(var(--mn-accent-2))]/10 text-[hsl(var(--mn-accent-2))] border-[hsl(var(--mn-accent-2))]/30',
 };
 
 export default function AdminContentReview() {
@@ -82,7 +82,7 @@ export default function AdminContentReview() {
           <Button variant="ghost" size="sm" className="mb-3"><ChevronLeft className="w-4 h-4 mr-1" /> Admin</Button>
         </Link>
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center">
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#f97316] to-[hsl(var(--mn-danger))] flex items-center justify-center">
             <Shield className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -148,9 +148,9 @@ export default function AdminContentReview() {
           )}
 
           {reviewMutation.isError && (
-            <Card className="border-red-500/30">
+            <Card className="border-[hsl(var(--mn-danger))]/30">
               <CardContent className="p-4">
-                <p className="text-sm text-red-400">{reviewMutation.error?.message || 'Chyba při recenzi'}</p>
+                <p className="text-sm text-[hsl(var(--mn-danger))]">{reviewMutation.error?.message || 'Chyba při recenzi'}</p>
               </CardContent>
             </Card>
           )}
@@ -193,7 +193,7 @@ export default function AdminContentReview() {
                 <Card>
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm flex items-center gap-2">
-                      <AlertTriangle className="w-4 h-4 text-amber-500" />
+                      <AlertTriangle className="w-4 h-4 text-[hsl(var(--mn-warn))]" />
                       Nalezené problémy ({review.issues.length})
                     </CardTitle>
                   </CardHeader>
@@ -226,7 +226,7 @@ export default function AdminContentReview() {
                 <Card>
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-emerald-500" />
+                      <CheckCircle className="w-4 h-4 text-[hsl(var(--mn-success))]" />
                       Silné stránky
                     </CardTitle>
                   </CardHeader>
@@ -234,7 +234,7 @@ export default function AdminContentReview() {
                     <ul className="space-y-1">
                       {review.strengths.map((s, i) => (
                         <li key={i} className="text-xs text-[hsl(var(--mn-muted))] flex items-start gap-2">
-                          <span className="text-emerald-500 mt-0.5">✓</span> {s}
+                          <span className="text-[hsl(var(--mn-success))] mt-0.5">✓</span> {s}
                         </li>
                       ))}
                     </ul>

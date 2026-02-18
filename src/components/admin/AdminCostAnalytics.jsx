@@ -113,10 +113,10 @@ export default function AdminCostAnalytics() {
       {/* Summary cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: 'Celkové náklady', value: `$${s.totalCost.toFixed(2)}`, icon: DollarSign, color: 'text-green-600' },
-          { label: 'Topics generováno', value: s.totalTopics, icon: Zap, color: 'text-blue-600' },
-          { label: 'Průměr/topic', value: `$${s.avgCost.toFixed(4)}`, icon: TrendingUp, color: 'text-purple-600' },
-          { label: 'Odhad zbývajících', value: `$${estRemaining.toFixed(2)}`, icon: BarChart3, color: 'text-amber-600' },
+          { label: 'Celkové náklady', value: `$${s.totalCost.toFixed(2)}`, icon: DollarSign, color: 'text-[hsl(var(--mn-success))]' },
+          { label: 'Topics generováno', value: s.totalTopics, icon: Zap, color: 'text-[hsl(var(--mn-accent-2))]' },
+          { label: 'Průměr/topic', value: `$${s.avgCost.toFixed(4)}`, icon: TrendingUp, color: 'text-[#a855f7]' },
+          { label: 'Odhad zbývajících', value: `$${estRemaining.toFixed(2)}`, icon: BarChart3, color: 'text-[hsl(var(--mn-warn))]' },
         ].map((m, i) => (
           <Card key={i}><CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -132,11 +132,11 @@ export default function AdminCostAnalytics() {
 
       {/* Remaining info */}
       {remaining > 0 && (
-        <Card className="border-amber-200 dark:border-amber-800">
+        <Card className="border-[hsl(var(--mn-warn)/0.2)]">
           <CardContent className="p-4">
             <p className="text-sm">
               <span className="font-medium">{remaining} topics</span> bez obsahu × <span className="font-medium">${s.avgCost.toFixed(4)}</span> průměr = 
-              <span className="font-bold text-amber-600"> ~${estRemaining.toFixed(2)}</span> odhadované zbývající náklady
+              <span className="font-bold text-[hsl(var(--mn-warn))]"> ~${estRemaining.toFixed(2)}</span> odhadované zbývající náklady
             </p>
           </CardContent>
         </Card>
@@ -157,8 +157,8 @@ export default function AdminCostAnalytics() {
                       <span>{data.count} topics</span>
                       <span className="font-medium">${data.cost.toFixed(4)}</span>
                     </div>
-                    <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                      <div className={`h-2 rounded-full ${model.includes('opus') ? 'bg-purple-500' : 'bg-blue-500'}`}
+                    <div className="w-full bg-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-elevated))] rounded-full h-2">
+                      <div className={`h-2 rounded-full ${model.includes('opus') ? 'bg-[#a855f7]' : 'bg-[hsl(var(--mn-accent-2))]'}`}
                         style={{ width: `${pct}%` }} />
                     </div>
                   </div>

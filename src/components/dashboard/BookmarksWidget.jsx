@@ -84,7 +84,7 @@ export default function BookmarksWidget({
                 <div className="w-8 h-8 rounded-lg bg-[hsl(var(--mn-surface-2))] flex items-center justify-center flex-shrink-0">
                   <Icon className="w-4 h-4 text-[hsl(var(--mn-muted))]" />
                 </div>
-                <span className="text-sm font-medium text-[hsl(var(--mn-muted))] truncate group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                <span className="text-sm font-medium text-[hsl(var(--mn-muted))] truncate group-hover:text-[hsl(var(--mn-accent))] dark:group-hover:text-[hsl(var(--mn-accent))] transition-colors">
                   {item.entity?.title}
                 </span>
               </Link>

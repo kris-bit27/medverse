@@ -17,15 +17,15 @@ import {
 
 /* ─── Obor color palette — dynamic for all specialties ─── */
 const COLOR_POOL = [
-  { bg: 'bg-red-500/10', border: 'border-red-500/30', text: 'text-red-400', accent: '#ef4444' },
-  { bg: 'bg-blue-500/10', border: 'border-blue-500/30', text: 'text-blue-400', accent: '#3b82f6' },
-  { bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', text: 'text-emerald-400', accent: '#10b981' },
+  { bg: 'bg-[hsl(var(--mn-danger))]/10', border: 'border-[hsl(var(--mn-danger))]/30', text: 'text-[hsl(var(--mn-danger))]', accent: '#ef4444' },
+  { bg: 'bg-[hsl(var(--mn-accent-2))]/10', border: 'border-[hsl(var(--mn-accent-2))]/30', text: 'text-[hsl(var(--mn-accent-2))]', accent: '#3b82f6' },
+  { bg: 'bg-[hsl(var(--mn-success))]/10', border: 'border-[hsl(var(--mn-success))]/30', text: 'text-[hsl(var(--mn-success))]', accent: '#10b981' },
   { bg: 'bg-purple-500/10', border: 'border-purple-500/30', text: 'text-purple-400', accent: '#a855f7' },
-  { bg: 'bg-orange-500/10', border: 'border-orange-500/30', text: 'text-orange-400', accent: '#f97316' },
+  { bg: 'bg-[hsl(var(--mn-warn))]/10', border: 'border-orange-500/30', text: 'text-[hsl(var(--mn-warn))]', accent: '#f97316' },
   { bg: 'bg-pink-500/10', border: 'border-pink-500/30', text: 'text-pink-400', accent: '#ec4899' },
   { bg: 'bg-cyan-500/10', border: 'border-cyan-500/30', text: 'text-cyan-400', accent: '#06b6d4' },
-  { bg: 'bg-amber-500/10', border: 'border-amber-500/30', text: 'text-amber-400', accent: '#f59e0b' },
-  { bg: 'bg-teal-500/10', border: 'border-teal-500/30', text: 'text-[hsl(var(--mn-accent))]', accent: '#14b8a6' },
+  { bg: 'bg-[hsl(var(--mn-warn))]/10', border: 'border-[hsl(var(--mn-warn))]/30', text: 'text-[hsl(var(--mn-warn))]', accent: '#f59e0b' },
+  { bg: 'bg-[hsl(var(--mn-accent))]/10', border: 'border-[hsl(var(--mn-accent))]/30', text: 'text-[hsl(var(--mn-accent))]', accent: '#14b8a6' },
   { bg: 'bg-indigo-500/10', border: 'border-indigo-500/30', text: 'text-indigo-400', accent: '#6366f1' },
   { bg: 'bg-rose-500/10', border: 'border-rose-500/30', text: 'text-rose-400', accent: '#f43f5e' },
   { bg: 'bg-lime-500/10', border: 'border-lime-500/30', text: 'text-lime-400', accent: '#84cc16' },

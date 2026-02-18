@@ -155,7 +155,7 @@ export default function StudyGroup() {
             </Button>
           )}
           {isMember && !isOwner && (
-            <Button variant="ghost" size="sm" onClick={() => leaveMutation.mutate()} className="text-red-500 hover:text-red-600">
+            <Button variant="ghost" size="sm" onClick={() => leaveMutation.mutate()} className="text-[hsl(var(--mn-danger))] hover:text-[hsl(var(--mn-danger))]">
               <UserMinus className="w-3.5 h-3.5 mr-1" />Opustit
             </Button>
           )}
@@ -227,7 +227,7 @@ export default function StudyGroup() {
             </Card>
           ) : (
             posts.map(post => (
-              <Card key={post.id} className={post.is_pinned ? 'border-amber-500/30' : ''}>
+              <Card key={post.id} className={post.is_pinned ? 'border-[hsl(var(--mn-warn))]/30' : ''}>
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3">
                     <Avatar className="w-8 h-8 mt-1">
@@ -237,7 +237,7 @@ export default function StudyGroup() {
                     </Avatar>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        {post.is_pinned && <Pin className="w-3 h-3 text-amber-500" />}
+                        {post.is_pinned && <Pin className="w-3 h-3 text-[hsl(var(--mn-warn))]" />}
                         <span className="font-medium text-sm">{post.author_name || 'Anonym'}</span>
                         <span className="text-xs text-muted-foreground">{timeAgo(post.created_at)}</span>
                         <Badge variant="outline" className="text-[10px] px-1.5 py-0">
@@ -284,7 +284,7 @@ export default function StudyGroup() {
                       </div>
                       <div className="flex items-center gap-2">
                         {memberIsOwner && (
-                          <Badge className="bg-amber-500/10 text-amber-500 border-amber-500/20">
+                          <Badge className="bg-[hsl(var(--mn-warn))]/10 text-[hsl(var(--mn-warn))] border-[hsl(var(--mn-warn))]/20">
                             <Crown className="w-3 h-3 mr-1" />Zakladatel
                           </Badge>
                         )}

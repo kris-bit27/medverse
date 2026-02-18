@@ -86,10 +86,10 @@ export default function TopicContentReviewPanel({ topic, aiResponse, onContentIm
 
   return (
     <div className="space-y-4">
-      <Card className="border-2 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-900/10">
+      <Card className="border-2 border-[hsl(var(--mn-warn)/0.2)] bg-[hsl(var(--mn-warn)/0.06)]/50">
         <div className="flex flex-col space-y-1.5 p-6">
           <div className="flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-amber-600" />
+            <AlertTriangle className="w-5 h-5 text-[hsl(var(--mn-warn))]" />
             <CardTitle className="text-lg">Hippo identifikoval slabiny tohoto textu</CardTitle>
           </div>
         </div>
@@ -211,7 +211,7 @@ export default function TopicContentReviewPanel({ topic, aiResponse, onContentIm
                 <Button
                   onClick={() => handleImprovement('custom')}
                   disabled={!customPrompt.trim() || isImproving}
-                  className="w-full bg-teal-600 hover:bg-teal-700"
+                  className="w-full bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]"
                 >
                   {isImproving && improvementMode === 'custom' ? (
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -228,19 +228,19 @@ export default function TopicContentReviewPanel({ topic, aiResponse, onContentIm
 
       {/* Improved content display */}
       {improvedContent && (
-        <Card className="border-2 border-green-200 dark:border-green-800">
+        <Card className="border-2 border-[hsl(var(--mn-success)/0.3)]">
           <div className="flex flex-col space-y-1.5 p-6">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-5 h-5 text-green-600" />
+              <CheckCircle2 className="w-5 h-5 text-[hsl(var(--mn-success))]" />
               <CardTitle className="text-lg">Hippo vylepšil obsah</CardTitle>
               {improvedContent.confidence && (
                 <Badge 
                   className={
                     improvedContent.confidence.level === 'high' 
-                      ? 'bg-green-100 text-green-700 border-green-300' 
+                      ? 'bg-[hsl(var(--mn-success)/0.12)] text-[hsl(var(--mn-success))] border-[hsl(var(--mn-success)/0.4)]' 
                       : improvedContent.confidence.level === 'medium'
-                      ? 'bg-amber-100 text-amber-700 border-amber-300'
-                      : 'bg-red-100 text-red-700 border-red-300'
+                      ? 'bg-[hsl(var(--mn-warn)/0.12)] text-[hsl(var(--mn-warn))] border-[hsl(var(--mn-warn)/0.4)]'
+                      : 'bg-[hsl(var(--mn-danger)/0.12)] text-[hsl(var(--mn-danger))] border-[hsl(var(--mn-danger)/0.4)]'
                   }
                 >
                   Jistota: {improvedContent.confidence.level}

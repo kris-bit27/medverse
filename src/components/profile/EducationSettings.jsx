@@ -154,7 +154,7 @@ export default function EducationSettings({ user }) {
         <Button
           onClick={handleSave}
           disabled={saving}
-          className="w-full bg-teal-600 hover:bg-teal-700"
+          className="w-full bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]"
         >
           {saving ? (
             <Loader2 className="w-4 h-4 mr-2 animate-spin" />

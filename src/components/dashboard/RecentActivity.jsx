@@ -65,7 +65,7 @@ export default function RecentActivity({
               className="flex items-center justify-between p-3 rounded-lg hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))]/50 transition-colors group"
             >
               <div className="flex-1 min-w-0 pr-4">
-                <p className="font-medium text-[hsl(var(--mn-text))] truncate group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                <p className="font-medium text-[hsl(var(--mn-text))] truncate group-hover:text-[hsl(var(--mn-accent))] dark:group-hover:text-[hsl(var(--mn-accent))] transition-colors">
                   {item.question?.title}
                 </p>
                 <div className="flex items-center gap-3 mt-1">

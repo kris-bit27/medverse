@@ -49,7 +49,7 @@ export default function AdminCostAnalytics() {
         </Link>
         
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[hsl(var(--mn-success))] to-[hsl(var(--mn-accent))] flex items-center justify-center">
             <DollarSign className="w-5 h-5 text-[hsl(var(--mn-text))]" />
           </div>
           <h1 className="text-2xl lg:text-3xl font-bold">

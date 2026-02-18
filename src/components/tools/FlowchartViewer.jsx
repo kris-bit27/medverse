@@ -7,27 +7,27 @@ import { cn } from '@/lib/utils';
 
 const nodeStyles = {
   start: {
-    bg: 'bg-teal-100 dark:bg-teal-900/30',
-    border: 'border-teal-300 dark:border-teal-700',
-    text: 'text-teal-800 dark:text-teal-200',
+    bg: 'bg-[hsl(var(--mn-accent)/0.12)]/30',
+    border: 'border-[hsl(var(--mn-accent)/0.4)]',
+    text: 'text-[hsl(var(--mn-accent))]',
     icon: Circle
   },
   step: {
     bg: 'bg-[hsl(var(--mn-elevated))]',
-    border: 'border-[hsl(var(--mn-border))] dark:border-slate-600',
+    border: 'border-[hsl(var(--mn-border))] dark:border-[hsl(var(--mn-border))]',
     text: 'text-[hsl(var(--mn-text))] dark:text-[hsl(var(--mn-text))]',
     icon: Square
   },
   decision: {
-    bg: 'bg-amber-50 dark:bg-amber-900/20',
-    border: 'border-amber-300 dark:border-amber-700',
-    text: 'text-amber-800 dark:text-amber-200',
+    bg: 'bg-[hsl(var(--mn-warn)/0.06)]',
+    border: 'border-[hsl(var(--mn-warn)/0.4)]',
+    text: 'text-[hsl(var(--mn-warn))]',
     icon: Diamond
   },
   end: {
-    bg: 'bg-emerald-100 dark:bg-emerald-900/30',
-    border: 'border-emerald-300 dark:border-emerald-700',
-    text: 'text-emerald-800 dark:text-emerald-200',
+    bg: 'bg-[hsl(var(--mn-success)/0.12)]',
+    border: 'border-[hsl(var(--mn-success)/0.4)]',
+    text: 'text-[hsl(var(--mn-success))]',
     icon: CheckCircle2
   }
 };
@@ -52,7 +52,7 @@ function FlowNode({ node, edges, allNodes, onNavigate, isActive, isVisited }) {
           "p-4 rounded-xl border-2 transition-all",
           style.bg,
           style.border,
-          isActive && "ring-2 ring-teal-500 ring-offset-2 dark:ring-offset-slate-950",
+          isActive && "ring-2 ring-[hsl(var(--mn-accent))] ring-offset-2 ring-offset-[hsl(var(--mn-bg))]",
           isDecision && "rounded-2xl"
         )}
       >
@@ -83,7 +83,7 @@ function FlowNode({ node, edges, allNodes, onNavigate, isActive, isVisited }) {
                   onClick={() => onNavigate(edge.to)}
                   className={cn(
                     edge.label?.toLowerCase().includes('ano') || edge.label?.toLowerCase().includes('yes')
-                      ? 'bg-emerald-600 hover:bg-emerald-700'
+                      ? 'bg-[hsl(var(--mn-success))] hover:bg-[hsl(var(--mn-success)/0.85)]'
                       : ''
                   )}
                 >
@@ -100,7 +100,7 @@ function FlowNode({ node, edges, allNodes, onNavigate, isActive, isVisited }) {
             <Button
               size="sm"
               onClick={() => onNavigate(outgoingEdges[0].to)}
-              className="bg-teal-600 hover:bg-teal-700"
+              className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]"
             >
               Pokračovat
               <ChevronDown className="w-4 h-4 ml-1" />
@@ -190,9 +190,9 @@ export default function FlowchartViewer({ nodes = [], edges = [] }) {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl text-center"
+          className="p-6 bg-gradient-to-br from-[hsl(var(--mn-success)/0.06)] to-[hsl(var(--mn-accent)/0.06)] rounded-xl text-center"
         >
-          <CheckCircle2 className="w-12 h-12 mx-auto mb-3 text-emerald-600" />
+          <CheckCircle2 className="w-12 h-12 mx-auto mb-3 text-[hsl(var(--mn-success))]" />
           <h3 className="text-lg font-semibold text-[hsl(var(--mn-text))] mb-2">
             Algoritmus dokončen
           </h3>

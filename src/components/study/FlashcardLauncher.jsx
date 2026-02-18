@@ -100,17 +100,17 @@ export default function FlashcardLauncher({ topicId, user }) {
 
   return (
     <>
-      <Card className="bg-gradient-to-br from-teal-50 to-blue-50 dark:from-teal-900/20 dark:to-blue-900/20 border-teal-200 dark:border-teal-800">
+      <Card className="bg-gradient-to-br from-[hsl(var(--mn-accent)/0.06)] to-[hsl(var(--mn-accent-2)/0.06)] border-[hsl(var(--mn-accent)/0.2)] dark:border-[hsl(var(--mn-accent)/0.3)]">
         <CardContent className="p-6">
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-3">
-                <Brain className="w-5 h-5 text-teal-600" />
+                <Brain className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
                 <h3 className="font-semibold text-[hsl(var(--mn-text))]">
                   Procvičování s kartičkami
                 </h3>
                 {hasDueCards && (
-                  <Badge className="bg-teal-600">
+                  <Badge className="bg-[hsl(var(--mn-accent))]">
                     {dueCount} k procvičení
                   </Badge>
                 )}
@@ -140,7 +140,7 @@ export default function FlashcardLauncher({ topicId, user }) {
                           <Award className="w-3 h-3" />
                           <span>Zvládnuté</span>
                         </div>
-                        <div className="text-2xl font-bold text-green-600">
+                        <div className="text-2xl font-bold text-[hsl(var(--mn-success))]">
                           {stats.cards_mastered || 0}
                         </div>
                       </div>
@@ -150,7 +150,7 @@ export default function FlashcardLauncher({ topicId, user }) {
                           <TrendingUp className="w-3 h-3" />
                           <span>Učím se</span>
                         </div>
-                        <div className="text-2xl font-bold text-blue-600">
+                        <div className="text-2xl font-bold text-[hsl(var(--mn-accent-2))]">
                           {stats.cards_learning || 0}
                         </div>
                       </div>
@@ -160,7 +160,7 @@ export default function FlashcardLauncher({ topicId, user }) {
                           <Zap className="w-3 h-3" />
                           <span>Série</span>
                         </div>
-                        <div className="text-2xl font-bold text-orange-600">
+                        <div className="text-2xl font-bold text-[hsl(var(--mn-warn))]">
                           {stats.best_streak || 0}
                         </div>
                       </div>
@@ -178,7 +178,7 @@ export default function FlashcardLauncher({ topicId, user }) {
               {hasDueCards && (
                 <Button 
                   onClick={() => setShowReview(true)}
-                  className="bg-teal-600 hover:bg-teal-700"
+                  className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]"
                 >
                   <Brain className="w-4 h-4 mr-2" />
                   Začít procvičovat
@@ -204,7 +204,7 @@ export default function FlashcardLauncher({ topicId, user }) {
         <DialogContent className="max-w-3xl">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Brain className="w-5 h-5 text-teal-600" />
+              <Brain className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
               Procvičování kartiček
             </DialogTitle>
           </DialogHeader>

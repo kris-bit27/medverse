@@ -62,11 +62,11 @@ export default function Forum() {
 
   const getVisibilityInfo = (thread) => {
     if (thread.visibility === 'public') {
-      return { icon: Users, label: 'Veřejné', color: 'text-green-600' };
+      return { icon: Users, label: 'Veřejné', color: 'text-[hsl(var(--mn-success))]' };
     }
     if (thread.visibility === 'discipline_specific') {
       const discipline = disciplines.find(d => d.id === thread.clinical_discipline_id);
-      return { icon: Users, label: discipline?.name || 'Obor', color: 'text-blue-600' };
+      return { icon: Users, label: discipline?.name || 'Obor', color: 'text-[hsl(var(--mn-accent-2))]' };
     }
     return { icon: Lock, label: 'Soukromé', color: 'text-[hsl(var(--mn-muted))]' };
   };
@@ -145,7 +145,7 @@ export default function Forum() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start gap-3 mb-2">
                           {thread.is_pinned && (
-                            <Pin className="w-4 h-4 text-amber-600 mt-1 flex-shrink-0" />
+                            <Pin className="w-4 h-4 text-[hsl(var(--mn-warn))] mt-1 flex-shrink-0" />
                           )}
                           <div className="flex-1 min-w-0">
                             <h3 className="font-semibold text-[hsl(var(--mn-text))] mb-1 flex items-center gap-2">

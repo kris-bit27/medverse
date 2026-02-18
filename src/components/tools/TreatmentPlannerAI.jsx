@@ -118,11 +118,11 @@ Odpověď piš česky, strukturovaně a s ohledem na individuální parametry pa
 
       <div className="space-y-6">
       {/* Disclaimer */}
-      <Card className="border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20">
+      <Card className="border-[hsl(var(--mn-warn)/0.2)] bg-[hsl(var(--mn-warn)/0.06)]">
         <CardContent className="pt-6">
           <div className="flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
-            <div className="text-sm text-amber-900 dark:text-amber-100">
+            <AlertTriangle className="w-5 h-5 text-[hsl(var(--mn-warn))] dark:text-[hsl(var(--mn-warn))] mt-0.5 flex-shrink-0" />
+            <div className="text-sm text-[hsl(var(--mn-warn))]">
               <p className="font-semibold mb-1">Upozornění – Decision Support Tool</p>
               <p>
                 Tento nástroj slouží pouze jako podpora klinického rozhodování a nenahrazuje oficiální klinická doporučení 
@@ -220,7 +220,7 @@ Odpověď piš česky, strukturovaně a s ohledem na individuální parametry pa
             {result.pharmacological_treatment && result.pharmacological_treatment.length > 0 && (
               <div>
                 <h3 className="font-semibold text-lg mb-4 flex items-center gap-2 text-[hsl(var(--mn-text))]">
-                  <Pill className="w-5 h-5 text-teal-600" />
+                  <Pill className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
                   Farmakologická léčba
                 </h3>
                 <div className="space-y-3">
@@ -280,16 +280,16 @@ Odpověď piš česky, strukturovaně a s ohledem na individuální parametry pa
 
             {/* Contraindications */}
             {result.contraindications && result.contraindications.length > 0 && (
-              <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+              <div className="p-4 bg-[hsl(var(--mn-warn)/0.06)] rounded-lg">
                 <div className="flex items-start gap-3">
-                  <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
+                  <AlertTriangle className="w-5 h-5 text-[hsl(var(--mn-warn))] dark:text-[hsl(var(--mn-warn))] mt-0.5 flex-shrink-0" />
                   <div>
-                    <h3 className="font-semibold text-amber-900 dark:text-amber-100 mb-2">
+                    <h3 className="font-semibold text-[hsl(var(--mn-warn))] mb-2">
                       Upozornění a kontraindikace
                     </h3>
                     <ul className="space-y-1">
                       {result.contraindications.map((item, i) => (
-                        <li key={i} className="text-sm text-amber-800 dark:text-amber-200">
+                        <li key={i} className="text-sm text-[hsl(var(--mn-warn)/0.8)]">
                           {item}
                         </li>
                       ))}
@@ -301,11 +301,11 @@ Odpověď piš česky, strukturovaně a s ohledem na individuální parametry pa
 
             {/* Prognosis */}
             {result.prognosis && (
-              <div className="p-4 bg-teal-50 dark:bg-teal-900/20 rounded-lg">
-                <h3 className="font-semibold text-teal-900 dark:text-teal-100 mb-2">
+              <div className="p-4 bg-[hsl(var(--mn-accent)/0.08)] rounded-lg">
+                <h3 className="font-semibold text-[hsl(var(--mn-accent))] mb-2">
                   Prognóza
                 </h3>
-                <p className="text-sm text-teal-800 dark:text-teal-200">{result.prognosis}</p>
+                <p className="text-sm text-[hsl(var(--mn-accent)/0.8)]">{result.prognosis}</p>
               </div>
             )}
 

@@ -80,7 +80,7 @@ export default function Admin() {
       count: questions.length,
       icon: GraduationCap,
       href: createPageUrl('AdminQuestions'),
-      color: 'from-teal-500 to-cyan-600'
+      color: 'from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))]'
     },
     {
       title: 'Nástroje',
@@ -88,7 +88,7 @@ export default function Admin() {
       count: tools.length,
       icon: Stethoscope,
       href: createPageUrl('AdminTools'),
-      color: 'from-teal-500 to-cyan-600'
+      color: 'from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))]'
     },
     {
       title: 'Taxonomie',
@@ -96,7 +96,7 @@ export default function Admin() {
       count: okruhy.length,
       icon: FolderTree,
       href: createPageUrl('AdminTaxonomy'),
-      color: 'from-amber-500 to-orange-600'
+      color: 'from-[hsl(var(--mn-warn))] to-[#ea580c]'
     },
     {
       title: 'Analytics',
@@ -104,7 +104,7 @@ export default function Admin() {
       count: null,
       icon: BarChart3,
       href: createPageUrl('AdminAnalytics'),
-      color: 'from-emerald-500 to-teal-600'
+      color: 'from-[hsl(var(--mn-success))] to-[hsl(var(--mn-accent))]'
     },
     {
       title: 'Content Feedback',
@@ -112,7 +112,7 @@ export default function Admin() {
       count: null,
       icon: Flag,
       href: createPageUrl('AdminFeedback'),
-      color: 'from-amber-500 to-red-500'
+      color: 'from-[hsl(var(--mn-warn))] to-[hsl(var(--mn-danger))]'
     },
     {
       title: 'Content Review',
@@ -120,7 +120,7 @@ export default function Admin() {
       count: null,
       icon: Shield,
       href: createPageUrl('AdminContentReview'),
-      color: 'from-orange-500 to-red-600'
+      color: 'from-[#f97316] to-[hsl(var(--mn-danger))]'
     }
   ];
 
@@ -129,7 +129,7 @@ export default function Admin() {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[hsl(var(--mn-elevated))] to-[hsl(var(--mn-surface))] flex items-center justify-center">
             <Shield className="w-5 h-5 text-[hsl(var(--mn-text))]" />
           </div>
           <h1 className="text-2xl lg:text-3xl font-bold text-[hsl(var(--mn-text))]">
@@ -151,7 +151,7 @@ export default function Admin() {
             const Icon = card.icon;
             return (
               <Link key={card.title} to={card.href}>
-                <Card className="h-full hover:shadow-lg transition-all hover:border-teal-200 dark:hover:border-[hsl(var(--mn-accent)/0.4)] group">
+                <Card className="h-full hover:shadow-lg transition-all hover:border-[hsl(var(--mn-accent)/0.2)] dark:hover:border-[hsl(var(--mn-accent)/0.4)] group">
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
                       <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${card.color} flex items-center justify-center flex-shrink-0`}>
@@ -159,10 +159,10 @@ export default function Admin() {
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1">
-                          <h3 className="font-semibold text-[hsl(var(--mn-text))] group-hover:text-teal-600 transition-colors">
+                          <h3 className="font-semibold text-[hsl(var(--mn-text))] group-hover:text-[hsl(var(--mn-accent))] transition-colors">
                             {card.title}
                           </h3>
-                          <ChevronRight className="w-5 h-5 text-[hsl(var(--mn-muted))] group-hover:text-teal-600 transition-colors" />
+                          <ChevronRight className="w-5 h-5 text-[hsl(var(--mn-muted))] group-hover:text-[hsl(var(--mn-accent))] transition-colors" />
                         </div>
                         <p className="text-sm text-[hsl(var(--mn-muted))] mb-2">
                           {card.description}
@@ -191,18 +191,18 @@ export default function Admin() {
           <div className="grid md:grid-cols-2 gap-4">
             {hasUserManagement && (
               <Link to={createPageUrl('AdminUsers')}>
-                <Card className="hover:shadow-lg transition-all hover:border-teal-200 dark:hover:border-[hsl(var(--mn-accent)/0.4)] group">
+                <Card className="hover:shadow-lg transition-all hover:border-[hsl(var(--mn-accent)/0.2)] dark:hover:border-[hsl(var(--mn-accent)/0.4)] group">
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center flex-shrink-0">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[hsl(var(--mn-success))] to-[hsl(var(--mn-accent))] flex items-center justify-center flex-shrink-0">
                         <Users className="w-6 h-6 text-[hsl(var(--mn-text))]" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1">
-                          <h3 className="font-semibold text-[hsl(var(--mn-text))] group-hover:text-teal-600 transition-colors">
+                          <h3 className="font-semibold text-[hsl(var(--mn-text))] group-hover:text-[hsl(var(--mn-accent))] transition-colors">
                             Uživatelé
                           </h3>
-                          <ChevronRight className="w-5 h-5 text-[hsl(var(--mn-muted))] group-hover:text-teal-600 transition-colors" />
+                          <ChevronRight className="w-5 h-5 text-[hsl(var(--mn-muted))] group-hover:text-[hsl(var(--mn-accent))] transition-colors" />
                         </div>
                         <p className="text-sm text-[hsl(var(--mn-muted))] mb-2">
                           Správa uživatelů a rolí
@@ -219,18 +219,18 @@ export default function Admin() {
 
             {hasAuditAccess && (
               <Link to={createPageUrl('AdminAudit')}>
-                <Card className="hover:shadow-lg transition-all hover:border-teal-200 dark:hover:border-[hsl(var(--mn-accent)/0.4)] group">
+                <Card className="hover:shadow-lg transition-all hover:border-[hsl(var(--mn-accent)/0.2)] dark:hover:border-[hsl(var(--mn-accent)/0.4)] group">
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-500 to-slate-700 flex items-center justify-center flex-shrink-0">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[hsl(var(--mn-muted))] to-[hsl(var(--mn-elevated))] flex items-center justify-center flex-shrink-0">
                         <FileText className="w-6 h-6 text-[hsl(var(--mn-text))]" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1">
-                          <h3 className="font-semibold text-[hsl(var(--mn-text))] group-hover:text-teal-600 transition-colors">
+                          <h3 className="font-semibold text-[hsl(var(--mn-text))] group-hover:text-[hsl(var(--mn-accent))] transition-colors">
                             Audit log
                           </h3>
-                          <ChevronRight className="w-5 h-5 text-[hsl(var(--mn-muted))] group-hover:text-teal-600 transition-colors" />
+                          <ChevronRight className="w-5 h-5 text-[hsl(var(--mn-muted))] group-hover:text-[hsl(var(--mn-accent))] transition-colors" />
                         </div>
                         <p className="text-sm text-[hsl(var(--mn-muted))]">
                           Historie změn obsahu

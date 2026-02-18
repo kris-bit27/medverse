@@ -103,11 +103,11 @@ Odpověď piš česky, strukturovaně a prakticky využitelně pro klinickou pra
 
       <div className="space-y-6">
       {/* Disclaimer */}
-      <Card className="border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20">
+      <Card className="border-[hsl(var(--mn-warn)/0.2)] bg-[hsl(var(--mn-warn)/0.06)]">
         <CardContent className="pt-6">
           <div className="flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
-            <div className="text-sm text-amber-900 dark:text-amber-100">
+            <AlertCircle className="w-5 h-5 text-[hsl(var(--mn-warn))] dark:text-[hsl(var(--mn-warn))] mt-0.5 flex-shrink-0" />
+            <div className="text-sm text-[hsl(var(--mn-warn))]">
               <p className="font-semibold mb-1">Upozornění – Decision Support Tool</p>
               <p>
                 Tento nástroj slouží pouze jako podpora klinického rozhodování a nenahrazuje lékařské vyšetření 
@@ -188,8 +188,8 @@ Odpověď piš česky, strukturovaně a prakticky využitelně pro klinickou pra
           <CardContent className="space-y-6">
             {/* Summary */}
             {result.summary && (
-              <div className="p-4 bg-teal-50 dark:bg-teal-900/20 rounded-lg">
-                <p className="text-sm text-teal-900 dark:text-teal-100">{result.summary}</p>
+              <div className="p-4 bg-[hsl(var(--mn-accent)/0.08)] rounded-lg">
+                <p className="text-sm text-[hsl(var(--mn-accent))]">{result.summary}</p>
               </div>
             )}
 
@@ -217,7 +217,7 @@ Odpověď piš česky, strukturovaně a prakticky využitelně pro klinickou pra
                             <ul className="space-y-1">
                               {dx.key_features.map((feature, i) => (
                                 <li key={i} className="text-sm text-[hsl(var(--mn-muted))] flex items-start gap-2">
-                                  <CheckCircle2 className="w-4 h-4 text-teal-600 mt-0.5 flex-shrink-0" />
+                                  <CheckCircle2 className="w-4 h-4 text-[hsl(var(--mn-accent))] mt-0.5 flex-shrink-0" />
                                   {feature}
                                 </li>
                               ))}
@@ -250,16 +250,16 @@ Odpověď piš česky, strukturovaně a prakticky využitelně pro klinickou pra
 
             {/* Red flags */}
             {result.red_flags && result.red_flags.length > 0 && (
-              <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
+              <div className="p-4 bg-[hsl(var(--mn-danger)/0.06)] rounded-lg">
                 <div className="flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
+                  <AlertCircle className="w-5 h-5 text-[hsl(var(--mn-danger))] dark:text-[hsl(var(--mn-danger))] mt-0.5 flex-shrink-0" />
                   <div>
-                    <h3 className="font-semibold text-red-900 dark:text-red-100 mb-2">
+                    <h3 className="font-semibold text-[hsl(var(--mn-danger))] mb-2">
                       Varovné příznaky (Red Flags)
                     </h3>
                     <ul className="space-y-1">
                       {result.red_flags.map((flag, i) => (
-                        <li key={i} className="text-sm text-red-800 dark:text-red-200">
+                        <li key={i} className="text-sm text-[hsl(var(--mn-danger)/0.8)]">
                           {flag}
                         </li>
                       ))}

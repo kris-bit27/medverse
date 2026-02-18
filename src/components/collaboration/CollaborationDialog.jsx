@@ -173,7 +173,7 @@ export default function CollaborationDialog({
                     >
                       <div className="flex items-center gap-3">
                         <Avatar className="w-8 h-8">
-                          <AvatarFallback className="bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300 text-xs">
+                          <AvatarFallback className="bg-[hsl(var(--mn-accent)/0.12)] text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))] text-xs">
                             {user.full_name?.charAt(0) || user.email.charAt(0)}
                           </AvatarFallback>
                         </Avatar>

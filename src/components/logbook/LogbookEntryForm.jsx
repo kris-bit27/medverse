@@ -292,7 +292,7 @@ export default function LogbookEntryForm({ entry, disciplines, userId, onClose }
             <Button type="button" variant="outline" onClick={onClose}>
               Zrušit
             </Button>
-            <Button type="submit" disabled={isLoading} className="bg-teal-600 hover:bg-teal-700">
+            <Button type="submit" disabled={isLoading} className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]">
               {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               {isEditing ? 'Uložit' : 'Přidat'}
             </Button>

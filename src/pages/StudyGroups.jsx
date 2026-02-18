@@ -153,7 +153,7 @@ export default function StudyGroups() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-[hsl(var(--mn-accent))] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -188,7 +188,7 @@ export default function StudyGroups() {
                       {group.is_private ? (
                         <Lock className="w-5 h-5 text-yellow-600" />
                       ) : (
-                        <Globe className="w-5 h-5 text-green-600" />
+                        <Globe className="w-5 h-5 text-[hsl(var(--mn-success))]" />
                       )}
                       <CardTitle className="text-lg">{group.name}</CardTitle>
                     </div>
@@ -324,7 +324,7 @@ export default function StudyGroups() {
                       {group.is_private ? (
                         <Lock className="w-4 h-4 text-yellow-600 flex-shrink-0" />
                       ) : (
-                        <Globe className="w-4 h-4 text-green-600 flex-shrink-0" />
+                        <Globe className="w-4 h-4 text-[hsl(var(--mn-success))] flex-shrink-0" />
                       )}
                       <CardTitle className="text-base line-clamp-1">{group.name}</CardTitle>
                     </div>

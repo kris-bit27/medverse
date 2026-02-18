@@ -246,7 +246,7 @@ export default function StudyPlanCreate() {
               <Button
                 type="submit"
                 disabled={createMutation.isPending || !title || !goal || !targetDate}
-                className="flex-1 bg-teal-600 hover:bg-teal-700"
+                className="flex-1 bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]"
               >
                 {createMutation.isPending ? (
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -266,7 +266,7 @@ export default function StudyPlanCreate() {
           <Card className="sticky top-6">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-teal-500" />
+                <Sparkles className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
                 AI Copilot
               </CardTitle>
             </CardHeader>

@@ -82,7 +82,7 @@ export default function AdminTools() {
           </h1>
           <p className="text-[hsl(var(--mn-muted))]">{tools.length} celkem</p>
         </div>
-        <Button asChild className="bg-teal-600 hover:bg-teal-700">
+        <Button asChild className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]">
           <Link to={createPageUrl('AdminToolEdit')}>
             <Plus className="w-4 h-4 mr-2" />
             Nový nástroj
@@ -159,7 +159,7 @@ export default function AdminTools() {
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem 
-                          className="text-red-600"
+                          className="text-[hsl(var(--mn-danger))]"
                           onClick={() => {
                             if (confirm('Opravdu smazat tento nástroj?')) {
                               deleteMutation.mutate(tool.id);

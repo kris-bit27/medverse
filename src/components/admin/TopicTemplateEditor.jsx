@@ -140,8 +140,8 @@ export default function TopicTemplateEditor({ topic, onSave }) {
   const getStatusBadge = (status) => {
     const variants = {
       draft: { color: 'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))]', icon: AlertTriangle },
-      in_review: { color: 'bg-amber-100 text-amber-700', icon: Eye },
-      published: { color: 'bg-green-100 text-green-700', icon: CheckCircle }
+      in_review: { color: 'bg-[hsl(var(--mn-warn)/0.12)] text-[hsl(var(--mn-warn))]', icon: Eye },
+      published: { color: 'bg-[hsl(var(--mn-success)/0.12)] text-[hsl(var(--mn-success))]', icon: CheckCircle }
     };
     const variant = variants[status] || variants.draft;
     const Icon = variant.icon;
@@ -155,8 +155,8 @@ export default function TopicTemplateEditor({ topic, onSave }) {
 
   return (
     <div className="space-y-6">
-      <Alert className="bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800">
-        <AlertDescription className="text-sm text-teal-700 dark:text-teal-300">
+      <Alert className="bg-[hsl(var(--mn-accent)/0.08)] border-[hsl(var(--mn-accent)/0.2)] dark:border-[hsl(var(--mn-accent)/0.3)]">
+        <AlertDescription className="text-sm text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))]">
           <div className="flex items-center justify-between">
             <span>Upravujete téma <strong>{topic.title}</strong> | EDU Template</span>
             <Button

@@ -92,18 +92,18 @@ export default function UserAIUsageDashboard({ user }) {
       )}
 
       {isNearLimit && !isOverBudget && (
-        <Alert className="bg-amber-50 border-amber-200">
-          <AlertTriangle className="h-4 w-4 text-amber-600" />
-          <AlertDescription className="text-amber-800">
+        <Alert className="bg-[hsl(var(--mn-warn)/0.06)] border-[hsl(var(--mn-warn)/0.2)]">
+          <AlertTriangle className="h-4 w-4 text-[hsl(var(--mn-warn))]" />
+          <AlertDescription className="text-[hsl(var(--mn-warn))]">
             <strong>Approaching limit:</strong> You've used {percentUsed.toFixed(0)}% of your monthly budget.
           </AlertDescription>
         </Alert>
       )}
 
       {!isNearLimit && usedCost > 0 && (
-        <Alert className="bg-green-50 border-green-200">
-          <CheckCircle className="h-4 w-4 text-green-600" />
-          <AlertDescription className="text-green-800">
+        <Alert className="bg-[hsl(var(--mn-success)/0.06)] border-[hsl(var(--mn-success)/0.3)]">
+          <CheckCircle className="h-4 w-4 text-[hsl(var(--mn-success))]" />
+          <AlertDescription className="text-[hsl(var(--mn-success))]">
             You're on track! ${remaining.toFixed(2)} remaining this month.
           </AlertDescription>
         </Alert>
@@ -231,17 +231,17 @@ export default function UserAIUsageDashboard({ user }) {
       )}
 
       {/* Info */}
-      <Card className="bg-blue-50 dark:bg-blue-950/20 border-blue-200">
+      <Card className="bg-[hsl(var(--mn-accent-2)/0.06)] border-[hsl(var(--mn-accent-2)/0.3)]">
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
-            <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
-              <DollarSign className="h-4 w-4 text-blue-600" />
+            <div className="p-2 bg-[hsl(var(--mn-accent-2)/0.12)] rounded-lg">
+              <DollarSign className="h-4 w-4 text-[hsl(var(--mn-accent-2))]" />
             </div>
             <div className="flex-1">
-              <h4 className="font-semibold text-sm text-blue-900 dark:text-blue-100 mb-1">
+              <h4 className="font-semibold text-sm text-[hsl(var(--mn-accent-2))] mb-1">
                 How billing works
               </h4>
-              <p className="text-xs text-blue-800 dark:text-blue-200">
+              <p className="text-xs text-[hsl(var(--mn-accent-2)/0.8)]">
                 You have a ${monthlyBudget}/month budget for AI-generated content. 
                 Your usage resets on the 1st of each month. 
                 Costs vary by model: Opus (~$0.60), Sonnet (~$0.15), Gemini (Free).

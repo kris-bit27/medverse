@@ -293,7 +293,7 @@ export default function LogbookV2() {
 
       <div className="grid grid-cols-2 gap-3">
         <Card><CardContent className="p-3"><div className="text-[10px] font-bold text-[hsl(var(--mn-accent-2))] mb-1.5">KMEN {profile?.kmen_done && '✅'}</div><Progress value={kR.length > 0 ? (kD / kR.length) * 100 : 0} className="h-1.5" /><div className="text-[10px] text-muted-foreground mt-1">{kD}/{kR.length}</div></CardContent></Card>
-        <Card><CardContent className="p-3"><div className="text-[10px] font-bold text-purple-500 mb-1.5">SPECIALIZACE</div><Progress value={sR.length > 0 ? (sD / sR.length) * 100 : 0} className="h-1.5" /><div className="text-[10px] text-muted-foreground mt-1">{sD}/{sR.length}</div></CardContent></Card>
+        <Card><CardContent className="p-3"><div className="text-[10px] font-bold text-[#a855f7] mb-1.5">SPECIALIZACE</div><Progress value={sR.length > 0 ? (sD / sR.length) * 100 : 0} className="h-1.5" /><div className="text-[10px] text-muted-foreground mt-1">{sD}/{sR.length}</div></CardContent></Card>
       </div>
 
       <Countdown profile={profile} obor={obor} />
@@ -322,7 +322,7 @@ export default function LogbookV2() {
               <Check className="w-5 h-5 text-[hsl(var(--mn-accent-2))]" /><div><div className="text-sm font-semibold text-[hsl(var(--mn-accent-2))]">Kmen absolvován</div><div className="text-xs text-muted-foreground">{kR.length} požadavků auto-splněno{profile.kmen_date && ` · ${fD(profile.kmen_date)}`}</div></div>
             </div>
           )}
-          <h3 className="text-xs font-bold text-purple-500 tracking-wider mt-4">SPECIALIZOVANÝ VÝCVIK</h3>
+          <h3 className="text-xs font-bold text-[#a855f7] tracking-wider mt-4">SPECIALIZOVANÝ VÝCVIK</h3>
           {sR.map(r => <ReqCard key={r.id} req={r} done={eProg[r.id]?.status === 'completed'} auto={false} onToggle={() => toggle(r.id)} />)}
           {custEntries.length > 0 && <>
             <h3 className="text-xs font-bold text-[hsl(var(--mn-success))] tracking-wider mt-4">VLASTNÍ ZÁZNAMY ({custEntries.length})</h3>

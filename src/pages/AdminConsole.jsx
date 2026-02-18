@@ -60,10 +60,10 @@ function DashboardTab() {
     <div className="space-y-6">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: 'Topics', value: s.topics.total, icon: BookOpen, color: 'text-blue-600' },
-          { label: 'S obsahem', value: s.topics.withFt, icon: FileText, color: 'text-green-600' },
-          { label: 'Published', value: s.topics.published, icon: CheckCircle2, color: 'text-emerald-600' },
-          { label: 'Uživatelé', value: s.users, icon: Users, color: 'text-purple-600' },
+          { label: 'Topics', value: s.topics.total, icon: BookOpen, color: 'text-[hsl(var(--mn-accent-2))]' },
+          { label: 'S obsahem', value: s.topics.withFt, icon: FileText, color: 'text-[hsl(var(--mn-success))]' },
+          { label: 'Published', value: s.topics.published, icon: CheckCircle2, color: 'text-[hsl(var(--mn-success))]' },
+          { label: 'Uživatelé', value: s.users, icon: Users, color: 'text-[#a855f7]' },
         ].map((m, i) => (
           <Card key={i}><CardContent className="p-4 flex items-center justify-between">
             <div><p className="text-sm text-[hsl(var(--mn-muted))]">{m.label}</p><p className={`text-2xl font-bold ${m.color}`}>{m.value}</p></div>
@@ -78,18 +78,18 @@ function DashboardTab() {
           <span className="text-sm text-[hsl(var(--mn-muted))]">{pct}%</span>
         </div>
         <div className="w-full bg-[hsl(var(--mn-surface-2))] rounded-full h-3 mb-4">
-          <div className="bg-gradient-to-r from-blue-500 to-green-500 h-3 rounded-full transition-all" style={{ width: `${pct}%` }} />
+          <div className="bg-gradient-to-r from-[hsl(var(--mn-accent-2))] to-[hsl(var(--mn-success))] h-3 rounded-full transition-all" style={{ width: `${pct}%` }} />
         </div>
         <div className="grid grid-cols-3 gap-4 text-center text-sm">
-          <div><p className="font-bold text-blue-600">{s.topics.withFt}</p><p className="text-[hsl(var(--mn-muted))]">fulltext</p></div>
-          <div><p className="font-bold text-purple-600">{s.topics.withHy}</p><p className="text-[hsl(var(--mn-muted))]">high-yield</p></div>
+          <div><p className="font-bold text-[hsl(var(--mn-accent-2))]">{s.topics.withFt}</p><p className="text-[hsl(var(--mn-muted))]">fulltext</p></div>
+          <div><p className="font-bold text-[#a855f7]">{s.topics.withHy}</p><p className="text-[hsl(var(--mn-muted))]">high-yield</p></div>
           <div><p className="font-bold text-[hsl(var(--mn-muted))]">{s.topics.total - s.topics.withFt}</p><p className="text-[hsl(var(--mn-muted))]">bez obsahu</p></div>
         </div>
       </CardContent></Card>
 
       {(s.queue.pending > 0 || s.queue.processing > 0) && (
-        <Card className="border-blue-200 dark:border-blue-800"><CardContent className="p-4 flex items-center gap-3">
-          <Loader2 className="w-5 h-5 text-blue-500 animate-spin" />
+        <Card className="border-[hsl(var(--mn-accent-2)/0.3)]"><CardContent className="p-4 flex items-center gap-3">
+          <Loader2 className="w-5 h-5 text-[hsl(var(--mn-accent-2))] animate-spin" />
           <div><p className="font-medium">Generování běží</p>
           <p className="text-sm text-[hsl(var(--mn-muted))]">{s.queue.processing} zpracovává · {s.queue.pending} čeká · {s.queue.completed} hotovo</p></div>
         </CardContent></Card>
@@ -99,9 +99,9 @@ function DashboardTab() {
         <h3 className="font-semibold mb-3">Správa obsahu</h3>
         <div className="grid md:grid-cols-3 gap-3">
           {[
-            { label: 'Taxonomie', desc: 'Obory, okruhy, témata', icon: FolderTree, page: 'AdminTaxonomy', color: 'from-amber-500 to-orange-600' },
-            { label: 'Otázky', desc: 'Testové otázky', icon: GraduationCap, page: 'AdminQuestions', color: 'from-teal-500 to-cyan-600' },
-            { label: 'Články', desc: 'Klinické přehledy', icon: BookOpen, page: 'AdminArticles', color: 'from-blue-500 to-indigo-600' },
+            { label: 'Taxonomie', desc: 'Obory, okruhy, témata', icon: FolderTree, page: 'AdminTaxonomy', color: 'from-[hsl(var(--mn-warn))] to-[#ea580c]' },
+            { label: 'Otázky', desc: 'Testové otázky', icon: GraduationCap, page: 'AdminQuestions', color: 'from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))]' },
+            { label: 'Články', desc: 'Klinické přehledy', icon: BookOpen, page: 'AdminArticles', color: 'from-[hsl(var(--mn-accent-2))] to-indigo-600' },
           ].map((a, i) => (
             <Link key={i} to={createPageUrl(a.page)}>
               <Card className="hover:shadow-md transition-all group cursor-pointer h-full">
@@ -109,7 +109,7 @@ function DashboardTab() {
                   <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${a.color} flex items-center justify-center shrink-0`}>
                     <a.icon className="w-5 h-5 text-[hsl(var(--mn-text))]" />
                   </div>
-                  <div className="min-w-0"><p className="font-medium group-hover:text-teal-600 transition-colors">{a.label}</p>
+                  <div className="min-w-0"><p className="font-medium group-hover:text-[hsl(var(--mn-accent))] transition-colors">{a.label}</p>
                   <p className="text-xs text-[hsl(var(--mn-muted))]">{a.desc}</p></div>
                   <ChevronRight className="w-4 h-4 text-[hsl(var(--mn-muted))] ml-auto shrink-0" />
                 </CardContent>
@@ -123,9 +123,9 @@ function DashboardTab() {
         <h3 className="font-semibold mb-3">Systém</h3>
         <div className="grid md:grid-cols-3 gap-3">
           {[
-            { label: 'Uživatelé', desc: 'Správa rolí a přístupů', icon: Users, page: 'AdminUsers', color: 'from-emerald-500 to-teal-600' },
-            { label: 'AI Náklady', desc: 'Cost management', icon: DollarSign, page: 'AdminCostAnalytics', color: 'from-green-500 to-emerald-600' },
-            { label: 'Audit', desc: 'Historie změn', icon: FileText, page: 'AdminAudit', color: 'from-slate-500 to-slate-700' },
+            { label: 'Uživatelé', desc: 'Správa rolí a přístupů', icon: Users, page: 'AdminUsers', color: 'from-[hsl(var(--mn-success))] to-[hsl(var(--mn-accent))]' },
+            { label: 'AI Náklady', desc: 'Cost management', icon: DollarSign, page: 'AdminCostAnalytics', color: 'from-[hsl(var(--mn-success))] to-[hsl(var(--mn-success))]' },
+            { label: 'Audit', desc: 'Historie změn', icon: FileText, page: 'AdminAudit', color: 'from-[hsl(var(--mn-muted))] to-[hsl(var(--mn-elevated))]' },
           ].map((a, i) => (
             <Link key={i} to={createPageUrl(a.page)}>
               <Card className="hover:shadow-md transition-all group cursor-pointer h-full">
@@ -133,7 +133,7 @@ function DashboardTab() {
                   <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${a.color} flex items-center justify-center shrink-0`}>
                     <a.icon className="w-5 h-5 text-[hsl(var(--mn-text))]" />
                   </div>
-                  <div className="min-w-0"><p className="font-medium group-hover:text-teal-600 transition-colors">{a.label}</p>
+                  <div className="min-w-0"><p className="font-medium group-hover:text-[hsl(var(--mn-accent))] transition-colors">{a.label}</p>
                   <p className="text-xs text-[hsl(var(--mn-muted))]">{a.desc}</p></div>
                   <ChevronRight className="w-4 h-4 text-[hsl(var(--mn-muted))] ml-auto shrink-0" />
                 </CardContent>
@@ -238,7 +238,7 @@ function AIGenerationTab() {
       <div className="flex gap-1 bg-[hsl(var(--mn-surface-2))] rounded-lg p-1 w-fit">
         {[{ id: 'monitor', label: 'Monitoring' }, { id: 'add', label: 'Přidat do fronty' }].map(t => (
           <button key={t.id} onClick={() => setSubTab(t.id)}
-            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${subTab === t.id ? 'bg-[hsl(var(--mn-surface))] dark:bg-slate-700 shadow-sm' : 'text-[hsl(var(--mn-muted))] hover:text-slate-700'}`}>
+            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${subTab === t.id ? 'bg-[hsl(var(--mn-surface))] dark:bg-[hsl(var(--mn-elevated))] shadow-sm' : 'text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))]'}`}>
             {t.label}
           </button>
         ))}
@@ -247,10 +247,10 @@ function AIGenerationTab() {
       {subTab === 'monitor' && (<>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
-            { l: 'Pending', v: st.pending, c: 'text-amber-600', I: Clock },
-            { l: 'Processing', v: st.processing, c: 'text-blue-600', I: Loader2, spin: st.processing > 0 },
-            { l: 'Completed', v: st.completed, c: 'text-green-600', I: CheckCircle2 },
-            { l: 'Failed', v: st.failed, c: 'text-red-600', I: XCircle },
+            { l: 'Pending', v: st.pending, c: 'text-[hsl(var(--mn-warn))]', I: Clock },
+            { l: 'Processing', v: st.processing, c: 'text-[hsl(var(--mn-accent-2))]', I: Loader2, spin: st.processing > 0 },
+            { l: 'Completed', v: st.completed, c: 'text-[hsl(var(--mn-success))]', I: CheckCircle2 },
+            { l: 'Failed', v: st.failed, c: 'text-[hsl(var(--mn-danger))]', I: XCircle },
           ].map((m, i) => (
             <Card key={i}><CardContent className="p-3 flex items-center justify-between">
               <div><p className="text-xs text-[hsl(var(--mn-muted))]">{m.l}</p><p className={`text-xl font-bold ${m.c}`}>{m.v}</p></div>
@@ -261,7 +261,7 @@ function AIGenerationTab() {
 
         <div className="flex items-center gap-3">
           <div className="flex-1 bg-[hsl(var(--mn-surface-2))] rounded-full h-2">
-            <div className="bg-green-500 h-2 rounded-full transition-all" style={{ width: `${pct}%` }} />
+            <div className="bg-[hsl(var(--mn-success))] h-2 rounded-full transition-all" style={{ width: `${pct}%` }} />
           </div>
           <span className="text-sm text-[hsl(var(--mn-muted))] w-12 text-right">{pct}%</span>
         </div>
@@ -290,7 +290,7 @@ function AIGenerationTab() {
                       <td className="p-2.5 hidden md:table-cell text-[hsl(var(--mn-muted))] text-xs">{item.topics?.obory?.name}</td>
                       <td className="p-2.5 text-center">
                         <Badge variant={item.status === 'completed' ? 'default' : item.status === 'failed' ? 'destructive' : 'outline'}
-                          className={item.status === 'completed' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : ''}>
+                          className={item.status === 'completed' ? 'bg-[hsl(var(--mn-success)/0.12)] text-[hsl(var(--mn-success))]' : ''}>
                           {item.status}
                         </Badge>
                       </td>
@@ -337,7 +337,7 @@ function AIGenerationTab() {
 
         <Card><CardContent className="p-0"><div className="max-h-80 overflow-y-auto">
           {tLoad ? <div className="p-8 text-center"><Loader2 className="w-5 h-5 animate-spin mx-auto" /></div>
-          : avail.length === 0 ? <div className="p-8 text-center text-[hsl(var(--mn-muted))]"><CheckCircle2 className="w-6 h-6 mx-auto mb-2 text-green-500" />Vše má obsah nebo je ve frontě</div>
+          : avail.length === 0 ? <div className="p-8 text-center text-[hsl(var(--mn-muted))]"><CheckCircle2 className="w-6 h-6 mx-auto mb-2 text-[hsl(var(--mn-success))]" />Vše má obsah nebo je ve frontě</div>
           : <table className="w-full text-sm">
               <thead className="border-b bg-[hsl(var(--mn-surface-2))] sticky top-0 text-xs">
                 <tr><th className="w-10 p-2.5"></th><th className="text-left p-2.5">Topic</th><th className="text-left p-2.5 hidden md:table-cell">Obor</th></tr>
@@ -406,9 +406,9 @@ function ContentOverviewTab() {
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         {[
           { v: totals.total, l: 'Celkem', c: '' },
-          { v: totals.published, l: 'Published', c: 'text-green-600' },
-          { v: totals.withFt, l: 'Fulltext', c: 'text-blue-600' },
-          { v: totals.withHy, l: 'High-yield', c: 'text-purple-600' },
+          { v: totals.published, l: 'Published', c: 'text-[hsl(var(--mn-success))]' },
+          { v: totals.withFt, l: 'Fulltext', c: 'text-[hsl(var(--mn-accent-2))]' },
+          { v: totals.withHy, l: 'High-yield', c: 'text-[#a855f7]' },
           { v: totals.empty, l: 'Bez obsahu', c: 'text-[hsl(var(--mn-muted))]' },
         ].map((m, i) => (
           <Card key={i}><CardContent className="p-3 text-center">
@@ -423,7 +423,7 @@ function ContentOverviewTab() {
           const isExp = expandedObor === obor.id;
           const pct = obor.total > 0 ? Math.round((obor.withFt / obor.total) * 100) : 0;
           return (
-            <Card key={obor.id} className={isExp ? 'ring-2 ring-purple-500/40' : ''}>
+            <Card key={obor.id} className={isExp ? 'ring-2 ring-[#a855f7/0.4]' : ''}>
               <CardContent className="p-0">
                 <button onClick={() => setExpandedObor(isExp ? null : obor.id)}
                   className="w-full p-3 flex items-center gap-3 text-left hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface-2))]/50 transition-colors">
@@ -434,14 +434,14 @@ function ContentOverviewTab() {
                       <Badge variant="outline" className="text-[10px] shrink-0">{obor.total}</Badge>
                     </div>
                     <div className="w-full bg-[hsl(var(--mn-surface-2))] rounded-full h-1">
-                      <div className={`h-1 rounded-full ${pct === 100 ? 'bg-green-500' : pct > 0 ? 'bg-blue-500' : 'bg-[hsl(var(--mn-border))]'}`}
+                      <div className={`h-1 rounded-full ${pct === 100 ? 'bg-[hsl(var(--mn-success))]' : pct > 0 ? 'bg-[hsl(var(--mn-accent-2))]' : 'bg-[hsl(var(--mn-border))]'}`}
                         style={{ width: `${pct}%` }} />
                     </div>
                   </div>
                   <div className="hidden md:flex gap-3 text-[11px] text-[hsl(var(--mn-muted))] shrink-0">
-                    <span className="text-green-600">{obor.published} pub</span>
-                    <span className="text-blue-600">{obor.withFt} ft</span>
-                    <span className="text-purple-600">{obor.withHy} hy</span>
+                    <span className="text-[hsl(var(--mn-success))]">{obor.published} pub</span>
+                    <span className="text-[hsl(var(--mn-accent-2))]">{obor.withFt} ft</span>
+                    <span className="text-[#a855f7]">{obor.withHy} hy</span>
                   </div>
                 </button>
                 {isExp && (
@@ -451,12 +451,12 @@ function ContentOverviewTab() {
                         <tr><th className="text-left py-1.5">Topic</th><th className="text-center py-1.5 w-14">Status</th>
                         <th className="text-center py-1.5 w-8">FT</th><th className="text-center py-1.5 w-8">HY</th></tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                      <tbody className="divide-y divide-[hsl(var(--mn-border))]">
                         {expTopics.map(t => (
                           <tr key={t.id}>
                             <td className="py-1.5 max-w-xs truncate">{t.title}</td>
                             <td className="py-1.5 text-center">
-                              <Badge variant="outline" className={`text-[10px] ${t.status === 'published' ? 'bg-green-50 text-green-600 dark:bg-green-900/20' : ''}`}>
+                              <Badge variant="outline" className={`text-[10px] ${t.status === 'published' ? 'bg-[hsl(var(--mn-success)/0.06)] text-[hsl(var(--mn-success))]' : ''}`}>
                                 {t.status}
                               </Badge>
                             </td>
@@ -520,7 +520,7 @@ export default function AdminConsole() {
     <div className="p-4 lg:p-8 max-w-6xl mx-auto">
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-1">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[hsl(var(--mn-elevated))] to-[hsl(var(--mn-surface))] flex items-center justify-center">
             <Shield className="w-5 h-5 text-[hsl(var(--mn-text))]" />
           </div>
           <div>
@@ -537,8 +537,8 @@ export default function AdminConsole() {
             <button key={tab.id} onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
                 activeTab === tab.id
-                  ? 'bg-[hsl(var(--mn-surface))] dark:bg-slate-700 text-[hsl(var(--mn-text))] shadow-sm'
-                  : 'text-[hsl(var(--mn-muted))] hover:text-slate-700 dark:hover:text-[hsl(var(--mn-text))]'
+                  ? 'bg-[hsl(var(--mn-surface))] dark:bg-[hsl(var(--mn-elevated))] text-[hsl(var(--mn-text))] shadow-sm'
+                  : 'text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-text))] dark:hover:text-[hsl(var(--mn-text))]'
               }`}>
               <Icon className="w-4 h-4" />
               {tab.label}

@@ -99,7 +99,7 @@ export default function OrganizationManagement() {
       free: { label: 'Free', variant: 'outline' },
       pro: { label: 'Pro', variant: 'default' },
       team: { label: 'Team', variant: 'secondary' },
-      enterprise: { label: 'Enterprise', variant: 'default', className: 'bg-teal-600' }
+      enterprise: { label: 'Enterprise', variant: 'default', className: 'bg-[hsl(var(--mn-accent))]' }
     };
     return badges[planType] || badges.free;
   };
@@ -107,7 +107,7 @@ export default function OrganizationManagement() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-[hsl(var(--mn-accent))] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -151,13 +151,13 @@ export default function OrganizationManagement() {
               <Card
                 key={org.id}
                 className={`cursor-pointer transition-colors ${
-                  isSelected ? 'border-teal-600 bg-teal-50 dark:bg-teal-950/20' : 'hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900'
+                  isSelected ? 'border-[hsl(var(--mn-accent))] bg-[hsl(var(--mn-accent)/0.06)]' : 'hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface))]'
                 }`}
                 onClick={() => setSelectedOrg(org)}
               >
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3">
-                    <Building2 className="w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" />
+                    <Building2 className="w-5 h-5 text-[hsl(var(--mn-accent))] flex-shrink-0 mt-0.5" />
                     <div className="flex-1 min-w-0">
                       <p className="font-medium truncate">{org.name}</p>
                       <div className="flex items-center gap-2 mt-1">
@@ -259,11 +259,11 @@ export default function OrganizationManagement() {
                     {orgMembers.map((member) => (
                       <div
                         key={member.id}
-                        className="flex items-center justify-between p-3 rounded-lg border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900"
+                        className="flex items-center justify-between p-3 rounded-lg border hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface))]"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-teal-100 dark:bg-teal-900 flex items-center justify-center">
-                            <Users className="w-5 h-5 text-teal-600" />
+                          <div className="w-10 h-10 rounded-full bg-[hsl(var(--mn-accent)/0.12)] flex items-center justify-center">
+                            <Users className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
                           </div>
                           <div>
                             <p className="font-medium">{member.user?.email}</p>

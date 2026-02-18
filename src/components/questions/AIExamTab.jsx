@@ -21,9 +21,9 @@ function ConfidenceBadge({ confidence }) {
 
   const cls =
     level === 'high'
-      ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200'
+      ? 'bg-[hsl(var(--mn-success)/0.12)] text-[hsl(var(--mn-success))]'
       : level === 'medium'
-      ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200'
+      ? 'bg-[hsl(var(--mn-warn)/0.12)] text-[hsl(var(--mn-warn))]'
       : 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-200';
 
   return (
@@ -167,9 +167,9 @@ export default function AIExamTab({ question, user, topic, onNoteSaved }) {
   if (!featureCheck.allowed) {
     const upsell = UPSELL_MESSAGES.ai_limit;
     return (
-      <Card className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800">
+      <Card className="bg-gradient-to-br from-[hsl(var(--mn-warn)/0.06)] to-[hsl(var(--mn-warn)/0.04)] border-[hsl(var(--mn-warn)/0.2)]">
         <CardContent className="p-8 text-center">
-          <AlertCircle className="w-12 h-12 mx-auto mb-4 text-amber-600" />
+          <AlertCircle className="w-12 h-12 mx-auto mb-4 text-[hsl(var(--mn-warn))]" />
           <h3 className="text-lg font-semibold text-[hsl(var(--mn-text))] mb-2">
             {upsell.title}
           </h3>
@@ -179,7 +179,7 @@ export default function AIExamTab({ question, user, topic, onNoteSaved }) {
           <p className="text-[hsl(var(--mn-muted))] mb-4 text-sm">
             {upsell.description}
           </p>
-          <Button asChild className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600">
+          <Button asChild className="bg-gradient-to-r from-[hsl(var(--mn-warn))] to-[#f97316] hover:opacity-90">
             <Link to={createPageUrl('Pricing')}>
               {upsell.cta}
             </Link>
@@ -194,7 +194,7 @@ export default function AIExamTab({ question, user, topic, onNoteSaved }) {
       {!hippoResponse ? (
         <Card>
           <CardContent className="p-8 text-center">
-            <Sparkles className="w-12 h-12 mx-auto mb-4 text-teal-600" />
+            <Sparkles className="w-12 h-12 mx-auto mb-4 text-[hsl(var(--mn-accent))]" />
             <h3 className="text-lg font-semibold text-[hsl(var(--mn-text))] mb-2">
               Hippo ti pomůže porozumět
             </h3>
@@ -209,7 +209,7 @@ export default function AIExamTab({ question, user, topic, onNoteSaved }) {
             <Button
               onClick={generateExamAnswer}
               disabled={isLoading}
-              className="bg-teal-600 hover:bg-teal-700"
+              className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]"
             >
               {isLoading ? (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -222,12 +222,12 @@ export default function AIExamTab({ question, user, topic, onNoteSaved }) {
         </Card>
       ) : (
         <>
-          <Card className="border-2 border-teal-200 dark:border-teal-800">
+          <Card className="border-2 border-[hsl(var(--mn-accent)/0.2)] dark:border-[hsl(var(--mn-accent)/0.3)]">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-teal-600" />
-                  <Badge className="bg-teal-600 hover:bg-teal-700">
+                  <Sparkles className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
+                  <Badge className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]">
                     Hippo vysvětluje
                   </Badge>
                   {hippoResponse.cache?.hit && (

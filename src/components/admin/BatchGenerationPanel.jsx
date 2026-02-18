@@ -21,10 +21,10 @@ import {
 import { toast } from 'sonner';
 
 const MODE_LABELS = {
-  fulltext: { label: 'Fulltext (Sonnet)', icon: '📝', color: 'bg-teal-100 text-teal-700' },
+  fulltext: { label: 'Fulltext (Sonnet)', icon: '📝', color: 'bg-[hsl(var(--mn-accent)/0.12)] text-[hsl(var(--mn-accent))]' },
   high_yield: { label: 'High-Yield (Sonnet)', icon: '⚡', color: 'bg-yellow-100 text-yellow-700' },
-  flashcards: { label: 'Flashcards (Haiku)', icon: '🃏', color: 'bg-blue-100 text-blue-700' },
-  mcq: { label: 'MCQ (Sonnet)', icon: '❓', color: 'bg-green-100 text-green-700' },
+  flashcards: { label: 'Flashcards (Haiku)', icon: '🃏', color: 'bg-[hsl(var(--mn-accent-2)/0.12)] text-[hsl(var(--mn-accent-2))]' },
+  mcq: { label: 'MCQ (Sonnet)', icon: '❓', color: 'bg-[hsl(var(--mn-success)/0.12)] text-[hsl(var(--mn-success))]' },
 };
 
 const STATUS_BADGES = {
@@ -173,19 +173,19 @@ export default function BatchGenerationPanel() {
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">{topicsWithContent}</div>
+            <div className="text-2xl font-bold text-[hsl(var(--mn-success))]">{topicsWithContent}</div>
             <div className="text-xs text-muted-foreground">S fulltextem</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-orange-600">{topics.length - topicsWithContent}</div>
+            <div className="text-2xl font-bold text-[hsl(var(--mn-warn))]">{topics.length - topicsWithContent}</div>
             <div className="text-xs text-muted-foreground">Bez obsahu</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-teal-600">{pendingInQueue + processingInQueue}</div>
+            <div className="text-2xl font-bold text-[hsl(var(--mn-accent))]">{pendingInQueue + processingInQueue}</div>
             <div className="text-xs text-muted-foreground">Ve frontě</div>
           </CardContent>
         </Card>
@@ -195,7 +195,7 @@ export default function BatchGenerationPanel() {
       <Card>
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-teal-600" />
+            <Sparkles className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
             Hromadná generace obsahu
           </CardTitle>
         </CardHeader>
@@ -210,7 +210,7 @@ export default function BatchGenerationPanel() {
                   onClick={() => toggleMode(mode)}
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 ${
                     selectedModes.includes(mode) 
-                      ? cfg.color + ' ring-2 ring-offset-1 ring-teal-400' 
+                      ? cfg.color + ' ring-2 ring-offset-1 ring-[hsl(var(--mn-accent))]' 
                       : 'bg-[hsl(var(--mn-surface-2))] text-muted-foreground'
                   }`}
                 >
@@ -328,9 +328,9 @@ export default function BatchGenerationPanel() {
                 return (
                   <div key={item.id} className="flex items-center gap-3 text-sm py-1.5">
                     <StatusIcon className={`w-4 h-4 flex-shrink-0 ${
-                      item.status === 'completed' ? 'text-green-600' :
-                      item.status === 'failed' ? 'text-red-600' :
-                      item.status === 'processing' ? 'text-blue-600 animate-spin' :
+                      item.status === 'completed' ? 'text-[hsl(var(--mn-success))]' :
+                      item.status === 'failed' ? 'text-[hsl(var(--mn-danger))]' :
+                      item.status === 'processing' ? 'text-[hsl(var(--mn-accent-2))] animate-spin' :
                       'text-[hsl(var(--mn-muted))]'
                     }`} />
                     <span className="flex-1 truncate">{item.topics?.title || item.topic_id}</span>
@@ -340,7 +340,7 @@ export default function BatchGenerationPanel() {
                       ))}
                     </div>
                     {item.error_message && (
-                      <span className="text-xs text-red-500 truncate max-w-48" title={item.error_message}>
+                      <span className="text-xs text-[hsl(var(--mn-danger))] truncate max-w-48" title={item.error_message}>
                         {item.error_message.substring(0, 40)}...
                       </span>
                     )}

@@ -15,24 +15,24 @@ export default function QuestionActions({
       label: 'Umím',
       description: 'Znám odpověď, další opakování za 30 dní',
       icon: CheckCircle2,
-      color: 'bg-emerald-600 hover:bg-emerald-700 text-[hsl(var(--mn-text))]',
-      borderColor: 'border-emerald-200 dark:border-emerald-800 hover:border-emerald-300'
+      color: 'bg-[hsl(var(--mn-success))] hover:bg-[hsl(var(--mn-success)/0.85)] text-[hsl(var(--mn-text))]',
+      borderColor: 'border-[hsl(var(--mn-success)/0.3)] hover:border-[hsl(var(--mn-success)/0.4)]'
     },
     {
       id: 'learning',
       label: 'Do opakování',
       description: 'Potřebuji zopakovat, další opakování za 2 dny',
       icon: RefreshCw,
-      color: 'bg-amber-500 hover:bg-amber-600 text-[hsl(var(--mn-text))]',
-      borderColor: 'border-amber-200 dark:border-amber-800 hover:border-amber-300'
+      color: 'bg-[hsl(var(--mn-warn))] hover:bg-[hsl(var(--mn-warn)/0.85)] text-[hsl(var(--mn-text))]',
+      borderColor: 'border-[hsl(var(--mn-warn)/0.2)] hover:border-[hsl(var(--mn-warn)/0.4)]'
     },
     {
       id: 'failed',
       label: 'Neumím',
       description: 'Neznal/a jsem, další opakování zítra',
       icon: XCircle,
-      color: 'bg-red-500 hover:bg-red-600 text-[hsl(var(--mn-text))]',
-      borderColor: 'border-red-200 dark:border-red-800 hover:border-red-300'
+      color: 'bg-[hsl(var(--mn-danger))] hover:bg-[hsl(var(--mn-danger))] text-[hsl(var(--mn-text))]',
+      borderColor: 'border-[hsl(var(--mn-danger)/0.3)] hover:border-[hsl(var(--mn-danger)/0.4)]'
     }
   ];
 
@@ -66,9 +66,9 @@ export default function QuestionActions({
                 ) : (
                   <Icon className={cn(
                     "w-6 h-6",
-                    !isActive && action.id === 'mastered' && 'text-emerald-600',
-                    !isActive && action.id === 'learning' && 'text-amber-500',
-                    !isActive && action.id === 'failed' && 'text-red-500'
+                    !isActive && action.id === 'mastered' && 'text-[hsl(var(--mn-success))]',
+                    !isActive && action.id === 'learning' && 'text-[hsl(var(--mn-warn))]',
+                    !isActive && action.id === 'failed' && 'text-[hsl(var(--mn-danger))]'
                   )} />
                 )}
                 <span className="text-sm font-medium">{action.label}</span>

@@ -5,11 +5,11 @@ export default function DifficultyIndicator({ level = 1, showLabel = true }) {
   const labels = ['', 'Základní', 'Lehká', 'Střední', 'Těžká', 'Expert'];
   const colors = [
     '',
-    'bg-emerald-500',
-    'bg-teal-500', 
-    'bg-amber-500',
-    'bg-orange-500',
-    'bg-red-500'
+    'bg-[hsl(var(--mn-success))]',
+    'bg-[hsl(var(--mn-accent))]', 
+    'bg-[hsl(var(--mn-warn))]',
+    'bg-[hsl(var(--mn-warn))]',
+    'bg-[hsl(var(--mn-danger))]'
   ];
 
   return (
@@ -20,7 +20,7 @@ export default function DifficultyIndicator({ level = 1, showLabel = true }) {
             key={i}
             className={cn(
               "w-1.5 h-4 rounded-full transition-colors",
-              i <= level ? colors[level] : 'bg-slate-200 dark:bg-slate-700'
+              i <= level ? colors[level] : 'bg-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-elevated))]'
             )}
           />
         ))}

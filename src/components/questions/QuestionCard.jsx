@@ -24,7 +24,7 @@ export default function QuestionCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.03 }}
     >
-      <Card className="hover:shadow-md transition-all hover:border-teal-200 dark:hover:border-[hsl(var(--mn-accent)/0.4)] group">
+      <Card className="hover:shadow-md transition-all hover:border-[hsl(var(--mn-accent)/0.2)] dark:hover:border-[hsl(var(--mn-accent)/0.4)] group">
         <CardContent className="p-4">
           <div className="flex items-start gap-4">
             {/* Main content */}
@@ -33,7 +33,7 @@ export default function QuestionCard({
               className="flex-1 min-w-0"
             >
               <div className="flex items-start justify-between gap-2 mb-2">
-                <h3 className="font-medium text-[hsl(var(--mn-text))] group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors line-clamp-2">
+                <h3 className="font-medium text-[hsl(var(--mn-text))] group-hover:text-[hsl(var(--mn-accent))] dark:group-hover:text-[hsl(var(--mn-accent))] transition-colors line-clamp-2">
                   {question.title}
                 </h3>
               </div>
@@ -69,10 +69,10 @@ export default function QuestionCard({
                     e.preventDefault();
                     onToggleBookmark(question.id);
                   }}
-                  className="text-[hsl(var(--mn-muted))] hover:text-amber-500"
+                  className="text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-warn))]"
                 >
                   {isBookmarked ? (
-                    <BookmarkCheck className="w-4 h-4 text-amber-500" />
+                    <BookmarkCheck className="w-4 h-4 text-[hsl(var(--mn-warn))]" />
                   ) : (
                     <Bookmark className="w-4 h-4" />
                   )}
@@ -80,7 +80,7 @@ export default function QuestionCard({
               )}
 
               <Link to={createPageUrl('QuestionDetail') + `?id=${question.id}`}>
-                <ChevronRight className="w-5 h-5 text-[hsl(var(--mn-muted))] group-hover:text-teal-600 transition-colors" />
+                <ChevronRight className="w-5 h-5 text-[hsl(var(--mn-muted))] group-hover:text-[hsl(var(--mn-accent))] transition-colors" />
               </Link>
             </div>
           </div>

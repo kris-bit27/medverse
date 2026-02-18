@@ -72,7 +72,7 @@ export const VersionHistory = ({ topicId, onRestore }) => {
 
         <div className="space-y-3 mt-4">
           {versions.map((version) => (
-            <Card key={version.id} className={version.is_current ? 'border-blue-500' : ''}>
+            <Card key={version.id} className={version.is_current ? 'border-[hsl(var(--mn-accent-2))]' : ''}>
               <CardContent className="pt-4">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -82,7 +82,7 @@ export const VersionHistory = ({ topicId, onRestore }) => {
                       </Badge>
 
                       {version.is_current && (
-                        <Badge variant="default" className="bg-blue-100 text-blue-700">
+                        <Badge variant="default" className="bg-[hsl(var(--mn-accent-2)/0.12)] text-[hsl(var(--mn-accent-2))]">
                           <CheckCircle className="h-3 w-3 mr-1" />
                           Current
                         </Badge>

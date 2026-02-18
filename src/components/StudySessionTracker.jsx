@@ -100,11 +100,11 @@ export default function StudySessionTracker({ topicId, sessionType = 'reading' }
   }
 
   return (
-    <Card className="border-teal-200 bg-teal-50 dark:bg-teal-950/20">
+    <Card className="border-[hsl(var(--mn-accent)/0.2)] bg-[hsl(var(--mn-accent)/0.06)]">
       <CardContent className="p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Clock className="w-5 h-5 text-teal-600" />
+            <Clock className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
             <div>
               <p className="text-sm font-medium">Study Timer</p>
               <p className="text-2xl font-mono font-bold">
@@ -148,7 +148,7 @@ export default function StudySessionTracker({ topicId, sessionType = 'reading' }
         {isActive && (
           <div className="mt-2">
             <Badge variant="outline" className="gap-1">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              <div className="w-2 h-2 rounded-full bg-[hsl(var(--mn-success))] animate-pulse" />
               Probíhá studium
             </Badge>
           </div>

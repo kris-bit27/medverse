@@ -89,7 +89,7 @@ export default function Leaderboards() {
   const getRankIcon = (rank) => {
     if (rank === 1) return <Crown className="w-6 h-6 text-yellow-500" />;
     if (rank === 2) return <Medal className="w-6 h-6 text-[hsl(var(--mn-muted))]" />;
-    if (rank === 3) return <Medal className="w-6 h-6 text-orange-600" />;
+    if (rank === 3) return <Medal className="w-6 h-6 text-[hsl(var(--mn-warn))]" />;
     return <span className="text-lg font-bold text-muted-foreground">#{rank}</span>;
   };
 
@@ -105,7 +105,7 @@ export default function Leaderboards() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-[hsl(var(--mn-accent))] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -135,11 +135,11 @@ export default function Leaderboards() {
 
       {/* My Rank */}
       {myRank && (
-        <Card className="border-teal-200 bg-teal-50 dark:bg-teal-950/20">
+        <Card className="border-[hsl(var(--mn-accent)/0.2)] bg-[hsl(var(--mn-accent)/0.06)]">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-lg">
+                <div className="w-12 h-12 rounded-full bg-[hsl(var(--mn-accent))] text-white flex items-center justify-center font-bold text-lg">
                   #{myRank.rank}
                 </div>
                 <div>
@@ -214,7 +214,7 @@ export default function Leaderboards() {
           <Card className="md:mt-8">
             <CardContent className="p-6 text-center">
               <div className="flex justify-center mb-4">
-                <Medal className="w-12 h-12 text-orange-600" />
+                <Medal className="w-12 h-12 text-[hsl(var(--mn-warn))]" />
               </div>
               <Avatar className="w-16 h-16 mx-auto mb-3">
                 <AvatarFallback>
@@ -224,7 +224,7 @@ export default function Leaderboards() {
               <p className="font-bold mb-1">
                 {leaderboard[2].profile?.full_name || 'Uživatel'}
               </p>
-              <p className="text-2xl font-bold text-orange-600 mb-2">
+              <p className="text-2xl font-bold text-[hsl(var(--mn-warn))] mb-2">
                 {leaderboard[2].total_points.toLocaleString()}
               </p>
               <Badge variant="outline">3rd Place</Badge>
@@ -248,7 +248,7 @@ export default function Leaderboards() {
                 <div
                   key={entry.user_id}
                   className={`flex items-center justify-between p-4 rounded-lg border ${
-                    isMe ? 'bg-teal-50 dark:bg-teal-950/20 border-teal-200' : 'hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900'
+                    isMe ? 'bg-[hsl(var(--mn-accent)/0.06)] border-[hsl(var(--mn-accent)/0.2)]' : 'hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface))]'
                   }`}
                 >
                   <div className="flex items-center gap-4 flex-1">

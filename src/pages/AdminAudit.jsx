@@ -27,9 +27,9 @@ import EmptyState from '@/components/common/EmptyState';
 import { canViewAudit } from '@/components/utils/permissions';
 
 const actionColors = {
-  create: 'bg-emerald-100 text-emerald-800',
-  update: 'bg-blue-100 text-blue-800',
-  delete: 'bg-red-100 text-red-800'
+  create: 'bg-[hsl(var(--mn-success)/0.12)] text-[hsl(var(--mn-success))]',
+  update: 'bg-[hsl(var(--mn-accent-2)/0.12)] text-[hsl(var(--mn-accent-2))]',
+  delete: 'bg-[hsl(var(--mn-danger)/0.12)] text-[hsl(var(--mn-danger))]'
 };
 
 export default function AdminAudit() {

@@ -8,11 +8,11 @@ import { Flag, AlertTriangle, Clock, BookX, HelpCircle, Lightbulb, Send, Loader2
 import { toast } from 'sonner';
 
 const TYPES = [
-  { id: 'error', label: 'Faktická chyba', icon: AlertTriangle, color: 'text-red-400' },
-  { id: 'outdated', label: 'Zastaralé info', icon: Clock, color: 'text-amber-400' },
-  { id: 'incomplete', label: 'Chybí obsah', icon: BookX, color: 'text-orange-400' },
-  { id: 'unclear', label: 'Nesrozumitelné', icon: HelpCircle, color: 'text-blue-400' },
-  { id: 'suggestion', label: 'Návrh', icon: Lightbulb, color: 'text-teal-400' },
+  { id: 'error', label: 'Faktická chyba', icon: AlertTriangle, color: 'text-[hsl(var(--mn-danger))]' },
+  { id: 'outdated', label: 'Zastaralé info', icon: Clock, color: 'text-[hsl(var(--mn-warn))]' },
+  { id: 'incomplete', label: 'Chybí obsah', icon: BookX, color: 'text-[hsl(var(--mn-warn))]' },
+  { id: 'unclear', label: 'Nesrozumitelné', icon: HelpCircle, color: 'text-[hsl(var(--mn-accent-2))]' },
+  { id: 'suggestion', label: 'Návrh', icon: Lightbulb, color: 'text-[hsl(var(--mn-accent))]' },
 ];
 
 export default function ContentFeedback({ topicId, topicTitle }) {
@@ -51,7 +51,7 @@ export default function ContentFeedback({ topicId, topicTitle }) {
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 text-xs text-[hsl(var(--mn-muted))] hover:text-amber-400 transition-colors"
+        className="flex items-center gap-1.5 text-xs text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-warn))] transition-colors"
         title="Nahlásit nepřesnost"
       >
         <Flag className="w-3.5 h-3.5" />
@@ -62,7 +62,7 @@ export default function ContentFeedback({ topicId, topicTitle }) {
         <div className="absolute right-0 top-8 z-50 w-[360px] bg-[hsl(var(--mn-surface))] border border-[hsl(var(--mn-border))] rounded-xl shadow-2xl p-4 animate-in fade-in slide-in-from-top-2">
           {submitted ? (
             <div className="text-center py-6">
-              <CheckCircle2 className="w-10 h-10 text-green-400 mx-auto mb-2" />
+              <CheckCircle2 className="w-10 h-10 text-[hsl(var(--mn-success))] mx-auto mb-2" />
               <p className="text-sm text-[hsl(var(--mn-muted))]">Odesláno! AI analyzuje vaši zpětnou vazbu.</p>
             </div>
           ) : (
@@ -83,8 +83,8 @@ export default function ContentFeedback({ topicId, topicTitle }) {
                       onClick={() => setType(t.id)}
                       className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
                         type === t.id
-                          ? 'bg-slate-700 text-white ring-1 ring-teal-500/50'
-                          : 'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))] hover:bg-slate-750'
+                          ? 'bg-[hsl(var(--mn-elevated))] text-white ring-1 ring-[hsl(var(--mn-accent))]/50'
+                          : 'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-elevated))]'
                       }`}>
                       <Icon className={`w-3 h-3 ${type === t.id ? t.color : ''}`} />
                       {t.label}
@@ -99,7 +99,7 @@ export default function ContentFeedback({ topicId, topicTitle }) {
                 placeholder="Citace problematického textu (volitelné)"
                 value={quotedText}
                 onChange={e => setQuotedText(e.target.value)}
-                className="w-full bg-[hsl(var(--mn-surface-2))] border border-[hsl(var(--mn-border))] rounded-lg px-3 py-2 text-xs text-[hsl(var(--mn-muted))] placeholder-[hsl(var(--mn-muted))] mb-2 focus:ring-1 focus:ring-teal-500/50 focus:border-teal-500/50 outline-none"
+                className="w-full bg-[hsl(var(--mn-surface-2))] border border-[hsl(var(--mn-border))] rounded-lg px-3 py-2 text-xs text-[hsl(var(--mn-muted))] placeholder-[hsl(var(--mn-muted))] mb-2 focus:ring-1 focus:ring-[hsl(var(--mn-accent))]/50 focus:border-[hsl(var(--mn-accent))]/50 outline-none"
               />
 
               {/* Description */}
@@ -108,7 +108,7 @@ export default function ContentFeedback({ topicId, topicTitle }) {
                 value={description}
                 onChange={e => setDescription(e.target.value)}
                 rows={3}
-                className="w-full bg-[hsl(var(--mn-surface-2))] border border-[hsl(var(--mn-border))] rounded-lg px-3 py-2 text-xs text-[hsl(var(--mn-muted))] placeholder-[hsl(var(--mn-muted))] mb-3 resize-none focus:ring-1 focus:ring-teal-500/50 focus:border-teal-500/50 outline-none"
+                className="w-full bg-[hsl(var(--mn-surface-2))] border border-[hsl(var(--mn-border))] rounded-lg px-3 py-2 text-xs text-[hsl(var(--mn-muted))] placeholder-[hsl(var(--mn-muted))] mb-3 resize-none focus:ring-1 focus:ring-[hsl(var(--mn-accent))]/50 focus:border-[hsl(var(--mn-accent))]/50 outline-none"
               />
 
               <div className="flex items-center justify-between">
@@ -117,7 +117,7 @@ export default function ContentFeedback({ topicId, topicTitle }) {
                   size="sm"
                   disabled={!description.trim() || submit.isPending}
                   onClick={() => submit.mutate()}
-                  className="bg-teal-600 hover:bg-teal-500 text-white text-xs h-7 px-3"
+                  className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent))] text-white text-xs h-7 px-3"
                 >
                   {submit.isPending ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Send className="w-3 h-3 mr-1" />}
                   Odeslat

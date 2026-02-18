@@ -148,7 +148,7 @@ export default function SaveCaseDialog({
                     {tag}
                     <button
                       onClick={() => handleRemoveTag(tag)}
-                      className="hover:bg-slate-200 dark:hover:bg-[hsl(var(--mn-elevated))] rounded-full"
+                      className="hover:bg-[hsl(var(--mn-border))] dark:hover:bg-[hsl(var(--mn-elevated))] rounded-full"
                     >
                       <X className="w-3 h-3" />
                     </button>

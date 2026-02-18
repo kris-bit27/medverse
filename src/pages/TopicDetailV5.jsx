@@ -20,15 +20,15 @@ import { createPageUrl } from '../utils';
 
 /* ─── Obor colors — dynamic ─── */
 const _COLORS = [
-  { text: 'text-red-500 dark:text-red-400', bg: 'bg-red-500/10' },
-  { text: 'text-blue-500 dark:text-blue-400', bg: 'bg-blue-500/10' },
-  { text: 'text-emerald-500 dark:text-emerald-400', bg: 'bg-emerald-500/10' },
+  { text: 'text-[hsl(var(--mn-danger))] dark:text-[hsl(var(--mn-danger))]', bg: 'bg-[hsl(var(--mn-danger))]/10' },
+  { text: 'text-[hsl(var(--mn-accent-2))] dark:text-[hsl(var(--mn-accent-2))]', bg: 'bg-[hsl(var(--mn-accent-2))]/10' },
+  { text: 'text-[hsl(var(--mn-success))] dark:text-[hsl(var(--mn-success))]', bg: 'bg-[hsl(var(--mn-success))]/10' },
   { text: 'text-purple-500 dark:text-purple-400', bg: 'bg-purple-500/10' },
-  { text: 'text-orange-500 dark:text-orange-400', bg: 'bg-orange-500/10' },
+  { text: 'text-orange-500 dark:text-[hsl(var(--mn-warn))]', bg: 'bg-[hsl(var(--mn-warn))]/10' },
   { text: 'text-pink-500 dark:text-pink-400', bg: 'bg-pink-500/10' },
   { text: 'text-cyan-500 dark:text-cyan-400', bg: 'bg-cyan-500/10' },
-  { text: 'text-amber-500 dark:text-amber-400', bg: 'bg-amber-500/10' },
-  { text: 'text-[hsl(var(--mn-accent))] dark:text-teal-400', bg: 'bg-teal-500/10' },
+  { text: 'text-[hsl(var(--mn-warn))] dark:text-[hsl(var(--mn-warn))]', bg: 'bg-[hsl(var(--mn-warn))]/10' },
+  { text: 'text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))]', bg: 'bg-[hsl(var(--mn-accent))]/10' },
   { text: 'text-indigo-500 dark:text-indigo-400', bg: 'bg-indigo-500/10' },
   { text: 'text-rose-500 dark:text-rose-400', bg: 'bg-rose-500/10' },
   { text: 'text-lime-500 dark:text-lime-400', bg: 'bg-lime-500/10' },
@@ -316,7 +316,7 @@ export default function TopicDetailV5() {
                   }`}>
                   <Icon className="w-4 h-4" />
                   <span className="hidden sm:inline">{tab.label}</span>
-                  {has && active && <div className="w-1.5 h-1.5 rounded-full bg-teal-500" />}
+                  {has && active && <div className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--mn-accent))]" />}
                 </button>
               );
             })}
@@ -347,7 +347,7 @@ export default function TopicDetailV5() {
               </div>
             ) : (
               <div className="rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface))] p-12 text-center">
-                <BookOpen className="w-12 h-12 text-[hsl(var(--mn-muted))] dark:text-slate-700 mx-auto mb-3" />
+                <BookOpen className="w-12 h-12 text-[hsl(var(--mn-muted))] dark:text-[hsl(var(--mn-text))] mx-auto mb-3" />
                 <p className="text-[hsl(var(--mn-muted))] font-medium mb-1">Obsah se připravuje</p>
                 <p className="text-sm text-[hsl(var(--mn-muted))] mb-4">Toto téma bude brzy dostupné s plným textem, kartičkami a testovými otázkami.</p>
                 {contentCounts?.flashcards > 0 && (
@@ -366,14 +366,14 @@ export default function TopicDetailV5() {
 
             {/* Learning Objectives */}
             {topic.learning_objectives?.length > 0 && (
-              <div className="mt-4 rounded-xl border border-teal-100 dark:border-teal-900/30 bg-teal-50/50 dark:bg-teal-950/10 p-5">
-                <h3 className="text-sm font-semibold text-teal-700 dark:text-teal-400 mb-3 flex items-center gap-2 mn-ui-font">
+              <div className="mt-4 rounded-xl border border-[hsl(var(--mn-accent)/0.15)] bg-[hsl(var(--mn-accent)/0.06)]/50 p-5">
+                <h3 className="text-sm font-semibold text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))] mb-3 flex items-center gap-2 mn-ui-font">
                   <CheckCircle2 className="w-4 h-4" /> Cíle studia
                 </h3>
                 <ul className="space-y-2">
                   {topic.learning_objectives.map((obj, i) => (
                     <li key={i} className="flex items-start gap-3 text-sm text-[hsl(var(--mn-muted))]">
-                      <span className="flex-shrink-0 w-5 h-5 rounded-full bg-teal-600 text-white text-xs font-bold flex items-center justify-center mt-0.5">{i + 1}</span>
+                      <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[hsl(var(--mn-accent))] text-white text-xs font-bold flex items-center justify-center mt-0.5">{i + 1}</span>
                       {obj}
                     </li>
                   ))}
@@ -386,22 +386,22 @@ export default function TopicDetailV5() {
           {sidebarOpen && (
             <div className="hidden lg:block w-80 xl:w-96 shrink-0 sticky top-[120px] max-h-[calc(100vh-140px)] overflow-y-auto">
               {showNotes && (
-                <div className="rounded-xl border border-amber-200 dark:border-amber-500/20 bg-[hsl(var(--mn-surface))] p-5">
-                  <h3 className="text-sm font-semibold text-amber-700 dark:text-amber-300 mb-3 flex items-center gap-2 mn-ui-font">
+                <div className="rounded-xl border border-[hsl(var(--mn-warn)/0.2)] dark:border-[hsl(var(--mn-warn))]/20 bg-[hsl(var(--mn-surface))] p-5">
+                  <h3 className="text-sm font-semibold text-[hsl(var(--mn-warn))] mb-3 flex items-center gap-2 mn-ui-font">
                     <StickyNote className="w-4 h-4" /> Moje poznámky
                   </h3>
                   <TopicNotes topicId={topicId} />
                 </div>
               )}
               {showFlashcards && (
-                <div className="rounded-xl border border-teal-200 dark:border-teal-500/20 bg-[hsl(var(--mn-surface))] p-5">
+                <div className="rounded-xl border border-[hsl(var(--mn-accent)/0.2)] dark:border-[hsl(var(--mn-accent))]/20 bg-[hsl(var(--mn-surface))] p-5">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-sm font-semibold text-teal-700 dark:text-teal-300 flex items-center gap-2 mn-ui-font">
+                    <h3 className="text-sm font-semibold text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))] flex items-center gap-2 mn-ui-font">
                       <Brain className="w-4 h-4" /> AI Kartičky
                     </h3>
                     {contentCounts?.flashcards > 0 && (
                       <Link to={`${createPageUrl('ReviewToday')}?topic=${topicId}`}
-                        className="text-[11px] text-teal-600 dark:text-teal-400 hover:underline font-medium">
+                        className="text-[11px] text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))] hover:underline font-medium">
                         Procvičit →
                       </Link>
                     )}
@@ -417,22 +417,22 @@ export default function TopicDetailV5() {
         {sidebarOpen && (
           <div className="lg:hidden mt-6">
             {showNotes && (
-              <div className="rounded-xl border border-amber-200 dark:border-amber-500/20 bg-[hsl(var(--mn-surface))] p-5">
-                <h3 className="text-sm font-semibold text-amber-700 dark:text-amber-300 mb-3 flex items-center gap-2 mn-ui-font">
+              <div className="rounded-xl border border-[hsl(var(--mn-warn)/0.2)] dark:border-[hsl(var(--mn-warn))]/20 bg-[hsl(var(--mn-surface))] p-5">
+                <h3 className="text-sm font-semibold text-[hsl(var(--mn-warn))] mb-3 flex items-center gap-2 mn-ui-font">
                   <StickyNote className="w-4 h-4" /> Moje poznámky
                 </h3>
                 <TopicNotes topicId={topicId} />
               </div>
             )}
             {showFlashcards && (
-              <div className="rounded-xl border border-teal-200 dark:border-teal-500/20 bg-[hsl(var(--mn-surface))] p-5">
+              <div className="rounded-xl border border-[hsl(var(--mn-accent)/0.2)] dark:border-[hsl(var(--mn-accent))]/20 bg-[hsl(var(--mn-surface))] p-5">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-sm font-semibold text-teal-700 dark:text-teal-300 flex items-center gap-2 mn-ui-font">
+                  <h3 className="text-sm font-semibold text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))] flex items-center gap-2 mn-ui-font">
                     <Brain className="w-4 h-4" /> AI Kartičky
                   </h3>
                   {contentCounts?.flashcards > 0 && (
                     <Link to={`${createPageUrl('ReviewToday')}?topic=${topicId}`}
-                      className="text-[11px] text-teal-600 dark:text-teal-400 hover:underline font-medium">
+                      className="text-[11px] text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))] hover:underline font-medium">
                       Procvičit →
                     </Link>
                   )}

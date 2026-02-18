@@ -85,7 +85,7 @@ export default function AuthCallback() {
             </div>
           ) : (
             <div className="space-y-3">
-              <div className="text-sm text-red-600">{error}</div>
+              <div className="text-sm text-[hsl(var(--mn-danger))]">{error}</div>
               <Button variant="outline" onClick={() => window.location.href = '/login'}>
                 Zpět na přihlášení
               </Button>

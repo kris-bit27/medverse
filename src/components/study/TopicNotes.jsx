@@ -147,7 +147,7 @@ export default function TopicNotes({ topicId, user }) {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
-            <StickyNote className="w-5 h-5 text-amber-600" />
+            <StickyNote className="w-5 h-5 text-[hsl(var(--mn-warn))]" />
             Vaše poznámky ({myNotes.length})
           </CardTitle>
         </CardHeader>
@@ -165,8 +165,8 @@ export default function TopicNotes({ topicId, user }) {
                 >
                   {note.highlighted_text && (
                     <div className="flex items-start gap-2">
-                      <Highlighter className="w-4 h-4 text-amber-600 mt-1 flex-shrink-0" />
-                      <p className="text-sm text-[hsl(var(--mn-muted))] bg-amber-50 dark:bg-amber-900/20 p-2 rounded border border-amber-200 dark:border-amber-800">
+                      <Highlighter className="w-4 h-4 text-[hsl(var(--mn-warn))] mt-1 flex-shrink-0" />
+                      <p className="text-sm text-[hsl(var(--mn-muted))] bg-[hsl(var(--mn-warn)/0.06)] p-2 rounded border border-[hsl(var(--mn-warn)/0.2)]">
                         "{note.highlighted_text.slice(0, 200)}
                         {note.highlighted_text.length > 200 && '..."'}
                       </p>
@@ -207,7 +207,7 @@ export default function TopicNotes({ topicId, user }) {
                         {note.context}
                       </Badge>
                       {note.is_shared && (
-                        <Badge className="text-xs bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400">
+                        <Badge className="text-xs bg-[hsl(var(--mn-accent)/0.12)] text-[hsl(var(--mn-accent))]">
                           <Share2 className="w-3 h-3 mr-1" />
                           Sdíleno
                         </Badge>
@@ -245,7 +245,7 @@ export default function TopicNotes({ topicId, user }) {
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                           onClick={() => deleteMutation.mutate(note.id)}
-                          className="text-red-600"
+                          className="text-[hsl(var(--mn-danger))]"
                         >
                           <Trash2 className="w-4 h-4 mr-2" />
                           Smazat
@@ -264,7 +264,7 @@ export default function TopicNotes({ topicId, user }) {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
-              <Users className="w-5 h-5 text-teal-600" />
+              <Users className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
               Sdíleno se mnou ({sharedWithMe.length})
             </CardTitle>
           </CardHeader>
@@ -273,12 +273,12 @@ export default function TopicNotes({ topicId, user }) {
               {sharedWithMe.map((note) => (
                 <div
                   key={note.id}
-                  className="p-4 rounded-lg border bg-teal-50/50 dark:bg-teal-900/10 space-y-2"
+                  className="p-4 rounded-lg border bg-[hsl(var(--mn-accent)/0.06)]/50/10 space-y-2"
                 >
                   {note.highlighted_text && (
                     <div className="flex items-start gap-2">
-                      <Highlighter className="w-4 h-4 text-amber-600 mt-1 flex-shrink-0" />
-                      <p className="text-sm text-[hsl(var(--mn-muted))] bg-amber-50 dark:bg-amber-900/20 p-2 rounded border border-amber-200 dark:border-amber-800">
+                      <Highlighter className="w-4 h-4 text-[hsl(var(--mn-warn))] mt-1 flex-shrink-0" />
+                      <p className="text-sm text-[hsl(var(--mn-muted))] bg-[hsl(var(--mn-warn)/0.06)] p-2 rounded border border-[hsl(var(--mn-warn)/0.2)]">
                         "{note.highlighted_text.slice(0, 200)}
                         {note.highlighted_text.length > 200 && '..."'}
                       </p>

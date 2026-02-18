@@ -191,7 +191,7 @@ export default function AdminUsers() {
                         <SelectItem value="free">Free</SelectItem>
                         <SelectItem value="premium">
                           <span className="flex items-center gap-1">
-                            <Crown className="w-3 h-3 text-amber-500" />
+                            <Crown className="w-3 h-3 text-[hsl(var(--mn-warn))]" />
                             Premium
                           </span>
                         </SelectItem>

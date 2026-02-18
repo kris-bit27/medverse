@@ -219,11 +219,11 @@ VRAŤ POUZE VALIDNÍ JSON (bez komentářů, bez Markdownu).`;
       </div>
 
       {result && (
-        <Alert className={result.success ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}>
+        <Alert className={result.success ? 'border-[hsl(var(--mn-success)/0.3)] bg-[hsl(var(--mn-success)/0.06)]' : 'border-[hsl(var(--mn-danger)/0.3)] bg-[hsl(var(--mn-danger)/0.06)]'}>
           {result.success ? (
             <>
-              <CheckCircle className="w-4 h-4 text-green-600" />
-              <AlertDescription className="text-green-900">
+              <CheckCircle className="w-4 h-4 text-[hsl(var(--mn-success))]" />
+              <AlertDescription className="text-[hsl(var(--mn-success))]">
                 <div className="font-medium mb-2">Úspěšně vygenerováno:</div>
                 <ul className="list-disc list-inside space-y-1 text-sm">
                   <li>{result.okruhy} okruhů</li>
@@ -233,8 +233,8 @@ VRAŤ POUZE VALIDNÍ JSON (bez komentářů, bez Markdownu).`;
             </>
           ) : (
             <>
-              <AlertCircle className="w-4 h-4 text-red-600" />
-              <AlertDescription className="text-red-900">
+              <AlertCircle className="w-4 h-4 text-[hsl(var(--mn-danger))]" />
+              <AlertDescription className="text-[hsl(var(--mn-danger))]">
                 <div className="font-medium">Chyba:</div>
                 <p className="text-sm mt-1">{result.error}</p>
               </AlertDescription>

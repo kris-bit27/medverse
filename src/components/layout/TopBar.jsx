@@ -42,7 +42,7 @@ export default function TopBar({ user }) {
     <div className="h-16 border-b bg-[hsl(var(--mn-surface))] flex items-center justify-between px-6">
       {/* Logo / Search */}
       <div className="flex items-center gap-4">
-        <Link to="/" className="text-xl font-bold text-teal-600">
+        <Link to="/" className="text-xl font-bold text-[hsl(var(--mn-accent))]">
           Medverse
         </Link>
         
@@ -50,7 +50,7 @@ export default function TopBar({ user }) {
           <input
             type="search"
             placeholder="Hledat témata..."
-            className="w-64 px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="w-64 px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[hsl(var(--mn-accent))]"
           />
         </div>
       </div>
@@ -68,7 +68,7 @@ export default function TopBar({ user }) {
             onClick={() => setUserMenuOpen(!userMenuOpen)}
             className="flex items-center gap-2 p-2 rounded-lg hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-surface-2))] transition-colors"
           >
-            <div className="w-8 h-8 rounded-full bg-teal-600 text-white flex items-center justify-center font-medium">
+            <div className="w-8 h-8 rounded-full bg-[hsl(var(--mn-accent))] text-white flex items-center justify-center font-medium">
               {user?.email?.charAt(0).toUpperCase() || 'U'}
             </div>
             <ChevronDown className={`w-4 h-4 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
@@ -114,7 +114,7 @@ export default function TopBar({ user }) {
               <div className="border-t border-[hsl(var(--mn-border))] pt-2">
                 <button
                   onClick={handleSignOut}
-                  className="w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-elevated))] transition-colors text-red-600"
+                  className="w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-[hsl(var(--mn-surface-2))] dark:hover:bg-[hsl(var(--mn-elevated))] transition-colors text-[hsl(var(--mn-danger))]"
                 >
                   <LogOut className="w-4 h-4" />
                   <span className="font-medium">Odhlásit se</span>

@@ -170,7 +170,7 @@ export default function AdminAnalytics() {
           <Button variant="ghost" size="sm" className="mb-3"><ChevronLeft className="w-4 h-4 mr-1" /> Admin</Button>
         </Link>
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[hsl(var(--mn-success))] to-[hsl(var(--mn-accent))] flex items-center justify-center">
             <BarChart3 className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -191,16 +191,16 @@ export default function AdminAnalytics() {
         {/* OVERVIEW */}
         <TabsContent value="overview" className="space-y-4">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            <StatCard icon={Users} label="Uživatelé" value={userStats?.totalUsers} color="from-blue-500 to-indigo-600" />
-            <StatCard icon={BookOpen} label="Témata" value={contentStats?.totalTopics} sub={`${contentStats?.withFulltext || 0} s textem`} color="from-purple-500 to-violet-600" />
-            <StatCard icon={Brain} label="Flashcards" value={contentStats?.flashcards?.toLocaleString()} color="from-amber-500 to-orange-600" />
-            <StatCard icon={Target} label="MCQ otázky" value={contentStats?.questions?.toLocaleString()} color="from-teal-500 to-cyan-600" />
+            <StatCard icon={Users} label="Uživatelé" value={userStats?.totalUsers} color="from-[hsl(var(--mn-accent-2))] to-indigo-600" />
+            <StatCard icon={BookOpen} label="Témata" value={contentStats?.totalTopics} sub={`${contentStats?.withFulltext || 0} s textem`} color="from-[#a855f7] to-violet-600" />
+            <StatCard icon={Brain} label="Flashcards" value={contentStats?.flashcards?.toLocaleString()} color="from-[hsl(var(--mn-warn))] to-[#ea580c]" />
+            <StatCard icon={Target} label="MCQ otázky" value={contentStats?.questions?.toLocaleString()} color="from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))]" />
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            <StatCard icon={Clock} label="Studijní sessions" value={userStats?.studySessions} color="from-emerald-500 to-green-600" />
-            <StatCard icon={FileText} label="Test sessions" value={userStats?.testSessions} color="from-rose-500 to-pink-600" />
-            <StatCard icon={Package} label="Studijní sady" value={userStats?.studySets} color="from-sky-500 to-blue-600" />
-            <StatCard icon={DollarSign} label="AI celkem" value={`$${(costStats?.totalCost || 0).toFixed(2)}`} sub={`${costStats?.totalCalls || 0} volání`} color="from-emerald-500 to-teal-600" />
+            <StatCard icon={Clock} label="Studijní sessions" value={userStats?.studySessions} color="from-[hsl(var(--mn-success))] to-[hsl(var(--mn-success))]" />
+            <StatCard icon={FileText} label="Test sessions" value={userStats?.testSessions} color="from-[#f43f5e] to-[#ec4899]" />
+            <StatCard icon={Package} label="Studijní sady" value={userStats?.studySets} color="from-[hsl(var(--mn-accent-2))] to-[hsl(var(--mn-accent-2))]" />
+            <StatCard icon={DollarSign} label="AI celkem" value={`$${(costStats?.totalCost || 0).toFixed(2)}`} sub={`${costStats?.totalCalls || 0} volání`} color="from-[hsl(var(--mn-success))] to-[hsl(var(--mn-accent))]" />
           </div>
           <Card>
             <CardHeader className="pb-2">
@@ -220,15 +220,15 @@ export default function AdminAnalytics() {
         {/* CONTENT */}
         <TabsContent value="content" className="space-y-4">
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-            <StatCard icon={BookOpen} label="Celkem témat" value={contentStats?.totalTopics} color="from-purple-500 to-violet-600" />
-            <StatCard icon={FileText} label="S full textem" value={contentStats?.withFulltext} sub={`${contentStats?.totalTopics ? Math.round((contentStats.withFulltext / contentStats.totalTopics) * 100) : 0}%`} color="from-emerald-500 to-green-600" />
-            <StatCard icon={FileText} label="Se shrnutím" value={contentStats?.withSummary} sub={`${contentStats?.totalTopics ? Math.round((contentStats.withSummary / contentStats.totalTopics) * 100) : 0}%`} color="from-teal-500 to-cyan-600" />
+            <StatCard icon={BookOpen} label="Celkem témat" value={contentStats?.totalTopics} color="from-[#a855f7] to-violet-600" />
+            <StatCard icon={FileText} label="S full textem" value={contentStats?.withFulltext} sub={`${contentStats?.totalTopics ? Math.round((contentStats.withFulltext / contentStats.totalTopics) * 100) : 0}%`} color="from-[hsl(var(--mn-success))] to-[hsl(var(--mn-success))]" />
+            <StatCard icon={FileText} label="Se shrnutím" value={contentStats?.withSummary} sub={`${contentStats?.totalTopics ? Math.round((contentStats.withSummary / contentStats.totalTopics) * 100) : 0}%`} color="from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))]" />
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            <StatCard icon={Brain} label="Flashcards" value={contentStats?.flashcards?.toLocaleString()} sub={`Ø ${contentStats?.totalTopics ? Math.round(contentStats.flashcards / contentStats.totalTopics) : 0} / téma`} color="from-amber-500 to-orange-600" />
-            <StatCard icon={Target} label="MCQ" value={contentStats?.questions?.toLocaleString()} sub={`Ø ${contentStats?.totalTopics ? Math.round(contentStats.questions / contentStats.totalTopics) : 0} / téma`} color="from-rose-500 to-pink-600" />
-            <StatCard icon={TrendingUp} label="Oborů" value={contentStats?.obory} color="from-blue-500 to-indigo-600" />
-            <StatCard icon={Zap} label="FC Reviews" value={userStats?.fcReviews} color="from-sky-500 to-blue-600" />
+            <StatCard icon={Brain} label="Flashcards" value={contentStats?.flashcards?.toLocaleString()} sub={`Ø ${contentStats?.totalTopics ? Math.round(contentStats.flashcards / contentStats.totalTopics) : 0} / téma`} color="from-[hsl(var(--mn-warn))] to-[#ea580c]" />
+            <StatCard icon={Target} label="MCQ" value={contentStats?.questions?.toLocaleString()} sub={`Ø ${contentStats?.totalTopics ? Math.round(contentStats.questions / contentStats.totalTopics) : 0} / téma`} color="from-[#f43f5e] to-[#ec4899]" />
+            <StatCard icon={TrendingUp} label="Oborů" value={contentStats?.obory} color="from-[hsl(var(--mn-accent-2))] to-indigo-600" />
+            <StatCard icon={Zap} label="FC Reviews" value={userStats?.fcReviews} color="from-[hsl(var(--mn-accent-2))] to-[hsl(var(--mn-accent-2))]" />
           </div>
           <Card>
             <CardHeader className="pb-2"><CardTitle className="text-sm">Pokrytí obsahu</CardTitle></CardHeader>
@@ -257,9 +257,9 @@ export default function AdminAnalytics() {
         {/* AI COSTS */}
         <TabsContent value="costs" className="space-y-4">
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-            <StatCard icon={DollarSign} label="Celkové náklady" value={`$${(costStats?.totalCost || 0).toFixed(2)}`} color="from-emerald-500 to-teal-600" />
-            <StatCard icon={Zap} label="API volání" value={costStats?.totalCalls?.toLocaleString()} color="from-amber-500 to-orange-600" />
-            <StatCard icon={Activity} label="Tokeny celkem" value={`${((costStats?.totalTokens || 0) / 1_000_000).toFixed(1)}M`} color="from-purple-500 to-violet-600" />
+            <StatCard icon={DollarSign} label="Celkové náklady" value={`$${(costStats?.totalCost || 0).toFixed(2)}`} color="from-[hsl(var(--mn-success))] to-[hsl(var(--mn-accent))]" />
+            <StatCard icon={Zap} label="API volání" value={costStats?.totalCalls?.toLocaleString()} color="from-[hsl(var(--mn-warn))] to-[#ea580c]" />
+            <StatCard icon={Activity} label="Tokeny celkem" value={`${((costStats?.totalTokens || 0) / 1_000_000).toFixed(1)}M`} color="from-[#a855f7] to-violet-600" />
           </div>
           <Card>
             <CardHeader className="pb-2"><CardTitle className="text-sm">Náklady dle módu</CardTitle></CardHeader>

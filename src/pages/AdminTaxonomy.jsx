@@ -481,7 +481,7 @@ export default function AdminTaxonomy() {
           Taxonomie
         </h1>
         <div className="flex gap-2">
-          <Button onClick={() => setAiGeneratorOpen(true)} className="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-pink-700">
+          <Button onClick={() => setAiGeneratorOpen(true)} className="bg-gradient-to-r from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))] hover:opacity-90">
             <Sparkles className="w-4 h-4 mr-2" />
             AI generátor
           </Button>
@@ -673,7 +673,7 @@ export default function AdminTaxonomy() {
                   className="flex items-center justify-between p-3 bg-[hsl(var(--mn-surface-2))]/50 rounded-lg"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))] flex items-center justify-center flex-shrink-0">
                       <DisciplineIcon icon={discipline.icon} className="w-5 h-5 text-[hsl(var(--mn-text))]" />
                     </div>
                     <div>
@@ -688,7 +688,7 @@ export default function AdminTaxonomy() {
                     <Button 
                       variant="ghost" 
                       size="icon" 
-                      className="h-7 w-7 text-red-500 hover:text-red-600"
+                      className="h-7 w-7 text-[hsl(var(--mn-danger))] hover:text-[hsl(var(--mn-danger))]"
                       onClick={() => {
                         if (confirm('Opravdu smazat tento obor?')) {
                           deleteDisciplineMutation.mutate(discipline.id);
@@ -840,7 +840,7 @@ export default function AdminTaxonomy() {
                     <Button 
                       variant="ghost" 
                       size="icon" 
-                      className="text-red-500 hover:text-red-600"
+                      className="text-[hsl(var(--mn-danger))] hover:text-[hsl(var(--mn-danger))]"
                       onClick={() => {
                         if (confirm('Opravdu smazat tento okruh?')) {
                           deleteOkruhMutation.mutate(okruh.id);
@@ -1013,8 +1013,8 @@ export default function AdminTaxonomy() {
               </div>
 
               {selectedTopics.length > 0 && (
-                <div className="flex items-center gap-2 p-3 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-200 dark:border-teal-800 mt-3">
-                  <span className="text-sm font-medium text-teal-900 dark:text-teal-100">
+                <div className="flex items-center gap-2 p-3 bg-[hsl(var(--mn-accent)/0.08)] rounded-lg border border-[hsl(var(--mn-accent)/0.2)] dark:border-[hsl(var(--mn-accent)/0.3)] mt-3">
+                  <span className="text-sm font-medium text-[hsl(var(--mn-accent))]">
                     Vybráno: {selectedTopics.length}
                   </span>
                   <div className="flex gap-2 ml-auto items-center">
@@ -1076,7 +1076,7 @@ export default function AdminTaxonomy() {
                     <Button 
                       size="sm" 
                       variant="outline" 
-                      className="h-7 text-xs text-red-600 hover:text-red-700"
+                      className="h-7 text-xs text-[hsl(var(--mn-danger))] hover:text-[hsl(var(--mn-danger))]"
                       onClick={handleBulkDelete}
                       disabled={bulkActionLoading}
                     >
@@ -1146,7 +1146,7 @@ export default function AdminTaxonomy() {
                                   onCheckedChange={() => toggleSelectTopic(topic.id)}
                                  />
                                  {topic.is_reviewed && (
-                                   <Shield className="w-4 h-4 text-teal-600 dark:text-teal-400" title="Revidováno odborníkem" />
+                                   <Shield className="w-4 h-4 text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))]" title="Revidováno odborníkem" />
                                  )}
                                  <span className="text-sm text-[hsl(var(--mn-text))]">{topic.title}</span>
                                  {questionCount > 0 && (
@@ -1154,8 +1154,8 @@ export default function AdminTaxonomy() {
                                  )}
                                  {topic.status && (
                                  <Badge className={
-                                 topic.status === 'published' ? 'bg-green-100 text-green-700' :
-                                 topic.status === 'in_review' ? 'bg-amber-100 text-amber-700' :
+                                 topic.status === 'published' ? 'bg-[hsl(var(--mn-success)/0.12)] text-[hsl(var(--mn-success))]' :
+                                 topic.status === 'in_review' ? 'bg-[hsl(var(--mn-warn)/0.12)] text-[hsl(var(--mn-warn))]' :
                                  'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))]'
                                  }>
                                  {topic.status}
@@ -1185,7 +1185,7 @@ export default function AdminTaxonomy() {
                               onClick={() => handleToggleReviewed(topic)}
                               title={topic.is_reviewed ? "Zrušit kontrolu" : "Označit jako zkontrolováno"}
                             >
-                              <CheckCircle className={`w-3 h-3 ${topic.is_reviewed ? 'text-green-600' : 'text-[hsl(var(--mn-muted))]'}`} />
+                              <CheckCircle className={`w-3 h-3 ${topic.is_reviewed ? 'text-[hsl(var(--mn-success))]' : 'text-[hsl(var(--mn-muted))]'}`} />
                             </Button>
                             <Button 
                               variant="ghost" 
@@ -1195,7 +1195,7 @@ export default function AdminTaxonomy() {
                               title={topic.status === 'published' ? "Skrýt" : "Publikovat"}
                             >
                               {topic.status === 'published' ? (
-                                <Eye className="w-3 h-3 text-blue-600" />
+                                <Eye className="w-3 h-3 text-[hsl(var(--mn-accent-2))]" />
                               ) : (
                                 <EyeOff className="w-3 h-3 text-[hsl(var(--mn-muted))]" />
                               )}
@@ -1218,7 +1218,7 @@ export default function AdminTaxonomy() {
                             <Button 
                               variant="ghost" 
                               size="icon"
-                              className="h-7 w-7 text-red-500 hover:text-red-600"
+                              className="h-7 w-7 text-[hsl(var(--mn-danger))] hover:text-[hsl(var(--mn-danger))]"
                               onClick={() => {
                                 if (confirm('Opravdu smazat toto téma?')) {
                                   deleteTopicMutation.mutate(topic.id);
@@ -1240,14 +1240,14 @@ export default function AdminTaxonomy() {
                   if (orphanedTopics.length > 0) {
                     return (
                       <div className="mb-4">
-                        <p className="text-xs font-semibold text-red-500 uppercase mb-2">Témata bez okruhu ({orphanedTopics.length})</p>
+                        <p className="text-xs font-semibold text-[hsl(var(--mn-danger))] uppercase mb-2">Témata bez okruhu ({orphanedTopics.length})</p>
                         <div className="space-y-1">
                           {orphanedTopics.map((topic) => {
                             const questionCount = questionCountByTopic[topic.id] || 0;
                             return (
                               <div 
                                 key={topic.id}
-                                className="flex items-center justify-between p-2 bg-red-50 dark:bg-red-900/20 rounded-lg"
+                                className="flex items-center justify-between p-2 bg-[hsl(var(--mn-danger)/0.06)] rounded-lg"
                               >
                                 <div className="flex items-center gap-2 flex-1">
                                   <Checkbox
@@ -1255,7 +1255,7 @@ export default function AdminTaxonomy() {
                                     onCheckedChange={() => toggleSelectTopic(topic.id)}
                                   />
                                   {topic.is_reviewed && (
-                                    <Shield className="w-4 h-4 text-teal-600 dark:text-teal-400" title="Revidováno odborníkem" />
+                                    <Shield className="w-4 h-4 text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))]" title="Revidováno odborníkem" />
                                   )}
                                   <span className="text-sm text-[hsl(var(--mn-text))]">{topic.title}</span>
                                   {questionCount > 0 && (
@@ -1285,7 +1285,7 @@ export default function AdminTaxonomy() {
                                     onClick={() => handleToggleReviewed(topic)}
                                     title={topic.is_reviewed ? "Zrušit kontrolu" : "Označit jako zkontrolováno"}
                                   >
-                                    <CheckCircle className={`w-3 h-3 ${topic.is_reviewed ? 'text-green-600' : 'text-[hsl(var(--mn-muted))]'}`} />
+                                    <CheckCircle className={`w-3 h-3 ${topic.is_reviewed ? 'text-[hsl(var(--mn-success))]' : 'text-[hsl(var(--mn-muted))]'}`} />
                                   </Button>
                                   <Button 
                                     variant="ghost" 
@@ -1295,7 +1295,7 @@ export default function AdminTaxonomy() {
                                     title={topic.status === 'published' ? "Skrýt" : "Publikovat"}
                                   >
                                     {topic.status === 'published' ? (
-                                      <Eye className="w-3 h-3 text-blue-600" />
+                                      <Eye className="w-3 h-3 text-[hsl(var(--mn-accent-2))]" />
                                     ) : (
                                       <EyeOff className="w-3 h-3 text-[hsl(var(--mn-muted))]" />
                                     )}
@@ -1318,7 +1318,7 @@ export default function AdminTaxonomy() {
                                   <Button 
                                     variant="ghost" 
                                     size="icon"
-                                    className="h-7 w-7 text-red-500 hover:text-red-600"
+                                    className="h-7 w-7 text-[hsl(var(--mn-danger))] hover:text-[hsl(var(--mn-danger))]"
                                     onClick={() => {
                                       if (confirm('Opravdu smazat toto téma?')) {
                                         deleteTopicMutation.mutate(topic.id);

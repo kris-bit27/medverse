@@ -160,7 +160,7 @@ export default function ForumThread() {
               <CardContent className="pt-6">
                 <div className="flex gap-4">
                   <Avatar>
-                    <AvatarFallback className="bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300">
+                    <AvatarFallback className="bg-[hsl(var(--mn-accent)/0.12)] text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))]">
                       {post.created_by?.charAt(0)?.toUpperCase() || 'U'}
                     </AvatarFallback>
                   </Avatar>
@@ -176,7 +176,7 @@ export default function ForumThread() {
                         </Badge>
                       )}
                       {post.is_solution && (
-                        <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 text-xs">
+                        <Badge className="bg-[hsl(var(--mn-success)/0.12)] text-[hsl(var(--mn-success))] text-xs">
                           <CheckCircle2 className="w-3 h-3 mr-1" />
                           Řešení
                         </Badge>
@@ -198,7 +198,7 @@ export default function ForumThread() {
                         variant="ghost"
                         size="sm"
                         onClick={() => toggleLikeMutation.mutate(post.id)}
-                        className={hasLiked ? 'text-teal-600' : ''}
+                        className={hasLiked ? 'text-[hsl(var(--mn-accent))]' : ''}
                       >
                         <ThumbsUp className="w-4 h-4 mr-1" />
                         {post.likes?.length || 0}
@@ -267,9 +267,9 @@ export default function ForumThread() {
       )}
 
       {thread.is_locked && (
-        <Card className="border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20">
+        <Card className="border-[hsl(var(--mn-warn)/0.2)] bg-[hsl(var(--mn-warn)/0.06)]">
           <CardContent className="pt-6 text-center">
-            <p className="text-sm text-amber-900 dark:text-amber-100">
+            <p className="text-sm text-[hsl(var(--mn-warn))]">
               Toto vlákno je uzamčeno a nelze do něj přidávat nové příspěvky
             </p>
           </CardContent>

@@ -6,7 +6,7 @@ export default function LoadingSpinner({ size = 'md', className, text }) {
   return (
     <div className={cn("flex flex-col items-center justify-center gap-3", className)}>
       <Loader2 className={cn(
-        "animate-spin text-teal-600",
+        "animate-spin text-[hsl(var(--mn-accent))]",
         size === 'sm' && 'w-5 h-5',
         size === 'md' && 'w-8 h-8',
         size === 'lg' && 'w-12 h-12'

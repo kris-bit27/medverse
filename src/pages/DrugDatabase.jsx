@@ -54,7 +54,7 @@ export default function DrugDatabase() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-[hsl(var(--mn-accent))] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -109,13 +109,13 @@ export default function DrugDatabase() {
                 <Card
                   key={drug.id}
                   className={`cursor-pointer transition-colors ${
-                    isSelected ? 'border-teal-600 bg-teal-50 dark:bg-teal-950/20' : 'hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-slate-900'
+                    isSelected ? 'border-[hsl(var(--mn-accent))] bg-[hsl(var(--mn-accent)/0.06)]' : 'hover:bg-[hsl(var(--mn-surface))] dark:hover:bg-[hsl(var(--mn-surface))]'
                   }`}
                   onClick={() => setSelectedDrug(drug)}
                 >
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3">
-                      <Pill className="w-5 h-5 text-teal-600 mt-0.5" />
+                      <Pill className="w-5 h-5 text-[hsl(var(--mn-accent))] mt-0.5" />
                       <div className="flex-1">
                         <p className="font-medium">{drug.name}</p>
                         {drug.generic_name && (
@@ -254,9 +254,9 @@ export default function DrugDatabase() {
 
               {/* Contraindications */}
               {selectedDrug.contraindications && (
-                <Card className="border-red-200">
+                <Card className="border-[hsl(var(--mn-danger)/0.3)]">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-lg text-red-600">
+                    <CardTitle className="flex items-center gap-2 text-lg text-[hsl(var(--mn-danger))]">
                       <AlertTriangle className="w-5 h-5" />
                       Kontraindikace
                     </CardTitle>
@@ -269,9 +269,9 @@ export default function DrugDatabase() {
 
               {/* Interactions */}
               {selectedDrug.interactions && selectedDrug.interactions.length > 0 && (
-                <Card className="border-orange-200">
+                <Card className="border-[hsl(var(--mn-warn)/0.3)]">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-lg text-orange-600">
+                    <CardTitle className="flex items-center gap-2 text-lg text-[hsl(var(--mn-warn))]">
                       <AlertTriangle className="w-5 h-5" />
                       Lékové interakce
                     </CardTitle>

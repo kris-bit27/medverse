@@ -227,13 +227,13 @@ export default function QuestionDetail() {
     <div className="p-6 lg:p-8 max-w-4xl mx-auto">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-[hsl(var(--mn-muted))] mb-6">
-        <Link to={createPageUrl('Studium')} className="hover:text-teal-600 transition-colors">
+        <Link to={createPageUrl('Studium')} className="hover:text-[hsl(var(--mn-accent))] transition-colors">
           Studium
         </Link>
         {okruh && (
           <>
             <span>/</span>
-            <Link to={createPageUrl('OkruhDetail') + `?id=${okruh.id}`} className="hover:text-teal-600 transition-colors">
+            <Link to={createPageUrl('OkruhDetail') + `?id=${okruh.id}`} className="hover:text-[hsl(var(--mn-accent))] transition-colors">
               {okruh.title}
             </Link>
           </>
@@ -271,7 +271,7 @@ export default function QuestionDetail() {
               variant="ghost"
               size="icon"
               onClick={() => bookmarkMutation.mutate()}
-              className={bookmark ? 'text-amber-500' : 'text-[hsl(var(--mn-muted))]'}
+              className={bookmark ? 'text-[hsl(var(--mn-warn))]' : 'text-[hsl(var(--mn-muted))]'}
             >
               {bookmark ? <BookmarkCheck className="w-5 h-5" /> : <Bookmark className="w-5 h-5" />}
             </Button>
@@ -344,14 +344,14 @@ export default function QuestionDetail() {
           />
         </>
       ) : (
-        <Card className="p-8 text-center bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800">
+        <Card className="p-8 text-center bg-gradient-to-br from-[hsl(var(--mn-warn)/0.06)] to-[hsl(var(--mn-warn)/0.04)] border-[hsl(var(--mn-warn)/0.2)]">
           <h3 className="text-lg font-semibold text-[hsl(var(--mn-text))] mb-2">
             Premium obsah
           </h3>
           <p className="text-[hsl(var(--mn-muted))] mb-4">
             Tato otázka je dostupná pouze pro Premium uživatele
           </p>
-          <Button asChild className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600">
+          <Button asChild className="bg-gradient-to-r from-[hsl(var(--mn-warn))] to-[#f97316] hover:opacity-90">
             <Link to={createPageUrl('Pricing')}>
               Upgradovat na Premium
             </Link>

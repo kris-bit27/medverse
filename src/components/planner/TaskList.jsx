@@ -33,9 +33,9 @@ const taskTypeLabels = {
 };
 
 const priorityColors = {
-  low: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-  medium: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
-  high: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+  low: 'bg-[hsl(var(--mn-accent-2)/0.12)] text-[hsl(var(--mn-accent-2))]',
+  medium: 'bg-[hsl(var(--mn-warn)/0.12)] text-[hsl(var(--mn-warn))]',
+  high: 'bg-[hsl(var(--mn-danger)/0.12)] text-[hsl(var(--mn-danger))]'
 };
 
 export default function TaskList({ tasks, onComplete, showCompleted = false, showOverdue = false }) {
@@ -62,7 +62,7 @@ export default function TaskList({ tasks, onComplete, showCompleted = false, sho
             className={cn(
               "transition-all",
               task.is_completed && "opacity-60",
-              overdue && !task.is_completed && "border-red-200 dark:border-red-900"
+              overdue && !task.is_completed && "border-[hsl(var(--mn-danger)/0.3)]"
             )}
           >
             <CardContent className="pt-4">
@@ -120,7 +120,7 @@ export default function TaskList({ tasks, onComplete, showCompleted = false, sho
                     )}
 
                     {overdue && !task.is_completed && (
-                      <Badge className="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 flex items-center gap-1">
+                      <Badge className="bg-[hsl(var(--mn-danger)/0.12)] text-[hsl(var(--mn-danger))] flex items-center gap-1">
                         <AlertCircle className="w-3 h-3" />
                         Po termínu
                       </Badge>

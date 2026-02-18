@@ -89,9 +89,9 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
 
   const getSeverityIcon = (severity) => {
     switch (severity) {
-      case 'high': return <XCircle className="h-4 w-4 text-red-500" />;
+      case 'high': return <XCircle className="h-4 w-4 text-[hsl(var(--mn-danger))]" />;
       case 'medium': return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
-      case 'low': return <Info className="h-4 w-4 text-blue-500" />;
+      case 'low': return <Info className="h-4 w-4 text-[hsl(var(--mn-accent-2))]" />;
       default: return <Info className="h-4 w-4" />;
     }
   };
@@ -102,9 +102,9 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
   };
 
   const getScoreColor = (score) => {
-    if (score >= 85) return 'text-green-600';
+    if (score >= 85) return 'text-[hsl(var(--mn-success))]';
     if (score >= 60) return 'text-yellow-600';
-    return 'text-red-600';
+    return 'text-[hsl(var(--mn-danger))]';
   };
 
   return (
@@ -116,7 +116,7 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
             AI Content Review
             {review && (
               review.approved ? (
-                <Badge variant="default" className="bg-green-100 text-green-700">
+                <Badge variant="default" className="bg-[hsl(var(--mn-success)/0.12)] text-[hsl(var(--mn-success))]">
                   <CheckCircle className="h-3 w-3 mr-1" />
                   Schváleno
                 </Badge>
@@ -147,8 +147,8 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
 
       {loading && (
         <CardContent>
-          <div className="flex items-center justify-center p-8 bg-blue-50 rounded">
-            <Loader2 className="h-8 w-8 animate-spin text-blue-600 mr-3" />
+          <div className="flex items-center justify-center p-8 bg-[hsl(var(--mn-accent-2)/0.06)] rounded">
+            <Loader2 className="h-8 w-8 animate-spin text-[hsl(var(--mn-accent-2))] mr-3" />
             <div>
               <p className="font-medium">AI analyzuje obsah...</p>
               <p className="text-sm text-muted-foreground">Claude kontroluje bezpečnost, úplnost a přesnost</p>
@@ -201,7 +201,7 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
                         </div>
                       )}
                       {issue.suggestion && (
-                        <div className="text-sm text-green-700 bg-green-50 p-2 rounded">
+                        <div className="text-sm text-[hsl(var(--mn-success))] bg-[hsl(var(--mn-success)/0.06)] p-2 rounded">
                           💡 <strong>Návrh:</strong> {issue.suggestion}
                         </div>
                       )}
@@ -216,13 +216,13 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
           {review.strengths.length > 0 && (
             <div>
               <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                <ThumbsUp className="h-4 w-4 text-green-600" />
+                <ThumbsUp className="h-4 w-4 text-[hsl(var(--mn-success))]" />
                 Silné stránky
               </h4>
               <ul className="space-y-1">
                 {review.strengths.map((s, i) => (
                   <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
-                    <CheckCircle className="h-3 w-3 text-green-600 mt-1 flex-shrink-0" />
+                    <CheckCircle className="h-3 w-3 text-[hsl(var(--mn-success))] mt-1 flex-shrink-0" />
                     {s}
                   </li>
                 ))}
@@ -234,13 +234,13 @@ export const ContentReview = ({ content, specialty, mode, onReviewComplete }) =>
           {review.missing_sections.length > 0 && (
             <div>
               <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                <ThumbsDown className="h-4 w-4 text-orange-600" />
+                <ThumbsDown className="h-4 w-4 text-[hsl(var(--mn-warn))]" />
                 Chybějící sekce
               </h4>
               <ul className="space-y-1">
                 {review.missing_sections.map((s, i) => (
                   <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
-                    <AlertTriangle className="h-3 w-3 text-orange-600 mt-1 flex-shrink-0" />
+                    <AlertTriangle className="h-3 w-3 text-[hsl(var(--mn-warn))] mt-1 flex-shrink-0" />
                     {s}
                   </li>
                 ))}

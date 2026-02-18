@@ -139,7 +139,7 @@ export default function StudyPlanDetail() {
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
-                  <Target className="w-6 h-6 text-teal-600" />
+                  <Target className="w-6 h-6 text-[hsl(var(--mn-accent))]" />
                   <CardTitle className="text-2xl">{plan.title}</CardTitle>
                   {plan.is_ai_generated && (
                     <Badge variant="secondary" className="flex items-center gap-1">
@@ -148,7 +148,7 @@ export default function StudyPlanDetail() {
                     </Badge>
                   )}
                   {plan.is_active && (
-                    <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30">
+                    <Badge className="bg-[hsl(var(--mn-success)/0.12)] text-[hsl(var(--mn-success))]">
                       Aktivní
                     </Badge>
                   )}
@@ -193,7 +193,7 @@ export default function StudyPlanDetail() {
                       variant="outline"
                       onClick={() => deleteMutation.mutate()}
                       disabled={deleteMutation.isPending}
-                      className="text-red-600"
+                      className="text-[hsl(var(--mn-danger))]"
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
@@ -221,13 +221,13 @@ export default function StudyPlanDetail() {
                 <div className="flex items-center gap-2">
                   {daysRemaining > 0 ? (
                     <>
-                      <span className="text-2xl font-bold text-teal-600">
+                      <span className="text-2xl font-bold text-[hsl(var(--mn-accent))]">
                         {daysRemaining}
                       </span>
                       <span className="text-[hsl(var(--mn-muted))]">dní</span>
                     </>
                   ) : (
-                    <Badge className="bg-red-100 text-red-700">
+                    <Badge className="bg-[hsl(var(--mn-danger)/0.12)] text-[hsl(var(--mn-danger))]">
                       <AlertCircle className="w-3 h-3 mr-1" />
                       Po termínu
                     </Badge>
@@ -242,7 +242,7 @@ export default function StudyPlanDetail() {
                       <div className="flex -space-x-2">
                         {collaboratorUsers.slice(0, 3).map(u => (
                           <Avatar key={u.id} className="w-8 h-8 border-2 border-white">
-                            <AvatarFallback className="bg-teal-100 text-teal-700 text-xs">
+                            <AvatarFallback className="bg-[hsl(var(--mn-accent)/0.12)] text-[hsl(var(--mn-accent))] text-xs">
                               {u.full_name?.charAt(0) || u.email.charAt(0)}
                             </AvatarFallback>
                           </Avatar>
@@ -295,7 +295,7 @@ export default function StudyPlanDetail() {
                           {completedTasks}
                         </p>
                       </div>
-                      <CheckCircle2 className="w-8 h-8 text-green-600" />
+                      <CheckCircle2 className="w-8 h-8 text-[hsl(var(--mn-success))]" />
                     </div>
                     <div className="flex items-center justify-between p-4 rounded-lg bg-[hsl(var(--mn-surface-2))]">
                       <div>
@@ -304,7 +304,7 @@ export default function StudyPlanDetail() {
                           {totalTasks - completedTasks}
                         </p>
                       </div>
-                      <TrendingUp className="w-8 h-8 text-teal-600" />
+                      <TrendingUp className="w-8 h-8 text-[hsl(var(--mn-accent))]" />
                     </div>
                   </CardContent>
                 </Card>
@@ -319,7 +319,7 @@ export default function StudyPlanDetail() {
                         <div className="flex items-start justify-between">
                           <div className="flex items-center gap-3">
                             <Avatar>
-                              <AvatarFallback className="bg-teal-100 text-teal-700">
+                              <AvatarFallback className="bg-[hsl(var(--mn-accent)/0.12)] text-[hsl(var(--mn-accent))]">
                                 {u.full_name?.charAt(0) || u.email.charAt(0)}
                               </AvatarFallback>
                             </Avatar>

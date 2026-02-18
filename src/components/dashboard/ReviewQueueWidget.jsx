@@ -15,12 +15,12 @@ export default function ReviewQueueWidget({
   const isComplete = completedToday >= dailyGoal;
 
   return (
-    <Card className={`relative overflow-hidden ${isComplete ? 'bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20' : ''}`}>
+    <Card className={`relative overflow-hidden ${isComplete ? 'bg-gradient-to-br from-[hsl(var(--mn-success)/0.06)] to-[hsl(var(--mn-accent)/0.06)]' : ''}`}>
       <CardContent className="p-6">
         <div className="flex items-center gap-6">
           <ProgressRing progress={progress} size={100} strokeWidth={8}>
             {isComplete ? (
-              <CheckCircle2 className="w-8 h-8 text-emerald-600" />
+              <CheckCircle2 className="w-8 h-8 text-[hsl(var(--mn-success))]" />
             ) : (
               <div className="text-center">
                 <span className="text-2xl font-bold text-[hsl(var(--mn-text))]">
@@ -45,7 +45,7 @@ export default function ReviewQueueWidget({
             </p>
             
             {dueToday > 0 && (
-              <Button asChild className="bg-teal-600 hover:bg-teal-700">
+              <Button asChild className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]">
                 <Link to={createPageUrl('ReviewToday')}>
                   <RefreshCw className="w-4 h-4 mr-2" />
                   {isComplete ? 'Pokračovat' : 'Začít opakování'}

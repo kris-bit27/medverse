@@ -28,10 +28,10 @@ import { cs } from 'date-fns/locale';
 
 const COLORS = [
   { value: 'yellow', label: 'Žlutá', class: 'bg-yellow-100 border-yellow-300 text-yellow-900' },
-  { value: 'blue', label: 'Modrá', class: 'bg-blue-100 border-blue-300 text-blue-900' },
-  { value: 'green', label: 'Zelená', class: 'bg-green-100 border-green-300 text-green-900' },
-  { value: 'red', label: 'Červená', class: 'bg-red-100 border-red-300 text-red-900' },
-  { value: 'purple', label: 'Fialová', class: 'bg-teal-100 border-teal-300 text-teal-900' },
+  { value: 'blue', label: 'Modrá', class: 'bg-[hsl(var(--mn-accent-2)/0.12)] border-[hsl(var(--mn-accent-2)/0.4)] text-[hsl(var(--mn-accent-2))]' },
+  { value: 'green', label: 'Zelená', class: 'bg-[hsl(var(--mn-success)/0.12)] border-[hsl(var(--mn-success)/0.4)] text-[hsl(var(--mn-success))]' },
+  { value: 'red', label: 'Červená', class: 'bg-[hsl(var(--mn-danger)/0.12)] border-[hsl(var(--mn-danger)/0.4)] text-[hsl(var(--mn-danger))]' },
+  { value: 'purple', label: 'Fialová', class: 'bg-[hsl(var(--mn-accent)/0.12)] border-[hsl(var(--mn-accent)/0.4)] text-[hsl(var(--mn-accent))]' },
 ];
 
 export default function TopicNotesV2({ topicId, user }) {
@@ -282,7 +282,7 @@ export default function TopicNotesV2({ topicId, user }) {
             <Card
               key={note.id}
               className={`${getColorClass(note.color)} ${
-                note.is_pinned ? 'ring-2 ring-offset-2 ring-amber-400' : ''
+                note.is_pinned ? 'ring-2 ring-offset-2 ring-[hsl(var(--mn-warn))]' : ''
               }`}
             >
               <CardContent className="p-4">
@@ -338,7 +338,7 @@ export default function TopicNotesV2({ topicId, user }) {
                           deleteNoteMutation.mutate(note.id);
                         }
                       }}
-                      className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                      className="h-8 w-8 p-0 text-[hsl(var(--mn-danger))] hover:text-[hsl(var(--mn-danger))] hover:bg-[hsl(var(--mn-danger)/0.06)]"
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>

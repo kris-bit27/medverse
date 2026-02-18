@@ -177,9 +177,9 @@ export default function FlashcardGenerator({ topicId, topicContent }) {
   return (
     <div className="space-y-4">
       {generatedCards.length === 0 ? (
-        <Card className="border-teal-200 bg-teal-50 dark:bg-teal-950/20">
+        <Card className="border-[hsl(var(--mn-accent)/0.2)] bg-[hsl(var(--mn-accent)/0.06)]">
           <CardContent className="p-6 text-center">
-            <Sparkles className="w-12 h-12 mx-auto mb-3 text-teal-600" />
+            <Sparkles className="w-12 h-12 mx-auto mb-3 text-[hsl(var(--mn-accent))]" />
             <h3 className="font-semibold mb-2">AI Generátor Kartiček</h3>
             <p className="text-sm text-muted-foreground mb-4">
               Automaticky vytvoř kartičky z obsahu tématu
@@ -239,8 +239,8 @@ export default function FlashcardGenerator({ topicId, topicContent }) {
                   key={index}
                   className={`transition-all ${
                     isApproved 
-                      ? 'border-green-500 bg-green-50 dark:bg-green-950/20' 
-                      : 'border-red-500 bg-red-50 dark:bg-red-950/20 opacity-60'
+                      ? 'border-[hsl(var(--mn-success))] bg-[hsl(var(--mn-success)/0.06)]' 
+                      : 'border-[hsl(var(--mn-danger))] bg-[hsl(var(--mn-danger)/0.06)] opacity-60'
                   }`}
                 >
                   <CardContent className="p-4">
@@ -254,9 +254,9 @@ export default function FlashcardGenerator({ topicId, topicContent }) {
                         onClick={() => toggleCardApproval(index)}
                       >
                         {isApproved ? (
-                          <CheckCircle className="w-5 h-5 text-green-600" />
+                          <CheckCircle className="w-5 h-5 text-[hsl(var(--mn-success))]" />
                         ) : (
-                          <XCircle className="w-5 h-5 text-red-600" />
+                          <XCircle className="w-5 h-5 text-[hsl(var(--mn-danger))]" />
                         )}
                       </Button>
                     </div>

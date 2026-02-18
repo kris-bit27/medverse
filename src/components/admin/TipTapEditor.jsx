@@ -58,7 +58,7 @@ export default function TipTapEditor({ content, onChange, placeholder = 'Začně
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
-          class: 'text-teal-600 underline hover:text-teal-700'
+          class: 'text-[hsl(var(--mn-accent))] underline hover:text-[hsl(var(--mn-accent))]'
         }
       }),
       Table.configure({
@@ -129,7 +129,7 @@ export default function TipTapEditor({ content, onChange, placeholder = 'Začně
           size="sm"
           variant="ghost"
           onClick={() => editor.chain().focus().toggleBold().run()}
-          className={cn(editor.isActive('bold') && 'bg-slate-200 dark:bg-slate-700')}
+          className={cn(editor.isActive('bold') && 'bg-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-elevated))]')}
           title="Tučně (Ctrl+B)"
         >
           <Bold className="w-4 h-4" />
@@ -139,7 +139,7 @@ export default function TipTapEditor({ content, onChange, placeholder = 'Začně
           size="sm"
           variant="ghost"
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={cn(editor.isActive('italic') && 'bg-slate-200 dark:bg-slate-700')}
+          className={cn(editor.isActive('italic') && 'bg-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-elevated))]')}
           title="Kurzíva (Ctrl+I)"
         >
           <Italic className="w-4 h-4" />
@@ -155,13 +155,13 @@ export default function TipTapEditor({ content, onChange, placeholder = 'Začně
           <Highlighter className="w-4 h-4" />
         </Button>
 
-        <div className="w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1" />
+        <div className="w-px h-6 bg-[hsl(var(--mn-border))] mx-1" />
 
         <Button
           size="sm"
           variant="ghost"
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          className={cn(editor.isActive('heading', { level: 2 }) && 'bg-slate-200 dark:bg-slate-700')}
+          className={cn(editor.isActive('heading', { level: 2 }) && 'bg-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-elevated))]')}
           title="Nadpis 2"
         >
           <Heading2 className="w-4 h-4" />
@@ -171,19 +171,19 @@ export default function TipTapEditor({ content, onChange, placeholder = 'Začně
           size="sm"
           variant="ghost"
           onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-          className={cn(editor.isActive('heading', { level: 3 }) && 'bg-slate-200 dark:bg-slate-700')}
+          className={cn(editor.isActive('heading', { level: 3 }) && 'bg-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-elevated))]')}
           title="Nadpis 3"
         >
           <Heading3 className="w-4 h-4" />
         </Button>
 
-        <div className="w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1" />
+        <div className="w-px h-6 bg-[hsl(var(--mn-border))] mx-1" />
 
         <Button
           size="sm"
           variant="ghost"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={cn(editor.isActive('bulletList') && 'bg-slate-200 dark:bg-slate-700')}
+          className={cn(editor.isActive('bulletList') && 'bg-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-elevated))]')}
           title="Odrážkový seznam"
         >
           <List className="w-4 h-4" />
@@ -193,7 +193,7 @@ export default function TipTapEditor({ content, onChange, placeholder = 'Začně
           size="sm"
           variant="ghost"
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={cn(editor.isActive('orderedList') && 'bg-slate-200 dark:bg-slate-700')}
+          className={cn(editor.isActive('orderedList') && 'bg-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-elevated))]')}
           title="Číslovaný seznam"
         >
           <ListOrdered className="w-4 h-4" />
@@ -203,7 +203,7 @@ export default function TipTapEditor({ content, onChange, placeholder = 'Začně
           size="sm"
           variant="ghost"
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          className={cn(editor.isActive('blockquote') && 'bg-slate-200 dark:bg-slate-700')}
+          className={cn(editor.isActive('blockquote') && 'bg-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-elevated))]')}
           title="Citace"
         >
           <Quote className="w-4 h-4" />
@@ -213,19 +213,19 @@ export default function TipTapEditor({ content, onChange, placeholder = 'Začně
           size="sm"
           variant="ghost"
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-          className={cn(editor.isActive('codeBlock') && 'bg-slate-200 dark:bg-slate-700')}
+          className={cn(editor.isActive('codeBlock') && 'bg-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-elevated))]')}
           title="Kód"
         >
           <Code className="w-4 h-4" />
         </Button>
 
-        <div className="w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1" />
+        <div className="w-px h-6 bg-[hsl(var(--mn-border))] mx-1" />
 
         <Button
           size="sm"
           variant="ghost"
           onClick={addLink}
-          className={cn(editor.isActive('link') && 'bg-slate-200 dark:bg-slate-700')}
+          className={cn(editor.isActive('link') && 'bg-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-elevated))]')}
           title="Přidat odkaz"
         >
           <LinkIcon className="w-4 h-4" />
@@ -240,7 +240,7 @@ export default function TipTapEditor({ content, onChange, placeholder = 'Začně
           <TableIcon className="w-4 h-4" />
         </Button>
 
-        <div className="w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1" />
+        <div className="w-px h-6 bg-[hsl(var(--mn-border))] mx-1" />
 
         <Button
           size="sm"

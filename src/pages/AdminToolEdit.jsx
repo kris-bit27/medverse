@@ -151,7 +151,7 @@ export default function AdminToolEdit() {
           <Button variant="outline" asChild>
             <Link to={createPageUrl('AdminTools')}>Zrušit</Link>
           </Button>
-          <Button type="submit" disabled={saveMutation.isPending} className="bg-teal-600 hover:bg-teal-700">
+          <Button type="submit" disabled={saveMutation.isPending} className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)]">
             {saveMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
             {isEdit ? 'Uložit' : 'Vytvořit'}
           </Button>

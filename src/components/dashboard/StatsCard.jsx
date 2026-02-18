@@ -29,15 +29,15 @@ export default function StatsCard({
           {trend && (
             <p className={cn(
               "text-sm font-medium",
-              trendUp ? "text-emerald-600" : "text-red-600"
+              trendUp ? "text-[hsl(var(--mn-success))]" : "text-[hsl(var(--mn-danger))]"
             )}>
               {trendUp ? '↑' : '↓'} {trend}
             </p>
           )}
         </div>
         {Icon && (
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500/10 to-cyan-500/10 flex items-center justify-center">
-            <Icon className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[hsl(var(--mn-accent))]/10 to-[hsl(var(--mn-accent-2))]/10 flex items-center justify-center">
+            <Icon className="w-6 h-6 text-[hsl(var(--mn-accent))] dark:text-[hsl(var(--mn-accent))]" />
           </div>
         )}
       </div>
