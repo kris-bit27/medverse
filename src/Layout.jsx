@@ -59,6 +59,7 @@ const navItems = [
   { 
     name: 'Nástroje', 
     icon: Stethoscope,
+    page: 'ToolsHub',
     submenu: [
       { name: 'Kalkulačky', page: 'ClinicalCalculators', icon: Calculator },
       { name: 'Databáze léků', page: 'DrugDatabase', icon: Pill },

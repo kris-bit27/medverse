@@ -52,11 +52,12 @@ export const PAGES = {
   "StudyPlanner":       L(() => import('./pages/StudyPlanner')),
 
   // === Tools ===
-  "ClinicalCalculators": L(() => import('./pages/ClinicalCalculators')),
+  "ToolsHub":           L(() => import('./pages/ToolsHub')),
+  "Tools":              L(() => import('./pages/ToolsHub')),          // alias → ToolsHub
+  "ClinicalCalculators": L(() => import('./pages/ClinicalCalculatorsV2')),
   "DrugDatabase":       L(() => import('./pages/DrugDatabase')),
   "ClinicalGuidelines": L(() => import('./pages/ClinicalGuidelines')),
-  "ToolDetail":         L(() => import('./pages/ToolDetail')),
-  "Tools":              L(() => import('./pages/Tools')),
+  "ToolDetail":         L(() => import('./pages/ToolsHub')),          // alias → ToolsHub
 
   // === Social ===
   "Community":          L(() => import('./pages/Community')),
