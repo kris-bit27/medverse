@@ -34,11 +34,11 @@ export default function WeeklyActivityChart() {
   const maxMinutes = Math.max(...days.map(d => d.minutes), 1);
 
   return (
-    <div className="p-6 rounded-2xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface)/0.5)]">
+    <div className="p-6 rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))]" style={{ boxShadow: "var(--mn-shadow-1)" }}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <BarChart3 className="w-4 h-4 text-[hsl(var(--mn-accent))]" />
-          <h3 className="mn-ui-font text-sm font-semibold">Týdenní aktivita</h3>
+          <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--mn-accent))]" />
+          <span className="mn-ui-font text-[13px] font-semibold">Týdenní aktivita</span>
         </div>
         <div className="flex items-center gap-3 mn-mono-font text-[10px] text-[hsl(var(--mn-muted))]">
           <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {weekData?.totalMinutes || 0} min</span>

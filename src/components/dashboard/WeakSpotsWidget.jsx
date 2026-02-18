@@ -22,7 +22,7 @@ export default function WeakSpotsWidget() {
 
   if (isLoading) {
     return (
-      <div className="p-6 rounded-2xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface)/0.5)]">
+      <div className="p-6 rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))]" style={{ boxShadow: "var(--mn-shadow-1)" }}>
         <div className="flex items-center gap-2 text-[hsl(var(--mn-muted))] text-sm mn-ui-font">
           <Loader2 className="w-4 h-4 animate-spin" /> Načítám…
         </div>
@@ -32,10 +32,10 @@ export default function WeakSpotsWidget() {
 
   if (!weakSpots?.length) {
     return (
-      <div className="p-6 rounded-2xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface)/0.5)]">
+      <div className="p-6 rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))]" style={{ boxShadow: "var(--mn-shadow-1)" }}>
         <div className="flex items-center gap-2 mb-2">
-          <Target className="w-4 h-4 text-[hsl(var(--mn-warn))]" />
-          <h3 className="mn-ui-font text-sm font-semibold">Slabá místa</h3>
+          <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--mn-warn))]" />
+          <span className="mn-ui-font text-[13px] font-semibold">Slabá místa</span>
         </div>
         <p className="mn-ui-font text-xs text-[hsl(var(--mn-muted))]">
           Zatím nemáte dostatek dat. Procvičte alespoň 3 kartičky/otázky z více témat.
@@ -45,11 +45,11 @@ export default function WeakSpotsWidget() {
   }
 
   return (
-    <div className="p-6 rounded-2xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface)/0.5)]">
+    <div className="p-6 rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))]" style={{ boxShadow: "var(--mn-shadow-1)" }}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <TrendingDown className="w-4 h-4 text-[hsl(var(--mn-warn))]" />
-          <h3 className="mn-ui-font text-sm font-semibold">Slabá místa</h3>
+          <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--mn-accent))]" />
+          <span className="mn-ui-font text-[13px] font-semibold">Slabá místa</span>
         </div>
         <span className="mn-caption text-[hsl(var(--mn-muted))]">Doporučujeme zopakovat</span>
       </div>

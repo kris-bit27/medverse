@@ -31,11 +31,11 @@ export default function MasteryOverview() {
   const studiedPct = data.total > 0 ? Math.round((data.studied / data.total) * 100) : 0;
 
   return (
-    <div className="p-6 rounded-2xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface)/0.5)]">
+    <div className="p-6 rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))]" style={{ boxShadow: "var(--mn-shadow-1)" }}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Brain className="w-4 h-4 text-[hsl(var(--mn-accent))]" />
-          <h3 className="mn-ui-font text-sm font-semibold">Zvládnutí témat</h3>
+          <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--mn-accent))]" />
+          <span className="mn-ui-font text-[13px] font-semibold">Zvládnutí témat</span>
         </div>
         <span className="mn-mono-font text-[10px] text-[hsl(var(--mn-muted))]">
           {data.studied}/{data.total} ({studiedPct}%)

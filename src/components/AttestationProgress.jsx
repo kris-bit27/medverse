@@ -61,11 +61,11 @@ export default function AttestationProgress() {
   progress.forEach(p => { if (!byPhase[p.phase]) byPhase[p.phase] = []; byPhase[p.phase].push(p); });
 
   return (
-    <div className="p-6 rounded-2xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface)/0.5)]">
+    <div className="p-6 rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))]" style={{ boxShadow: "var(--mn-shadow-1)" }}>
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
-          <GraduationCap className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
-          <h3 className="mn-ui-font font-semibold">Pokrok k atestaci</h3>
+          <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--mn-accent))]" />
+          <span className="mn-ui-font text-[13px] font-semibold">Pokrok k atestaci</span>
         </div>
         <span className="mn-ui-font text-xs px-2.5 py-1 rounded-full border border-[hsl(var(--mn-border))] text-[hsl(var(--mn-muted))]">
           {profile.obory?.name}
