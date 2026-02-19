@@ -2,7 +2,6 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -89,14 +88,14 @@ function Onboarding({ obor, onComplete, onCancel }) {
           <p className="text-xs text-[hsl(var(--mn-muted))]">Celkem: <strong className="text-[hsl(var(--mn-warn))]">{intM} měs.</strong></p>
         </div>}
         {d.adding ? (
-          <Card><CardContent className="p-4 space-y-3">
+          <div className="rounded-2xl p-4 space-y-3" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
             <div className="flex gap-2 flex-wrap">{INT_TYPES.map(it => { const Ic = it.icon; return (
               <button key={it.id} onClick={() => setD(x => ({ ...x, tmp: { ...x.tmp, type: it.id } }))}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium ${d.tmp.type === it.id ? 'border-[hsl(var(--mn-accent)/0.5)] bg-[hsl(var(--mn-accent)/0.1)] text-[hsl(var(--mn-accent))]' : 'border-[hsl(var(--mn-border))]'}`}><Ic className="w-3 h-3" />{it.label}</button>); })}</div>
             <div className="flex gap-3"><div className="flex-1"><Label className="text-xs">Od</Label><Input type="date" value={d.tmp.from} onChange={e => setD(x => ({ ...x, tmp: { ...x.tmp, from: e.target.value } }))} className="mt-1" /></div>
               <div className="flex-1"><Label className="text-xs">Do</Label><Input type="date" value={d.tmp.to} onChange={e => setD(x => ({ ...x, tmp: { ...x.tmp, to: e.target.value } }))} className="mt-1" /></div></div>
             <div className="flex gap-2 justify-end"><Button variant="ghost" size="sm" onClick={() => setD(x => ({ ...x, adding: false }))}>Zrušit</Button><Button size="sm" onClick={addInt} disabled={!d.tmp.from || !d.tmp.to}>Přidat</Button></div>
-          </CardContent></Card>
+          </div>
         ) : <Button variant="outline" className="w-full" onClick={() => setD(x => ({ ...x, adding: true }))}><Plus className="w-4 h-4 mr-2" />Přidat přerušení</Button>}
       </div>}
 
@@ -265,7 +264,7 @@ export default function LogbookV2() {
   // Overview
   if (!sel) return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
-      <div><h1 className="mn-serif-font text-[28px] font-bold flex items-center gap-3"><ClipboardList className="w-7 h-7 text-[hsl(var(--mn-accent))]" />Logbook & Plánovač VP</h1>
+      <div><span className="mn-caption text-[hsl(var(--mn-accent))]">LOGBOOK</span><h1 className="mn-serif-font text-[28px] sm:text-[32px] font-bold flex items-center gap-3 mt-1"><ClipboardList className="w-7 h-7 text-[hsl(var(--mn-accent))]" />Logbook & Plánovač VP</h1>
         <p className="text-sm text-[hsl(var(--mn-muted))] mt-1">Sleduj plnění vzdělávacího programu dle MZČR 2019.</p></div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {obory.map(o => { const has = !!profiles[o.id]; return (
@@ -292,8 +291,8 @@ export default function LogbookV2() {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <Card><CardContent className="p-3"><div className="text-[10px] font-bold text-[hsl(var(--mn-accent-2))] mb-1.5">KMEN {profile?.kmen_done && '✅'}</div><Progress value={kR.length > 0 ? (kD / kR.length) * 100 : 0} className="h-1.5" /><div className="text-[10px] text-[hsl(var(--mn-muted))] mt-1">{kD}/{kR.length}</div></CardContent></Card>
-        <Card><CardContent className="p-3"><div className="text-[10px] font-bold text-[#a855f7] mb-1.5">SPECIALIZACE</div><Progress value={sR.length > 0 ? (sD / sR.length) * 100 : 0} className="h-1.5" /><div className="text-[10px] text-[hsl(var(--mn-muted))] mt-1">{sD}/{sR.length}</div></CardContent></Card>
+        <div className="rounded-2xl p-3" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}><div className="text-[10px] font-bold text-[hsl(var(--mn-accent-2))] mb-1.5">KMEN {profile?.kmen_done && '✅'}</div><Progress value={kR.length > 0 ? (kD / kR.length) * 100 : 0} className="h-1.5" /><div className="text-[10px] text-[hsl(var(--mn-muted))] mt-1">{kD}/{kR.length}</div></div>
+        <div className="rounded-2xl p-3" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}><div className="text-[10px] font-bold text-[#a855f7] mb-1.5">SPECIALIZACE</div><Progress value={sR.length > 0 ? (sD / sR.length) * 100 : 0} className="h-1.5" /><div className="text-[10px] text-[hsl(var(--mn-muted))] mt-1">{sD}/{sR.length}</div></div>
       </div>
 
       <Countdown profile={profile} obor={obor} />

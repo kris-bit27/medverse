@@ -5,7 +5,6 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
 import { calculateTool, validateInputs } from '@/lib/calculatorEngine';
-import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -189,8 +188,8 @@ export default function ClinicalCalculators() {
         </div>
 
         {/* Input Form */}
-        <Card className="mb-6">
-          <CardContent className="p-5 space-y-4">
+        <div className="rounded-2xl mb-6" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+          <div className="p-5 space-y-4">
             {inputFields.map((field) => (
               <div key={field.name}>
                 {field.type === 'checkbox' ? (
@@ -263,13 +262,13 @@ export default function ClinicalCalculators() {
               <Calculator className="w-4 h-4 mr-2" />
               Vypočítat
             </Button>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Results */}
         {results && (
-          <Card className="mb-6 border-2" style={{ borderColor: `color-mix(in srgb, ${sub.color || '#888'} 40%, transparent)` }}>
-            <CardContent className="p-5">
+          <div className="rounded-2xl mb-6 border-2" style={{ borderColor: `color-mix(in srgb, ${sub.color || '#888'} 40%, transparent)`, background: 'hsl(var(--mn-surface))' }}>
+            <div className="p-5">
               <span className="mn-caption" style={{ color: sub.color }}>VÝSLEDEK</span>
 
               <div className="mt-3 space-y-4">
@@ -308,28 +307,28 @@ export default function ClinicalCalculators() {
                   );
                 })}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
 
         {/* Clinical Pearls */}
         {pearls.length > 0 && (
-          <Card className="mb-6">
-            <CardContent className="p-5">
+          <div className="rounded-2xl mb-6" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+            <div className="p-5">
               <div className="flex items-center gap-2 mb-3">
-                <Sparkles className="w-4 h-4 text-amber-500" />
+                <Sparkles className="w-4 h-4 text-[hsl(var(--mn-warn))]" />
                 <span className="mn-ui-font text-sm font-semibold">Klinické perly</span>
               </div>
               <div className="space-y-2">
                 {pearls.map((p, i) => (
                   <div key={i} className="flex items-start gap-2 text-sm text-[hsl(var(--mn-muted))]">
-                    <span className="text-amber-500 mt-0.5 flex-shrink-0">💎</span>
+                    <span className="text-[hsl(var(--mn-warn))] mt-0.5 flex-shrink-0">💎</span>
                     <span>{p}</span>
                   </div>
                 ))}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
 
         {/* Source */}
@@ -423,7 +422,7 @@ export default function ClinicalCalculators() {
                         <div className="text-sm font-semibold group-hover:text-[hsl(var(--mn-accent))] transition-colors">{tool.name}</div>
                         <p className="text-xs text-[hsl(var(--mn-muted))] line-clamp-2 mt-0.5">{tool.description}</p>
                         {tool.is_featured && (
-                          <span className="inline-flex items-center gap-1 mt-1.5 text-[10px] text-amber-500">
+                          <span className="inline-flex items-center gap-1 mt-1.5 text-[10px] text-[hsl(var(--mn-warn))]">
                             <Sparkles className="w-3 h-3" /> Populární
                           </span>
                         )}

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Bookmark, ChevronRight, GraduationCap, BookOpen, Stethoscope } from 'lucide-react';
 
@@ -40,38 +39,38 @@ export default function BookmarksWidget({
 
   if (recentBookmarks.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
+      <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="p-5 pb-0">
+          <h3 className="mn-ui-font font-semibold text-lg flex items-center gap-2">
             <Bookmark className="w-5 h-5" />
             Záložky
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div className="p-5">
           <div className="text-center py-6 text-[hsl(var(--mn-muted))]">
             <Bookmark className="w-8 h-8 mx-auto mb-2 opacity-50" />
             <p className="text-sm">Zatím žádné záložky</p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between pb-4">
-        <CardTitle className="text-lg flex items-center gap-2">
+    <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+      <div className="flex items-center justify-between p-5 pb-4">
+        <h3 className="mn-ui-font font-semibold text-lg flex items-center gap-2">
           <Bookmark className="w-5 h-5" />
           Záložky
-        </CardTitle>
+        </h3>
         <Button variant="ghost" size="sm" asChild>
           <Link to={createPageUrl('Profile') + '#bookmarks'}>
             Vše
             <ChevronRight className="w-4 h-4 ml-1" />
           </Link>
         </Button>
-      </CardHeader>
-      <CardContent>
+      </div>
+      <div className="px-5 pb-5">
         <div className="space-y-2">
           {recentBookmarks.map((item) => {
             const Icon = item.config.icon;
@@ -91,7 +90,7 @@ export default function BookmarksWidget({
             );
           })}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

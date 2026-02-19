@@ -4,7 +4,7 @@ import { createPageUrl } from '@/utils';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -57,10 +57,10 @@ export default function TestSession() {
         .select('*, topics:topic_id(title)')
         .in('topic_id', session.topic_ids);
       
-      // Filter by difficulty if specified
+      // Filter by difficulty if specified (AI generates difficulty 1-3)
       if (session.difficulty && session.difficulty !== 'mixed') {
-        const diffMap = { easy: [1, 2], medium: [3], hard: [4, 5] };
-        const levels = diffMap[session.difficulty] || [1, 2, 3, 4, 5];
+        const diffMap = { easy: [1], medium: [2], hard: [3] };
+        const levels = diffMap[session.difficulty] || [1, 2, 3];
         query = query.in('difficulty', levels);
       }
       
@@ -215,21 +215,21 @@ export default function TestSession() {
           }`}>
             <Trophy className="w-12 h-12 text-[hsl(var(--mn-text))]" />
           </div>
-          <h1 className="mn-mono-font text-3xl font-bold mb-2">Test dokončen!</h1>
+          <h1 className="mn-serif-font text-[28px] sm:text-[32px] font-bold mb-2">Test dokončen!</h1>
           <p className="mn-mono-font text-5xl font-bold text-[hsl(var(--mn-accent))] mb-2">{score}%</p>
           <p className="text-sm text-[hsl(var(--mn-muted))] mb-6">
             {correct}/{total} správně • {Math.floor(elapsed / 60)}:{(elapsed % 60).toString().padStart(2, '0')} min
           </p>
 
           <div className="grid grid-cols-2 gap-4 mb-8">
-            <Card className="p-4 bg-[hsl(var(--mn-success)/0.08)]">
-              <div className="text-2xl font-bold text-[hsl(var(--mn-success))]">{correct}</div>
+            <div className="rounded-2xl p-5 hover:-translate-y-0.5 transition-all" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+              <div className="mn-mono-font text-2xl font-bold text-[hsl(var(--mn-success))]">{correct}</div>
               <p className="text-sm text-[hsl(var(--mn-muted))]">Správně</p>
-            </Card>
-            <Card className="p-4 bg-[hsl(var(--mn-danger)/0.08)]">
-              <div className="text-2xl font-bold text-[hsl(var(--mn-danger))]">{wrong}</div>
+            </div>
+            <div className="rounded-2xl p-5 hover:-translate-y-0.5 transition-all" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+              <div className="mn-mono-font text-2xl font-bold text-[hsl(var(--mn-danger))]">{wrong}</div>
               <p className="text-sm text-[hsl(var(--mn-muted))]">Špatně</p>
-            </Card>
+            </div>
           </div>
 
           {/* Review wrong answers */}
@@ -238,7 +238,7 @@ export default function TestSession() {
               <h3 className="font-semibold mb-3 text-sm text-[hsl(var(--mn-muted))] uppercase">Chybné odpovědi</h3>
               <div className="space-y-3">
                 {questions.filter(q => answers[q.id] && !answers[q.id].isCorrect).map(q => (
-                  <Card key={q.id} className="p-4 border-[hsl(var(--mn-danger)/0.3)]">
+                  <div key={q.id} className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-danger) / 0.3)' }}>
                     <p className="text-sm font-medium mb-2">{q.question_text}</p>
                     <div className="flex gap-4 text-xs">
                       <span className="text-[hsl(var(--mn-danger))]">Vaše: {answers[q.id]?.selected}</span>
@@ -247,7 +247,7 @@ export default function TestSession() {
                     {q.explanation && (
                       <p className="text-xs text-[hsl(var(--mn-muted))] mt-2 border-t pt-2">{q.explanation}</p>
                     )}
-                  </Card>
+                  </div>
                 ))}
               </div>
             </div>
@@ -295,21 +295,19 @@ export default function TestSession() {
           transition={{ duration: 0.15 }}
         >
           {/* Question card */}
-          <Card className="mb-6">
-            <CardContent className="p-6">
+          <div className="rounded-2xl p-5 mb-6" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
               <div className="flex items-start justify-between gap-3 mb-1">
                 <Badge variant="outline" className="text-xs shrink-0">
                   {currentQuestion.topics?.title?.substring(0, 40)}
                 </Badge>
                 <Badge variant="outline" className="text-xs shrink-0">
-                  Obtížnost {currentQuestion.difficulty || '?'}/5
+                  Obtížnost {currentQuestion.difficulty || '?'}/3
                 </Badge>
               </div>
               <p className="text-lg font-medium leading-relaxed mt-4">
                 {currentQuestion.question_text}
               </p>
-            </CardContent>
-          </Card>
+          </div>
 
           {/* MCQ Options */}
           <div className="space-y-3 mb-6">
@@ -357,14 +355,12 @@ export default function TestSession() {
 
           {/* Explanation (after reveal) */}
           {isRevealed && currentQuestion.explanation && (
-            <Card className="mb-6 border-[hsl(var(--mn-accent-2)/0.3)] bg-[hsl(var(--mn-accent-2)/0.06)]">
-              <CardContent className="p-4">
+            <div className="rounded-2xl p-5 mb-6" style={{ background: 'hsl(var(--mn-accent-2) / 0.06)', border: '1px solid hsl(var(--mn-accent-2) / 0.3)' }}>
                 <p className="text-xs font-semibold text-[hsl(var(--mn-accent-2))] mb-1">Vysvětlení</p>
                 <p className="text-sm text-[hsl(var(--mn-muted))] leading-relaxed">
                   {currentQuestion.explanation}
                 </p>
-              </CardContent>
-            </Card>
+            </div>
           )}
 
           {/* Action buttons */}

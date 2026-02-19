@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -231,8 +231,7 @@ function StudyGroupsTab() {
 
       {/* Groups Grid */}
       {filtered.length === 0 ? (
-        <Card>
-          <CardContent className="py-12 text-center">
+        <div className="rounded-2xl p-5 py-12 text-center" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
             <Users className="w-12 h-12 text-[hsl(var(--mn-muted))] mx-auto mb-3" />
             <p className="text-[hsl(var(--mn-muted))]">
               {filterType === 'my' ? 'Zatím nejsi členem žádné skupiny' : 'Žádné skupiny nenalezeny'}
@@ -240,8 +239,7 @@ function StudyGroupsTab() {
             <Button className="mt-4" onClick={() => setCreateOpen(true)}>
               <Plus className="w-4 h-4 mr-2" />Vytvoř první skupinu
             </Button>
-          </CardContent>
-        </Card>
+        </div>
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map(group => {
@@ -486,15 +484,13 @@ function DiscussionsTab() {
 
       {/* Threads List */}
       {filtered.length === 0 ? (
-        <Card>
-          <CardContent className="py-12 text-center">
+        <div className="rounded-2xl p-5 py-12 text-center" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
             <MessageSquare className="w-12 h-12 text-[hsl(var(--mn-muted))] mx-auto mb-3" />
             <p className="text-[hsl(var(--mn-muted))]">Zatím žádné diskuze</p>
             <Button className="mt-4" onClick={() => setCreateOpen(true)}>
               <Plus className="w-4 h-4 mr-2" />Zahájit diskuzi
             </Button>
-          </CardContent>
-        </Card>
+        </div>
       ) : (
         <div className="space-y-2">
           {filtered.map(thread => {
@@ -577,7 +573,8 @@ export default function Community() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
       <div className="mb-6">
-        <h1 className="text-2xl lg:text-3xl font-bold mb-2">Komunita</h1>
+        <span className="mn-caption text-[hsl(var(--mn-accent))]">KOMUNITA</span>
+        <h1 className="mn-serif-font text-[28px] sm:text-[32px] font-bold mb-2">Komunita</h1>
         <p className="text-[hsl(var(--mn-muted))]">Studijní skupiny, diskuze a spolupráce</p>
       </div>
 

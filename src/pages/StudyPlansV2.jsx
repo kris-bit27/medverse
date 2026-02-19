@@ -4,14 +4,12 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
 import { createPageUrl } from '../utils';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { 
+import {
   Calendar,
-  Target,
   Clock,
   Plus,
   Trash2
@@ -95,7 +93,8 @@ export default function StudyPlansV2() {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Studijní Plány</h1>
+          <span className="mn-caption text-[hsl(var(--mn-accent))]">PLÁNY STUDIA</span>
+          <h1 className="mn-serif-font text-[28px] sm:text-[32px] font-bold mb-2">Studijní Plány</h1>
           <p className="text-[hsl(var(--mn-muted))]">
             Naplánujte si studium a sledujte pokrok
           </p>
@@ -108,11 +107,8 @@ export default function StudyPlansV2() {
       </div>
 
       {showCreateForm && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Vytvořit plán</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+          <h3 className="mn-ui-font font-semibold mb-4">Vytvořit plán</h3>
             <form onSubmit={(e) => { e.preventDefault(); createPlan.mutate(formData); }} className="space-y-4">
               <div>
                 <Label>Název</Label>
@@ -152,34 +148,28 @@ export default function StudyPlansV2() {
                 <Button type="submit">Vytvořit</Button>
               </div>
             </form>
-          </CardContent>
-        </Card>
+        </div>
       )}
 
       {plans.length === 0 ? (
-        <Card>
-          <CardContent className="p-12 text-center">
+        <div className="rounded-2xl p-12 text-center" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
             <Calendar className="w-16 h-16 mx-auto mb-4 text-[hsl(var(--mn-muted))]" />
             <h3 className="text-xl font-bold mb-2">Žádné plány</h3>
             <Button onClick={() => setShowCreateForm(true)}>
               <Plus className="w-4 h-4 mr-2" />
               Vytvořit plán
             </Button>
-          </CardContent>
-        </Card>
+        </div>
       ) : (
         <div className="grid md:grid-cols-2 gap-6">
           {plans.map((plan) => (
-            <Card key={plan.id}>
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <CardTitle>{plan.title}</CardTitle>
-                  <Button variant="ghost" size="sm" onClick={() => deletePlan.mutate(plan.id)}>
-                    <Trash2 className="w-4 h-4 text-[hsl(var(--mn-danger))]" />
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
+            <div key={plan.id} className="rounded-2xl p-5 hover:-translate-y-0.5 transition-all" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+              <div className="flex items-start justify-between mb-4">
+                <h3 className="mn-ui-font font-semibold">{plan.title}</h3>
+                <Button variant="ghost" size="sm" onClick={() => deletePlan.mutate(plan.id)}>
+                  <Trash2 className="w-4 h-4 text-[hsl(var(--mn-danger))]" />
+                </Button>
+              </div>
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <Calendar className="w-4 h-4" />
@@ -187,7 +177,7 @@ export default function StudyPlansV2() {
                       {new Date(plan.target_date).toLocaleDateString('cs-CZ')}
                     </span>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
                     <Clock className="w-4 h-4" />
                     <span className="text-sm">{plan.study_hours_per_week}h/týden</span>
@@ -197,8 +187,7 @@ export default function StudyPlansV2() {
                     Začít studovat
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
+            </div>
           ))}
         </div>
       )}

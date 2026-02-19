@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -241,7 +240,8 @@ export default function MyProfile() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl lg:mn-mono-font text-3xl font-bold mb-2">Můj profil</h1>
+          <span className="mn-caption text-[hsl(var(--mn-accent))]">MŮJ PROFIL</span>
+          <h1 className="mn-serif-font text-[28px] sm:text-[32px] font-bold mb-2">Můj profil</h1>
           <p className="text-[hsl(var(--mn-muted))]">
             Spravuj své informace a personalizuj AI asistenta
           </p>
@@ -255,8 +255,8 @@ export default function MyProfile() {
       </div>
 
       {/* Gamification Progress */}
-      <Card className="bg-[hsl(var(--mn-accent)/0.06)] border-[hsl(var(--mn-accent)/0.2)]">
-        <CardContent className="p-6">
+      <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-accent) / 0.06)', border: '1px solid hsl(var(--mn-accent) / 0.2)' }}>
+        <div>
           <div className="flex items-start gap-4">
             <div className="p-3 bg-[hsl(var(--mn-accent)/0.12)] rounded-xl">
               <Gift className="w-6 h-6 text-[hsl(var(--mn-accent))]" />
@@ -308,8 +308,8 @@ export default function MyProfile() {
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       <ProfileForm 
         profile={profile}
@@ -321,14 +321,12 @@ export default function MyProfile() {
 
       {/* Auto-detected Subject Levels */}
       {subjectLevels && subjectLevels.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5" />
-              Automaticky detekovaná úroveň
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
+        <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+          <div className="flex items-center gap-2 mb-4">
+            <Sparkles className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
+            <h3 className="mn-ui-font font-semibold">Automaticky detekovaná úroveň</h3>
+          </div>
+          <div className="space-y-3">
             <p className="text-sm text-[hsl(var(--mn-muted))] mb-4">
               🤖 AI analyzuje tvou aktivitu a automaticky určí úroveň znalostí
             </p>
@@ -348,7 +346,7 @@ export default function MyProfile() {
                         key={star}
                         className={`w-5 h-5 ${
                           star <= subject.level
-                            ? 'fill-yellow-400 text-yellow-400'
+                            ? 'fill-[hsl(var(--mn-warn))] text-[hsl(var(--mn-warn))]'
                             : 'text-[hsl(var(--mn-muted))]'
                         }`}
                       />
@@ -364,8 +362,8 @@ export default function MyProfile() {
                 </div>
               </div>
             ))}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
     </div>
   );
@@ -426,14 +424,12 @@ function ProfileForm({ profile, user, isEditing, onSave, isSaving }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Basic Info */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <User className="w-5 h-5" />
-            Základní informace
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
+      <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="flex items-center gap-2 mb-4">
+          <User className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
+          <h3 className="mn-ui-font font-semibold">Základní informace</h3>
+        </div>
+        <div className="space-y-4">
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="display_name">Jméno a příjmení</Label>
@@ -470,18 +466,16 @@ function ProfileForm({ profile, user, isEditing, onSave, isSaving }) {
               Získej +10 💎 za bio (min. 20 znaků)
             </p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Education & Career */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <GraduationCap className="w-5 h-5" />
-            Vzdělávání & Kariéra
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
+      <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="flex items-center gap-2 mb-4">
+          <GraduationCap className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
+          <h3 className="mn-ui-font font-semibold">Vzdělávání & Kariéra</h3>
+        </div>
+        <div className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="education_level">Stupeň vzdělání</Label>
             <select
@@ -489,7 +483,7 @@ function ProfileForm({ profile, user, isEditing, onSave, isSaving }) {
               value={formData.education_level}
               onChange={(e) => setFormData({ ...formData, education_level: e.target.value })}
               disabled={!isEditing}
-              className="w-full p-2 border rounded-md"
+              className="w-full p-2 border rounded-xl bg-[hsl(var(--mn-surface))] border-[hsl(var(--mn-border))] text-[hsl(var(--mn-text))]"
             >
               <option value="">Vyber...</option>
               {EDUCATION_LEVELS.map(level => (
@@ -545,7 +539,7 @@ function ProfileForm({ profile, user, isEditing, onSave, isSaving }) {
               value={formData.current_specialization}
               onChange={(e) => setFormData({ ...formData, current_specialization: e.target.value })}
               disabled={!isEditing}
-              className="w-full p-2 border rounded-md"
+              className="w-full p-2 border rounded-xl bg-[hsl(var(--mn-surface))] border-[hsl(var(--mn-border))] text-[hsl(var(--mn-text))]"
             >
               <option value="">Vyber...</option>
               {SPECIALIZATIONS.map(spec => (
@@ -584,18 +578,16 @@ function ProfileForm({ profile, user, isEditing, onSave, isSaving }) {
               ))}
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Interests */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Target className="w-5 h-5" />
-            Oblasti zájmu
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
+      <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="flex items-center gap-2 mb-4">
+          <Target className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
+          <h3 className="mn-ui-font font-semibold">Oblasti zájmu</h3>
+        </div>
+        <div className="space-y-4">
           <p className="text-sm text-[hsl(var(--mn-muted))]">
             Vyber min. 2 oblasti pro personalizované doporučení AI (+30 💎)
           </p>
@@ -622,15 +614,15 @@ function ProfileForm({ profile, user, isEditing, onSave, isSaving }) {
               </button>
             ))}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Learning Preferences */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Styl učení</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
+      <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="flex items-center gap-2 mb-4">
+          <h3 className="mn-ui-font font-semibold">Styl učení</h3>
+        </div>
+        <div className="space-y-6">
           <LearningSlider
             label="Rychlost učení"
             leftLabel="Pomalý"
@@ -666,8 +658,8 @@ function ProfileForm({ profile, user, isEditing, onSave, isSaving }) {
           <p className="text-xs text-[hsl(var(--mn-muted))]">
             💡 Získej +20 💎 za nastavení stylu učení
           </p>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {isEditing && (
         <div className="flex gap-3">

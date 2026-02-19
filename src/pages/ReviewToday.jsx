@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -243,8 +242,7 @@ export default function ReviewToday() {
     return (
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
         {/* Filters */}
-        <Card>
-          <CardContent className="p-6">
+        <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
             <div className="flex items-center gap-2 mb-4">
               <Filter className="w-4 h-4" />
               <h3 className="font-semibold">Filtry</h3>
@@ -252,7 +250,7 @@ export default function ReviewToday() {
                 <button
                   onClick={() => setDueOnly(!dueOnly)}
                   className={`text-xs px-3 py-1.5 rounded-xl border transition-colors ${
-                    dueOnly 
+                    dueOnly
                       ? 'bg-[hsl(var(--mn-accent)/0.1)] text-[hsl(var(--mn-accent))] border-[hsl(var(--mn-accent)/0.3)]'
                       : 'text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))] hover:bg-[hsl(var(--mn-surface-2))]'
                   }`}
@@ -261,7 +259,7 @@ export default function ReviewToday() {
                 </button>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="text-sm text-[hsl(var(--mn-muted))] mb-2 block">Obor</label>
@@ -314,11 +312,9 @@ export default function ReviewToday() {
                 </Select>
               </div>
             </div>
-          </CardContent>
-        </Card>
+        </div>
 
-        <Card>
-          <CardContent className="p-12 text-center">
+        <div className="rounded-2xl p-12 text-center" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
             <Zap className="w-16 h-16 mx-auto mb-4 text-[hsl(var(--mn-accent))]" />
             <h2 className="mn-serif-font text-2xl font-bold mb-2">Žádné kartičky!</h2>
             <p className="text-[hsl(var(--mn-muted))] mb-6">
@@ -329,8 +325,7 @@ export default function ReviewToday() {
             <Button onClick={() => navigate('/Dashboard')}>
               Dashboard
             </Button>
-          </CardContent>
-        </Card>
+        </div>
       </div>
     );
   }
@@ -341,6 +336,11 @@ export default function ReviewToday() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
       {/* Header */}
+      <div>
+        <span className="mn-caption text-[hsl(var(--mn-accent))]">OPAKOVÁNÍ</span>
+        <h1 className="mn-serif-font text-[28px] sm:text-[32px] font-bold">Opakování kartiček</h1>
+      </div>
+
       <div className="flex items-center justify-between">
         <Button
           variant="ghost"
@@ -350,15 +350,14 @@ export default function ReviewToday() {
           <ArrowLeft className="w-4 h-4 mr-2" />
           Zpět
         </Button>
-        
+
         <div className="text-sm text-[hsl(var(--mn-muted))]">
           {currentIndex + 1} / {flashcards.length}
         </div>
       </div>
 
       {/* Filters */}
-      <Card>
-        <CardContent className="p-4">
+      <div className="rounded-2xl p-4" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
           <div className="flex items-center gap-2 mb-3">
             <Filter className="w-4 h-4" />
             <h3 className="font-semibold text-sm">Filtry</h3>
@@ -366,7 +365,7 @@ export default function ReviewToday() {
               <button
                 onClick={() => setDueOnly(!dueOnly)}
                 className={`text-xs px-3 py-1.5 rounded-xl border transition-colors ${
-                  dueOnly 
+                  dueOnly
                     ? 'bg-[hsl(var(--mn-accent)/0.1)] text-[hsl(var(--mn-accent))] border-[hsl(var(--mn-accent)/0.3)]'
                     : 'text-[hsl(var(--mn-muted))] border-[hsl(var(--mn-border))] hover:bg-[hsl(var(--mn-surface-2))]'
                 }`}
@@ -375,7 +374,7 @@ export default function ReviewToday() {
               </button>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <Select value={selectedObor} onValueChange={setSelectedObor}>
               <SelectTrigger className="h-9">
@@ -419,8 +418,7 @@ export default function ReviewToday() {
               </SelectContent>
             </Select>
           </div>
-        </CardContent>
-      </Card>
+      </div>
 
       {/* Progress */}
       <div className="space-y-2">
@@ -445,8 +443,7 @@ export default function ReviewToday() {
         onClick={() => setIsFlipped(!isFlipped)}
         className="cursor-pointer"
       >
-        <Card className="min-h-[400px] hover:shadow-lg transition-shadow">
-          <CardContent className="p-12 flex items-center justify-center">
+        <div className="rounded-2xl p-12 min-h-[400px] flex items-center justify-center hover:shadow-lg transition-shadow" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
             <div className="text-center w-full">
               {!isFlipped ? (
                 <>
@@ -467,8 +464,7 @@ export default function ReviewToday() {
                 </>
               )}
             </div>
-          </CardContent>
-        </Card>
+        </div>
       </div>
 
       {/* Answer Buttons */}
@@ -488,7 +484,7 @@ export default function ReviewToday() {
             variant="outline"
             className="flex-col h-auto py-4"
           >
-            <RotateCcw className="w-6 h-6 mb-2 text-yellow-500" />
+            <RotateCcw className="w-6 h-6 mb-2 text-[hsl(var(--mn-warn))]" />
             <span>Těžké</span>
           </Button>
 
@@ -513,14 +509,13 @@ export default function ReviewToday() {
       )}
 
       {/* Stats */}
-      <Card>
-        <CardContent className="p-4">
+      <div className="rounded-2xl p-4" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center gap-2">
-              <Trophy className="w-4 h-4 text-yellow-500" />
+              <Trophy className="w-4 h-4 text-[hsl(var(--mn-warn))]" />
               <span>
-                Úspěšnost: {sessionStats.reviewed > 0 
-                  ? Math.round((sessionStats.correct / sessionStats.reviewed) * 100) 
+                Úspěšnost: {sessionStats.reviewed > 0
+                  ? Math.round((sessionStats.correct / sessionStats.reviewed) * 100)
                   : 0}%
               </span>
             </div>
@@ -528,8 +523,7 @@ export default function ReviewToday() {
               {flashcards.length - currentIndex - 1} zbývá
             </div>
           </div>
-        </CardContent>
-      </Card>
+      </div>
     </div>
   );
 }

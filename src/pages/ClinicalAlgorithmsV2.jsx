@@ -3,7 +3,6 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
-import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -176,9 +175,10 @@ export default function ClinicalAlgorithmsV2() {
         </div>
 
         {/* Step Card */}
-        <Card
-          className="mb-6 border-2 overflow-hidden"
+        <div
+          className="rounded-2xl mb-6 border-2 overflow-hidden"
           style={{
+            background: 'hsl(var(--mn-surface))',
             borderColor: isEndpoint && endColor ? endColor.border
               : isCritical ? 'rgba(239,68,68,0.4)'
               : 'hsl(var(--mn-border))',
@@ -197,7 +197,7 @@ export default function ClinicalAlgorithmsV2() {
             </div>
           )}
 
-          <CardContent className="p-5">
+          <div className="p-5">
             {/* Step type badge */}
             <div className="flex items-center gap-2 mb-2">
               <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"
@@ -248,8 +248,8 @@ export default function ClinicalAlgorithmsV2() {
                 </Button>
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Navigation */}
         <div className="flex items-center justify-between">
@@ -278,7 +278,7 @@ export default function ClinicalAlgorithmsV2() {
           <ArrowLeft className="w-4 h-4" />
           Klinické nástroje
         </Link>
-        <span className="mn-caption text-[#3b82f6]">KLINICKÉ ALGORITMY</span>
+        <span className="mn-caption text-[hsl(var(--mn-accent))]">KLINICKÉ ALGORITMY</span>
         <h1 className="mn-serif-font text-[28px] sm:text-[32px] font-bold mt-1">Algoritmy</h1>
         <p className="text-[hsl(var(--mn-muted))] mt-2">
           {algorithms.length} interaktivních rozhodovacích stromů dle aktuálních guidelines

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import StatusBadge from '@/components/ui/StatusBadge';
 import DifficultyIndicator from '@/components/ui/DifficultyIndicator';
@@ -26,11 +25,11 @@ export default function RecentActivity({
 
   if (recentItems.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Nedávná aktivita</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="p-5 pb-0">
+          <h3 className="mn-ui-font font-semibold text-lg">Nedávná aktivita</h3>
+        </div>
+        <div className="p-5">
           <div className="text-center py-8 text-[hsl(var(--mn-muted))]">
             <Clock className="w-8 h-8 mx-auto mb-2 opacity-50" />
             <p>Zatím žádná aktivita</p>
@@ -40,23 +39,23 @@ export default function RecentActivity({
               </Link>
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between pb-4">
-        <CardTitle className="text-lg">Nedávná aktivita</CardTitle>
+    <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+      <div className="flex items-center justify-between p-5 pb-4">
+        <h3 className="mn-ui-font font-semibold text-lg">Nedávná aktivita</h3>
         <Button variant="ghost" size="sm" asChild>
           <Link to={createPageUrl('ReviewQueue')}>
             Zobrazit vše
             <ChevronRight className="w-4 h-4 ml-1" />
           </Link>
         </Button>
-      </CardHeader>
-      <CardContent>
+      </div>
+      <div className="px-5 pb-5">
         <div className="space-y-3">
           {recentItems.map((item) => (
             <Link
@@ -79,7 +78,7 @@ export default function RecentActivity({
             </Link>
           ))}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

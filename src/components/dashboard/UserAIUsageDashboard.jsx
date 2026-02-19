@@ -1,7 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -112,32 +111,32 @@ export default function UserAIUsageDashboard({ user }) {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Total Cost */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Cost</CardTitle>
+        <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+          <div className="flex items-center justify-between p-5 pb-2">
+            <h3 className="mn-ui-font text-sm font-medium">Total Cost</h3>
             <DollarSign className="h-4 w-4 text-[hsl(var(--mn-muted))]" />
-          </CardHeader>
-          <CardContent>
+          </div>
+          <div className="px-5 pb-5">
             <div className="text-2xl font-bold">
               ${usedCost.toFixed(2)}
             </div>
             <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">
               of ${monthlyBudget} budget
             </p>
-            <Progress 
-              value={Math.min(percentUsed, 100)} 
+            <Progress
+              value={Math.min(percentUsed, 100)}
               className="mt-3"
             />
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Requests */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">AI Requests</CardTitle>
+        <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+          <div className="flex items-center justify-between p-5 pb-2">
+            <h3 className="mn-ui-font text-sm font-medium">AI Requests</h3>
             <Zap className="h-4 w-4 text-[hsl(var(--mn-muted))]" />
-          </CardHeader>
-          <CardContent>
+          </div>
+          <div className="px-5 pb-5">
             <div className="text-2xl font-bold">
               {usage?.request_count || 0}
             </div>
@@ -148,16 +147,16 @@ export default function UserAIUsageDashboard({ user }) {
               <TrendingUp className="h-3 w-3" />
               Avg: ${usedCost > 0 ? (usedCost / (usage?.request_count || 1)).toFixed(2) : '0.00'}/request
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Tokens */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Tokens Used</CardTitle>
+        <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+          <div className="flex items-center justify-between p-5 pb-2">
+            <h3 className="mn-ui-font text-sm font-medium">Tokens Used</h3>
             <Calendar className="h-4 w-4 text-[hsl(var(--mn-muted))]" />
-          </CardHeader>
-          <CardContent>
+          </div>
+          <div className="px-5 pb-5">
             <div className="text-2xl font-bold">
               {(usage?.total_tokens || 0).toLocaleString()}
             </div>
@@ -167,28 +166,28 @@ export default function UserAIUsageDashboard({ user }) {
             <div className="flex items-center gap-2 mt-3 text-xs text-[hsl(var(--mn-muted))]">
               ~{Math.round((usage?.total_tokens || 0) / (usage?.request_count || 1)).toLocaleString()} tokens/request
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
       {/* Recent Usage History */}
       {history && history.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Recent Activity</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+          <div className="p-5 pb-0">
+            <h3 className="mn-ui-font font-semibold text-lg">Recent Activity</h3>
+          </div>
+          <div className="p-5">
             <div className="space-y-3">
               {history.map((item) => (
-                <div 
-                  key={item.id} 
+                <div
+                  key={item.id}
                   className="flex items-center justify-between p-3 rounded-lg border bg-[hsl(var(--mn-surface))]"
                 >
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <Badge variant="outline" className="text-xs">
-                        {item.model === 'claude-opus-4' ? '🧠 Opus' : 
-                         item.model === 'claude-sonnet-4' ? '⚡ Sonnet' : 
+                        {item.model === 'claude-opus-4' ? '🧠 Opus' :
+                         item.model === 'claude-sonnet-4' ? '⚡ Sonnet' :
                          '✨ Gemini'}
                       </Badge>
                       <span className="text-sm text-[hsl(var(--mn-muted))]">
@@ -196,9 +195,9 @@ export default function UserAIUsageDashboard({ user }) {
                       </span>
                     </div>
                     <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">
-                      {formatDistanceToNow(new Date(item.created_at), { 
+                      {formatDistanceToNow(new Date(item.created_at), {
                         addSuffix: true,
-                        locale: cs 
+                        locale: cs
                       })}
                     </p>
                   </div>
@@ -213,26 +212,26 @@ export default function UserAIUsageDashboard({ user }) {
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
       {/* Empty State */}
       {(!history || history.length === 0) && (
-        <Card>
-          <CardContent className="p-8 text-center">
+        <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+          <div className="p-8 text-center">
             <Zap className="w-12 h-12 text-[hsl(var(--mn-muted))] mx-auto mb-3" />
             <p className="text-[hsl(var(--mn-muted))] mb-2">No AI usage yet</p>
             <p className="text-sm text-[hsl(var(--mn-muted))]">
               Start generating content to see your usage statistics here
             </p>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
       {/* Info */}
-      <Card className="bg-[hsl(var(--mn-accent-2)/0.06)] border-[hsl(var(--mn-accent-2)/0.3)]">
-        <CardContent className="p-4">
+      <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-accent-2) / 0.06)', border: '1px solid hsl(var(--mn-accent-2) / 0.3)' }}>
+        <div className="p-4">
           <div className="flex items-start gap-3">
             <div className="p-2 bg-[hsl(var(--mn-accent-2)/0.12)] rounded-lg">
               <DollarSign className="h-4 w-4 text-[hsl(var(--mn-accent-2))]" />
@@ -242,14 +241,14 @@ export default function UserAIUsageDashboard({ user }) {
                 How billing works
               </h4>
               <p className="text-xs text-[hsl(var(--mn-accent-2)/0.8)]">
-                You have a ${monthlyBudget}/month budget for AI-generated content. 
-                Your usage resets on the 1st of each month. 
+                You have a ${monthlyBudget}/month budget for AI-generated content.
+                Your usage resets on the 1st of each month.
                 Costs vary by model: Opus (~$0.60), Sonnet (~$0.15), Gemini (Free).
               </p>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

@@ -3,7 +3,6 @@ import { supabase } from '@/lib/supabase';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -126,21 +125,22 @@ export default function StudyPlanDetail() {
   const taskProgress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
   return (
-    <div className="p-6 lg:p-8 max-w-6xl mx-auto">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
       <Button variant="ghost" onClick={() => navigate(-1)} className="mb-4">
         <ArrowLeft className="w-4 h-4 mr-2" />
         Zpět
       </Button>
 
+      <span className="mn-caption text-[hsl(var(--mn-accent))]">STUDIJNÍ PLÁN</span>
+
       <div className="space-y-6">
         {/* Header */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-start justify-between">
+        <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+            <div className="flex items-start justify-between mb-4">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
                   <Target className="w-6 h-6 text-[hsl(var(--mn-accent))]" />
-                  <CardTitle className="text-2xl">{plan.title}</CardTitle>
+                  <h3 className="mn-ui-font font-semibold text-2xl">{plan.title}</h3>
                   {plan.is_ai_generated && (
                     <Badge variant="secondary" className="flex items-center gap-1">
                       <Sparkles className="w-3 h-3" />
@@ -154,9 +154,9 @@ export default function StudyPlanDetail() {
                   )}
                 </div>
                 {plan.description && (
-                  <CardDescription className="text-base mb-3">
+                  <p className="text-[hsl(var(--mn-muted))] mt-1 text-base mb-3">
                     {plan.description}
-                  </CardDescription>
+                  </p>
                 )}
                 <div className="flex flex-wrap gap-2">
                   <Badge variant="outline" className="flex items-center gap-1">
@@ -201,8 +201,6 @@ export default function StudyPlanDetail() {
                 )}
               </div>
             </div>
-          </CardHeader>
-          <CardContent>
             <div className="grid md:grid-cols-3 gap-6">
               <div>
                 <p className="text-sm text-[hsl(var(--mn-muted))] mb-2">Celkový pokrok</p>
@@ -260,8 +258,7 @@ export default function StudyPlanDetail() {
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+        </div>
 
         {/* Content */}
         <div className="grid lg:grid-cols-3 gap-6">
@@ -283,11 +280,9 @@ export default function StudyPlanDetail() {
               </TabsContent>
 
               <TabsContent value="progress" className="mt-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">Statistiky pokroku</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+                <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+                  <h3 className="mn-ui-font font-semibold mb-4">Statistiky pokroku</h3>
+                  <div className="space-y-4">
                     <div className="flex items-center justify-between p-4 rounded-lg bg-[hsl(var(--mn-surface-2))]">
                       <div>
                         <p className="text-sm text-[hsl(var(--mn-muted))]">Dokončené úkoly</p>
@@ -306,16 +301,15 @@ export default function StudyPlanDetail() {
                       </div>
                       <TrendingUp className="w-8 h-8 text-[hsl(var(--mn-accent))]" />
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               </TabsContent>
 
               <TabsContent value="collaborators" className="mt-4 space-y-3">
                 {collaboratorUsers.map(u => {
                   const collab = collaborators.find(c => c.user_id === u.id);
                   return (
-                    <Card key={u.id}>
-                      <CardContent className="pt-6">
+                    <div key={u.id} className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
                         <div className="flex items-start justify-between">
                           <div className="flex items-center gap-3">
                             <Avatar>
@@ -341,8 +335,7 @@ export default function StudyPlanDetail() {
                             )}
                           </div>
                         </div>
-                      </CardContent>
-                    </Card>
+                    </div>
                   );
                 })}
               </TabsContent>
@@ -351,29 +344,23 @@ export default function StudyPlanDetail() {
 
           <div className="space-y-4">
             {disciplines.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm">Klinické obory</CardTitle>
-                </CardHeader>
-                <CardContent>
+              <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+                <h3 className="mn-ui-font font-semibold text-sm mb-4">Klinické obory</h3>
                   <div className="flex flex-wrap gap-2">
                     {disciplines.map(d => (
                       <Badge key={d.id} variant="outline">{d.name}</Badge>
                     ))}
                   </div>
-                </CardContent>
-              </Card>
+              </div>
             )}
 
             {packages.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm flex items-center gap-2">
-                    <Package className="w-4 h-4" />
-                    Studijní balíčky
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
+              <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+                <h3 className="mn-ui-font font-semibold text-sm flex items-center gap-2 mb-4">
+                  <Package className="w-4 h-4" />
+                  Studijní balíčky
+                </h3>
+                <div className="space-y-2">
                   {packages.map(p => (
                     <Link
                       key={p.id}
@@ -383,8 +370,8 @@ export default function StudyPlanDetail() {
                       <p className="text-sm font-medium">{p.title}</p>
                     </Link>
                   ))}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
           </div>
         </div>

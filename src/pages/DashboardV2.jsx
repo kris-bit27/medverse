@@ -152,7 +152,7 @@ export default function DashboardV2() {
         <motion.section {...up(1)}>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             {[
-              { icon: Zap, label: 'AI Kredity', value: (tokens?.current_tokens || 0).toLocaleString(), sub: `z ${(tokens?.monthly_limit || 1000).toLocaleString()}`, color: '#14b8a6', glow: 'hsl(var(--mn-accent) / 0.10)' },
+              { icon: Zap, label: 'AI Tokeny', value: (tokens?.current_tokens || 0).toLocaleString(), sub: `z ${(tokens?.monthly_limit || 50).toLocaleString()}`, color: '#14b8a6', glow: 'hsl(var(--mn-accent) / 0.10)' },
               { icon: RefreshCw, label: 'K opakování', value: String(dueCardsCount), sub: dueCardsCount === 0 ? 'Vše hotovo' : 'kartiček čeká', color: dueCardsCount > 0 ? '#f59e0b' : '#22c55e', glow: dueCardsCount > 0 ? 'hsl(var(--mn-warn) / 0.08)' : 'hsl(var(--mn-success) / 0.08)' },
               { icon: Flame, label: 'Série', value: `${streak}`, sub: streakData.today_active ? 'Dnes aktivní' : streak > 0 ? 'dní v řadě' : 'Začni dnes', color: streak >= 3 ? '#f59e0b' : 'hsl(var(--mn-muted))', glow: streak >= 3 ? 'hsl(var(--mn-warn) / 0.08)' : 'transparent' },
               { icon: Award, label: 'Úspěchy', value: String(recentAchievements.length), sub: 'odemčeno', color: '#f59e0b', glow: 'hsl(var(--mn-warn) / 0.06)' },
