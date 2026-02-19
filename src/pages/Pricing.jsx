@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import {
   Stethoscope,
   Check,
+  CheckCircle2,
   Crown,
   ArrowRight,
   Sparkles
@@ -19,11 +20,11 @@ const plans = [
     period: 'navždy',
     description: 'Ideální pro vyzkoušení platformy',
     features: [
-      'Přístup k veřejným otázkám',
-      'Základní články',
-      '3 algoritmy',
-      'Denní limit 10 opakování',
-      'Základní statistiky'
+      'Přístup ke všem tématům (náhledy)',
+      '50 flashcards denně',
+      '3 testy denně',
+      '50 AI tokenů měsíčně',
+      'Základní kalkulačky',
     ],
     cta: 'Začít zdarma',
     highlighted: false
@@ -34,14 +35,13 @@ const plans = [
     period: '/měsíc',
     description: 'Kompletní přístup pro seriózní přípravu',
     features: [
-      'Všechny otázky (500+)',
-      'Všechny články a přehledy',
-      'Všechny klinické algoritmy',
-      'Neomezené opakování',
-      'Detailní statistiky a pokrok',
-      'Vlastní poznámky ke každé otázce',
-      'Export poznámek',
-      'Prioritní podpora'
+      'Plný přístup ke všemu obsahu',
+      'Neomezené flashcards a testy',
+      '2 000 AI tokenů měsíčně',
+      'AI Copilot + AI Konzultant',
+      'Všechny klinické nástroje',
+      'Sledování pokroku a slabých míst',
+      'Prioritní podpora',
     ],
     cta: 'Získat Premium',
     highlighted: true
@@ -111,7 +111,7 @@ export default function Pricing() {
       {/* Plans */}
       <section className="pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-5xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-3 gap-8">
             {plans.map((plan, i) => (
               <motion.div
                 key={plan.name}
@@ -120,8 +120,8 @@ export default function Pricing() {
                 transition={{ delay: i * 0.1, duration: 0.6 }}
               >
                 <Card className={`p-8 h-full relative ${
-                  plan.highlighted 
-                    ? 'border-2 border-[hsl(var(--mn-accent))] shadow-xl shadow-[hsl(var(--mn-accent)/0.1)]' 
+                  plan.highlighted
+                    ? 'border-2 border-[hsl(var(--mn-accent))] shadow-xl shadow-[hsl(var(--mn-accent)/0.1)]'
                     : 'border border-[hsl(var(--mn-border))]'
                 }`}>
                   {plan.highlighted && (
@@ -161,10 +161,10 @@ export default function Pricing() {
                     ))}
                   </ul>
 
-                  <Button 
+                  <Button
                     className={`w-full h-12 ${
-                      plan.highlighted 
-                        ? 'bg-gradient-to-r from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))] hover:opacity-90 shadow-lg shadow-[hsl(var(--mn-accent)/0.25)]' 
+                      plan.highlighted
+                        ? 'bg-gradient-to-r from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))] hover:opacity-90 shadow-lg shadow-[hsl(var(--mn-accent)/0.25)]'
                         : ''
                     }`}
                     variant={plan.highlighted ? 'default' : 'outline'}
@@ -176,6 +176,30 @@ export default function Pricing() {
                 </Card>
               </motion.div>
             ))}
+
+            {/* Pro plan — hidden, coming soon */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+            >
+              <div className="p-6 rounded-2xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))] opacity-60 relative h-full">
+                <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-[hsl(var(--mn-surface))] border border-[hsl(var(--mn-border))] text-[10px] text-[hsl(var(--mn-muted))] mn-ui-font">BRZY</div>
+                <h3 className="mn-ui-font font-semibold text-lg mb-1">Pro</h3>
+                <p className="text-sm text-[hsl(var(--mn-muted))] mb-4">Pro power users</p>
+                <div className="flex items-baseline gap-1 mb-1">
+                  <span className="mn-mono-font text-3xl font-bold">599 Kč</span>
+                  <span className="text-sm text-[hsl(var(--mn-muted))]">/měsíc</span>
+                </div>
+                <p className="text-xs text-[hsl(var(--mn-muted))] mb-6">nebo 4 990 Kč/rok</p>
+                <ul className="space-y-2.5 mb-6">
+                  {['Vše z Premium', '8 000 AI tokenů měsíčně', 'Prioritní AI odpovědi', 'Export dat a výsledků', 'Týmové funkce', 'API přístup'].map((f, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[hsl(var(--mn-muted))] shrink-0 mt-0.5" /><span className="text-[hsl(var(--mn-muted))]">{f}</span></li>
+                  ))}
+                </ul>
+                <Button variant="outline" className="w-full" disabled>Již brzy</Button>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>

@@ -1,27 +1,50 @@
 /**
  * Token management utilities for AI usage
- * 
+ *
  * Token costs per operation:
- *   copilot_question    → 5 tokens
- *   med_search_answer   → 10 tokens  
- *   study_set_generate  → 15 tokens
- *   weekly_report       → 3 tokens
- *   study_insights      → 3 tokens
- *   med_search_pubmed   → 0 tokens (free, no AI)
+ *   copilot_question    → 5 tokens  (AI Copilot)
+ *   ddx_analysis        → 8 tokens  (AI Konzultant — DDx)
+ *   treatment_plan      → 8 tokens  (AI Konzultant — Léčba)
+ *   drug_interactions   → 5 tokens  (AI Konzultant — Interakce)
+ *   med_search_answer   → 6 tokens  (Med Search AI odpověď)
+ *   med_search_pubmed   → 0 tokens  (free, no AI call)
+ *   study_set_summary   → 10 tokens (Study set generace)
+ *   study_set_quiz      → 10 tokens (Study set kvíz)
+ *   study_set_plan      → 10 tokens (Study set plán)
+ *   weekly_report       → 0 tokens  (free)
+ *   study_insights      → 0 tokens  (free)
+ *   content_feedback    → 0 tokens  (free)
+ *
+ * Plan tiers:
+ *   free    → 50 tokens/month
+ *   premium → 2 000 tokens/month
+ *   pro     → 8 000 tokens/month
  */
 
 import { createClient } from '@supabase/supabase-js';
 
 const TOKEN_COSTS: Record<string, number> = {
+  // AI Copilot
   copilot_question: 5,
-  med_search_answer: 10,
-  med_search_pubmed: 0,
-  study_set_summary: 15,
-  study_set_quiz: 15,
-  study_set_plan: 15,
-  weekly_report: 3,
-  study_insights: 3,
-  content_feedback: 2,
+
+  // AI Konzultant (3 modes)
+  ddx_analysis: 8,
+  treatment_plan: 8,
+  drug_interactions: 5,
+
+  // Med Search
+  med_search_answer: 6,
+  med_search_pubmed: 0, // free, no AI call
+
+  // Study sets
+  study_set_summary: 10,
+  study_set_quiz: 10,
+  study_set_plan: 10,
+
+  // Free operations (no token cost)
+  weekly_report: 0,
+  study_insights: 0,
+  content_feedback: 0,
 };
 
 export function getTokenCost(operation: string): number {
@@ -47,16 +70,16 @@ export async function checkTokens(
     .single();
 
   if (!tokens) {
-    // Initialize tokens for new user
+    // Initialize tokens for new user (free tier: 50 tokens)
     const { data: newTokens } = await supabase
       .from('user_tokens')
-      .insert({ user_id: userId, current_tokens: 1000, monthly_limit: 1000 })
+      .insert({ user_id: userId, current_tokens: 50, monthly_limit: 50, plan_tier: 'free' })
       .select('current_tokens, monthly_limit')
       .single();
-    
+
     return {
-      allowed: (newTokens?.current_tokens || 1000) >= cost,
-      remaining: newTokens?.current_tokens || 1000,
+      allowed: (newTokens?.current_tokens || 50) >= cost,
+      remaining: newTokens?.current_tokens || 50,
       cost,
     };
   }

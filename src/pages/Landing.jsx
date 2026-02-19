@@ -297,7 +297,7 @@ export default function Landing() {
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
               <p className="text-xs text-[hsl(var(--mn-muted))] mt-4">
-                Bez kreditní karty · Přístup odkudkoliv · 1 000 AI tokenů na start
+                Bez kreditní karty · Přístup odkudkoliv · 50 AI tokenů na start
               </p>
             </div>
           </div>

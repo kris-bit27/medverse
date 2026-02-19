@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/select';
 import {
   ArrowLeft, Bot, Stethoscope, Pill, AlertTriangle, Send, Loader2,
-  Sparkles, RotateCcw, X, Plus, ChevronDown, Shield,
+  Sparkles, RotateCcw, X, Plus, ChevronDown, Shield, Zap,
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
@@ -33,6 +33,48 @@ function Disclaimer() {
             Vždy postupujte dle aktuálních guidelines a individuálního posouzení pacienta.
           </p>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── TOKEN BALANCE ───
+function TokenBalance() {
+  const { user } = useAuth();
+  const { data: tokens } = useQuery({
+    queryKey: ['userTokens', user?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from('user_tokens')
+        .select('current_tokens, monthly_limit, plan_tier')
+        .eq('user_id', user.id).single();
+      return data;
+    },
+    enabled: !!user?.id,
+  });
+
+  if (!tokens) return null;
+
+  const pct = tokens.monthly_limit > 0
+    ? Math.round((tokens.current_tokens / tokens.monthly_limit) * 100)
+    : 0;
+
+  return (
+    <div className="flex items-center justify-between p-3 rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface))] mb-4">
+      <div className="flex items-center gap-2">
+        <Zap className="w-4 h-4 text-[hsl(var(--mn-accent))]" />
+        <span className="mn-ui-font text-sm">
+          <span className="mn-mono-font font-bold">{tokens.current_tokens}</span>
+          <span className="text-[hsl(var(--mn-muted))]"> / {tokens.monthly_limit} tokenů</span>
+        </span>
+      </div>
+      <div className="w-24 h-1.5 rounded-full bg-[hsl(var(--mn-surface-2))] overflow-hidden">
+        <div
+          className="h-full rounded-full transition-all"
+          style={{
+            width: `${pct}%`,
+            background: pct > 20 ? 'hsl(var(--mn-accent))' : 'hsl(var(--mn-danger))',
+          }}
+        />
       </div>
     </div>
   );
@@ -77,6 +119,7 @@ function DDxMode() {
     try {
       const res = await callApi('invokeLLM', {
         user_id: user?.id,
+        operation: 'ddx_analysis',
         maxTokens: 3000,
         prompt: `Jsi zkušený klinický lékař, specialista na diferenciální diagnostiku. Na základě následujících informací vytvoř diferenciální diagnózu v českém jazyce.
 
@@ -147,6 +190,7 @@ Krok za krokem, co provést jako první, druhé, třetí.`
         {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Stethoscope className="w-4 h-4 mr-2" />}
         {loading ? 'Analyzuji...' : 'Analyzovat'}
       </Button>
+      <p className="text-xs text-center text-[hsl(var(--mn-muted))] mt-2">Stojí 8 tokenů</p>
       <ResultCard result={result} mode="ddx" />
     </div>
   );
@@ -171,6 +215,7 @@ function TreatmentMode() {
     try {
       const res = await callApi('invokeLLM', {
         user_id: user?.id,
+        operation: 'treatment_plan',
         maxTokens: 3000,
         prompt: `Jsi zkušený klinický lékař. Na základě následujících informací navrhni léčebný plán v českém jazyce.
 
@@ -246,6 +291,7 @@ Kdy a jak kontrolovat efekt léčby, kdy eskalovat.`
         {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Shield className="w-4 h-4 mr-2" />}
         {loading ? 'Generuji plán...' : 'Navrhnout léčebný plán'}
       </Button>
+      <p className="text-xs text-center text-[hsl(var(--mn-muted))] mt-2">Stojí 8 tokenů</p>
       <ResultCard result={result} mode="treatment" />
     </div>
   );
@@ -280,6 +326,7 @@ function InteractionsMode() {
     try {
       const res = await callApi('invokeLLM', {
         user_id: user?.id,
+        operation: 'drug_interactions',
         maxTokens: 3000,
         prompt: `Jsi klinický farmaceut a expert na lékové interakce. Analyzuj následující kombinaci léků v českém jazyce.
 
@@ -356,6 +403,7 @@ Pokud nenajdeš žádné interakce, uveď to jasně.`
         {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Pill className="w-4 h-4 mr-2" />}
         {loading ? 'Kontroluji interakce...' : `Zkontrolovat interakce (${filledDrugs.length} léků)`}
       </Button>
+      <p className="text-xs text-center text-[hsl(var(--mn-muted))] mt-2">Stojí 5 tokenů</p>
       <ResultCard result={result} mode="interactions" />
     </div>
   );
@@ -387,6 +435,7 @@ export default function AIConsultant() {
       </div>
 
       <Disclaimer />
+      <TokenBalance />
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
