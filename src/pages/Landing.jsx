@@ -13,10 +13,10 @@ import {
 const loginUrl = `/login?redirectTo=${encodeURIComponent('/Dashboard')}`;
 
 const stats = [
-  { value: '32', label: 'Témat' },
-  { value: '7', label: 'Oborů' },
-  { value: '88', label: 'Kartiček' },
-  { value: '28', label: 'Nástrojů' },
+  { value: '1 468', label: 'Témat' },
+  { value: '45', label: 'Oborů' },
+  { value: '15 000+', label: 'Kartiček' },
+  { value: '3 400+', label: 'Otázek' },
 ];
 
 const features = [
@@ -217,18 +217,22 @@ export default function Landing() {
               </p>
             </div>
 
-            {/* Team */}
-            <div className="p-6 rounded-2xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))]">
-              <h3 className="mn-ui-font font-semibold text-lg mb-1">Pro týmy</h3>
-              <p className="text-sm text-[hsl(var(--mn-muted))] mb-4">Kliniky a vzdělávací instituce</p>
-              <p className="mn-mono-font text-3xl font-bold mb-1">Na míru</p>
-              <p className="text-xs text-[hsl(var(--mn-muted))] mb-6">od 5 uživatelů</p>
+            {/* Pro — coming soon */}
+            <div className="p-6 rounded-2xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))] opacity-60 relative">
+              <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-[hsl(var(--mn-surface))] border border-[hsl(var(--mn-border))] text-[10px] text-[hsl(var(--mn-muted))] mn-ui-font">BRZY</div>
+              <h3 className="mn-ui-font font-semibold text-lg mb-1">Pro</h3>
+              <p className="text-sm text-[hsl(var(--mn-muted))] mb-4">Pro power users</p>
+              <div className="flex items-baseline gap-1 mb-1">
+                <span className="mn-mono-font text-3xl font-bold">599 Kč</span>
+                <span className="text-sm text-[hsl(var(--mn-muted))]">/měsíc</span>
+              </div>
+              <p className="text-xs text-[hsl(var(--mn-muted))] mb-6">nebo 4 990 Kč/rok</p>
               <ul className="space-y-2.5 mb-6">
-                {['Vše z Premium', 'Neomezené AI kredity', 'Admin dashboard a analytics', 'Vlastní obsah a okruhy', 'API přístup', 'Dedikovaná podpora'].map((f, i) => (
+                {['Vše z Premium', '8 000 AI tokenů měsíčně', 'Prioritní AI odpovědi', 'Export dat a výsledků', 'Týmové funkce', 'API přístup'].map((f, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[hsl(var(--mn-muted))] shrink-0 mt-0.5" /><span className="text-[hsl(var(--mn-muted))]">{f}</span></li>
                 ))}
               </ul>
-              <Button variant="outline" className="w-full" onClick={() => window.location.href = 'mailto:info@medverse.cz'}>Kontaktujte nás</Button>
+              <Button variant="outline" className="w-full" disabled>Již brzy</Button>
             </div>
           </div>
         </div>
