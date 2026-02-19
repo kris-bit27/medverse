@@ -378,8 +378,28 @@ function FloatingToolbar({ onFontSizeChange, onBookmark, isBookmarked }) {
 // ============================================================
 function preprocessContent(content) {
   if (!content) return content;
+  let c = content;
+  
+  // Fix JSON-wrapped content: ```json\n{"full_text": "..."}\n```
+  const jsonMatch = c.match(/^```json\s*\{?\s*"full_text"\s*:\s*"([\s\S]*?)"\s*\}?\s*```\s*$/);
+  if (jsonMatch) {
+    c = jsonMatch[1];
+  }
+  // Also handle plain JSON object without code fences
+  const plainJsonMatch = c.match(/^\s*\{\s*"full_text"\s*:\s*"([\s\S]*?)"\s*\}\s*$/);
+  if (plainJsonMatch) {
+    c = plainJsonMatch[1];
+  }
+  
+  // Fix escaped newlines (literal \n → real newline)
+  c = c.replace(/\\n/g, '\n');
+  // Fix escaped quotes
+  c = c.replace(/\\"/g, '"');
+  // Fix escaped backslashes
+  c = c.replace(/\\\\/g, '\\');
+  
   // Transform standalone emoji-prefixed lines into blockquotes for callout detection
-  return content.replace(
+  return c.replace(
     /^(🔴|⚠️|💡|✅|⚡|💊|🔬|📊)\s+/gm,
     '> $1 '
   );

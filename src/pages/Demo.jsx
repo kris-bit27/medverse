@@ -173,9 +173,6 @@ function TopicPreview({ topic }) {
           {topic.title}
         </h3>
         <div className="flex flex-wrap items-center gap-3 text-xs text-[hsl(var(--mn-muted))]">
-          <span className="flex items-center gap-1">
-            <Sparkles className="w-3.5 h-3.5 text-[hsl(var(--mn-accent))]" /> {topic.ai_model?.includes('opus') ? 'Opus 4' : 'Sonnet 4'}
-          </span>
           {wordCount > 0 && (
             <span className="flex items-center gap-1">
               <Clock className="w-3.5 h-3.5" /> ~{readTime} min
