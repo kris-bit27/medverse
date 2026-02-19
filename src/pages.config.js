@@ -84,9 +84,9 @@ export const PAGES = {
   "ScholarSearch":      L(() => import('./pages/ScholarSearch')),
   "MedSearch":          L(() => import('./pages/MedSearch')),
 
-  // === Articles ===
-  "ArticleDetail":      L(() => import('./pages/ArticleDetail')),
-  "Articles":           L(() => import('./pages/Articles')),
+  // === Articles (redirected to MedSearch) ===
+  "ArticleDetail":      L(() => import('./pages/MedSearch')),
+  "Articles":           L(() => import('./pages/MedSearch')),
   "ReviewQueue":        L(() => import('./pages/ReviewQueue')),
 
   // === Admin ===

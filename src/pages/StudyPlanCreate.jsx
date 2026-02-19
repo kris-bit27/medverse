@@ -9,9 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Save, Loader2, Sparkles } from 'lucide-react';
+import { Save, Loader2, Sparkles, MessageSquare } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
-import AICopilotChat from '@/components/ai/AICopilotChat';
 
 export default function StudyPlanCreate() {
   const navigate = useNavigate();
@@ -25,7 +24,6 @@ export default function StudyPlanCreate() {
   const [dailyHours, setDailyHours] = useState('2');
   const [selectedDisciplines, setSelectedDisciplines] = useState([]);
   const [selectedPackages, setSelectedPackages] = useState([]);
-  const [showAI, setShowAI] = useState(true);
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
@@ -271,17 +269,12 @@ export default function StudyPlanCreate() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-[hsl(var(--mn-muted))] mb-4">
-                Požádejte AI o pomoc s vytvořením studijního plánu a rozpisem úkolů!
-              </p>
-              <Button 
-                onClick={() => setShowAI(!showAI)} 
-                variant="outline" 
-                className="w-full mb-4"
-              >
-                {showAI ? 'Skrýt AI' : 'Otevřít AI chat'}
-              </Button>
-              {showAI && <AICopilotChat agentName="copilot" />}
+              <div className="flex flex-col items-center text-center py-4">
+                <MessageSquare className="w-10 h-10 mb-3 text-[hsl(var(--mn-accent))]" />
+                <p className="text-sm text-[hsl(var(--mn-muted))]">
+                  Použijte plovoucí copilot tlačítko vpravo dole pro AI asistenci s tvorbou studijního plánu.
+                </p>
+              </div>
             </CardContent>
           </Card>
         </div>
