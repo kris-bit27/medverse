@@ -272,7 +272,7 @@ export default function Landing() {
               <Button size="lg" className="bg-[hsl(var(--mn-accent))] hover:bg-[hsl(var(--mn-accent)/0.85)] text-white h-13 px-8 text-base shadow-lg shadow-[hsl(var(--mn-accent)/0.25)]" onClick={() => window.location.href = loginUrl}>
                 Vytvořit účet zdarma <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
-              <p className="text-xs text-[hsl(var(--mn-muted))] mt-4">Bez kreditní karty · Přístup odkudkoliv · 100 AI kreditů na start</p>
+              <p className="text-xs text-[hsl(var(--mn-muted))] mt-4">Přístup odkudkoliv · 100 AI kreditů na start</p>
             </div>
           </div>
         </div>

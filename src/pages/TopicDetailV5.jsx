@@ -90,16 +90,8 @@ function SourcesList({ sources }) {
   );
 }
 
-function AIMetadata({ topic }) {
-  if (!topic.ai_model) return null;
-  const name = topic.ai_model.includes('opus') ? 'Opus 4' : topic.ai_model.includes('sonnet') ? 'Sonnet 4' : topic.ai_model;
-  return (
-    <span className="text-xs text-[hsl(var(--mn-muted))] flex items-center gap-1.5">
-      <Sparkles className="w-3.5 h-3.5 text-[hsl(var(--mn-accent)/0.6)]" />
-      {name}
-      {topic.ai_confidence > 0 && <span>• {Math.round(topic.ai_confidence * 100)}%</span>}
-    </span>
-  );
+function AIMetadata() {
+  return null;
 }
 
 function CopyBtn({ content }) {
