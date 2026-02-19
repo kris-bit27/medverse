@@ -27,6 +27,11 @@ async function callGPT(prompt: string, options: { system?: string; maxTokens?: n
 export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
+  // Admin-only endpoint — requires valid Bearer token with admin/editor role
+  const { requireAdmin } = await import('./_auth.js');
+  const adminId = await requireAdmin(req, res);
+  if (!adminId) return; // 401/403 already sent
+
   try {
     const { topic_id, content_type = 'fulltext' } = req.body || {};
     if (!topic_id) return res.status(400).json({ error: 'Missing topic_id' });

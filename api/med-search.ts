@@ -115,8 +115,9 @@ export default async function handler(req: any, res: any) {
       return res.status(200).json({ articles, query, pubmedQuery });
     }
 
-    // Token check for AI synthesis
-    const userId = req.body?.user_id;
+    // Authenticate user from JWT — never trust user_id from request body
+    const { getOptionalUserId } = await import('./_auth.js');
+    const userId = await getOptionalUserId(req);
     if (userId) {
       try {
         const { checkTokens, deductTokens } = await import('./_token-utils');

@@ -114,7 +114,8 @@ function getUserPrompt(mode: string, ctx: any): string {
 
 // ─── API Clients ────────────────────────────────────────────────
 function getAnthropicClient(): Anthropic {
-  const key = process.env.ANTHROPIC_API_KEY || process.env.VITE_ANTHROPIC_API_KEY;
+  // Never use VITE_ prefixed keys on server — they are exposed to the browser
+  const key = process.env.ANTHROPIC_API_KEY;
   if (!key) throw new Error('Missing ANTHROPIC_API_KEY');
   return new Anthropic({ apiKey: key });
 }
@@ -229,7 +230,21 @@ export default async function handler(req: any, res: any) {
 
     const mode = normalizeMode(parsed.data.mode);
     const ctx = parsed.data.context;
-    const modelKey: ModelKey = parsed.data.model_override || MODE_MODEL_MAP[mode] || 'sonnet';
+
+    // model_override is restricted to admin users only (prevents cost abuse)
+    let modelKey: ModelKey = MODE_MODEL_MAP[mode] || 'sonnet';
+    if (parsed.data.model_override) {
+      const authHeader = req.headers?.authorization;
+      if (authHeader?.startsWith('Bearer ')) {
+        try {
+          const { data } = await supabaseAdmin.auth.getUser(authHeader.replace('Bearer ', ''));
+          const role = data?.user?.app_metadata?.role;
+          if (role === 'admin' || role === 'editor') {
+            modelKey = parsed.data.model_override;
+          }
+        } catch {}
+      }
+    }
     const modelCfg = MODELS[modelKey];
 
     console.log(`[generate-topic] mode=${mode} model=${modelKey} (${modelCfg.id}) title="${ctx.title}"`);

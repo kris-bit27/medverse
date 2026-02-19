@@ -9,20 +9,3 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-console.log('✅ Supabase client initialized:', supabaseUrl);
-
-// Helper pro debugging
-export const testConnection = async () => {
-  try {
-    const { data, error } = await supabase.from('_test').select('*').limit(1);
-    if (error && error.code !== 'PGRST204' && error.code !== '42P01') {
-      throw error;
-    }
-    console.log('✅ Supabase connection OK');
-    return true;
-  } catch (error) {
-    console.error('❌ Supabase connection failed:', error.message);
-    return false;
-  }
-};

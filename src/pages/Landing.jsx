@@ -13,10 +13,10 @@ import {
 const loginUrl = `/login?redirectTo=${encodeURIComponent('/Dashboard')}`;
 
 const stats = [
-  { value: '1 468', label: 'Témat' },
-  { value: '45', label: 'Oborů' },
-  { value: '15 000+', label: 'Kartiček' },
-  { value: '3 400+', label: 'Otázek' },
+  { value: '32', label: 'Témat' },
+  { value: '7', label: 'Oborů' },
+  { value: '88', label: 'Kartiček' },
+  { value: '28', label: 'Nástrojů' },
 ];
 
 const features = [

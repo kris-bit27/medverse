@@ -159,22 +159,6 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
     setIsSaving(true);
 
     try {
-      // ========== DEBUG LOGGING ==========
-      console.group('💾 [SAVE DEBUG]');
-      console.log('Full content length:', content.full_text_content?.length);
-      console.log('First 200 chars:', content.full_text_content?.substring(0, 200));
-      console.log(
-        'Last 200 chars:',
-        content.full_text_content?.substring(
-          Math.max(0, (content.full_text_content?.length || 0) - 200)
-        )
-      );
-
-      // Check for suspicious patterns
-      if (content.full_text_content?.includes('Gold standard\\')) {
-        console.warn('⚠️ Found backslash escape - might be JSON stringified!');
-      }
-
       // Prepare update data
       const updateData = {
         full_text_content: content.full_text_content,
@@ -187,9 +171,6 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         updated_at: new Date().toISOString()
       };
 
-      console.log('Update payload keys:', Object.keys(updateData));
-      console.log('Update payload size (bytes):', JSON.stringify(updateData).length);
-
       // Save to database
       const { error, data } = await supabase
         .from('topics')
@@ -198,43 +179,13 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         .select(); // ← IMPORTANT: Return saved data!
 
       if (error) {
-        console.error('❌ Supabase error:', error);
+        console.error('Supabase save error:', error);
         throw error;
       }
 
-      // Verify what was saved
-      console.log('✅ Save successful!');
-      console.log('Returned data:', data);
-
-      if (data && data[0]) {
-        const saved = data[0];
-        console.log('Saved content length:', saved.full_text_content?.length);
-        console.log(
-          'Saved last 200:',
-          saved.full_text_content?.substring(
-            Math.max(0, (saved.full_text_content?.length || 0) - 200)
-          )
-        );
-
-        // Compare lengths
-        const originalLength = content.full_text_content?.length || 0;
-        const savedLength = saved.full_text_content?.length || 0;
-
-        if (savedLength < originalLength) {
-          console.error('🚨 TRUNCATION DETECTED!');
-          console.error(`Original: ${originalLength} chars`);
-          console.error(`Saved: ${savedLength} chars`);
-          console.error(`Lost: ${originalLength - savedLength} chars`);
-        } else {
-          console.log('✅ Full content saved successfully!');
-        }
-      }
-
-      console.groupEnd();
-
       toast.success('Uloženo!');
     } catch (error) {
-      console.error('❌ Save failed:', error);
+      console.error('Save failed:', error);
       toast.error(`Chyba: ${error.message}`);
     } finally {
       setIsSaving(false);
@@ -243,7 +194,6 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
 
   const handleAIGenerate = async (mode) => {
     setIsGenerating(true);
-    let didOpenDebugGroup = false;
     try {
       // Validace pro high-yield a deep-dive
       if ((mode === 'topic_generate_high_yield' || mode === 'topic_generate_deep_dive') && !content.full_text_content) {
@@ -258,9 +208,6 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         title: topic.title || '',
         full_text: content.full_text_content || ''
       };
-
-      console.log('[Claude] Generuji mód:', mode);
-      console.log('[Claude] Context:', claudeContext);
 
       const response = await fetch('/api/generate-topic', {
         method: 'POST',
@@ -317,19 +264,10 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         }
       };
 
-      // ========== DEBUG LOGGING ==========
-      console.group('🤖 [AI RESPONSE DEBUG]');
-      didOpenDebugGroup = true;
-      console.log('Raw response (parsed):', result);
-      console.log('Raw response text length:', responseText?.length || 0);
-      console.log('Content length:', result?.content?.length);
-
       // Parse JSON content if wrapped in result.content
       if (typeof result?.content === 'string') {
         let textContent = result.content;
-        console.log('Before JSON parse:', textContent.substring(0, 200));
-
-        if (textContent.startsWith('```json')) {
+          if (textContent.startsWith('```json')) {
           textContent = textContent.replace(/^```json\n/, '').replace(/\n```$/, '');
         }
 
@@ -337,8 +275,6 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
           const parsed = JSON.parse(textContent.trim());
           result = { ...result, ...parsed };
           delete result.content;
-          console.log('Parsed full_text length:', parsed.full_text?.length);
-          console.log('Parsed full_text last 200:', parsed.full_text?.slice(-200));
         } catch (parseError) {
           console.error('Parse JSON content failed:', parseError);
         }
@@ -374,7 +310,6 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
       // Aplikuj podle módu
       if (mode === 'topic_generate_fulltext_v2') {
         const fullText = normalizeText(result.full_text || result.text || '');
-        console.log('[Parse] Full text length:', fullText.length);
         setContent(prev => ({ 
           ...prev, 
           full_text_content: fullText,
@@ -388,7 +323,6 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
             ]
           }
         }));
-        console.log('[State] Set content length:', fullText.length);
         // toast handled below
         
       } else if (mode === 'topic_generate_high_yield') {
@@ -442,18 +376,10 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
         toast.warning(`Varování: ${aiMetadata.warnings.join(', ')}`);
       }
 
-      // Zobraz cost
-      if (aiMetadata.metadata.cost?.total) {
-        console.log(`[Claude] Náklady: $${aiMetadata.metadata.cost.total}`);
-      }
-
     } catch (error) {
       console.error('[Claude] Error:', error);
       toast.error('Chyba při generování: ' + error.message);
     } finally {
-      if (didOpenDebugGroup) {
-        console.groupEnd();
-      }
       setIsGenerating(false);
     }
   };
@@ -652,7 +578,6 @@ export default function TopicContentEditorV2({ topic, context, onSave }) {
             specialty={topic.obor?.name || ''}
             mode="topic_generate_fulltext_v2"
             onReviewComplete={(reviewData) => {
-              console.log('Review completed:', reviewData);
               // Můžeš uložit review do state nebo DB
             }}
           />
