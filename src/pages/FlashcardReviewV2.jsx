@@ -71,26 +71,17 @@ export default function FlashcardReviewV2() {
   const { data: dueCards = [], isLoading } = useQuery({
     queryKey: ['dueFlashcards', user?.id],
     queryFn: async () => {
-      console.log('🔍 === FLASHCARD REVIEW QUERY DEBUG ===');
-      console.log('1️⃣ User ID:', user?.id);
-      
       const today = new Date().toISOString().split('T')[0];
-      console.log('2️⃣ Today:', today);
-      
+
       // Get all flashcards (not just with progress tracking)
-      console.log('3️⃣ Querying flashcards table...');
       const { data, error } = await supabase
         .from('flashcards')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(20);
 
-      console.log('4️⃣ Query response - data:', data);
-      console.log('5️⃣ Query response - error:', error);
-      console.log('6️⃣ Number of cards:', data?.length || 0);
-
       if (error) {
-        console.error('❌ Query failed:', error);
+        console.error('Query failed:', error);
         throw error;
       }
       
@@ -104,10 +95,6 @@ export default function FlashcardReviewV2() {
           next_review: today
         }
       })) || [];
-      
-      console.log('7️⃣ Cards with progress:', cardsWithProgress);
-      console.log('8️⃣ Final count:', cardsWithProgress.length);
-      console.log('🏁 === END QUERY DEBUG ===');
       
       return cardsWithProgress;
     },

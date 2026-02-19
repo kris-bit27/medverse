@@ -88,11 +88,6 @@ export default function FlashcardGenerator({ topicId, topicContent }) {
   // Save flashcards mutation
   const saveFlashcards = useMutation({
     mutationFn: async (selectedCards) => {
-      console.log('🚀 === FLASHCARD SAVE DEBUG START ===');
-      console.log('1️⃣ Selected cards:', selectedCards);
-      console.log('2️⃣ Topic ID:', topicId);
-      console.log('3️⃣ User:', user);
-      
       const cardsToInsert = selectedCards.map(card => {
         const mappedCard = {
           topic_id: topicId,
@@ -104,45 +99,29 @@ export default function FlashcardGenerator({ topicId, topicContent }) {
           ai_model: 'pattern-extraction',
           ai_confidence: 0.85
         };
-        console.log('4️⃣ Mapped card:', mappedCard);
         return mappedCard;
       });
-
-      console.log('5️⃣ All cards to insert:', cardsToInsert);
-      console.log('6️⃣ Calling Supabase insert...');
 
       const { data, error } = await supabase
         .from('flashcards')
         .insert(cardsToInsert)
         .select();
 
-      console.log('7️⃣ Supabase response - data:', data);
-      console.log('8️⃣ Supabase response - error:', error);
-
       if (error) {
-        console.error('❌ INSERT FAILED:', error);
-        console.error('   Code:', error.code);
-        console.error('   Message:', error.message);
-        console.error('   Details:', error.details);
-        console.error('   Hint:', error.hint);
+        console.error('Flashcard insert failed:', error);
         throw error;
       }
 
-      console.log('✅ INSERT SUCCESS!');
-      console.log('9️⃣ Inserted data:', data);
-      console.log('🏁 === FLASHCARD SAVE DEBUG END ===');
-      
       return data;
     },
     onSuccess: (data) => {
-      console.log('✅ Save successful, data:', data);
       toast.success(`Uloženo ${data.length} kartiček!`);
       queryClient.invalidateQueries(['flashcards']);
       setGeneratedCards([]); // Clear the list
     },
     onError: (error) => {
-      console.error('❌ Save failed:', error);
-      
+      console.error('Save failed:', error);
+
       if (error.code === '23505') {
         toast.error('Některé kartičky už existují. Zkuste vygenerovat nové.');
       } else {
@@ -154,15 +133,11 @@ export default function FlashcardGenerator({ topicId, topicContent }) {
   const handleSaveAll = () => {
     const approved = generatedCards.filter(card => card.approved !== false);
     
-    console.log('🎯 Approved cards:', approved);
-    console.log('📊 Total cards:', generatedCards.length);
-    
     if (approved.length === 0) {
       toast.error('Vyberte alespoň jednu kartičku ke schválení');
       return;
     }
     
-    console.log('💾 Attempting to save', approved.length, 'cards...');
     saveFlashcards.mutate(approved);
   };
 

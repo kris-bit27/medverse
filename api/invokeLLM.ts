@@ -41,25 +41,29 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    const { prompt, model, temperature, maxTokens, response_json_schema, user_id, operation } = req.body || {};
+    const { prompt, model, temperature, maxTokens, response_json_schema, operation } = req.body || {};
 
     if (!prompt) {
       return res.status(400).json({ error: 'Missing prompt' });
     }
 
-    // Token check (only for non-admin user calls)
-    if (user_id) {
+    // Authenticate user from JWT — never trust user_id from request body
+    const { getOptionalUserId } = await import('./_auth.js');
+    const userId = await getOptionalUserId(req);
+
+    // Token check (only for authenticated users)
+    if (userId) {
       try {
         const { checkTokens, deductTokens } = await import('./_token-utils');
         const op = operation || 'copilot_question';
-        const check = await checkTokens(supabaseAdmin, user_id, op);
+        const check = await checkTokens(supabaseAdmin, userId, op);
         if (!check.allowed) {
           return res.status(402).json({
             error: `Nedostatek AI tokenů. Potřeba: ${check.cost}, zbývá: ${check.remaining}`,
             tokens_remaining: check.remaining,
           });
         }
-        await deductTokens(supabaseAdmin, user_id, op, `LLM: ${prompt.substring(0, 40)}`);
+        await deductTokens(supabaseAdmin, userId, op, `LLM: ${prompt.substring(0, 40)}`);
       } catch (tokenErr: any) {
         console.warn('[invokeLLM] token deduction failed:', tokenErr.message);
       }

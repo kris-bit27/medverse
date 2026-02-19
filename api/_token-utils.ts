@@ -92,20 +92,48 @@ export async function checkTokens(
 }
 
 /**
- * Deduct tokens for an AI operation and log the transaction.
- * Returns updated balance or throws if insufficient.
+ * Atomically deduct tokens using PostgreSQL RPC (SELECT ... FOR UPDATE).
+ * Falls back to non-atomic deduction if RPC is not yet deployed.
  */
 export async function deductTokens(
   supabase: any,
   userId: string,
   operation: string,
   description?: string,
-  metadata?: Record<string, any>
+  _metadata?: Record<string, any>
 ): Promise<{ remaining: number; cost: number }> {
   const cost = getTokenCost(operation);
   if (cost === 0) return { remaining: -1, cost: 0 };
 
-  // Atomic deduction via RPC or direct update
+  // Try atomic RPC first (requires 001_atomic_token_deduction.sql migration)
+  try {
+    const { data, error } = await supabase.rpc('deduct_tokens_atomic', {
+      p_user_id: userId,
+      p_cost: cost,
+      p_operation: operation,
+      p_description: description || operation,
+    });
+
+    if (!error && data && data.length > 0) {
+      const row = data[0];
+      if (!row.allowed) {
+        throw new Error(`Nedostatek tokenu. Potreba: ${cost}, zbyva: ${row.remaining}`);
+      }
+      return { remaining: row.remaining, cost };
+    }
+
+    // If RPC doesn't exist yet, fall through to legacy path
+    if (error?.code === '42883') {
+      // function does not exist — use legacy fallback
+    } else if (error) {
+      throw error;
+    }
+  } catch (rpcErr: any) {
+    if (rpcErr.message?.includes('Nedostatek')) throw rpcErr;
+    // Fall through to legacy path for other errors
+  }
+
+  // Legacy fallback (non-atomic — remove after running migration)
   const { data: tokens, error: fetchErr } = await supabase
     .from('user_tokens')
     .select('current_tokens, total_tokens_used')
@@ -117,12 +145,11 @@ export async function deductTokens(
   }
 
   if (tokens.current_tokens < cost) {
-    throw new Error(`Nedostatek tokenů. Potřeba: ${cost}, zbývá: ${tokens.current_tokens}`);
+    throw new Error(`Nedostatek tokenu. Potreba: ${cost}, zbyva: ${tokens.current_tokens}`);
   }
 
   const newBalance = tokens.current_tokens - cost;
 
-  // Update balance
   const { error: updateErr } = await supabase
     .from('user_tokens')
     .update({
@@ -134,7 +161,6 @@ export async function deductTokens(
 
   if (updateErr) throw updateErr;
 
-  // Log transaction
   try {
     await supabase.from('token_transactions').insert({
       user_id: userId,
@@ -142,10 +168,9 @@ export async function deductTokens(
       type: 'usage',
       description: description || operation,
       related_entity_type: operation,
-      metadata: metadata || {},
     });
   } catch (_) {
-    // Non-critical — don't fail the operation
+    // Non-critical
   }
 
   return { remaining: newBalance, cost };
