@@ -4,7 +4,6 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
 import { createPageUrl } from '../utils';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -211,7 +210,8 @@ export default function TestGeneratorV2() {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
       {/* Header */}
       <div>
-        <h1 className="mn-serif-font text-[28px] font-bold mb-2">Generátor Testů</h1>
+        <span className="mn-caption text-[hsl(var(--mn-accent))]">TESTOVÁNÍ</span>
+        <h1 className="mn-serif-font text-[28px] sm:text-[32px] font-bold mb-2">Generátor Testů</h1>
         <p className="text-[hsl(var(--mn-muted))]">
           Vytvořte si vlastní test podle vašich potřeb
         </p>
@@ -221,16 +221,13 @@ export default function TestGeneratorV2() {
         {/* Left Column - Configuration */}
         <div className="md:col-span-2 space-y-6">
           {/* Step 1: Select Obor */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+          <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+              <div className="flex items-center gap-2 mb-4">
                 <span className="w-8 h-8 rounded-full bg-[hsl(var(--mn-accent)/0.12)] text-[hsl(var(--mn-accent))] flex items-center justify-center font-bold">
                   1
                 </span>
-                Vyberte obor
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+                <h3 className="mn-ui-font font-semibold">Vyberte obor</h3>
+              </div>
               <Select value={selectedObor} onValueChange={handleOborChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="Vyberte obor..." />
@@ -253,30 +250,26 @@ export default function TestGeneratorV2() {
                   ))}
                 </SelectContent>
               </Select>
-            </CardContent>
-          </Card>
+          </div>
 
           {/* Step 2: Select Okruhy */}
           {selectedObor && (
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
+            <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
                     <span className="w-8 h-8 rounded-full bg-[hsl(var(--mn-accent)/0.12)] text-[hsl(var(--mn-accent))] flex items-center justify-center font-bold">
                       2
                     </span>
-                    Vyberte okruhy
-                  </CardTitle>
-                  <Button 
-                    variant="outline" 
+                    <h3 className="mn-ui-font font-semibold">Vyberte okruhy</h3>
+                  </div>
+                  <Button
+                    variant="outline"
                     size="sm"
                     onClick={handleSelectAllOkruhy}
                   >
                     {selectedOkruhy.length === okruhy.length ? 'Zrušit vše' : 'Vybrat vše'}
                   </Button>
                 </div>
-              </CardHeader>
-              <CardContent>
                 {okruhy.length === 0 ? (
                   <p className="text-sm text-[hsl(var(--mn-muted))]">
                     Žádné okruhy k dispozici
@@ -300,31 +293,27 @@ export default function TestGeneratorV2() {
                     ))}
                   </div>
                 )}
-              </CardContent>
-            </Card>
+            </div>
           )}
 
           {/* Step 3: Select Topics */}
           {selectedOkruhy.length > 0 && (
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
+            <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
                     <span className="w-8 h-8 rounded-full bg-[hsl(var(--mn-accent)/0.12)] text-[hsl(var(--mn-accent))] flex items-center justify-center font-bold">
                       3
                     </span>
-                    Vyberte témata
-                  </CardTitle>
-                  <Button 
-                    variant="outline" 
+                    <h3 className="mn-ui-font font-semibold">Vyberte témata</h3>
+                  </div>
+                  <Button
+                    variant="outline"
                     size="sm"
                     onClick={handleSelectAllTopics}
                   >
                     {selectedTopics.length === topics.length ? 'Zrušit vše' : 'Vybrat vše'}
                   </Button>
                 </div>
-              </CardHeader>
-              <CardContent>
                 {topics.length === 0 ? (
                   <p className="text-sm text-[hsl(var(--mn-muted))]">
                     Žádná témata k dispozici pro vybrané okruhy
@@ -348,22 +337,19 @@ export default function TestGeneratorV2() {
                     ))}
                   </div>
                 )}
-              </CardContent>
-            </Card>
+            </div>
           )}
 
           {/* Step 4: Test Settings */}
           {selectedTopics.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+            <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+                <div className="flex items-center gap-2 mb-4">
                   <span className="w-8 h-8 rounded-full bg-[hsl(var(--mn-accent)/0.12)] text-[hsl(var(--mn-accent))] flex items-center justify-center font-bold">
                     4
                   </span>
-                  Nastavení testu
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
+                  <h3 className="mn-ui-font font-semibold">Nastavení testu</h3>
+                </div>
+                <div className="space-y-6">
                 {/* Question Count */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
@@ -438,21 +424,19 @@ export default function TestGeneratorV2() {
                     />
                   </div>
                 )}
-              </CardContent>
-            </Card>
+                </div>
+            </div>
           )}
         </div>
 
         {/* Right Column - Summary */}
         <div className="space-y-6">
-          <Card className="md:sticky md:top-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+          <div className="rounded-2xl p-5 md:sticky md:top-6" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+              <div className="flex items-center gap-2 mb-4">
                 <Settings className="w-5 h-5" />
-                Souhrn
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+                <h3 className="mn-ui-font font-semibold">Souhrn</h3>
+              </div>
+              <div className="space-y-4">
               {/* Selected Items */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
@@ -473,7 +457,7 @@ export default function TestGeneratorV2() {
                 <div className="flex items-center gap-2 text-sm">
                   <Target className="w-4 h-4 text-[hsl(var(--mn-muted))]" />
                   <span className="text-[hsl(var(--mn-muted))]">
-                    {difficulty === 'mixed' ? 'Smíšená obtížnost' : 
+                    {difficulty === 'mixed' ? 'Smíšená obtížnost' :
                      difficulty === 'easy' ? 'Snadné' :
                      difficulty === 'medium' ? 'Střední' : 'Těžké'}
                   </span>
@@ -516,8 +500,8 @@ export default function TestGeneratorV2() {
                   Nedostatek otázek ({availableQuestionsCount}/{questionCount})
                 </p>
               )}
-            </CardContent>
-          </Card>
+              </div>
+          </div>
         </div>
       </div>
     </div>

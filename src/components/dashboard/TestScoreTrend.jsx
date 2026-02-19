@@ -77,7 +77,7 @@ export default function TestScoreTrend() {
             <div className="absolute inset-0 flex items-end justify-between px-1">
               {data.tests.map((t, i) => {
                 const isLast = i === data.tests.length - 1;
-                const color = t.score >= 80 ? '#22c55e' : t.score >= 60 ? '#f59e0b' : 'hsl(var(--mn-danger))';
+                const color = t.score >= 80 ? 'hsl(var(--mn-success))' : t.score >= 60 ? 'hsl(var(--mn-warn))' : 'hsl(var(--mn-danger))';
                 return (
                   <div key={i} className="relative flex-1 flex justify-center" style={{ height: '100%' }}>
                     <div className="absolute rounded-full transition-all" style={{

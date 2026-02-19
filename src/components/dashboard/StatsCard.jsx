@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 export default function StatsCard({ 
@@ -12,7 +11,7 @@ export default function StatsCard({
   className 
 }) {
   return (
-    <Card className={cn("p-6 relative overflow-hidden", className)}>
+    <div className={cn("rounded-2xl p-6 relative overflow-hidden", className)} style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
       <div className="flex items-start justify-between">
         <div className="space-y-1">
           <p className="text-sm font-medium text-[hsl(var(--mn-muted))]">
@@ -41,6 +40,6 @@ export default function StatsCard({
           </div>
         )}
       </div>
-    </Card>
+    </div>
   );
 }

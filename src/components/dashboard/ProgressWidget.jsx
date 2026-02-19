@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 import ProgressRing from '@/components/ui/ProgressRing';
@@ -16,11 +15,11 @@ export default function ProgressWidget({
     : 0;
 
   return (
-    <Card>
-      <CardHeader className="pb-4">
-        <CardTitle className="text-lg">{title}</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+      <div className="p-5 pb-4">
+        <h3 className="mn-ui-font font-semibold text-lg">{title}</h3>
+      </div>
+      <div className="px-5 pb-5 space-y-6">
         {/* Overall progress ring */}
         <div className="flex items-center justify-center">
           <ProgressRing progress={overallProgress} size={140} strokeWidth={10}>
@@ -58,7 +57,7 @@ export default function ProgressWidget({
             );
           })}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

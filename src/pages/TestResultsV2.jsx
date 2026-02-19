@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
 import { createPageUrl } from '../utils';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -70,15 +70,15 @@ export default function TestResultsV2() {
   if (!session) {
     return (
       <div className="max-w-2xl mx-auto p-6">
-        <Card>
-          <CardContent className="p-12 text-center">
+        <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+          <div className="p-12 text-center">
             <AlertCircle className="w-16 h-16 mx-auto mb-4 text-[hsl(var(--mn-danger))]" />
             <h2 className="text-2xl font-bold mb-2">Výsledky nenalezeny</h2>
             <Button onClick={() => navigate(createPageUrl('Dashboard'))}>
               Zpět na Dashboard
             </Button>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     );
   }
@@ -97,7 +97,7 @@ export default function TestResultsV2() {
   const getGradeColor = (score) => {
     if (score >= 90) return 'text-[hsl(var(--mn-success))]';
     if (score >= 75) return 'text-[hsl(var(--mn-accent-2))]';
-    if (score >= 60) return 'text-yellow-600';
+    if (score >= 60) return 'text-[hsl(var(--mn-warn))]';
     return 'text-[hsl(var(--mn-danger))]';
   };
 
@@ -141,28 +141,28 @@ export default function TestResultsV2() {
     <div className="max-w-6xl mx-auto p-6 space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
+        <p className="mn-caption text-xs tracking-widest uppercase text-[hsl(var(--mn-muted))]">VÝSLEDKY TESTU</p>
         <Trophy className={`w-16 h-16 mx-auto ${getGradeColor(score)}`} />
-        <h1 className="mn-mono-font text-4xl font-bold">{getGradeText(score)}</h1>
+        <h1 className="mn-serif-font text-[28px] sm:text-[32px] font-bold">{getGradeText(score)}</h1>
         <p className="text-[hsl(var(--mn-muted))]">Test dokončen</p>
       </div>
 
       {/* Score Card */}
-      <Card className="border-2">
-        <CardContent className="p-8 text-center">
-          <div className="text-6xl font-bold mb-2 ${getGradeColor(score)}">
+      <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="p-8 text-center">
+          <div className={`mn-mono-font text-6xl font-bold mb-2 ${getGradeColor(score)}`}>
             {score.toFixed(1)}%
           </div>
           <p className="text-[hsl(var(--mn-muted))] mb-6">
-            {correctAnswers} z {totalQuestions} správně
+            <span className="mn-mono-font">{correctAnswers}</span> z <span className="mn-mono-font">{totalQuestions}</span> správně
           </p>
           <Progress value={score} className="h-3 mb-4" />
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Stats Grid */}
       <div className="grid md:grid-cols-3 gap-4">
-        <Card>
-          <CardContent className="p-6">
+        <div className="rounded-2xl p-5 hover:-translate-y-0.5 transition-all" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-[hsl(var(--mn-muted))]">Správně</p>
@@ -170,11 +170,9 @@ export default function TestResultsV2() {
               </div>
               <CheckCircle2 className="w-12 h-12 text-[hsl(var(--mn-success))]" />
             </div>
-          </CardContent>
-        </Card>
+        </div>
 
-        <Card>
-          <CardContent className="p-6">
+        <div className="rounded-2xl p-5 hover:-translate-y-0.5 transition-all" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-[hsl(var(--mn-muted))]">Špatně</p>
@@ -182,11 +180,9 @@ export default function TestResultsV2() {
               </div>
               <XCircle className="w-12 h-12 text-[hsl(var(--mn-danger))]" />
             </div>
-          </CardContent>
-        </Card>
+        </div>
 
-        <Card>
-          <CardContent className="p-6">
+        <div className="rounded-2xl p-5 hover:-translate-y-0.5 transition-all" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-[hsl(var(--mn-muted))]">Čas</p>
@@ -194,43 +190,35 @@ export default function TestResultsV2() {
               </div>
               <Clock className="w-12 h-12 text-[hsl(var(--mn-muted))]" />
             </div>
-          </CardContent>
-        </Card>
+        </div>
       </div>
 
       {/* Weak Topics */}
       {weakTopics.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5" />
-              Témata k zlepšení
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {weakTopics.map((topic) => (
-                <div key={topic.id} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">{topic.topicName}</span>
-                    <Badge variant="outline">
-                      {topic.correct}/{topic.total} ({topic.percentage.toFixed(0)}%)
-                    </Badge>
-                  </div>
-                  <Progress value={topic.percentage} className="h-2" />
+        <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+          <div className="flex items-center gap-2 font-semibold text-lg mb-4">
+            <TrendingUp className="w-5 h-5" />
+            Témata k zlepšení
+          </div>
+          <div className="space-y-4">
+            {weakTopics.map((topic) => (
+              <div key={topic.id} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-medium">{topic.topicName}</span>
+                  <Badge variant="outline">
+                    <span className="mn-mono-font">{topic.correct}/{topic.total}</span> (<span className="mn-mono-font">{topic.percentage.toFixed(0)}</span>%)
+                  </Badge>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                <Progress value={topic.percentage} className="h-2" />
+              </div>
+            ))}
+          </div>
+        </div>
       )}
 
       {/* Question Review */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Přehled odpovědí</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="font-semibold text-lg mb-4">Přehled odpovědí</div>
           <div className="space-y-4">
             {answers.map((answer, idx) => (
               <div
@@ -252,7 +240,7 @@ export default function TestResultsV2() {
 
                   <div className="flex-1">
                     <p className="font-medium mb-2">
-                      {idx + 1}. {answer.questions?.question_text}
+                      <span className="mn-mono-font">{idx + 1}</span>. {answer.questions?.question_text}
                     </p>
 
                     {!answer.is_correct && (
@@ -272,8 +260,7 @@ export default function TestResultsV2() {
               </div>
             ))}
           </div>
-        </CardContent>
-      </Card>
+      </div>
 
       {/* Actions */}
       <div className="flex items-center justify-center gap-4">

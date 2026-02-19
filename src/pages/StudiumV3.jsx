@@ -4,7 +4,6 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -337,11 +336,8 @@ export default function StudiumV3() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="w-2 h-2 rounded-full bg-[hsl(var(--mn-accent))]" />
-              
-              <h1 className="mn-serif-font text-[28px] font-bold text-[hsl(var(--mn-text))] tracking-tight">Studium</h1>
-            </div>
+            <span className="mn-caption text-[hsl(var(--mn-accent))]">STUDIUM</span>
+            <h1 className="mn-serif-font text-[28px] sm:text-[32px] font-bold text-[hsl(var(--mn-text))] tracking-tight mt-1">Studium</h1>
             <p className="text-sm text-[hsl(var(--mn-muted))]">
               {stats.total} témat • {stats.withFulltext} s plným textem • {stats.oboryCount} oborů
             </p>

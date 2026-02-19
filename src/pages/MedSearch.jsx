@@ -3,7 +3,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
 import { callApi } from '@/lib/api';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -30,8 +29,7 @@ const EXAMPLE_QUERIES = [
 function ArticleCard({ article, index }) {
   const [expanded, setExpanded] = useState(false);
   return (
-    <Card className="overflow-hidden">
-      <CardContent className="p-4">
+    <div className="rounded-2xl overflow-hidden p-4" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
         <div className="flex items-start gap-3">
           <div className="w-6 h-6 rounded-md bg-[hsl(var(--mn-accent)/0.1)] flex items-center justify-center text-xs font-bold text-[hsl(var(--mn-accent))] shrink-0 mt-0.5">
             {index + 1}
@@ -42,7 +40,7 @@ function ArticleCard({ article, index }) {
               {article.title}
               <ExternalLink className="w-3 h-3 shrink-0 mt-0.5 opacity-40" />
             </a>
-            
+
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 text-xs text-[hsl(var(--mn-muted))]">
               {article.authors && (
                 <span className="flex items-center gap-1">
@@ -86,8 +84,7 @@ function ArticleCard({ article, index }) {
             )}
           </div>
         </div>
-      </CardContent>
-    </Card>
+    </div>
   );
 }
 
@@ -180,11 +177,12 @@ export default function MedSearch() {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-6">
       {/* Header */}
       <div className="text-center space-y-3 pt-4">
+        <span className="mn-caption text-[hsl(var(--mn-accent))]">VYHLEDÁVÁNÍ</span>
         <div className="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))] flex items-center justify-center shadow-lg">
           <Microscope className="w-7 h-7 text-white" />
         </div>
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-[hsl(var(--mn-text))]">
+          <h1 className="mn-serif-font text-[28px] sm:text-[32px] font-bold text-[hsl(var(--mn-text))]">
             Medicínské vyhledávání
           </h1>
           <p className="text-[hsl(var(--mn-muted))] mt-1">
@@ -251,13 +249,11 @@ export default function MedSearch() {
               { icon: Brain, title: 'AI syntéza', desc: 'Claude analyzuje abstrakta a vytvoří odpověď s citacemi' },
               { icon: FileText, title: 'Citace', desc: 'Každé tvrzení odkazuje na konkrétní PubMed článek' },
             ].map(({ icon: Icon, title, desc }, i) => (
-              <Card key={i}>
-                <CardContent className="p-4 text-center">
+              <div key={i} className="rounded-2xl p-4 text-center" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
                   <Icon className="w-6 h-6 text-[hsl(var(--mn-accent))] mx-auto mb-2" />
                   <p className="text-sm font-medium text-[hsl(var(--mn-text))]">{title}</p>
                   <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">{desc}</p>
-                </CardContent>
-              </Card>
+              </div>
             ))}
           </div>
         </div>
@@ -280,8 +276,7 @@ export default function MedSearch() {
 
       {/* Error */}
       {searchMutation.isError && (
-        <Card className="border-[hsl(var(--mn-danger)/0.3)]">
-          <CardContent className="p-4 flex items-center gap-3">
+        <div className="rounded-2xl p-4 flex items-center gap-3" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-danger) / 0.3)' }}>
             <AlertTriangle className="w-5 h-5 text-[hsl(var(--mn-danger))] shrink-0" />
             <div>
               <p className="text-sm font-medium text-[hsl(var(--mn-text))]">Chyba při vyhledávání</p>
@@ -290,8 +285,7 @@ export default function MedSearch() {
             <Button variant="outline" size="sm" onClick={() => handleSearch(null, 'answer')} className="ml-auto gap-1.5">
               <RotateCcw className="w-3 h-3" /> Zkusit znovu
             </Button>
-          </CardContent>
-        </Card>
+        </div>
       )}
 
       {/* Results */}
@@ -333,8 +327,7 @@ export default function MedSearch() {
 
           {/* AI Answer */}
           {(activeTab === 'answer' && answer) && (
-            <Card>
-              <CardContent className="p-5">
+            <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-7 h-7 rounded-xl bg-[hsl(var(--mn-accent)/0.1)] flex items-center justify-center">
                     <Sparkles className="w-4 h-4 text-[hsl(var(--mn-accent))]" />
@@ -387,8 +380,7 @@ export default function MedSearch() {
                     ))}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+            </div>
           )}
 
           {/* Articles list */}

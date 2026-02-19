@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { RefreshCw, ArrowRight, CheckCircle2 } from 'lucide-react';
 import ProgressRing from '@/components/ui/ProgressRing';
@@ -15,8 +14,8 @@ export default function ReviewQueueWidget({
   const isComplete = completedToday >= dailyGoal;
 
   return (
-    <Card className={`relative overflow-hidden ${isComplete ? 'bg-gradient-to-br from-[hsl(var(--mn-success)/0.06)] to-[hsl(var(--mn-accent)/0.06)]' : ''}`}>
-      <CardContent className="p-6">
+    <div className={`rounded-2xl relative overflow-hidden ${isComplete ? 'bg-gradient-to-br from-[hsl(var(--mn-success)/0.06)] to-[hsl(var(--mn-accent)/0.06)]' : ''}`} style={{ background: isComplete ? undefined : 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+      <div className="p-6">
         <div className="flex items-center gap-6">
           <ProgressRing progress={progress} size={100} strokeWidth={8}>
             {isComplete ? (
@@ -55,7 +54,7 @@ export default function ReviewQueueWidget({
             )}
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

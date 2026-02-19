@@ -5,7 +5,6 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
 import { callApi } from '@/lib/api';
-import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -23,11 +22,11 @@ import ReactMarkdown from 'react-markdown';
 // ─── DISCLAIMER ───
 function Disclaimer() {
   return (
-    <div className="rounded-xl border-2 border-amber-500/30 bg-amber-500/5 p-4 mb-6">
+    <div className="rounded-xl border-2 p-4 mb-6" style={{ borderColor: 'hsl(var(--mn-warn) / 0.3)', background: 'hsl(var(--mn-warn) / 0.05)' }}>
       <div className="flex items-start gap-2.5">
-        <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+        <AlertTriangle className="w-5 h-5 text-[hsl(var(--mn-warn))] flex-shrink-0 mt-0.5" />
         <div>
-          <h3 className="text-sm font-bold text-amber-500">UPOZORNĚNÍ — Decision Support Tool</h3>
+          <h3 className="text-sm font-bold text-[hsl(var(--mn-warn))]">UPOZORNĚNÍ — Decision Support Tool</h3>
           <p className="text-xs text-[hsl(var(--mn-muted))] mt-1 leading-relaxed">
             Tento nástroj slouží <strong>výhradně</strong> jako podpora klinického rozhodování a vzdělávání.
             Výstupy AI vyžadují vždy ověření lékařem a <strong>neslouží jako doporučení pro léčbu</strong>.
@@ -44,8 +43,8 @@ function ResultCard({ result, mode }) {
   if (!result) return null;
 
   return (
-    <Card className="mt-6 border-2 border-[hsl(var(--mn-accent)/0.2)]">
-      <CardContent className="p-5">
+    <div className="rounded-2xl mt-6 border-2 border-[hsl(var(--mn-accent)/0.2)]" style={{ background: 'hsl(var(--mn-surface))' }}>
+      <div className="p-5">
         <div className="flex items-center gap-2 mb-3">
           <Sparkles className="w-4 h-4 text-[hsl(var(--mn-accent))]" />
           <span className="mn-ui-font text-sm font-semibold">
@@ -55,8 +54,8 @@ function ResultCard({ result, mode }) {
         <div className="prose prose-sm prose-invert max-w-none text-sm text-[hsl(var(--mn-muted))] [&_h1]:text-base [&_h1]:font-bold [&_h1]:text-[hsl(var(--mn-text))] [&_h2]:text-sm [&_h2]:font-bold [&_h2]:text-[hsl(var(--mn-text))] [&_h3]:text-sm [&_h3]:font-semibold [&_h3]:text-[hsl(var(--mn-text))] [&_strong]:text-[hsl(var(--mn-text))] [&_li]:text-sm [&_p]:text-sm [&_ul]:my-2 [&_ol]:my-2 [&_li]:my-0.5">
           <ReactMarkdown>{result}</ReactMarkdown>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
 
@@ -332,7 +331,7 @@ Pokud nenajdeš žádné interakce, uveď to jasně.`
                 className="flex-1"
               />
               {drugInputs.length > 2 && (
-                <button onClick={() => removeDrug(i)} className="text-[hsl(var(--mn-muted))] hover:text-red-500 transition-colors">
+                <button onClick={() => removeDrug(i)} className="text-[hsl(var(--mn-muted))] hover:text-[hsl(var(--mn-danger))] transition-colors">
                   <X className="w-4 h-4" />
                 </button>
               )}
@@ -377,9 +376,9 @@ export default function AIConsultant() {
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-2">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[color-mix(in_srgb,#f59e0b_15%,transparent)]">
-            <Bot className="w-4 h-4 text-amber-500" />
+            <Bot className="w-4 h-4 text-[hsl(var(--mn-warn))]" />
           </div>
-          <span className="mn-caption text-amber-500">AI KONZULTANT · BETA</span>
+          <span className="mn-caption text-[hsl(var(--mn-warn))]">AI KONZULTANT · BETA</span>
         </div>
         <h1 className="mn-serif-font text-[24px] sm:text-[28px] font-bold">AI Konzultant</h1>
         <p className="text-[hsl(var(--mn-muted))] text-sm mt-1">

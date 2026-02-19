@@ -3,7 +3,6 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
-import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
@@ -178,56 +177,56 @@ export default function DrugDatabaseV2() {
           {/* TAB: Overview */}
           <TabsContent value="overview" className="space-y-4">
             {d.mechanism && (
-              <Card>
-                <CardContent className="p-4">
+              <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+                <div className="p-4">
                   <h3 className="mn-ui-font text-sm font-semibold mb-2 text-[hsl(var(--mn-accent))]">Mechanismus účinku</h3>
                   <p className="text-sm text-[hsl(var(--mn-muted))]">{d.mechanism}</p>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
             {d.indication && (
-              <Card>
-                <CardContent className="p-4">
-                  <h3 className="mn-ui-font text-sm font-semibold mb-2 text-green-500">Indikace</h3>
+              <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+                <div className="p-4">
+                  <h3 className="mn-ui-font text-sm font-semibold mb-2 text-[hsl(var(--mn-success))]">Indikace</h3>
                   <p className="text-sm text-[hsl(var(--mn-muted))]">{d.indication}</p>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
             {d.contraindications && (
-              <Card>
-                <CardContent className="p-4">
-                  <h3 className="mn-ui-font text-sm font-semibold mb-2 text-red-500 flex items-center gap-1.5">
+              <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+                <div className="p-4">
+                  <h3 className="mn-ui-font text-sm font-semibold mb-2 text-[hsl(var(--mn-danger))] flex items-center gap-1.5">
                     <AlertTriangle className="w-3.5 h-3.5" /> Kontraindikace
                   </h3>
                   <p className="text-sm text-[hsl(var(--mn-muted))]">{d.contraindications}</p>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
             {d.warnings && (
-              <Card>
-                <CardContent className="p-4">
-                  <h3 className="mn-ui-font text-sm font-semibold mb-2 text-amber-500 flex items-center gap-1.5">
+              <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+                <div className="p-4">
+                  <h3 className="mn-ui-font text-sm font-semibold mb-2 text-[hsl(var(--mn-warn))] flex items-center gap-1.5">
                     <AlertTriangle className="w-3.5 h-3.5" /> Upozornění
                   </h3>
                   <p className="text-sm text-[hsl(var(--mn-muted))]">{d.warnings}</p>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
             {(d.side_effects?.length > 0) && (
-              <Card>
-                <CardContent className="p-4">
+              <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+                <div className="p-4">
                   <h3 className="mn-ui-font text-sm font-semibold mb-2">Nežádoucí účinky</h3>
                   <div className="flex flex-wrap gap-1.5">
                     {d.side_effects.map((se, i) => (
                       <span key={i} className="text-xs px-2 py-1 rounded-full bg-[hsl(var(--mn-surface))] text-[hsl(var(--mn-muted))]">{se}</span>
                     ))}
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
             {Object.keys(specPop).length > 0 && (
-              <Card>
-                <CardContent className="p-4">
+              <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+                <div className="p-4">
                   <h3 className="mn-ui-font text-sm font-semibold mb-2">Speciální populace</h3>
                   <div className="space-y-2">
                     {Object.entries(specPop).map(([key, val]) => {
@@ -240,15 +239,15 @@ export default function DrugDatabaseV2() {
                       );
                     })}
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
           </TabsContent>
 
           {/* TAB: Dosing */}
           <TabsContent value="dosing" className="space-y-4">
-            <Card>
-              <CardContent className="p-4">
+            <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+              <div className="p-4">
                 <h3 className="mn-ui-font text-sm font-semibold mb-3">Dávkování</h3>
                 <div className="space-y-3">
                   {Object.entries(dosage).map(([key, val]) => {
@@ -284,12 +283,12 @@ export default function DrugDatabaseV2() {
                     );
                   })}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {Object.keys(monitoring).length > 0 && (
-              <Card>
-                <CardContent className="p-4">
+              <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+                <div className="p-4">
                   <h3 className="mn-ui-font text-sm font-semibold mb-2">Monitoring</h3>
                   {monitoring.parameters && (
                     <div className="flex flex-wrap gap-1.5 mb-2">
@@ -301,8 +300,8 @@ export default function DrugDatabaseV2() {
                   {monitoring.frequency && (
                     <p className="text-sm text-[hsl(var(--mn-muted))]">{monitoring.frequency}</p>
                   )}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
           </TabsContent>
 
@@ -317,8 +316,8 @@ export default function DrugDatabaseV2() {
               };
               const sev = sevColors[int.severity] || sevColors['střední'];
               return (
-                <Card key={i} className="border" style={{ borderColor: sev.border }}>
-                  <CardContent className="p-4">
+                <div key={i} className="rounded-2xl border" style={{ borderColor: sev.border, background: 'hsl(var(--mn-surface))' }}>
+                  <div className="p-4">
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="text-sm font-semibold">{int.drug}</span>
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: sev.bg, color: sev.text }}>
@@ -326,8 +325,8 @@ export default function DrugDatabaseV2() {
                       </span>
                     </div>
                     <p className="text-sm text-[hsl(var(--mn-muted))]">{int.effect}</p>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               );
             }) : (
               <p className="text-sm text-[hsl(var(--mn-muted))] text-center py-8">Žádné významné interakce zaznamenány</p>
@@ -338,7 +337,7 @@ export default function DrugDatabaseV2() {
           <TabsContent value="pearls" className="space-y-3">
             {pearls.length > 0 ? pearls.map((p, i) => (
               <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-[hsl(var(--mn-surface-2))] border border-[hsl(var(--mn-border))]">
-                <span className="text-amber-500 mt-0.5 flex-shrink-0 text-lg">💎</span>
+                <span className="text-[hsl(var(--mn-warn))] mt-0.5 flex-shrink-0 text-lg">💎</span>
                 <p className="text-sm text-[hsl(var(--mn-muted))]">{p}</p>
               </div>
             )) : (
@@ -371,7 +370,7 @@ export default function DrugDatabaseV2() {
           <ArrowLeft className="w-4 h-4" />
           Klinické nástroje
         </Link>
-        <span className="mn-caption text-[#a855f7]">LÉKOVÝ PRŮVODCE</span>
+        <span className="mn-caption text-[hsl(var(--mn-secondary))]">LÉKOVÝ PRŮVODCE</span>
         <h1 className="mn-serif-font text-[28px] sm:text-[32px] font-bold mt-1">Léky</h1>
         <p className="text-[hsl(var(--mn-muted))] mt-2">
           {drugs.length} léků · Study-oriented karty s klinickými perlami
@@ -446,7 +445,7 @@ export default function DrugDatabaseV2() {
                             <span className="text-[10px] mn-mono-font px-1.5 py-0.5 rounded bg-[hsl(var(--mn-surface))] text-[hsl(var(--mn-muted))]">{drug.atc_code}</span>
                           )}
                           {drug.is_featured && (
-                            <span className="text-[10px] text-amber-500 flex items-center gap-0.5">
+                            <span className="text-[10px] text-[hsl(var(--mn-warn))] flex items-center gap-0.5">
                               <Sparkles className="w-3 h-3" /> Klíčový
                             </span>
                           )}
