@@ -57,10 +57,10 @@ export default function TestSession() {
         .select('*, topics:topic_id(title)')
         .in('topic_id', session.topic_ids);
       
-      // Filter by difficulty if specified
+      // Filter by difficulty if specified (AI generates difficulty 1-3)
       if (session.difficulty && session.difficulty !== 'mixed') {
-        const diffMap = { easy: [1, 2], medium: [3], hard: [4, 5] };
-        const levels = diffMap[session.difficulty] || [1, 2, 3, 4, 5];
+        const diffMap = { easy: [1], medium: [2], hard: [3] };
+        const levels = diffMap[session.difficulty] || [1, 2, 3];
         query = query.in('difficulty', levels);
       }
       
@@ -302,7 +302,7 @@ export default function TestSession() {
                   {currentQuestion.topics?.title?.substring(0, 40)}
                 </Badge>
                 <Badge variant="outline" className="text-xs shrink-0">
-                  Obtížnost {currentQuestion.difficulty || '?'}/5
+                  Obtížnost {currentQuestion.difficulty || '?'}/3
                 </Badge>
               </div>
               <p className="text-lg font-medium leading-relaxed mt-4">

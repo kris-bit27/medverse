@@ -29,7 +29,7 @@ interface QueueItem {
 }
 
 // Pipeline: each mode depends on previous
-const PIPELINE_ORDER = ['fulltext', 'high_yield', 'flashcards'];
+const PIPELINE_ORDER = ['fulltext', 'high_yield', 'flashcards', 'mcq'];
 
 async function callGenerateTopic(mode: string, context: any, authHeader?: string) {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
@@ -138,13 +138,14 @@ async function processQueueItem(item: QueueItem, authHeader?: string) {
         topic_id: topic.id,
         question_text: q.question_text,
         question_type: 'multiple_choice',
-        correct_answer: JSON.stringify({
-          answer: q.correct_answer,
-          options: q.options,
-        }),
+        options: q.options,
+        correct_answer: q.correct_answer,
         explanation: q.explanation,
         difficulty: q.difficulty || 2,
         tags: q.tags || [],
+        ai_generated: true,
+        ai_model: result.metadata?.model || 'claude-sonnet-4',
+        ai_confidence: result.confidence || 0.85,
       }));
 
       if (questions.length > 0) {

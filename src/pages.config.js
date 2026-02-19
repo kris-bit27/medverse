@@ -81,7 +81,7 @@ export const PAGES = {
 
   // === Search ===
   "Search":             L(() => import('./pages/Search')),
-  "ScholarSearch":      L(() => import('./pages/ScholarSearch')),
+  "ScholarSearch":      L(() => import('./pages/MedSearch')),       // consolidated → MedSearch
   "MedSearch":          L(() => import('./pages/MedSearch')),
 
   // === Articles (redirected to MedSearch) ===

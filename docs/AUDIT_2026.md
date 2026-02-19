@@ -37,15 +37,15 @@
 |---------|---------|----------|
 | **Studium/StudiumV2** | Zobrazuje obory→okruhy→témata, ale 14/32 témat nemá obsah | HIGH — potřebuje content pipeline (1.3) |
 | **FlashcardGenerator** | Generuje kartičky přes AI, ale jen pro témata s obsahem | MEDIUM — závisí na obsahu |
-| **TestGenerator → TestSession** | Kód migrován na Supabase, ale 0 questions v DB | HIGH — potřebuje questions |
-| **TestResults/TestResultsV2** | Hotové UI, ale žádná data k zobrazení | depends on above |
+| ~~**TestGenerator → TestSession**~~ | ✅ MCQ pipeline opraven: `correct_answer` storage bug, `options` field, `mcq` přidán do PIPELINE_ORDER, difficulty mapping 1-3 | ~~HIGH~~ DONE |
+| **TestResults/TestResultsV2** | Hotové UI, čeká na data z MCQ pipeline | depends on content pipeline |
 | ~~**ClinicalCalculators**~~ | ✅ V2 s dynamickým loadem z DB, V1 archivován | ~~LOW~~ DONE |
 | ~~**DrugDatabase**~~ | ✅ V2 s 15+ kategoriemi, taby, interakcemi. V1 archivován | ~~LOW~~ DONE |
 | ~~**ClinicalGuidelines**~~ | ✅ ClinicalAlgorithmsV2 s interaktivními decision trees. V1 archivován | ~~LOW~~ DONE |
 | ~~**Articles/ArticleDetail**~~ | ✅ Přesměrováno na MedSearch, redirect stuby archivovány | ~~MEDIUM~~ DONE |
 | ~~**StudyPackages**~~ | ✅ Ověřeno — plně funkční CRUD + AI generace přes study-set-generate | ~~MEDIUM~~ DONE |
 | ~~**StudyPlanAI**~~ | ✅ Opraven chybějící import `callApi`, flow funkční | ~~MEDIUM~~ DONE |
-| **ScholarSearch** | Akademické vyhledávání přes LLM | LOW |
+| ~~**ScholarSearch**~~ | ✅ Redirect stub archivován, router → MedSearch | ~~LOW~~ DONE |
 
 ### ❌ NEFUNKČNÍ / MRTVÝ KÓD
 | Feature | Problém | Akce |
@@ -66,7 +66,7 @@
 ### Must-Have (MVP)
 1. ~~**Page dedup**~~ ✅ — 6 duplicitních stránek archivováno — `7272998`
 2. **Content** — 32 témat, ale jen 1 published s kartičkami. Potřeba: AI pipeline pro bulk generaci
-3. **Questions/MCQ** — 0 otázek v DB. Potřeba: MCQ generátor nebo import
+3. ~~**Questions/MCQ**~~ ✅ — MCQ pipeline opraven: `mcq` v PIPELINE_ORDER, `correct_answer`/`options` bug fix, difficulty 1-3 mapping
 4. ~~**User onboarding**~~ ✅ — OnboardingWizard (4 kroky: jméno → role → obor → start) — `3e69f9f`
 5. ~~**Mobile responsiveness**~~ ✅ — verified + padding fixes — `3e69f9f`
 
