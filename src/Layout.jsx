@@ -256,7 +256,7 @@ export default function Layout({ children, currentPageName }) {
               // Regular nav items
               const isActive = currentPageName === item.page ||
                 (item.page === 'StudiumV2' && ['Okruhy', 'OkruhDetail', 'QuestionDetail', 'TestGenerator', 'TopicDetail', 'TopicDetailV2', 'Studium'].includes(currentPageName)) ||
-                (item.page === 'AcademyDashboard' && ['AcademyDashboard', 'AcademyLevel', 'AcademyCourse', 'AcademyLesson', 'AcademySandbox', 'AcademyCertificates'].includes(currentPageName)) ||
+                (item.page === 'AcademyDashboard' && ['AcademyDashboard', 'AcademyLevel', 'AcademyCourse', 'AcademyLesson', 'AcademySandbox', 'AcademyCertificates', 'AcademyBuilder', 'BuilderDashboard', 'AcademyPromptLibrary'].includes(currentPageName)) ||
                 (item.page === 'Community' && ['Community', 'Forum', 'ForumThread', 'StudyGroup', 'StudyGroups'].includes(currentPageName)) ||
                 (item.page === 'StudyPackages' && ['StudyPackages', 'StudyPackageCreate', 'StudyPackageDetail'].includes(currentPageName)) ||
                 (item.page === 'StudyPlanner' && ['StudyPlanner', 'StudyPlanCreate', 'StudyPlanDetail'].includes(currentPageName));

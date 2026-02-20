@@ -25,11 +25,20 @@ import {
   Clock,
   Award,
   BookOpen,
+  Rocket,
 } from 'lucide-react';
 
 export default function AcademyDashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [selectedTrack, setSelectedTrack] = React.useState(
+    () => localStorage.getItem('academy_track') || 'clinician'
+  );
+
+  const handleTrackChange = (track) => {
+    setSelectedTrack(track);
+    localStorage.setItem('academy_track', track);
+  };
 
   const { data: profile, isLoading: profileLoading } = useAcademyProfile(user?.id);
   const { data: courseProgress = [], isLoading: cpLoading } = useAcademyCourseProgress(user?.id);
@@ -41,14 +50,19 @@ export default function AcademyDashboard() {
   const academyLevel = profile?.academy_level || 1;
   const academyXp = profile?.academy_xp || 0;
 
+  // Filter courses by selected track (null track = show always)
+  const trackCourses = allCourses.filter(
+    (c) => !c.track || c.track === selectedTrack
+  );
+
   // Determine which levels are unlocked
   const levelCompletionMap = {};
   for (let l = 1; l <= 4; l++) {
     const coursesInLevel = courseProgress.filter((cp) => {
-      const course = allCourses.find((c) => c.id === cp.course_id);
+      const course = trackCourses.find((c) => c.id === cp.course_id);
       return course?.level === l;
     });
-    const total = allCourses.filter((c) => c.level === l).length;
+    const total = trackCourses.filter((c) => c.level === l).length;
     const completed = coursesInLevel.filter(
       (cp) => cp.completed_lessons === cp.total_lessons && cp.total_lessons > 0
     ).length;
@@ -101,6 +115,27 @@ export default function AcademyDashboard() {
           </div>
           <div className="text-xs text-[hsl(var(--mn-muted))]">XP</div>
         </div>
+      </div>
+
+      {/* Track Selector */}
+      <div className="flex items-center gap-2">
+        <span className="text-sm text-[hsl(var(--mn-muted))]">Track:</span>
+        {[
+          { value: 'clinician', label: 'Clinician', icon: '🩺' },
+          { value: 'research', label: 'Research', icon: '🔬' },
+        ].map((t) => (
+          <button
+            key={t.value}
+            onClick={() => handleTrackChange(t.value)}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+              selectedTrack === t.value
+                ? 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/30'
+                : 'bg-[hsl(var(--mn-surface-2))] text-[hsl(var(--mn-muted))] border border-transparent hover:border-[hsl(var(--mn-border))]'
+            }`}
+          >
+            {t.icon} {t.label}
+          </button>
+        ))}
       </div>
 
       {/* 7-Minute Drill CTA */}
@@ -336,6 +371,41 @@ export default function AcademyDashboard() {
           )}
         </div>
       )}
+
+      {/* Quick Links: Prompt Library + Builder Program */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Link to={createPageUrl('AcademyPromptLibrary')}>
+          <Card className="cursor-pointer hover:shadow-md transition-all h-full">
+            <CardContent className="p-5 flex items-center gap-4">
+              <span className="text-3xl">📋</span>
+              <div>
+                <h3 className="font-semibold">Knihovna promptů</h3>
+                <p className="text-sm text-[hsl(var(--mn-muted))]">
+                  Připravené šablony pro klinickou praxi
+                </p>
+              </div>
+              <ArrowRight className="w-4 h-4 ml-auto text-[hsl(var(--mn-muted))]" />
+            </CardContent>
+          </Card>
+        </Link>
+        <Link to={createPageUrl('AcademyBuilder')}>
+          <Card className="cursor-pointer hover:shadow-md transition-all h-full">
+            <CardContent className="p-5 flex items-center gap-4">
+              <Rocket className="w-8 h-8 text-pink-500" />
+              <div>
+                <h3 className="font-semibold flex items-center gap-2">
+                  Builder Program
+                  <Badge className="bg-pink-500/10 text-pink-500 border-0 text-[10px]">Level 4</Badge>
+                </h3>
+                <p className="text-sm text-[hsl(var(--mn-muted))]">
+                  Staňte se contributorem platformy
+                </p>
+              </div>
+              <ArrowRight className="w-4 h-4 ml-auto text-[hsl(var(--mn-muted))]" />
+            </CardContent>
+          </Card>
+        </Link>
+      </div>
     </div>
   );
 }

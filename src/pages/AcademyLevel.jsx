@@ -85,6 +85,11 @@ function CourseCard({ course, progress, allCourses, allCourseProgress, navigate 
               +{course.xp_reward} XP
             </Badge>
           )}
+          {course.track && (
+            <Badge variant="outline" className="text-[10px]">
+              {course.track === 'clinician' ? '🩺 Clinician' : '🔬 Research'}
+            </Badge>
+          )}
         </div>
 
         <Progress value={progressPct} className="h-2 mb-2" />

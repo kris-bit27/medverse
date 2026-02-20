@@ -5,6 +5,7 @@ import {
   Stethoscope,
   ClipboardCheck,
   Play,
+  FileText,
 } from 'lucide-react';
 
 export const ACADEMY_LEVELS = {
@@ -21,6 +22,7 @@ export const CONTENT_TYPE_ICONS = {
   case_study: Stethoscope,
   quiz: ClipboardCheck,
   video: Play,
+  prompt_template: FileText,
 };
 
 export const CONTENT_TYPE_LABELS = {
@@ -30,6 +32,7 @@ export const CONTENT_TYPE_LABELS = {
   case_study: 'Case Study',
   quiz: 'Kvíz',
   video: 'Video',
+  prompt_template: 'Prompt šablona',
 };
 
 export const SKILL_RADAR_LABELS = {

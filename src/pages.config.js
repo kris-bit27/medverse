@@ -83,6 +83,9 @@ export const PAGES = {
   "AcademyLesson":      L(() => import('./pages/AcademyLesson')),
   "AcademySandbox":     L(() => import('./pages/AcademySandbox')),
   "AcademyCertificates": L(() => import('./pages/AcademyCertificates')),
+  "AcademyBuilder":     L(() => import('./pages/AcademyBuilder')),
+  "BuilderDashboard":   L(() => import('./pages/BuilderDashboard')),
+  "AcademyPromptLibrary": L(() => import('./pages/AcademyPromptLibrary')),
 
   // === Logbook ===
   "Logbook":            L(() => import('./pages/LogbookV2')),

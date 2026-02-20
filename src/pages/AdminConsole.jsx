@@ -25,6 +25,7 @@ import { canAccessAdmin } from '@/components/utils/permissions';
 import ContentCoverage from '@/components/admin/ContentCoverage';
 import AdminAcademyContent from '@/components/admin/AdminAcademyContent';
 import AdminAcademyAnalytics from '@/components/admin/AdminAcademyAnalytics';
+import AdminBuilderManagement from '@/components/admin/AdminBuilderManagement';
 
 /* ================================================================
    TAB: DASHBOARD
@@ -487,6 +488,7 @@ const TABS = [
   { id: 'ai', label: 'AI Generování', icon: Sparkles },
   { id: 'content', label: 'Přehled obsahu', icon: BookOpen },
   { id: 'academy', label: 'AI Academy', icon: GraduationCap },
+  { id: 'builders', label: 'Builders', icon: Users },
 ];
 
 export default function AdminConsole() {
@@ -560,6 +562,7 @@ export default function AdminConsole() {
         <AdminAcademyAnalytics />
         <div className="mt-6"><AdminAcademyContent /></div>
       </>}
+      {activeTab === 'builders' && <AdminBuilderManagement />}
     </div>
   );
 }
