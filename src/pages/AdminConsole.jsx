@@ -23,6 +23,7 @@ import {
 import { toast } from 'sonner';
 import { canAccessAdmin } from '@/components/utils/permissions';
 import ContentCoverage from '@/components/admin/ContentCoverage';
+import AdminAcademyContent from '@/components/admin/AdminAcademyContent';
 
 /* ================================================================
    TAB: DASHBOARD
@@ -484,6 +485,7 @@ const TABS = [
   { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
   { id: 'ai', label: 'AI Generování', icon: Sparkles },
   { id: 'content', label: 'Přehled obsahu', icon: BookOpen },
+  { id: 'academy', label: 'AI Academy', icon: GraduationCap },
 ];
 
 export default function AdminConsole() {
@@ -553,6 +555,7 @@ export default function AdminConsole() {
       </>}
       {activeTab === 'ai' && <AIGenerationTab />}
       {activeTab === 'content' && <ContentOverviewTab />}
+      {activeTab === 'academy' && <AdminAcademyContent />}
     </div>
   );
 }
