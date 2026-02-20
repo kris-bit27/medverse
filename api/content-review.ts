@@ -1,6 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+import { supabaseAdmin as supabase } from './_supabaseAdmin';
 
 async function callGPT(prompt: string, options: { system?: string; maxTokens?: number; temperature?: number; model?: string } = {}) {
   const apiKey = process.env.OPENAI_API_KEY;

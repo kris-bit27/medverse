@@ -1,6 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+import { supabaseAdmin as supabase } from './_supabaseAdmin';
 
 export default async function handler(req: any, res: any) {
   // GET = health check (backwards compatible)

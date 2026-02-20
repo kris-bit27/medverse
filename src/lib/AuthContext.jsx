@@ -87,12 +87,16 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const logout = async (shouldRedirect = true) => {
-    setUser(null);
-    setIsAuthenticated(false);
-    
-    await supabase.auth.signOut();
-    if (shouldRedirect) {
-      window.location.href = '/login';
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      console.error('Sign out failed:', error);
+    } finally {
+      setUser(null);
+      setIsAuthenticated(false);
+      if (shouldRedirect) {
+        window.location.href = '/login';
+      }
     }
   };
 
