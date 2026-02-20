@@ -76,6 +76,14 @@ export const PAGES = {
   "UserSettings":       L(() => import('./pages/AccountSettings')), // alias → AccountSettings
   "AICredits":          L(() => import('./pages/AICredits')),
 
+  // === AI Academy ===
+  "AcademyDashboard":   L(() => import('./pages/AcademyDashboard')),
+  "AcademyLevel":       L(() => import('./pages/AcademyLevel')),
+  "AcademyCourse":      L(() => import('./pages/AcademyCourse')),
+  "AcademyLesson":      L(() => import('./pages/AcademyLesson')),
+  "AcademySandbox":     L(() => import('./pages/AcademySandbox')),
+  "AcademyCertificates": L(() => import('./pages/AcademyCertificates')),
+
   // === Logbook ===
   "Logbook":            L(() => import('./pages/LogbookV2')),
 

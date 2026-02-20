@@ -41,7 +41,8 @@ import {
   FileText,
   Bot,
   Users,
-  Trophy
+  Trophy,
+  Brain
 } from 'lucide-react';
 import { canAccessAdmin, getRoleDisplayName, getRoleBadgeColor } from '@/components/utils/permissions';
 import MedVerseLogo from '@/components/MedVerseLogo';
@@ -51,6 +52,7 @@ const publicPages = ['Landing', 'Pricing', 'Demo'];
 const navItems = [
   { name: 'Dashboard', page: 'Dashboard', icon: LayoutDashboard },
   { name: 'Studium', page: 'Studium', icon: GraduationCap },
+  { name: 'AI Academy', page: 'AcademyDashboard', icon: Brain },
   { name: 'Opakování', page: 'ReviewToday', icon: RefreshCw },
   { name: 'Testy', page: 'TestGeneratorV2', icon: Zap },
   { name: 'Studijní sady', page: 'StudyPackages', icon: Package },
@@ -251,6 +253,7 @@ export default function Layout({ children, currentPageName }) {
               // Regular nav items
               const isActive = currentPageName === item.page ||
                 (item.page === 'StudiumV2' && ['Okruhy', 'OkruhDetail', 'QuestionDetail', 'TestGenerator', 'TopicDetail', 'TopicDetailV2', 'Studium'].includes(currentPageName)) ||
+                (item.page === 'AcademyDashboard' && ['AcademyDashboard', 'AcademyLevel', 'AcademyCourse', 'AcademyLesson', 'AcademySandbox', 'AcademyCertificates'].includes(currentPageName)) ||
                 (item.page === 'Community' && ['Community', 'Forum', 'ForumThread', 'StudyGroup', 'StudyGroups'].includes(currentPageName)) ||
                 (item.page === 'StudyPackages' && ['StudyPackages', 'StudyPackageCreate', 'StudyPackageDetail'].includes(currentPageName)) ||
                 (item.page === 'StudyPlanner' && ['StudyPlanner', 'StudyPlanCreate', 'StudyPlanDetail'].includes(currentPageName));
