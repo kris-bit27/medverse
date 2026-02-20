@@ -6,6 +6,8 @@
 -- Includes course level and track for direct use in dashboard.
 -- ============================================================
 
+DROP FUNCTION IF EXISTS public.get_academy_course_progress(uuid);
+
 CREATE OR REPLACE FUNCTION public.get_academy_course_progress(p_user_id UUID)
 RETURNS TABLE (
   user_id       UUID,
