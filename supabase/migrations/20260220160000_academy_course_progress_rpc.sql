@@ -3,12 +3,14 @@
 -- Returns all active courses with lesson counts and user progress.
 -- Unlike v_academy_course_progress view, this always returns rows
 -- even when user has no progress (completed_lessons = 0).
+-- Includes course level and track for direct use in dashboard.
 -- ============================================================
 
 CREATE OR REPLACE FUNCTION public.get_academy_course_progress(p_user_id UUID)
 RETURNS TABLE (
   user_id       UUID,
   course_id     UUID,
+  level         INTEGER,
   total_lessons BIGINT,
   completed_lessons BIGINT,
   avg_score     NUMERIC,
@@ -23,6 +25,7 @@ BEGIN
   SELECT
     p_user_id AS user_id,
     c.id AS course_id,
+    c.level,
     COUNT(DISTINCT l.id)::BIGINT AS total_lessons,
     COUNT(DISTINCT aup.lesson_id) FILTER (WHERE aup.status = 'completed')::BIGINT AS completed_lessons,
     ROUND(AVG(aup.score) FILTER (WHERE aup.status = 'completed'), 1) AS avg_score,

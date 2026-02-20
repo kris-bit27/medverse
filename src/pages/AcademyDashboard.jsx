@@ -45,7 +45,7 @@ export default function AcademyDashboard() {
   const { data: skillRadar, isLoading: radarLoading } = useAcademySkillRadar(user?.id);
   const { data: allProgress = [], isLoading: progressLoading } = useAcademyProgress(user?.id);
   const { data: certificates = [], isLoading: certsLoading } = useAcademyCertificates(user?.id);
-  const { data: allCourses = [] } = useAcademyCourses();
+  const { data: allCourses = [], isLoading: coursesLoading } = useAcademyCourses();
 
   const academyLevel = profile?.academy_level || 1;
   const academyXp = profile?.academy_xp || 0;
@@ -55,14 +55,11 @@ export default function AcademyDashboard() {
     (c) => !c.track || c.track === selectedTrack
   );
 
-  // Determine which levels are unlocked
+  // Determine which levels are unlocked — use level directly from courseProgress (RPC)
   const levelCompletionMap = {};
   for (let l = 1; l <= 4; l++) {
-    const coursesInLevel = courseProgress.filter((cp) => {
-      const course = trackCourses.find((c) => c.id === cp.course_id);
-      return course?.level === l;
-    });
-    const total = trackCourses.filter((c) => c.level === l).length;
+    const coursesInLevel = courseProgress.filter((cp) => cp.level === l);
+    const total = coursesInLevel.length;
     const completed = coursesInLevel.filter(
       (cp) => cp.completed_lessons === cp.total_lessons && cp.total_lessons > 0
     ).length;
@@ -92,7 +89,7 @@ export default function AcademyDashboard() {
     .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
     .slice(0, 5);
 
-  const isLoading = profileLoading || cpLoading;
+  const isLoading = profileLoading || cpLoading || coursesLoading;
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-8">
