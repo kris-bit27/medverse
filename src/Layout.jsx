@@ -41,16 +41,20 @@ import {
   FileText,
   Bot,
   Users,
-  Trophy
+  Trophy,
+  Brain
 } from 'lucide-react';
 import { canAccessAdmin, getRoleDisplayName, getRoleBadgeColor } from '@/components/utils/permissions';
 import MedVerseLogo from '@/components/MedVerseLogo';
+import { useAcademyProfile } from '@/hooks/useAcademy';
+import { ACADEMY_LEVELS } from '@/lib/academy-constants';
 
 const publicPages = ['Landing', 'Pricing', 'Demo'];
 
 const navItems = [
   { name: 'Dashboard', page: 'Dashboard', icon: LayoutDashboard },
   { name: 'Studium', page: 'Studium', icon: GraduationCap },
+  { name: 'AI Academy', page: 'AcademyDashboard', icon: Brain },
   { name: 'Opakování', page: 'ReviewToday', icon: RefreshCw },
   { name: 'Testy', page: 'TestGeneratorV2', icon: Zap },
   { name: 'Studijní sady', page: 'StudyPackages', icon: Package },
@@ -79,6 +83,7 @@ export default function Layout({ children, currentPageName }) {
 
   // Use Supabase Auth instead of base44
   const { user, isAuthenticated, logout } = useAuth();
+  const { data: academyProfile } = useAcademyProfile(user?.id);
 
   useEffect(() => {
     const saved = localStorage.getItem('mn:theme') || localStorage.getItem('medverse-theme');
@@ -251,6 +256,7 @@ export default function Layout({ children, currentPageName }) {
               // Regular nav items
               const isActive = currentPageName === item.page ||
                 (item.page === 'StudiumV2' && ['Okruhy', 'OkruhDetail', 'QuestionDetail', 'TestGenerator', 'TopicDetail', 'TopicDetailV2', 'Studium'].includes(currentPageName)) ||
+                (item.page === 'AcademyDashboard' && ['AcademyDashboard', 'AcademyLevel', 'AcademyCourse', 'AcademyLesson', 'AcademySandbox', 'AcademyCertificates', 'AcademyBuilder', 'BuilderDashboard', 'AcademyPromptLibrary'].includes(currentPageName)) ||
                 (item.page === 'Community' && ['Community', 'Forum', 'ForumThread', 'StudyGroup', 'StudyGroups'].includes(currentPageName)) ||
                 (item.page === 'StudyPackages' && ['StudyPackages', 'StudyPackageCreate', 'StudyPackageDetail'].includes(currentPageName)) ||
                 (item.page === 'StudyPlanner' && ['StudyPlanner', 'StudyPlanCreate', 'StudyPlanDetail'].includes(currentPageName));
@@ -268,7 +274,24 @@ export default function Layout({ children, currentPageName }) {
                 >
                   <Icon className={cn("w-5 h-5", isActive && "text-[hsl(var(--mn-accent))]")} />
                   {item.name}
-                  {isActive && <ChevronRight className="w-4 h-4 ml-auto" />}
+                  {item.page === 'AcademyDashboard' && academyProfile?.academy_level >= 1 && (
+                    <span
+                      className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full ml-auto"
+                      style={{
+                        backgroundColor: `${ACADEMY_LEVELS[academyProfile.academy_level]?.color || '#14b8a6'}14`,
+                        color: ACADEMY_LEVELS[academyProfile.academy_level]?.color || '#14b8a6',
+                      }}
+                    >
+                      Lvl {academyProfile.academy_level}
+                    </span>
+                  )}
+                  {item.page === 'AcademyDashboard' && (!academyProfile || !academyProfile.academy_level) && (
+                    <span className="relative ml-auto flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500" />
+                    </span>
+                  )}
+                  {isActive && item.page !== 'AcademyDashboard' && <ChevronRight className="w-4 h-4 ml-auto" />}
                 </Link>
               );
             })}

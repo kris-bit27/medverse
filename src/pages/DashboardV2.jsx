@@ -17,8 +17,10 @@ import MasteryOverview from '@/components/dashboard/MasteryOverview';
 import GeminiWeeklyDigest from '@/components/dashboard/GeminiWeeklyDigest';
 import {
   Zap, BookOpen, Target, Flame,
-  Award, Brain, ArrowRight, Sparkles, RefreshCw
+  Award, Brain, ArrowRight, Sparkles, RefreshCw, GraduationCap
 } from 'lucide-react';
+import { useAcademyProfile } from '@/hooks/useAcademy';
+import { ACADEMY_LEVELS } from '@/lib/academy-constants';
 
 /* ── animation ── */
 const up = (i = 0) => ({
@@ -35,6 +37,7 @@ const Caption = ({ children, className = '' }) => (
 export default function DashboardV2() {
   const { user } = useAuth();
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const { data: academyProfile } = useAcademyProfile(user?.id);
 
   const { data: profile, isLoading: profileLoading } = useQuery({
     queryKey: ['userProfile', user?.id],
@@ -182,11 +185,12 @@ export default function DashboardV2() {
 
         {/* ═══ QUICK ACTIONS ═══ */}
         <motion.section {...up(2)}>
-          <div className="grid sm:grid-cols-3 gap-3">
+          <div className="grid sm:grid-cols-4 gap-3">
             {[
               { to: 'Studium', icon: Brain, label: 'Studuj téma', desc: 'Procházej AI obsah', gradient: 'linear-gradient(135deg, #14b8a6, #10b981)', shadow: 'hsl(var(--mn-accent) / 0.25)' },
               { to: 'ReviewToday', icon: RefreshCw, label: 'Opakovat kartičky', desc: `${dueCardsCount} čeká`, gradient: 'linear-gradient(135deg, #f59e0b, #f97316)', shadow: 'hsl(var(--mn-warn) / 0.25)' },
               { to: 'TestGeneratorV2', icon: Target, label: 'Zkušební test', desc: 'Otestuj znalosti', gradient: 'linear-gradient(135deg, #8b5cf6, #a855f7)', shadow: 'rgba(139,92,246,0.25)' },
+              { to: 'AcademyDashboard', icon: GraduationCap, label: 'AI Academy', desc: academyProfile?.academy_level ? `Level ${academyProfile.academy_level}` : 'Zdarma kurzy', gradient: 'linear-gradient(135deg, #0ea5e9, #06b6d4)', shadow: 'rgba(14,165,233,0.25)' },
             ].map((a, i) => (
               <Link key={i} to={createPageUrl(a.to)}
                 className="group relative p-5 sm:p-6 rounded-xl transition-all duration-300 hover:-translate-y-0.5 hover:border-[hsl(var(--mn-accent)/0.3)]"

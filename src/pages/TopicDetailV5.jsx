@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import TopicNotes from '@/components/TopicNotes';
 import FlashcardGenerator from '@/components/FlashcardGenerator';
 import ContentFeedback from '@/components/ContentFeedback';
+import AcademyRecommendation from '@/components/academy/AcademyRecommendation';
 import { FloatingCopilot } from '@/components/FloatingCopilot';
 import MedicalContent, { extractToc, TableOfContents, useActiveTocId } from '@/components/MedicalContent';
 import {
@@ -355,6 +356,11 @@ export default function TopicDetailV5() {
             {currentContent && topic.sources?.length > 0 && (
               <div className="mt-4"><SourcesList sources={topic.sources} /></div>
             )}
+
+            {/* Academy cross-link */}
+            <div className="mt-4">
+              <AcademyRecommendation />
+            </div>
 
             {/* Learning Objectives */}
             {topic.learning_objectives?.length > 0 && (

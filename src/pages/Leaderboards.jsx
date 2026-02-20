@@ -21,6 +21,7 @@ import {
   Target,
   Award
 } from 'lucide-react';
+import CredentialBadge from '@/components/academy/CredentialBadge';
 
 export default function Leaderboards() {
   const { user } = useAuth();
@@ -77,11 +78,18 @@ export default function Leaderboards() {
         .select('user_id, full_name, avatar_url')
         .in('user_id', userIds);
 
+      // Fetch academy levels
+      const { data: academyProfiles } = await supabase
+        .from('user_profiles')
+        .select('user_id, academy_level')
+        .in('user_id', userIds);
+
       // Merge profiles
       return rankings.map((rank, idx) => ({
         ...rank,
         rank: idx + 1,
-        profile: profiles?.find(p => p.user_id === rank.user_id)
+        profile: profiles?.find(p => p.user_id === rank.user_id),
+        academy_level: academyProfiles?.find(p => p.user_id === rank.user_id)?.academy_level || 0,
       }));
     }
   });
@@ -267,6 +275,7 @@ export default function Leaderboards() {
                         <p className="font-semibold">
                           {entry.profile?.full_name || 'Uživatel'}
                         </p>
+                        <CredentialBadge level={entry.academy_level} size="sm" />
                         {isMe && <Badge variant="outline">You</Badge>}
                         {badge && <Badge variant={badge.variant} className={badge.className}>{badge.label}</Badge>}
                       </div>
