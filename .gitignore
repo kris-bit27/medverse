@@ -30,4 +30,8 @@ dist-ssr
 .env.env.local
 .vercel
 .env*.local
-supabase/
+# Supabase local config (keep migrations and functions tracked)
+supabase/.temp/
+supabase/.branches/
+supabase/config.toml
+supabase/.env
