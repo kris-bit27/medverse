@@ -63,9 +63,7 @@ export function useAcademyCourseProgress(userId) {
     queryKey: ['academy-course-progress', userId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('v_academy_course_progress')
-        .select('*')
-        .eq('user_id', userId);
+        .rpc('get_academy_course_progress', { p_user_id: userId });
 
       if (error) throw error;
       return data || [];

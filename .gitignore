@@ -27,9 +27,9 @@ dist-ssr
 *.sln
 *.sw?
 
-.env.env.local
-.vercel
+.env.local
 .env*.local
+.vercel
 # Supabase local config (keep migrations and functions tracked)
 supabase/.temp/
 supabase/.branches/
