@@ -1,10 +1,21 @@
-/* MedNexus UI tokens + primitives */
+/* ════════════════════════════════════════════════════════════════
+   MEDVERSE — CENTRÁLNÍ DESIGN SOUBOR
+   ════════════════════════════════════════════════════════════════
+   Chceš změnit vizuál? Uprav sekce označené ▼ EDIT.
+   Pro rebrand dle Canva promptu pošli prompt Claudovi —
+   on přepíše jen tyto sekce, zbytek se přizpůsobí automaticky.
+   ════════════════════════════════════════════════════════════════ */
 
-/* Design System Fonts */
+
+/* ──────────────────────────────────────────────────────────────
+   ▼ EDIT 1: FONTY
+   Pokud měníš fonty, aktualizuj také <link> v index.html!
+   Google Fonts explorer: https://fonts.google.com
+   ────────────────────────────────────────────────────────────── */
 :root {
-  --mn-font-serif: 'Source Serif 4', Georgia, serif;
-  --mn-font-sans: 'IBM Plex Sans', -apple-system, sans-serif;
-  --mn-font-mono: 'IBM Plex Mono', monospace;
+  --mn-font-serif: 'Source Serif 4', Georgia, serif;     /* vzdělávací obsah, články */
+  --mn-font-sans:  'IBM Plex Sans', -apple-system, sans-serif;  /* UI, navigace, labely */
+  --mn-font-mono:  'IBM Plex Mono', monospace;            /* kód, hodnoty, diagnostika */
 }
 
 body {
@@ -14,204 +25,175 @@ body {
 
 /* Font utility classes */
 .mn-serif-font { font-family: var(--mn-font-serif); }
-.mn-ui-font { font-family: var(--mn-font-sans); }
-.mn-mono-font { font-family: var(--mn-font-mono); }
-.mn-caption { font-family: var(--mn-font-sans); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
+.mn-ui-font    { font-family: var(--mn-font-sans); }
+.mn-mono-font  { font-family: var(--mn-font-mono); }
+.mn-caption    { font-family: var(--mn-font-sans); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
 
+
+/* ──────────────────────────────────────────────────────────────
+   ▼ EDIT 2: SVĚTLÉ TÉMA (výchozí)
+   Hodnoty jsou ve formátu HSL: "H S% L%" (bez hsl())
+   Konverze hex→HSL: https://www.rapidtables.com/convert/color/hex-to-hsl.html
+   ────────────────────────────────────────────────────────────── */
 :root {
-  /* Core tokens (default = light) */
-  --mn-bg: 210 20% 97%;
-  --mn-surface: 0 0% 100%;
-  --mn-surface-2: 210 16% 95%;
-  --mn-elevated: 0 0% 100%;
-  --mn-border: 215 16% 78%;
-  --mn-text: 222 32% 14%;
-  --mn-muted: 220 12% 40%;
-  --mn-accent: 173 82% 32%;
-  --mn-accent-2: 192 82% 36%;
-  --mn-success: 160 60% 40%;
-  --mn-warn: 38 92% 50%;
-  --mn-danger: 0 72% 50%;
+  /* — Pozadí a povrchy — */
+  --mn-bg:       210 20% 97%;   /* hlavní pozadí stránky */
+  --mn-surface:  0 0% 100%;    /* karty, sidebary */
+  --mn-surface-2: 210 16% 95%; /* zanořené prvky, tabs, inputs */
+  --mn-elevated: 0 0% 100%;   /* modální okna, dropdowns */
+
+  /* — Ohraničení — */
+  --mn-border:   215 16% 78%;
+
+  /* — Typografie — */
+  --mn-text:     222 32% 14%;  /* primární text */
+  --mn-muted:    220 12% 40%;  /* sekundární text, metadata */
+
+  /* — Hlavní akcent (teal — lékařský, čistý) — */
+  --mn-accent:   173 82% 32%;  /* tlačítka, linky, aktivní stavy */
+  --mn-accent-2: 192 82% 36%;  /* sekundární akcent, gradienty */
+
+  /* — Focus ring — */
+  --mn-focus:    176 56% 36%;
+
+  /* — Sémantické barvy — */
+  --mn-success:  160 60% 40%;
+  --mn-warn:     38 92% 50%;
+  --mn-danger:   0 72% 50%;
+
+  /* — Stíny — */
   --mn-shadow-1: 0 1px 8px rgba(15, 23, 42, 0.06);
   --mn-shadow-2: 0 4px 16px rgba(15, 23, 42, 0.08), 0 12px 32px rgba(15, 23, 42, 0.06);
-  --mn-radius: 10px;
-  --mn-radius-sm: 4px;
-  --mn-radius-md: 8px;
-  --mn-radius-lg: 14px;
-  --mn-radius-full: 999px;
-  --mn-space: 16px;
-  --mn-space-1: 4px;
-  --mn-space-2: 8px;
-  --mn-space-3: 12px;
-  --mn-space-4: 16px;
-  --mn-space-5: 20px;
-  --mn-space-6: 24px;
-  --mn-space-8: 32px;
+
+  /* — Zaoblení — */
+  --mn-radius:      10px;  /* base — karty, panely */
+  --mn-radius-sm:   4px;   /* malé prvky — tagy, badges */
+  --mn-radius-md:   8px;   /* střední — tlačítka, inputs */
+  --mn-radius-lg:   14px;  /* velké — modály, sidepanely */
+  --mn-radius-full: 999px; /* pilulky, avatary */
+
+  /* — Spacing scale — */
+  --mn-space:    16px;
+  --mn-space-1:  4px;
+  --mn-space-2:  8px;
+  --mn-space-3:  12px;
+  --mn-space-4:  16px;
+  --mn-space-5:  20px;
+  --mn-space-6:  24px;
+  --mn-space-8:  32px;
   --mn-space-10: 40px;
   --mn-space-12: 48px;
-  --mn-focus: 176 56% 36%;
 
-  /* Map to Tailwind/shadcn tokens */
-  --background: var(--mn-bg);
-  --foreground: var(--mn-text);
-  --card: var(--mn-surface-2);
-  --card-foreground: var(--mn-text);
-  --popover: var(--mn-elevated);
-  --popover-foreground: var(--mn-text);
-  --card: var(--mn-surface-2);
-  --card-foreground: var(--mn-text);
-  --primary: var(--mn-accent);
-  --primary-foreground: 210 40% 98%;
-  --secondary: var(--mn-surface-2);
+  /* Tailwind/shadcn mapping (nemění se) */
+  --background:          var(--mn-bg);
+  --foreground:          var(--mn-text);
+  --card:                var(--mn-surface-2);
+  --card-foreground:     var(--mn-text);
+  --popover:             var(--mn-elevated);
+  --popover-foreground:  var(--mn-text);
+  --primary:             var(--mn-accent);
+  --primary-foreground:  210 40% 98%;
+  --secondary:           var(--mn-surface-2);
   --secondary-foreground: var(--mn-text);
-  --muted: var(--mn-surface-2);
-  --muted-foreground: var(--mn-muted);
-  --accent: var(--mn-surface-2);
-  --accent-foreground: var(--mn-text);
-  --destructive: var(--mn-danger);
+  --muted:               var(--mn-surface-2);
+  --muted-foreground:    var(--mn-muted);
+  --accent:              var(--mn-surface-2);
+  --accent-foreground:   var(--mn-text);
+  --destructive:         var(--mn-danger);
   --destructive-foreground: 210 40% 98%;
-  --border: var(--mn-border);
-  --input: var(--mn-border);
-  --ring: var(--mn-focus);
+  --border:              var(--mn-border);
+  --input:               var(--mn-border);
+  --ring:                var(--mn-focus);
 }
 
-/* Dark mode — activated by Tailwind html.dark class */
+
+/* ──────────────────────────────────────────────────────────────
+   ▼ EDIT 3: TMAVÉ TÉMA
+   Aktivuje se třídou html.dark (Tailwind dark mode)
+   ────────────────────────────────────────────────────────────── */
 html.dark {
-  --mn-bg: 222 24% 5%;
-  --mn-surface: 222 20% 9%;
+  /* — Pozadí a povrchy — */
+  --mn-bg:        222 24% 5%;
+  --mn-surface:   222 20% 9%;
   --mn-surface-2: 222 18% 12%;
-  --mn-elevated: 222 16% 15%;
-  --mn-border: 220 14% 22%;
-  --mn-text: 210 40% 93%;
-  --mn-muted: 215 18% 65%;
-  --mn-accent: 173 58% 39%;
-  --mn-accent-2: 188 76% 42%;
-  --mn-success: 160 60% 45%;
-  --mn-warn: 38 92% 55%;
-  --mn-danger: 0 72% 55%;
-  --mn-shadow-1: 0 2px 12px rgba(0, 0, 0, 0.3);
-  --mn-shadow-2: 0 8px 24px rgba(0, 0, 0, 0.4);
-  --mn-focus: 173 58% 39%;
+  --mn-elevated:  222 16% 15%;
+
+  /* — Ohraničení — */
+  --mn-border:    220 14% 22%;
+
+  /* — Typografie — */
+  --mn-text:      210 40% 93%;
+  --mn-muted:     215 18% 65%;
+
+  /* — Akcenty — */
+  --mn-accent:    173 58% 39%;
+  --mn-accent-2:  188 76% 42%;
+
+  /* — Focus — */
+  --mn-focus:     173 58% 39%;
+
+  /* — Sémantické — */
+  --mn-success:   160 60% 45%;
+  --mn-warn:      38 92% 55%;
+  --mn-danger:    0 72% 55%;
+
+  /* — Stíny — */
+  --mn-shadow-1:  0 2px 12px rgba(0, 0, 0, 0.3);
+  --mn-shadow-2:  0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 
+/* ════════════════════════════════════════════════════════════════
+   NÍŽE: KOMPONENTY — zpravidla není třeba editovat
+   Používají výše definované CSS proměnné automaticky.
+   ════════════════════════════════════════════════════════════════ */
+
+/* Badge normalizace */
 html:not(.dark) .badge-outline,
 html:not(.dark) .badge-secondary {
   background: hsl(var(--mn-surface-2));
   color: hsl(var(--mn-text));
   border-color: hsl(var(--mn-border));
 }
-
 html:not(.dark) .badge-secondary:hover {
   background: hsl(var(--mn-surface));
 }
 
-/* Logbook badge normalization */
+/* Logbook badges */
 .logbook-badges .atesto-badge {
   background: hsl(var(--mn-surface-2));
   color: hsl(var(--mn-text));
   border: 1px solid hsl(var(--mn-border));
 }
 
-/* Calendar readability */
-.planner-calendar .rdp {
-  width: 100%;
-  max-width: 100%;
-  overflow: hidden;
-}
-
-.planner-calendar {
-  max-width: 100%;
-  overflow-x: auto;
-}
-
-.planner-calendar .rdp table {
-  width: 100%;
-}
-
+/* Kalendář */
+.planner-calendar .rdp { width: 100%; max-width: 100%; overflow: hidden; }
+.planner-calendar { max-width: 100%; overflow-x: auto; }
+.planner-calendar .rdp table { width: 100%; }
 .planner-calendar .rdp .rdp-day,
 .planner-calendar .rdp .rdp-day_button,
-.planner-calendar .rdp .day {
-  width: clamp(28px, 3vw, 36px);
-  height: clamp(28px, 3vw, 36px);
-}
+.planner-calendar .rdp .day { width: clamp(28px, 3vw, 36px); height: clamp(28px, 3vw, 36px); }
+.planner-calendar .rdp .head_cell { width: clamp(28px, 3vw, 36px); }
+.planner-calendar .rdp .nav_button { flex: 0 0 auto; }
+.planner-calendar .rdp .caption { padding-inline: 32px; }
 
-.planner-calendar .rdp .head_cell {
-  width: clamp(28px, 3vw, 36px);
-}
-
-.planner-calendar .rdp .nav_button {
-  flex: 0 0 auto;
-}
-
-.planner-calendar .rdp .caption {
-  padding-inline: 32px;
-}
-
-html:not(.dark) .rdp .day {
-  color: hsl(var(--mn-text));
-  opacity: 1;
-}
-
+html:not(.dark) .rdp .day { color: hsl(var(--mn-text)); opacity: 1; }
 html:not(.dark) .rdp .rdp-day,
-html:not(.dark) .rdp .rdp-day_button {
-  color: hsl(var(--mn-text)) !important;
-}
-
-html:not(.dark) .rdp .head_cell {
-  color: hsl(var(--mn-muted));
-  font-weight: 600;
-}
-
-html:not(.dark) .rdp .caption_label {
-  color: hsl(var(--mn-text)) !important;
-}
-
+html:not(.dark) .rdp .rdp-day_button { color: hsl(var(--mn-text)) !important; }
+html:not(.dark) .rdp .head_cell { color: hsl(var(--mn-muted)); font-weight: 600; }
+html:not(.dark) .rdp .caption_label { color: hsl(var(--mn-text)) !important; }
 html:not(.dark) .rdp .day-outside,
-html:not(.dark) .rdp .day-disabled {
-  color: hsl(var(--mn-muted));
-  opacity: 0.6;
-}
-
+html:not(.dark) .rdp .day-disabled { color: hsl(var(--mn-muted)); opacity: 0.6; }
 html:not(.dark) .rdp .rdp-day_outside,
-html:not(.dark) .rdp .rdp-day_disabled {
-  color: hsl(var(--mn-muted)) !important;
-  opacity: 0.5;
-}
-
-html:not(.dark) .rdp .rdp-button {
-  color: hsl(var(--mn-text)) !important;
-}
-
+html:not(.dark) .rdp .rdp-day_disabled { color: hsl(var(--mn-muted)) !important; opacity: 0.5; }
+html:not(.dark) .rdp .rdp-button { color: hsl(var(--mn-text)) !important; }
 html:not(.dark) .rdp .rdp-day_outside .rdp-button,
-html:not(.dark) .rdp .rdp-day_disabled .rdp-button {
-  color: hsl(var(--mn-muted)) !important;
-}
+html:not(.dark) .rdp .rdp-day_disabled .rdp-button { color: hsl(var(--mn-muted)) !important; }
+html:not(.dark) .rdp { color: hsl(var(--mn-text)) !important; }
+html:not(.dark) .rdp button { color: hsl(var(--mn-text)) !important; }
+html:not(.dark) .rdp [aria-disabled="true"] { color: hsl(var(--mn-muted)) !important; opacity: 0.5; }
 
-html:not(.dark) .rdp {
-  color: hsl(var(--mn-text)) !important;
-}
-
-html:not(.dark) .rdp button {
-  color: hsl(var(--mn-text)) !important;
-}
-
-html:not(.dark) .rdp [aria-disabled="true"] {
-  color: hsl(var(--mn-muted)) !important;
-  opacity: 0.5;
-}
-
-html:not(.dark) .rdp .day_selected {
-  color: hsl(var(--mn-text));
-}
-
-html:not(.dark) .rdp .day-outside,
-html:not(.dark) .rdp .day-disabled,
-html:not(.dark) .rdp .text-muted-foreground {
-  color: hsl(var(--mn-muted));
-}
-
-/* Light mode: soften outline buttons (avoid dark blocks) */
+/* Outline tlačítka — světlý mód */
 html:not(.dark) .atesto-btn.border,
 html:not(.dark) .atesto-btn.bg-background {
   background: hsl(var(--mn-surface));
@@ -219,45 +201,13 @@ html:not(.dark) .atesto-btn.bg-background {
   border-color: hsl(var(--mn-border));
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
 }
-
 html:not(.dark) .atesto-btn.border:hover,
 html:not(.dark) .atesto-btn.bg-background:hover {
   background: hsl(var(--mn-surface-2));
 }
 
-/* Card titles legibility */
-.atesto-card-title {
-  color: hsl(var(--mn-text));
-}
-
-/* Tabs segmented control (global) */
-.atesto-tabs-list {
-  background: hsl(var(--mn-surface-2));
-  border: 1px solid hsl(var(--mn-border));
-  border-radius: 999px;
-  padding: 4px;
-  gap: 6px;
-}
-
-.atesto-tab {
-  color: hsl(var(--mn-muted));
-}
-
-.atesto-tab[data-state="active"] {
-  background: hsl(var(--mn-surface));
-  color: hsl(var(--mn-text));
-  box-shadow: inset 0 0 0 1px hsl(var(--mn-border));
-}
-
-.atesto-tab[data-state="inactive"]:hover {
-  background: hsl(var(--mn-elevated) / 0.6);
-}
-
-/* Dropdowns / popovers — ensure solid opaque background */
-[data-radix-popper-content-wrapper] {
-  z-index: 60 !important;
-}
-
+/* Dropdowns / popovers */
+[data-radix-popper-content-wrapper] { z-index: 60 !important; }
 [role="listbox"],
 [data-radix-select-content],
 [data-radix-dropdown-menu-content],
@@ -267,169 +217,23 @@ html:not(.dark) .atesto-btn.bg-background:hover {
   box-shadow: var(--mn-shadow-2) !important;
 }
 
-/* Shell + layout primitives */
-.mn-shell {
-  background: hsl(var(--mn-bg));
-  color: hsl(var(--mn-text));
-}
-
-.mn-sidebar {
-  background: hsl(var(--mn-surface));
-  border-right: 1px solid hsl(var(--mn-border));
-}
-
-html:not(.dark) .mn-sidebar {
-  box-shadow: 2px 0 12px rgba(15, 23, 42, 0.04);
-}
-
-.mn-topbar {
-  background: hsl(var(--mn-elevated));
-  border-bottom: 1px solid hsl(var(--mn-border));
-  backdrop-filter: blur(8px);
-}
-
-html:not(.dark) .mn-topbar {
-  background: hsla(0, 0%, 100%, 0.85);
-}
-
-.mn-main {
-  background: hsl(var(--mn-bg));
-}
-
-/* Cards, buttons, inputs, selects */
-.atesto-card {
+/* Tabs */
+.atesto-tabs-list {
   background: hsl(var(--mn-surface-2));
   border: 1px solid hsl(var(--mn-border));
-  border-radius: var(--mn-radius);
-  box-shadow: var(--mn-shadow-1);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.atesto-card:hover {
-  border-color: hsl(var(--mn-border));
-}
-
-.atesto-card-inner {
-  padding: 1.5rem;
-}
-
-.atesto-btn {
-  border-radius: calc(var(--mn-radius) - 4px);
-}
-
-.atesto-btn-ghost {
-  border: 1px solid transparent;
-}
-
-.atesto-btn-ghost:hover {
-  background: hsl(var(--mn-elevated));
-  border-color: hsl(var(--mn-border));
-}
-
-.atesto-badge {
   border-radius: 999px;
+  padding: 4px;
+  gap: 6px;
 }
-
-.atesto-input,
-.atesto-select {
-  background: hsl(var(--mn-elevated));
-  border-color: hsl(var(--mn-border));
-}
-
-.atesto-input:focus,
-.atesto-select:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px hsl(var(--mn-focus) / 0.25);
-}
-
-.atesto-progressbar {
-  background: hsl(var(--mn-accent) / 0.16);
-}
-
-/* Sidebar active state */
-.mn-sidebar .is-active {
-  background: hsl(var(--mn-accent) / 0.12);
-  color: hsl(var(--mn-accent));
-  box-shadow: inset 0 0 0 1px hsl(var(--mn-accent) / 0.2);
-}
-
-/* Reading layout */
-.mn-reading {
-  max-width: 1120px;
-  margin: 0 auto;
-}
-
-.mn-reading .atesto-card {
+.atesto-tab { color: hsl(var(--mn-muted)); }
+.atesto-tab[data-state="active"] {
   background: hsl(var(--mn-surface));
-}
-
-.mn-reading .tiptap-rendered-content {
-  max-width: 1040px;
-  margin: 0 auto;
-  line-height: 1.7;
-  padding: 0.25rem 0;
-}
-
-/* Typography for rendered HTML */
-.tiptap-rendered-content h1,
-.tiptap-rendered-content h2,
-.tiptap-rendered-content h3 {
   color: hsl(var(--mn-text));
-  letter-spacing: -0.01em;
+  box-shadow: inset 0 0 0 1px hsl(var(--mn-border));
 }
+.atesto-tab[data-state="inactive"]:hover { background: hsl(var(--mn-elevated) / 0.6); }
 
-.tiptap-rendered-content p {
-  color: hsl(var(--mn-text));
-  margin: 0.9rem 0;
-}
-
-.tiptap-rendered-content table {
-  border: 1px solid hsl(var(--mn-border));
-  background: hsl(var(--mn-surface-2));
-}
-
-.tiptap-rendered-content th,
-.tiptap-rendered-content td {
-  border-color: hsl(var(--mn-border));
-}
-
-.callout {
-  border-left: 4px solid hsl(var(--mn-accent));
-  background: hsl(var(--mn-surface-2));
-  padding: 0.75rem 1rem;
-  border-radius: 10px;
-}
-
-.callout--info {
-  border-left-color: hsl(var(--mn-accent-2));
-}
-
-.callout--warn {
-  border-left-color: hsl(var(--mn-warn));
-}
-
-blockquote {
-  border-left-color: hsl(var(--mn-accent));
-}
-
-.tiptap-rendered-content a {
-  color: hsl(var(--mn-accent));
-  text-decoration: underline;
-  text-decoration-color: hsl(var(--mn-accent) / 0.35);
-  text-underline-offset: 3px;
-}
-
-.tiptap-rendered-content strong {
-  color: hsl(var(--mn-text));
-}
-
-.tiptap-rendered-content code {
-  background: hsl(var(--mn-elevated));
-  color: hsl(var(--mn-text));
-  border: 1px solid hsl(var(--mn-border));
-}
-
-/* Segmented control tabs */
+/* Segmented control */
 .mn-segmented {
   background: hsl(var(--mn-surface-2));
   border: 1px solid hsl(var(--mn-border));
@@ -437,13 +241,75 @@ blockquote {
   padding: 4px;
   gap: 6px;
 }
-
 .mn-segmented [data-state="active"] {
   background: hsl(var(--mn-elevated));
   color: hsl(var(--mn-text));
   box-shadow: inset 0 0 0 1px hsl(var(--mn-border));
 }
+.mn-segmented [data-state="inactive"]:hover { background: hsl(var(--mn-elevated) / 0.6); }
 
-.mn-segmented [data-state="inactive"]:hover {
-  background: hsl(var(--mn-elevated) / 0.6);
+/* Shell layout */
+.mn-shell    { background: hsl(var(--mn-bg)); color: hsl(var(--mn-text)); }
+.mn-sidebar  { background: hsl(var(--mn-surface)); border-right: 1px solid hsl(var(--mn-border)); }
+.mn-topbar   { background: hsl(var(--mn-elevated)); border-bottom: 1px solid hsl(var(--mn-border)); backdrop-filter: blur(8px); }
+.mn-main     { background: hsl(var(--mn-bg)); }
+
+html:not(.dark) .mn-sidebar { box-shadow: 2px 0 12px rgba(15, 23, 42, 0.04); }
+html:not(.dark) .mn-topbar  { background: hsla(0, 0%, 100%, 0.85); }
+
+/* Sidebar aktivní stav */
+.mn-sidebar .is-active {
+  background: hsl(var(--mn-accent) / 0.12);
+  color: hsl(var(--mn-accent));
+  box-shadow: inset 0 0 0 1px hsl(var(--mn-accent) / 0.2);
 }
+
+/* Karty */
+.atesto-card {
+  background: hsl(var(--mn-surface-2));
+  border: 1px solid hsl(var(--mn-border));
+  border-radius: var(--mn-radius);
+  box-shadow: var(--mn-shadow-1);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.atesto-card:hover { border-color: hsl(var(--mn-border)); }
+.atesto-card-inner { padding: 1.5rem; }
+.atesto-card-title { color: hsl(var(--mn-text)); }
+
+/* Tlačítka */
+.atesto-btn       { border-radius: calc(var(--mn-radius) - 4px); }
+.atesto-btn-ghost { border: 1px solid transparent; }
+.atesto-btn-ghost:hover { background: hsl(var(--mn-elevated)); border-color: hsl(var(--mn-border)); }
+
+/* Badges, inputs */
+.atesto-badge  { border-radius: 999px; }
+.atesto-input,
+.atesto-select { background: hsl(var(--mn-elevated)); border-color: hsl(var(--mn-border)); }
+.atesto-input:focus,
+.atesto-select:focus { outline: none; box-shadow: 0 0 0 2px hsl(var(--mn-focus) / 0.25); }
+
+/* Progress bar */
+.atesto-progressbar { background: hsl(var(--mn-accent) / 0.16); }
+
+/* Reading layout */
+.mn-reading { max-width: 1120px; margin: 0 auto; }
+.mn-reading .atesto-card { background: hsl(var(--mn-surface)); }
+.mn-reading .tiptap-rendered-content { max-width: 1040px; margin: 0 auto; line-height: 1.7; padding: 0.25rem 0; }
+
+/* Typografie v obsahu */
+.tiptap-rendered-content h1,
+.tiptap-rendered-content h2,
+.tiptap-rendered-content h3 { color: hsl(var(--mn-text)); letter-spacing: -0.01em; }
+.tiptap-rendered-content p   { color: hsl(var(--mn-text)); margin: 0.9rem 0; }
+.tiptap-rendered-content table { border: 1px solid hsl(var(--mn-border)); background: hsl(var(--mn-surface-2)); }
+.tiptap-rendered-content th,
+.tiptap-rendered-content td  { border-color: hsl(var(--mn-border)); }
+.tiptap-rendered-content a   { color: hsl(var(--mn-accent)); text-decoration: underline; text-decoration-color: hsl(var(--mn-accent) / 0.35); text-underline-offset: 3px; }
+.tiptap-rendered-content strong { color: hsl(var(--mn-text)); }
+.tiptap-rendered-content code { background: hsl(var(--mn-elevated)); color: hsl(var(--mn-text)); border: 1px solid hsl(var(--mn-border)); }
+
+/* Callout bloky */
+.callout      { border-left: 4px solid hsl(var(--mn-accent)); background: hsl(var(--mn-surface-2)); padding: 0.75rem 1rem; border-radius: 10px; }
+.callout--info { border-left-color: hsl(var(--mn-accent-2)); }
+.callout--warn { border-left-color: hsl(var(--mn-warn)); }
+blockquote     { border-left-color: hsl(var(--mn-accent)); }
