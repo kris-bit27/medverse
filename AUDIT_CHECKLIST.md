@@ -68,6 +68,24 @@
 - **Poznamka:** Bezne u React SPA, ale da se zlepsit s nonce-based CSP nebo hash-based
 - [ ] **Zvazit: Implementovat nonce-based CSP** (nizsi priorita)
 
+#### [SEC-05b] Potencialni API key exposure v client-side kodu
+- **Soubor:** `src/config/env.js:3-4`
+- **Problem:** `VITE_OPENAI_API_KEY` a `VITE_GOOGLE_API_KEY` jsou definovany v client config
+- **Poznamka:** Momentalne nejsou nastaveny/pouzivany, ale pokud nekdo nastavi tyto env vars, klice budou v client bundlu
+- [ ] **Opravit: Odstranit `openaiKey` a `googleKey` z `src/config/env.js`** — tyto klice patri jen na server
+
+#### [SEC-05c] `new Function()` v calculatorEngine
+- **Soubor:** `src/lib/calculatorEngine.js:96`
+- **Problem:** `new Function('Math', '"use strict"; return (' + expr + ')')` — dynamicke vyhodnocovani vyrazu
+- **Riziko:** Stredni — vstupy jsou validovany jako cisla a scope je omezen na Math
+- **Poznamka:** Formule pochazi z admin-definovanych konfiguraci, ne od uzivatelu
+- [ ] **Zvazit: Nahradit bezpecnou math parser knihovnou** (nizsi priorita)
+
+#### [SEC-05d] Error disclosure v content-review
+- **Soubor:** `api/content-review.ts:118`
+- **Problem:** `Raw odpoved: ${result.text.substring(0, 500)}` — raw AI response v chybove zprave
+- [ ] **Opravit: Logovat interne, vracet generickou chybovou zpravu**
+
 ### 2.2 STREDNI PRIORITA
 
 #### [SEC-06] Health endpoint prozrazuje konfiguraci
@@ -246,7 +264,9 @@
 2. [ ] [SEC-02] Povinnou auth na vsechny AI endpointy
 3. [ ] [SEC-03] Implementovat rate limiting (@upstash/ratelimit)
 4. [ ] [SEC-04] Fix CORS wildcard na edge functions
-5. [ ] [SEC-06] Odstranit env disclosure z /api/test
+5. [ ] [SEC-05b] Odstranit API key references z client-side env.js
+6. [ ] [SEC-05d] Fix error disclosure v content-review
+7. [ ] [SEC-06] Odstranit env disclosure z /api/test
 
 ### Faze 2 — Databaze a konzistence
 6. [ ] [DB-01] Zakladni migrace pro puvodni tabulky
@@ -282,11 +302,11 @@
 
 | Kategorie | Kriticke | Vysoka | Stredni | Nizka |
 |-----------|---------|--------|---------|-------|
-| Bezpecnost | 1 (XSS) | 3 (auth, rate limit, CORS) | 3 | 1 |
+| Bezpecnost | 1 (XSS) | 3 (auth, rate limit, CORS) | 6 | 2 |
 | Databaze | 0 | 1 (migrace) | 4 | 0 |
 | Deployment | 0 | 1 (testy v CI) | 2 | 1 |
 | Architektura | 0 | 1 (zadne testy) | 3 | 2 |
-| **Celkem** | **1** | **6** | **12** | **4** |
+| **Celkem** | **1** | **6** | **15** | **5** |
 
 ### Co funguje dobre
 - Supabase auth architektura (Bearer token, app_metadata roles)
