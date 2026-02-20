@@ -9,7 +9,7 @@ export function useAcademyCourses(level) {
     queryFn: async () => {
       let query = supabase
         .from('academy_courses')
-        .select('*, academy_course_prerequisites(prerequisite_course_id)')
+        .select('*, academy_course_prerequisites!academy_course_prerequisites_course_id_fkey(prerequisite_course_id)')
         .eq('is_active', true)
         .order('order_index');
 
