@@ -65,7 +65,11 @@ export function useAcademyCourseProgress(userId) {
       const { data, error } = await supabase
         .rpc('get_academy_course_progress', { p_user_id: userId });
 
-      if (error) throw error;
+      if (error) {
+        console.error('[useAcademyCourseProgress] RPC error:', error);
+        throw error;
+      }
+      console.log('[useAcademyCourseProgress] RPC data:', data);
       return data || [];
     },
     enabled: !!userId,
