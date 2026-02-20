@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
+import { toast } from 'sonner';
 
 export function useAcademyCourses(level) {
   return useQuery({
@@ -168,5 +169,30 @@ export function useAcademySandboxSessions(userId, limit = 5) {
       return data || [];
     },
     enabled: !!userId,
+  });
+}
+
+export function useCheckAcademyAchievement() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ achievementType, tokens, name }) => {
+      const { data, error } = await supabase.rpc('earn_tokens', {
+        p_user_id: user.id,
+        p_amount: tokens,
+        p_achievement_type: achievementType,
+        p_achievement_name: name,
+      });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data, variables) => {
+      if (data) {
+        toast.success(`🎉 Achievement: "${variables.name}" +${variables.tokens} 💎`);
+        queryClient.invalidateQueries({ queryKey: ['achievements'] });
+        queryClient.invalidateQueries({ queryKey: ['userTokens'] });
+      }
+    },
   });
 }

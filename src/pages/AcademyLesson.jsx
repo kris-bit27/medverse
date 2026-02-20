@@ -10,9 +10,14 @@ import {
   useAcademyCourses,
   useAcademyLessons,
   useAcademyProgress,
+  useAcademyCourseProgress,
   useUpdateProgress,
+  useCheckAcademyAchievement,
+  useAcademyProfile,
 } from '@/hooks/useAcademy';
 import { CONTENT_TYPE_ICONS, CONTENT_TYPE_LABELS, SANDBOX_TOKEN_COST, SANDBOX_DAILY_LIMIT } from '@/lib/academy-constants';
+import { ACADEMY_ACHIEVEMENTS, ACADEMY_XP_REWARDS } from '@/lib/academy-achievements';
+import { useAcademyTrack } from '@/hooks/useAcademyAnalytics';
 import AcademyBreadcrumb from '@/components/academy/AcademyBreadcrumb';
 import EvaluationPanel from '@/components/academy/EvaluationPanel';
 import LessonCompleteBanner from '@/components/academy/LessonCompleteBanner';
@@ -598,6 +603,8 @@ export default function AcademyLesson() {
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const updateProgress = useUpdateProgress();
+  const checkAchievement = useCheckAcademyAchievement();
+  const track = useAcademyTrack();
 
   const courseSlug = searchParams.get('course');
   const lessonSlug = searchParams.get('lesson');
@@ -607,6 +614,8 @@ export default function AcademyLesson() {
 
   const { data: lessons = [], isLoading: lessonsLoading } = useAcademyLessons(course?.id);
   const { data: allProgress = [], isLoading: progressLoading } = useAcademyProgress(user?.id);
+  const { data: courseProgressList = [] } = useAcademyCourseProgress(user?.id);
+  const { data: academyProfile } = useAcademyProfile(user?.id);
 
   const lesson = lessons.find((l) => l.slug === lessonSlug);
   const lessonIndex = lessons.findIndex((l) => l.slug === lessonSlug);
@@ -622,12 +631,19 @@ export default function AcademyLesson() {
   const [completed, setCompleted] = useState(false);
   const startTimeRef = useRef(Date.now());
 
-  // Mark as in_progress on mount
+  // Mark as in_progress on mount + analytics
   useEffect(() => {
-    if (lesson && user && (!currentProgress || currentProgress.status === 'not_started')) {
-      updateProgress.mutate({
-        lessonId: lesson.id,
-        status: 'in_progress',
+    if (lesson && user) {
+      if (!currentProgress || currentProgress.status === 'not_started') {
+        updateProgress.mutate({
+          lessonId: lesson.id,
+          status: 'in_progress',
+        });
+      }
+      track('lesson_started', {
+        lesson_id: lesson.id,
+        content_type: lesson.content_type,
+        course_id: course?.id,
       });
     }
     startTimeRef.current = Date.now();
@@ -646,7 +662,151 @@ export default function AcademyLesson() {
           quizAnswers: quizAnswers ?? undefined,
         },
         {
-          onSuccess: () => setCompleted(true),
+          onSuccess: async () => {
+            setCompleted(true);
+
+            // ── Analytics ──
+            track('lesson_completed', {
+              lesson_id: lesson.id,
+              content_type: lesson.content_type,
+              course_id: course?.id,
+              score,
+              time_spent_seconds: timeSpent,
+            });
+
+            // ── XP reward ──
+            const xpAmount = lesson.xp_reward || ACADEMY_XP_REWARDS.lesson_complete;
+            try {
+              await supabase.from('user_points_history').insert({
+                user_id: user.id,
+                points: xpAmount,
+                reason: `Academy: ${lesson.title}`,
+              });
+            } catch (e) {
+              console.error('XP insert error:', e);
+            }
+
+            // ── Achievement checks ──
+            const completedCount = allProgress.filter(
+              (p) => p.status === 'completed'
+            ).length + 1; // +1 for current
+
+            // First lesson
+            if (completedCount === 1) {
+              checkAchievement.mutate({
+                achievementType: 'academy_first_lesson',
+                tokens: ACADEMY_ACHIEVEMENTS.academy_first_lesson.tokens,
+                name: ACADEMY_ACHIEVEMENTS.academy_first_lesson.name,
+              });
+            }
+
+            // 5 lessons
+            if (completedCount === 5) {
+              checkAchievement.mutate({
+                achievementType: 'academy_5_lessons',
+                tokens: ACADEMY_ACHIEVEMENTS.academy_5_lessons.tokens,
+                name: ACADEMY_ACHIEVEMENTS.academy_5_lessons.name,
+              });
+            }
+
+            // Perfect quiz
+            if (lesson.content_type === 'quiz' && score === 100) {
+              checkAchievement.mutate({
+                achievementType: 'academy_first_quiz_perfect',
+                tokens: ACADEMY_ACHIEVEMENTS.academy_first_quiz_perfect.tokens,
+                name: ACADEMY_ACHIEVEMENTS.academy_first_quiz_perfect.name,
+              });
+            }
+
+            // Sandbox: first interaction
+            if (lesson.content_type === 'sandbox') {
+              checkAchievement.mutate({
+                achievementType: 'academy_first_sandbox',
+                tokens: ACADEMY_ACHIEVEMENTS.academy_first_sandbox.tokens,
+                name: ACADEMY_ACHIEVEMENTS.academy_first_sandbox.name,
+              });
+            }
+
+            // Sandbox prompt master (score >= 90)
+            if (lesson.content_type === 'sandbox' && score >= 90) {
+              checkAchievement.mutate({
+                achievementType: 'academy_prompt_master',
+                tokens: ACADEMY_ACHIEVEMENTS.academy_prompt_master.tokens,
+                name: ACADEMY_ACHIEVEMENTS.academy_prompt_master.name,
+              });
+            }
+
+            // Case study: stop the AI safety champion
+            if (
+              lesson.content_type === 'case_study' &&
+              lesson.content?.stop_the_ai === true &&
+              score >= 60
+            ) {
+              checkAchievement.mutate({
+                achievementType: 'academy_safety_champion',
+                tokens: ACADEMY_ACHIEVEMENTS.academy_safety_champion.tokens,
+                name: ACADEMY_ACHIEVEMENTS.academy_safety_champion.name,
+              });
+            }
+
+            // ── Course completion check ──
+            const allCourseLessonsComplete = lessons.every(
+              (l) =>
+                l.id === lesson.id ||
+                allProgress.some(
+                  (p) => p.lesson_id === l.id && p.status === 'completed'
+                )
+            );
+
+            if (allCourseLessonsComplete && course) {
+              track('course_completed', { course_id: course.id, level: course.level });
+
+              // ── Level completion check ──
+              const sameLevelCourses = allCourses.filter(
+                (c) => c.level === course.level
+              );
+              const allLevelComplete = sameLevelCourses.every((c) => {
+                if (c.id === course.id) return true;
+                const cp = courseProgressList.find(
+                  (p) => p.course_id === c.id
+                );
+                return cp && cp.completed_lessons >= cp.total_lessons;
+              });
+
+              if (allLevelComplete) {
+                const achievementKey = `academy_level_${course.level}_complete`;
+                const ach = ACADEMY_ACHIEVEMENTS[achievementKey];
+                if (ach) {
+                  checkAchievement.mutate({
+                    achievementType: achievementKey,
+                    tokens: ach.tokens,
+                    name: ach.name,
+                  });
+                }
+
+                track('level_completed', { level: course.level });
+
+                // Auto-generate certificate
+                try {
+                  await supabase.from('academy_certificates').upsert(
+                    {
+                      user_id: user.id,
+                      level: course.level,
+                      issued_at: new Date().toISOString(),
+                      is_public: false,
+                    },
+                    { onConflict: 'user_id,level' }
+                  );
+                } catch (e) {
+                  console.error('Certificate generation error:', e);
+                }
+
+                toast.success(
+                  `Gratulujeme! Dokončili jste Level ${course.level}!`
+                );
+              }
+            }
+          },
           onError: (err) => {
             console.error('Progress update error:', err);
             toast.error('Chyba při ukládání pokroku.');
@@ -654,7 +814,7 @@ export default function AcademyLesson() {
         }
       );
     },
-    [lesson?.id, user?.id]
+    [lesson?.id, user?.id, allProgress, lessons, course, allCourses, courseProgressList]
   );
 
   const handleSandboxComplete = useCallback(

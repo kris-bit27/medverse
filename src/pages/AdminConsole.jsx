@@ -24,6 +24,7 @@ import { toast } from 'sonner';
 import { canAccessAdmin } from '@/components/utils/permissions';
 import ContentCoverage from '@/components/admin/ContentCoverage';
 import AdminAcademyContent from '@/components/admin/AdminAcademyContent';
+import AdminAcademyAnalytics from '@/components/admin/AdminAcademyAnalytics';
 
 /* ================================================================
    TAB: DASHBOARD
@@ -555,7 +556,10 @@ export default function AdminConsole() {
       </>}
       {activeTab === 'ai' && <AIGenerationTab />}
       {activeTab === 'content' && <ContentOverviewTab />}
-      {activeTab === 'academy' && <AdminAcademyContent />}
+      {activeTab === 'academy' && <>
+        <AdminAcademyAnalytics />
+        <div className="mt-6"><AdminAcademyContent /></div>
+      </>}
     </div>
   );
 }

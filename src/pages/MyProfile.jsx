@@ -18,6 +18,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import CredentialBadge from '@/components/academy/CredentialBadge';
+import { useAcademyProfile } from '@/hooks/useAcademy';
 
 // Constants
 const EDUCATION_LEVELS = [
@@ -71,6 +73,7 @@ export default function MyProfile() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
+  const { data: academyProfile } = useAcademyProfile(user?.id);
 
   // Fetch profile
   const { data: profile, isLoading } = useQuery({
@@ -241,7 +244,10 @@ export default function MyProfile() {
       <div className="flex items-center justify-between">
         <div>
           <span className="mn-caption text-[hsl(var(--mn-accent))]">MŮJ PROFIL</span>
-          <h1 className="mn-serif-font text-[28px] sm:text-[32px] font-bold mb-2">Můj profil</h1>
+          <div className="flex items-center gap-3 mb-2">
+            <h1 className="mn-serif-font text-[28px] sm:text-[32px] font-bold">Můj profil</h1>
+            <CredentialBadge level={academyProfile?.academy_level} size="md" />
+          </div>
           <p className="text-[hsl(var(--mn-muted))]">
             Spravuj své informace a personalizuj AI asistenta
           </p>

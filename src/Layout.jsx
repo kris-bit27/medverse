@@ -46,6 +46,8 @@ import {
 } from 'lucide-react';
 import { canAccessAdmin, getRoleDisplayName, getRoleBadgeColor } from '@/components/utils/permissions';
 import MedVerseLogo from '@/components/MedVerseLogo';
+import { useAcademyProfile } from '@/hooks/useAcademy';
+import { ACADEMY_LEVELS } from '@/lib/academy-constants';
 
 const publicPages = ['Landing', 'Pricing', 'Demo'];
 
@@ -81,6 +83,7 @@ export default function Layout({ children, currentPageName }) {
 
   // Use Supabase Auth instead of base44
   const { user, isAuthenticated, logout } = useAuth();
+  const { data: academyProfile } = useAcademyProfile(user?.id);
 
   useEffect(() => {
     const saved = localStorage.getItem('mn:theme') || localStorage.getItem('medverse-theme');
@@ -271,7 +274,24 @@ export default function Layout({ children, currentPageName }) {
                 >
                   <Icon className={cn("w-5 h-5", isActive && "text-[hsl(var(--mn-accent))]")} />
                   {item.name}
-                  {isActive && <ChevronRight className="w-4 h-4 ml-auto" />}
+                  {item.page === 'AcademyDashboard' && academyProfile?.academy_level >= 1 && (
+                    <span
+                      className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full ml-auto"
+                      style={{
+                        backgroundColor: `${ACADEMY_LEVELS[academyProfile.academy_level]?.color || '#14b8a6'}14`,
+                        color: ACADEMY_LEVELS[academyProfile.academy_level]?.color || '#14b8a6',
+                      }}
+                    >
+                      Lvl {academyProfile.academy_level}
+                    </span>
+                  )}
+                  {item.page === 'AcademyDashboard' && (!academyProfile || !academyProfile.academy_level) && (
+                    <span className="relative ml-auto flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500" />
+                    </span>
+                  )}
+                  {isActive && item.page !== 'AcademyDashboard' && <ChevronRight className="w-4 h-4 ml-auto" />}
                 </Link>
               );
             })}
