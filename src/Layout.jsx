@@ -32,6 +32,7 @@ import {
   Shield,
   ClipboardList,
   MessageSquare,
+  MessageSquarePlus,
   Flag,
   Package,
   Calendar as CalendarIcon,
@@ -48,6 +49,7 @@ import { canAccessAdmin, getRoleDisplayName, getRoleBadgeColor } from '@/compone
 import MedVerseLogo from '@/components/MedVerseLogo';
 import { useAcademyProfile } from '@/hooks/useAcademy';
 import { ACADEMY_LEVELS } from '@/lib/academy-constants';
+import FeedbackModal from '@/components/common/FeedbackModal';
 
 const publicPages = ['Landing', 'Pricing', 'Demo'];
 
@@ -78,6 +80,7 @@ const navItems = [
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
 
   const isPublicPage = publicPages.includes(currentPageName);
 
@@ -342,9 +345,33 @@ export default function Layout({ children, currentPageName }) {
                   <Flag className="w-5 h-5" />
                   Content Feedback
                 </Link>
+                <Link
+                  to={createPageUrl('AdminPortalFeedback')}
+                  onClick={() => setSidebarOpen(false)}
+                  className={cn(
+                    "mn-sidebar-link mn-ui-font flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
+                    currentPageName === 'AdminPortalFeedback'
+                      ? "is-active"
+                      : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))]"
+                  )}
+                >
+                  <MessageSquarePlus className="w-5 h-5" />
+                  Zpětná vazba
+                </Link>
               </>
             )}
           </nav>
+
+          {/* Zpětná vazba */}
+          <div className="px-4 pb-2 pt-1 border-t border-[hsl(var(--mn-border))]">
+            <button
+              onClick={() => { setFeedbackOpen(true); setSidebarOpen(false); }}
+              className="mn-ui-font flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all w-full text-left text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))]"
+            >
+              <MessageSquarePlus className="w-5 h-5" />
+              Zpětná vazba
+            </button>
+          </div>
 
           {/* User section */}
           <div className="p-4 border-t border-[hsl(var(--mn-border))]">
@@ -440,6 +467,7 @@ export default function Layout({ children, currentPageName }) {
         </main>
       </div>
 
+      <FeedbackModal open={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
     </div>
   );
 }

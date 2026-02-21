@@ -111,6 +111,7 @@ export const PAGES = {
   "AdminContentReview": L(() => import('./pages/AdminContentReview')),
   "AdminCostAnalytics": L(() => import('./pages/AdminCostAnalytics')),
   "AdminFeedback":      L(() => import('./pages/AdminFeedback')),
+  "AdminPortalFeedback": L(() => import('./pages/AdminPortalFeedback')),
   "AdminQuestionEdit":  L(() => import('./pages/AdminQuestionEdit')),
   "AdminQuestions":     L(() => import('./pages/AdminQuestions')),
   "AdminTaxonomy":      L(() => import('./pages/AdminTaxonomy')),
