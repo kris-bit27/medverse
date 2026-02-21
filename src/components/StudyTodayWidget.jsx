@@ -67,7 +67,7 @@ export default function StudyTodayWidget() {
         </span>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-2">
         {dueCards > 0 && (
           <Link to={createPageUrl('ReviewToday')}>
             <div className="flex items-center gap-4 p-3.5 rounded-xl border border-[hsl(var(--mn-border))] hover:border-[hsl(var(--mn-accent)/0.3)] transition-all group">
@@ -82,8 +82,8 @@ export default function StudyTodayWidget() {
         )}
 
         {reviewTopics.length > 0 && (
-          <div>
-            <p className="mn-caption text-[hsl(var(--mn-muted))] mb-2 flex items-center gap-1">
+          <div className="pt-4 mt-2 border-t border-[hsl(var(--mn-border)/0.5)]">
+            <p className="mn-caption text-[hsl(var(--mn-muted))] mb-3 flex items-center gap-1">
               <Target className="w-3 h-3" /> Slabé oblasti
             </p>
             <div className="space-y-1">
@@ -109,8 +109,8 @@ export default function StudyTodayWidget() {
         )}
 
         {newTopics.length > 0 && (
-          <div>
-            <p className="mn-caption text-[hsl(var(--mn-muted))] mb-2 flex items-center gap-1">
+          <div className="pt-4 mt-2 border-t border-[hsl(var(--mn-border)/0.5)]">
+            <p className="mn-caption text-[hsl(var(--mn-muted))] mb-3 flex items-center gap-1">
               <BookOpen className="w-3 h-3" /> Nová témata
             </p>
             <div className="space-y-1">
