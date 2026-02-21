@@ -505,3 +505,212 @@ html:not(.dark) .rdp .rdp-day_outside,
 html:not(.dark) .rdp .rdp-day_disabled,
 html:not(.dark) .rdp [aria-disabled="true"] { color: hsl(var(--mn-muted)) !important; opacity: 0.5; }
 html:not(.dark) .rdp { color: hsl(var(--mn-text)) !important; }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   VIZUÁLNÍ UPGRADE — sjednocení portálu s landing page stylem
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Sidebar dostane subtilní gradient jako landing page */
+.mn-sidebar {
+  background: hsl(var(--mn-surface));
+  border-right: 1px solid hsl(var(--mn-border));
+  /* Jemný teal gradient ze spodu — jako landing page ambient glow */
+  background-image: radial-gradient(
+    ellipse 60% 40% at 50% 100%,
+    hsl(var(--mn-accent) / 0.04) 0%,
+    transparent 100%
+  );
+}
+
+/* Active sidebar link — výraznější, jako landing page CTA */
+.mn-sidebar .is-active,
+.mn-sidebar-link.is-active {
+  background: hsl(var(--mn-accent) / 0.12);
+  color: hsl(var(--mn-accent));
+  box-shadow:
+    inset 0 0 0 1px hsl(var(--mn-accent) / 0.2),
+    0 1px 4px hsl(var(--mn-accent) / 0.08);
+}
+
+/* Sidebar nav ikona v aktivním stavu — živější barva */
+.mn-sidebar .is-active svg,
+.mn-sidebar-link.is-active svg {
+  color: hsl(var(--mn-accent));
+  filter: drop-shadow(0 0 4px hsl(var(--mn-accent) / 0.4));
+}
+
+/* Topbar search input — jako landing page nav */
+.mn-topbar input[type="text"],
+.mn-topbar input[type="search"],
+.mn-topbar [role="combobox"] {
+  background: hsl(var(--mn-surface-2));
+  border-color: hsl(var(--mn-border));
+  transition: border-color 0.2s, background 0.2s;
+}
+.mn-topbar input:focus,
+.mn-topbar [role="combobox"]:focus-within {
+  border-color: hsl(var(--mn-accent) / 0.5);
+  background: hsl(var(--mn-surface));
+}
+
+/* Page layout helper — každá stránka portálu používá toto */
+@layer utilities {
+  /* Standardní padding pro page content */
+  .mn-page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 40px 32px;
+  }
+  @media (max-width: 640px) {
+    .mn-page { padding: 24px 16px; }
+  }
+
+  /* Stránka header (eyebrow + h1 + podtext) */
+  .mn-page-header {
+    margin-bottom: 32px;
+  }
+
+  /* Section spacing */
+  .mn-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  /* Hero karta — větší, s border (jako landing stats grid) */
+  .mn-hero-card {
+    background: hsl(var(--mn-surface));
+    border: 1px solid hsl(var(--mn-border));
+    border-radius: var(--mn-radius-xl);
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Teal glow v hero kartě — jako landing hero sekce */
+  .mn-hero-card::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 300px; height: 200px;
+    background: radial-gradient(circle, hsl(var(--mn-accent) / 0.08) 0%, transparent 70%);
+    filter: blur(40px);
+    pointer-events: none;
+  }
+
+  /* Feature ikona — jako landing page feature grid ikony */
+  .mn-feature-icon {
+    width: 40px; height: 40px;
+    border-radius: var(--mn-radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .group:hover .mn-feature-icon {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px currentColor;
+  }
+
+  /* Stats grid — jako landing page "1 468 témat" */
+  .mn-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1px;
+    border-radius: var(--mn-radius-lg);
+    overflow: hidden;
+    border: 1px solid hsl(var(--mn-border));
+    background: hsl(var(--mn-border));
+  }
+  .mn-stats-grid > * {
+    background: hsl(var(--mn-surface));
+    padding: 20px 24px;
+    text-align: center;
+  }
+
+  /* Gradient CTA button — přesně jako landing page "Začít zdarma" */
+  .mn-btn-cta {
+    background: hsl(var(--mn-accent));
+    color: white;
+    border: none;
+    border-radius: var(--mn-radius-md);
+    font-family: var(--mn-font-sans);
+    font-weight: 600;
+    box-shadow: 0 4px 12px hsl(var(--mn-accent) / 0.25);
+    transition: opacity 0.2s, box-shadow 0.2s, transform 0.1s;
+  }
+  .mn-btn-cta:hover {
+    opacity: 0.9;
+    box-shadow: 0 6px 20px hsl(var(--mn-accent) / 0.35);
+    transform: translateY(-1px);
+  }
+  .mn-btn-cta:active { transform: translateY(0); }
+
+  /* Outline button — jako landing "Prohlédnout ukázku" */
+  .mn-btn-outline {
+    background: transparent;
+    border: 1px solid hsl(var(--mn-border));
+    color: hsl(var(--mn-text));
+    border-radius: var(--mn-radius-md);
+    font-family: var(--mn-font-sans);
+    font-weight: 500;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .mn-btn-outline:hover {
+    background: hsl(var(--mn-surface-2));
+    border-color: hsl(var(--mn-accent) / 0.4);
+  }
+
+  /* Pill/badge "NOVÁ GENERACE" styl */
+  .mn-status-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px;
+    border-radius: var(--mn-radius-full);
+    background: hsl(var(--mn-surface-2));
+    border: 1px solid hsl(var(--mn-border));
+    font-family: var(--mn-font-sans);
+    font-size: 11px; font-weight: 500;
+    color: hsl(var(--mn-muted));
+  }
+  .mn-status-pill .mn-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: hsl(var(--mn-success));
+    animation: mn-pulse 2s infinite;
+  }
+  @keyframes mn-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* Section divider s gradient — jako na landing page sekce */
+  .mn-section-rule {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(var(--mn-border)) 20%,
+      hsl(var(--mn-border)) 80%,
+      transparent
+    );
+    margin: 8px 0;
+  }
+}
+
+/* mn-card hover přepis — více výrazný jako landing feature karty */
+.mn-card-secondary:hover {
+  border-color: hsl(var(--mn-accent) / 0.3);
+  box-shadow: 0 4px 20px hsl(var(--mn-accent) / 0.06);
+}
+
+/* Karty s group hover — scale efekt jako na Landing */
+.group .mn-card-secondary,
+.group .mn-card {
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+/* ── GLOBAL PAGE PADDING — konzistentní padding pro všechny stránky portálu ──
+   Stránky které nepoužívají .mn-page helper dostanou aspoň základní px */
+.mn-main > main > div:first-child,
+.mn-main > main > section:first-child {
+  /* neměň — stránky mají vlastní padding, toto je jen fallback */
+}

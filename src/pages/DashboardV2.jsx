@@ -123,17 +123,17 @@ export default function DashboardV2() {
 
       {showOnboarding && <OnboardingWizard onComplete={() => setShowOnboarding(false)} />}
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-10 space-y-10">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-10 space-y-8">
 
         {/* ═══ HERO ═══ */}
         <motion.section {...up(0)}>
-          <div className="relative rounded-2xl overflow-hidden">
+          <div className="relative rounded-2xl overflow-hidden border border-[hsl(var(--mn-border))]">
             <div className="absolute inset-0" style={{
               background: 'linear-gradient(135deg, hsl(var(--mn-accent) / 0.10) 0%, transparent 45%, hsl(188 76% 42% / 0.07) 100%)'
             }} />
             <div className="absolute top-0 right-0 w-44 h-44 rounded-full"
                  style={{ background: 'hsl(var(--mn-accent) / 0.12)', filter: 'blur(60px)' }} />
-            <div className="relative px-7 sm:px-10 py-10 sm:py-12">
+            <div className="relative px-8 sm:px-12 py-10 sm:py-14">
               <div className="flex items-center gap-2 mb-4">
                 <span className="w-2 h-2 rounded-full bg-[hsl(var(--mn-success))]" />
                 <span className="mn-caption text-[hsl(var(--mn-muted))] !mb-0">Dashboard</span>
@@ -153,7 +153,7 @@ export default function DashboardV2() {
 
         {/* ═══ STAT CARDS ═══ */}
         <motion.section {...up(1)}>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[
               { icon: Zap, label: 'AI Tokeny', value: (tokens?.current_tokens || 0).toLocaleString(), sub: `z ${(tokens?.monthly_limit || 50).toLocaleString()}`, color: '#14b8a6', glow: 'hsl(var(--mn-accent) / 0.10)' },
               { icon: RefreshCw, label: 'K opakování', value: String(dueCardsCount), sub: dueCardsCount === 0 ? 'Vše hotovo' : 'kartiček čeká', color: dueCardsCount > 0 ? '#f59e0b' : '#22c55e', glow: dueCardsCount > 0 ? 'hsl(var(--mn-warn) / 0.08)' : 'hsl(var(--mn-success) / 0.08)' },
@@ -163,7 +163,7 @@ export default function DashboardV2() {
               <motion.div key={i}
                 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.12 + i * 0.06, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="group mn-card-secondary relative p-5 overflow-hidden transition-all duration-300 hover:-translate-y-0.5"
+                className="group mn-card-secondary relative p-6 overflow-hidden transition-all duration-300 hover:-translate-y-0.5"
               >
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                      style={{ background: `radial-gradient(circle at 50% 0%, ${s.glow}, transparent 70%)` }} />
@@ -184,7 +184,7 @@ export default function DashboardV2() {
 
         {/* ═══ QUICK ACTIONS ═══ */}
         <motion.section {...up(2)}>
-          <div className="grid sm:grid-cols-4 gap-3">
+          <div className="grid sm:grid-cols-4 gap-4">
             {[
               { to: 'Studium', icon: Brain, label: 'Studuj téma', desc: 'Procházej AI obsah', gradient: 'linear-gradient(135deg, #14b8a6, #10b981)', shadow: 'hsl(var(--mn-accent) / 0.25)' },
               { to: 'ReviewToday', icon: RefreshCw, label: 'Opakovat kartičky', desc: `${dueCardsCount} čeká`, gradient: 'linear-gradient(135deg, #f59e0b, #f97316)', shadow: 'hsl(var(--mn-warn) / 0.25)' },
@@ -192,7 +192,7 @@ export default function DashboardV2() {
               { to: 'AcademyDashboard', icon: GraduationCap, label: 'AI Academy', desc: academyProfile?.academy_level ? `Level ${academyProfile.academy_level}` : 'Zdarma kurzy', gradient: 'linear-gradient(135deg, #0ea5e9, #06b6d4)', shadow: 'rgba(14,165,233,0.25)' },
             ].map((a, i) => (
               <Link key={i} to={createPageUrl(a.to)}
-                className="group mn-card-secondary relative p-5 sm:p-6 transition-all duration-300 hover:-translate-y-0.5"
+                className="group mn-card-secondary relative p-6 transition-all duration-300 hover:-translate-y-0.5"
               >
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform duration-300"
                      style={{ background: a.gradient, boxShadow: `0 4px 16px ${a.shadow}` }}>

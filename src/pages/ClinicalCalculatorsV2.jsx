@@ -405,7 +405,7 @@ export default function ClinicalCalculators() {
                 <span className="text-xs text-[hsl(var(--mn-muted))]">({catTools.length})</span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
                 {catTools.map((tool) => {
                   const Icon = ICONS[tool.icon] || Calculator;
                   return (

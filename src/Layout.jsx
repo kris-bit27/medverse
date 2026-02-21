@@ -160,7 +160,7 @@ export default function Layout({ children, currentPageName }) {
       )}>
         <div className="h-full flex flex-col">
           {/* Logo */}
-          <div className="h-16 flex items-center justify-between px-6 border-b border-[hsl(var(--mn-border))]">
+          <div className="h-16 flex items-center justify-between px-6 border-b border-[hsl(var(--mn-border)/0.8)]">
             <Link to={createPageUrl('Dashboard')} className="flex items-center gap-3">
               <MedVerseLogo size={40} />
               <div>
@@ -242,7 +242,7 @@ export default function Layout({ children, currentPageName }) {
                                 "flex items-center gap-3 px-4 py-2 rounded-xl text-sm font-medium transition-all",
                                 isActive 
                                   ? "bg-[hsl(var(--mn-accent)/0.1)] text-[hsl(var(--mn-accent))]" 
-                                  : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))]"
+                                  : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-accent)/0.06)] hover:text-[hsl(var(--mn-text))]"
                               )}
                             >
                               <SubIcon className="w-4 h-4" />
@@ -272,7 +272,7 @@ export default function Layout({ children, currentPageName }) {
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
                     "mn-sidebar-link mn-ui-font flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
-                    isActive ? "is-active" : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))]"
+                    isActive ? "is-active" : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-accent)/0.06)] hover:text-[hsl(var(--mn-text))]"
                   )}
                 >
                   <Icon className={cn("w-5 h-5", isActive && "text-[hsl(var(--mn-accent))]")} />
@@ -313,7 +313,7 @@ export default function Layout({ children, currentPageName }) {
                     "mn-sidebar-link mn-ui-font flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
                     currentPageName === 'AdminConsole'
                       ? "is-active"
-                      : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))]"
+                      : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-accent)/0.06)] hover:text-[hsl(var(--mn-text))]"
                   )}
                 >
                   <Shield className="w-5 h-5" />
@@ -326,7 +326,7 @@ export default function Layout({ children, currentPageName }) {
                     "mn-sidebar-link mn-ui-font flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
                     currentPageName === 'AdminBatchMonitor'
                       ? "is-active"
-                      : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))]"
+                      : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-accent)/0.06)] hover:text-[hsl(var(--mn-text))]"
                   )}
                 >
                   <Zap className="w-5 h-5" />
@@ -339,7 +339,7 @@ export default function Layout({ children, currentPageName }) {
                     "mn-sidebar-link mn-ui-font flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
                     currentPageName === 'AdminFeedback'
                       ? "is-active"
-                      : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))]"
+                      : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-accent)/0.06)] hover:text-[hsl(var(--mn-text))]"
                   )}
                 >
                   <Flag className="w-5 h-5" />
@@ -352,7 +352,7 @@ export default function Layout({ children, currentPageName }) {
                     "mn-sidebar-link mn-ui-font flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
                     currentPageName === 'AdminPortalFeedback'
                       ? "is-active"
-                      : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))]"
+                      : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-accent)/0.06)] hover:text-[hsl(var(--mn-text))]"
                   )}
                 >
                   <MessageSquarePlus className="w-5 h-5" />
@@ -366,7 +366,7 @@ export default function Layout({ children, currentPageName }) {
           <div className="px-4 pb-2 pt-1 border-t border-[hsl(var(--mn-border))]">
             <button
               onClick={() => { setFeedbackOpen(true); setSidebarOpen(false); }}
-              className="mn-ui-font flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all w-full text-left text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-surface-2))]"
+              className="mn-ui-font flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all w-full text-left text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-accent)/0.06)] hover:text-[hsl(var(--mn-text))]"
             >
               <MessageSquarePlus className="w-5 h-5" />
               Zpětná vazba
@@ -375,7 +375,7 @@ export default function Layout({ children, currentPageName }) {
 
           {/* User section */}
           <div className="p-4 border-t border-[hsl(var(--mn-border))]">
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-[hsl(var(--mn-surface-2))]">
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-[hsl(var(--mn-accent)/0.06)] border border-[hsl(var(--mn-accent)/0.12)]">
               <Avatar className="w-10 h-10">
                 <AvatarFallback className="bg-[hsl(var(--mn-accent)/0.12)] text-[hsl(var(--mn-accent))]">
                   {user?.full_name?.charAt(0) || user?.email?.charAt(0) || 'U'}
@@ -404,7 +404,7 @@ export default function Layout({ children, currentPageName }) {
       {/* Main content */}
       <div className="mn-main lg:pl-72">
         {/* Top bar */}
-        <header className="mn-topbar sticky top-0 h-16 z-40 hidden lg:flex items-center justify-between gap-4 px-6">
+        <header className="mn-topbar sticky top-0 h-16 z-40 hidden lg:flex items-center justify-between gap-4 px-8">
           <div className="flex-1 max-w-xl">
             <SearchTopics />
           </div>
