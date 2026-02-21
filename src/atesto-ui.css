@@ -1,25 +1,17 @@
 /* ════════════════════════════════════════════════════════════════
    MEDVERSE — CENTRÁLNÍ DESIGN SOUBOR
-   ════════════════════════════════════════════════════════════════
-   Vizuál vychází z landing page medverse.cz:
-   - Near-black pozadí (#0a0a0f)
-   - Serif headingy (Source Serif 4)
-   - Živý teal akcent (#14b8a6)
-   - Čisté karty s jemným outline borderem
-   - Hodně white space, elegance
-
+   Vizuál vychází z landing page medverse.cz
    Chceš změnit vizuál? Uprav jen sekce označené ▼ EDIT.
    ════════════════════════════════════════════════════════════════ */
 
 
 /* ──────────────────────────────────────────────────────────────
    ▼ EDIT 1: FONTY
-   Aktualizuj také <link> v index.html pokud měníš rodiny!
    ────────────────────────────────────────────────────────────── */
 :root {
-  --mn-font-serif: 'Source Serif 4', Georgia, serif;           /* headingy, vzdělávací obsah */
-  --mn-font-sans:  'IBM Plex Sans', -apple-system, sans-serif; /* UI, navigace, labely */
-  --mn-font-mono:  'IBM Plex Mono', monospace;                  /* kód, hodnoty, diagnostika */
+  --mn-font-serif: 'Source Serif 4', Georgia, serif;
+  --mn-font-sans:  'IBM Plex Sans', -apple-system, sans-serif;
+  --mn-font-mono:  'IBM Plex Mono', monospace;
 }
 
 body {
@@ -28,13 +20,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Font utility třídy */
 .mn-serif-font { font-family: var(--mn-font-serif); }
 .mn-ui-font    { font-family: var(--mn-font-sans); }
 .mn-mono-font  { font-family: var(--mn-font-mono); }
 .mn-caption    { font-family: var(--mn-font-sans); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
 
-/* Headingy v celém portálu používají serif — jako na landing page */
+/* Headingy — serif jako na landing page */
 h1, h2, h3 {
   font-family: var(--mn-font-serif);
   letter-spacing: -0.02em;
@@ -42,48 +33,35 @@ h1, h2, h3 {
 
 
 /* ──────────────────────────────────────────────────────────────
-   ▼ EDIT 2: TMAVÉ TÉMA (výchozí — dle landing page)
-   Near-black pozadí, živý teal, čisté karty
+   ▼ EDIT 2: SVĚTLÉ TÉMA (výchozí = :root bez .dark)
    ────────────────────────────────────────────────────────────── */
 :root {
-  /* — Pozadí a povrchy (near-black jako landing page) — */
-  --mn-bg:        9 10% 4%;    /* #0a0a0f — skoro černá */
-  --mn-surface:   220 13% 8%;  /* #111318 — karty */
-  --mn-surface-2: 220 12% 11%; /* #161a20 — zanořené prvky */
-  --mn-elevated:  220 11% 14%; /* #1c2028 — modály, dropdowns */
+  --mn-bg:        210 20% 97%;
+  --mn-surface:   0 0% 100%;
+  --mn-surface-2: 210 16% 95%;
+  --mn-elevated:  0 0% 100%;
+  --mn-border:    215 16% 80%;
 
-  /* — Ohraničení (jemný outline jako landing page karty) — */
-  --mn-border:        220 13% 20%; /* viditelný, ale subtilní */
-  --mn-border-subtle: 220 13% 16%; /* velmi jemný */
+  --mn-text:   222 32% 12%;
+  --mn-muted:  220 12% 42%;
 
-  /* — Typografie — */
-  --mn-text:   210 30% 92%;   /* #e4e8f0 — čistá bílá s nádechem */
-  --mn-muted:  215 15% 58%;   /* #858ea3 — sekundární text */
+  --mn-accent:   173 72% 30%;
+  --mn-accent-2: 173 72% 38%;
+  --mn-focus:    176 56% 36%;
 
-  /* — Hlavní akcent (teal z landing page) — */
-  --mn-accent:   173 58% 39%; /* #2bbfaf — živý teal */
-  --mn-accent-2: 173 65% 45%; /* světlejší varianta pro hover */
+  --mn-success: 160 60% 38%;
+  --mn-warn:    38 92% 46%;
+  --mn-danger:  0 72% 48%;
 
-  /* — Focus ring — */
-  --mn-focus: 173 58% 39%;
+  --mn-shadow-1: 0 1px 8px rgba(15, 23, 42, 0.07);
+  --mn-shadow-2: 0 4px 20px rgba(15, 23, 42, 0.10);
 
-  /* — Sémantické barvy — */
-  --mn-success: 160 60% 45%;
-  --mn-warn:    38 92% 55%;
-  --mn-danger:  0 72% 55%;
-
-  /* — Stíny — */
-  --mn-shadow-1: 0 1px 6px rgba(0, 0, 0, 0.4);
-  --mn-shadow-2: 0 8px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
-
-  /* — Zaoblení — */
   --mn-radius:      10px;
   --mn-radius-sm:   4px;
   --mn-radius-md:   8px;
   --mn-radius-lg:   16px;
   --mn-radius-full: 999px;
 
-  /* — Spacing — */
   --mn-space:    16px;
   --mn-space-1:  4px;
   --mn-space-2:  8px;
@@ -119,80 +97,81 @@ h1, h2, h3 {
 
 
 /* ──────────────────────────────────────────────────────────────
-   ▼ EDIT 3: SVĚTLÉ TÉMA
+   ▼ EDIT 3: TMAVÉ TÉMA — html.dark (dle landing page)
+   Near-black bez modrého nádechu, živý teal akcent
    ────────────────────────────────────────────────────────────── */
-html:not(.dark) {
-  --mn-bg:        210 20% 97%;
-  --mn-surface:   0 0% 100%;
-  --mn-surface-2: 210 16% 95%;
-  --mn-elevated:  0 0% 100%;
+html.dark {
+  /* — Pozadí: near-black jako landing page — */
+  --mn-bg:        0 0% 4%;      /* #0a0a0a — skoro černá */
+  --mn-surface:   0 0% 7%;      /* #111111 — karty */
+  --mn-surface-2: 0 0% 10%;     /* #1a1a1a — zanořené */
+  --mn-elevated:  0 0% 13%;     /* #212121 — modály */
 
-  --mn-border:        215 16% 80%;
-  --mn-border-subtle: 215 16% 88%;
+  /* — Border: neutrální šedá, žádný modrý nádech — */
+  --mn-border:    0 0% 20%;     /* #333333 */
 
-  --mn-text:   222 32% 12%;
-  --mn-muted:  220 12% 42%;
+  /* — Text: čistá bílá — */
+  --mn-text:      0 0% 92%;     /* #ebebeb */
+  --mn-muted:     0 0% 55%;     /* #8c8c8c */
 
-  --mn-accent:   173 72% 30%;
-  --mn-accent-2: 173 72% 36%;
+  /* — Teal akcent — živý jako CTA tlačítko na landing — */
+  --mn-accent:    173 58% 39%;  /* #2bbfaf */
+  --mn-accent-2:  173 65% 48%;  /* světlejší hover */
+  --mn-focus:     173 58% 39%;
 
-  --mn-focus:   176 56% 36%;
+  /* — Sémantické — */
+  --mn-success:   160 60% 45%;
+  --mn-warn:      38 92% 55%;
+  --mn-danger:    0 72% 55%;
 
-  --mn-success: 160 60% 38%;
-  --mn-warn:    38 92% 46%;
-  --mn-danger:  0 72% 48%;
-
-  --mn-shadow-1: 0 1px 8px rgba(15, 23, 42, 0.07);
-  --mn-shadow-2: 0 4px 20px rgba(15, 23, 42, 0.10);
+  /* — Stíny hlubší na tmavém pozadí — */
+  --mn-shadow-1:  0 1px 6px rgba(0, 0, 0, 0.5);
+  --mn-shadow-2:  0 8px 32px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 
 /* ════════════════════════════════════════════════════════════════
-   KOMPONENTY — automaticky čerpají z tokenů výše
+   KOMPONENTY
    ════════════════════════════════════════════════════════════════ */
 
-/* Shell layout */
+/* Shell */
 .mn-shell { background: hsl(var(--mn-bg)); color: hsl(var(--mn-text)); }
 .mn-main  { background: hsl(var(--mn-bg)); }
 
-/* Sidebar — jako landing page navbar: tmavý povrch + border */
+/* Sidebar */
 .mn-sidebar {
   background: hsl(var(--mn-surface));
   border-right: 1px solid hsl(var(--mn-border));
 }
-html:not(.dark) .mn-sidebar {
-  box-shadow: 2px 0 16px rgba(15, 23, 42, 0.05);
-}
+html:not(.dark) .mn-sidebar { box-shadow: 2px 0 16px rgba(15, 23, 42, 0.05); }
 
-/* Topbar — průhledný blur efekt jako landing page nav */
+/* Topbar — blur backdrop */
 .mn-topbar {
   background: hsl(var(--mn-surface) / 0.85);
   border-bottom: 1px solid hsl(var(--mn-border));
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
-html:not(.dark) .mn-topbar {
-  background: hsla(0, 0%, 100%, 0.88);
-}
+html:not(.dark) .mn-topbar { background: hsla(0, 0%, 100%, 0.88); }
 
-/* Sidebar aktivní stav */
+/* Sidebar aktivní */
 .mn-sidebar .is-active {
   background: hsl(var(--mn-accent) / 0.12);
   color: hsl(var(--mn-accent));
   box-shadow: inset 0 0 0 1px hsl(var(--mn-accent) / 0.2);
 }
 
-/* Karty — dle landing page stat karet: tmavé, jemný border */
+/* Karty */
 .atesto-card {
   background: hsl(var(--mn-surface));
   border: 1px solid hsl(var(--mn-border));
   border-radius: var(--mn-radius);
   box-shadow: var(--mn-shadow-1);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .atesto-card:hover {
   border-color: hsl(var(--mn-accent) / 0.35);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
 }
 .atesto-card-inner { padding: 1.5rem; }
 .atesto-card-title {
@@ -201,10 +180,8 @@ html:not(.dark) .mn-topbar {
   letter-spacing: -0.01em;
 }
 
-/* Primární tlačítko — teal jako CTA na landing page */
+/* Tlačítka */
 .atesto-btn { border-radius: var(--mn-radius-md); }
-
-/* Ghost/outline tlačítko — jako "Prohlédnout ukázku" na landing */
 .atesto-btn-ghost {
   border: 1px solid hsl(var(--mn-border));
   color: hsl(var(--mn-text));
@@ -214,7 +191,6 @@ html:not(.dark) .mn-topbar {
   background: hsl(var(--mn-surface-2));
   border-color: hsl(var(--mn-accent) / 0.4);
 }
-
 html:not(.dark) .atesto-btn.border,
 html:not(.dark) .atesto-btn.bg-background {
   background: hsl(var(--mn-surface));
@@ -223,12 +199,10 @@ html:not(.dark) .atesto-btn.bg-background {
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.07);
 }
 html:not(.dark) .atesto-btn.border:hover,
-html:not(.dark) .atesto-btn.bg-background:hover {
-  background: hsl(var(--mn-surface-2));
-}
+html:not(.dark) .atesto-btn.bg-background:hover { background: hsl(var(--mn-surface-2)); }
 
 /* Badges */
-.atesto-badge  { border-radius: 999px; }
+.atesto-badge { border-radius: 999px; }
 html:not(.dark) .badge-outline,
 html:not(.dark) .badge-secondary {
   background: hsl(var(--mn-surface-2));
@@ -237,7 +211,13 @@ html:not(.dark) .badge-secondary {
 }
 html:not(.dark) .badge-secondary:hover { background: hsl(var(--mn-surface)); }
 
-/* Badge jako landing page "Nová generace" pill */
+.logbook-badges .atesto-badge {
+  background: hsl(var(--mn-surface-2));
+  color: hsl(var(--mn-text));
+  border: 1px solid hsl(var(--mn-border));
+}
+
+/* Pill badge — jako "Nová generace" na landing */
 .mn-pill-badge {
   display: inline-flex;
   align-items: center;
@@ -251,18 +231,10 @@ html:not(.dark) .badge-secondary:hover { background: hsl(var(--mn-surface)); }
 }
 .mn-pill-badge::before {
   content: '';
-  width: 7px;
-  height: 7px;
+  width: 7px; height: 7px;
   border-radius: 50%;
   background: hsl(var(--mn-accent));
   flex-shrink: 0;
-}
-
-/* Logbook badges */
-.logbook-badges .atesto-badge {
-  background: hsl(var(--mn-surface-2));
-  color: hsl(var(--mn-text));
-  border: 1px solid hsl(var(--mn-border));
 }
 
 /* Inputs */
@@ -303,7 +275,7 @@ html:not(.dark) .badge-secondary:hover { background: hsl(var(--mn-surface)); }
   color: hsl(var(--mn-text));
 }
 
-/* Dropdowns / popovers */
+/* Dropdowns */
 [data-radix-popper-content-wrapper] { z-index: 60 !important; }
 [role="listbox"],
 [data-radix-select-content],
@@ -317,22 +289,12 @@ html:not(.dark) .badge-secondary:hover { background: hsl(var(--mn-surface)); }
 /* Reading layout */
 .mn-reading { max-width: 1120px; margin: 0 auto; }
 .mn-reading .atesto-card { background: hsl(var(--mn-surface)); }
-.mn-reading .tiptap-rendered-content {
-  max-width: 1040px;
-  margin: 0 auto;
-  line-height: 1.75;
-  padding: 0.25rem 0;
-}
+.mn-reading .tiptap-rendered-content { max-width: 1040px; margin: 0 auto; line-height: 1.75; padding: 0.25rem 0; }
 
-/* Typografie v obsahu — serif jako heading na landing */
+/* Typografie v obsahu */
 .tiptap-rendered-content h1,
 .tiptap-rendered-content h2,
-.tiptap-rendered-content h3 {
-  color: hsl(var(--mn-text));
-  font-family: var(--mn-font-serif);
-  letter-spacing: -0.02em;
-  font-weight: 700;
-}
+.tiptap-rendered-content h3 { color: hsl(var(--mn-text)); font-family: var(--mn-font-serif); letter-spacing: -0.02em; font-weight: 700; }
 .tiptap-rendered-content p      { color: hsl(var(--mn-text)); margin: 0.9rem 0; }
 .tiptap-rendered-content table  { border: 1px solid hsl(var(--mn-border)); background: hsl(var(--mn-surface-2)); }
 .tiptap-rendered-content th,
@@ -341,11 +303,24 @@ html:not(.dark) .badge-secondary:hover { background: hsl(var(--mn-surface)); }
 .tiptap-rendered-content strong { color: hsl(var(--mn-text)); font-weight: 700; }
 .tiptap-rendered-content code   { background: hsl(var(--mn-elevated)); color: hsl(var(--mn-text)); border: 1px solid hsl(var(--mn-border)); border-radius: 4px; padding: 1px 5px; }
 
-/* Callout bloky */
+/* Callouts */
 .callout       { border-left: 4px solid hsl(var(--mn-accent)); background: hsl(var(--mn-surface-2)); padding: 0.75rem 1rem; border-radius: 10px; }
 .callout--info { border-left-color: hsl(var(--mn-accent-2)); }
 .callout--warn { border-left-color: hsl(var(--mn-warn)); }
 blockquote     { border-left-color: hsl(var(--mn-accent)); }
+
+/* Gradient text — jako "chytřeji s AI" */
+.mn-gradient-text {
+  background: linear-gradient(135deg, hsl(var(--mn-accent)), hsl(var(--mn-accent-2)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Stat karty */
+.mn-stat-card { background: hsl(var(--mn-surface)); border: 1px solid hsl(var(--mn-border)); border-radius: var(--mn-radius-lg); padding: var(--mn-space-6); text-align: center; }
+.mn-stat-value { font-family: var(--mn-font-sans); font-size: 2.25rem; font-weight: 700; color: hsl(var(--mn-text)); letter-spacing: -0.03em; line-height: 1; }
+.mn-stat-label { font-family: var(--mn-font-sans); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: hsl(var(--mn-muted)); margin-top: 6px; }
 
 /* Kalendář */
 .planner-calendar .rdp { width: 100%; max-width: 100%; overflow: hidden; }
@@ -369,37 +344,3 @@ html:not(.dark) .rdp .rdp-day_outside,
 html:not(.dark) .rdp .rdp-day_disabled,
 html:not(.dark) .rdp [aria-disabled="true"] { color: hsl(var(--mn-muted)) !important; opacity: 0.5; }
 html:not(.dark) .rdp { color: hsl(var(--mn-text)) !important; }
-
-/* Stat karty — styl dle landing page spodního pruhu */
-.mn-stat-card {
-  background: hsl(var(--mn-surface));
-  border: 1px solid hsl(var(--mn-border));
-  border-radius: var(--mn-radius-lg);
-  padding: var(--mn-space-6);
-  text-align: center;
-}
-.mn-stat-value {
-  font-family: var(--mn-font-sans);
-  font-size: 2.25rem;
-  font-weight: 700;
-  color: hsl(var(--mn-text));
-  letter-spacing: -0.03em;
-  line-height: 1;
-}
-.mn-stat-label {
-  font-family: var(--mn-font-sans);
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: hsl(var(--mn-muted));
-  margin-top: 6px;
-}
-
-/* Accent gradient text — jako "chytřeji s AI" na landing */
-.mn-gradient-text {
-  background: linear-gradient(135deg, hsl(var(--mn-accent)), hsl(var(--mn-accent-2)));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
