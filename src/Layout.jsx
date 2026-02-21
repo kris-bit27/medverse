@@ -307,17 +307,17 @@ export default function Layout({ children, currentPageName }) {
                   </p>
                 </div>
                 <Link
-                  to={createPageUrl('AdminConsole')}
+                  to={createPageUrl('AdminPanel')}
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
                     "mn-sidebar-link mn-ui-font flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
-                    currentPageName === 'AdminConsole'
+                    currentPageName === 'AdminPanel' || currentPageName === 'Admin' || currentPageName === 'AdminConsole'
                       ? "is-active"
                       : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-accent)/0.06)] hover:text-[hsl(var(--mn-text))]"
                   )}
                 >
                   <Shield className="w-5 h-5" />
-                  Správa
+                  Admin Panel
                 </Link>
                 <Link
                   to={createPageUrl('AdminBatchMonitor')}
@@ -331,32 +331,6 @@ export default function Layout({ children, currentPageName }) {
                 >
                   <Zap className="w-5 h-5" />
                   Batch Generace
-                </Link>
-                <Link
-                  to={createPageUrl('AdminFeedback')}
-                  onClick={() => setSidebarOpen(false)}
-                  className={cn(
-                    "mn-sidebar-link mn-ui-font flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
-                    currentPageName === 'AdminFeedback'
-                      ? "is-active"
-                      : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-accent)/0.06)] hover:text-[hsl(var(--mn-text))]"
-                  )}
-                >
-                  <Flag className="w-5 h-5" />
-                  Content Feedback
-                </Link>
-                <Link
-                  to={createPageUrl('AdminPortalFeedback')}
-                  onClick={() => setSidebarOpen(false)}
-                  className={cn(
-                    "mn-sidebar-link mn-ui-font flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
-                    currentPageName === 'AdminPortalFeedback'
-                      ? "is-active"
-                      : "text-[hsl(var(--mn-muted))] hover:bg-[hsl(var(--mn-accent)/0.06)] hover:text-[hsl(var(--mn-text))]"
-                  )}
-                >
-                  <MessageSquarePlus className="w-5 h-5" />
-                  Zpětná vazba
                 </Link>
               </>
             )}

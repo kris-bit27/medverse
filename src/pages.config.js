@@ -101,7 +101,8 @@ export const PAGES = {
   "ReviewQueue":        L(() => import('./pages/ReviewQueue')),
 
   // === Admin ===
-  "Admin":              L(() => import('./pages/Admin')),
+  "AdminPanel":         L(() => import('./pages/AdminPanel')),
+  "Admin":              L(() => import('./pages/AdminPanel')),       // alias → AdminPanel
   "AdminAnalytics":     L(() => import('./pages/AdminAnalytics')),
   "AdminArticleEdit":   L(() => import('./pages/AdminArticleEdit')),
   "AdminArticles":      L(() => import('./pages/AdminArticles')),
