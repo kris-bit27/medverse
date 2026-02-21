@@ -22,9 +22,9 @@ const stats = [
 const features = [
   { icon: BookOpen, title: 'Studijní obsah generovaný AI', desc: 'Plný text i high-yield shrnutí pro každé téma. Strukturovaný, přehledný a neustále aktualizovaný.', accent: 'from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-success))]' },
   { icon: Brain, title: 'AI Copilot pro medicínu', desc: 'Ptejte se na cokoliv z medicíny. AI analyzuje kontext a odpovídá v rámci vašeho oboru a tématu.', accent: 'from-[hsl(var(--mn-accent-2))] to-[hsl(168,60%,35%)]' },
-  { icon: RefreshCw, title: 'Spaced Repetition kartičky', desc: 'Automaticky generované flashcards s inteligentním algoritmem opakování. Systém ví, co potřebujete.', accent: 'from-[#8b5cf6] to-[#a855f7]' },
+  { icon: RefreshCw, title: 'Spaced Repetition kartičky', desc: 'Automaticky generované flashcards s inteligentním algoritmem opakování. Systém ví, co potřebujete.', accent: 'from-[hsl(var(--mn-info))] to-[hsl(217,80%,45%)]' },
   { icon: Zap, title: 'Generátor testů s vysvětlením', desc: 'MCQ testy z libovolného oboru a okruhu. Okamžité vyhodnocení s podrobným vysvětlením odpovědí.', accent: 'from-[hsl(var(--mn-warn))] to-[#f97316]' },
-  { icon: Calculator, title: 'Klinické kalkulačky a algoritmy', desc: '28 skórovacích systémů, 40 lékových karet, 10 rozhodovacích stromů — vše na jednom místě.', accent: 'from-[#f43f5e] to-[#ec4899]' },
+  { icon: Calculator, title: 'Klinické kalkulačky a algoritmy', desc: '28 skórovacích systémů, 40 lékových karet, 10 rozhodovacích stromů — vše na jednom místě.', accent: 'from-[hsl(var(--mn-danger))] to-[hsl(var(--mn-warn))]' },
   { icon: Search, title: 'Med Search s PubMed', desc: 'Hledejte napříč obsahem i v PubMed. AI zpracuje výsledky a shrne klíčové informace česky.', accent: 'from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))]' },
 ];
 

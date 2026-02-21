@@ -2,303 +2,506 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* ════════════════════════════════════════════════════════════════
-   ▼ EDIT 1: FONTY
-   ════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════════
+   MEDVERSE DESIGN SYSTEM — jediný zdroj pravdy
+   Chceš změnit celý portál? Uprav jen sekce ▼ EDIT níže.
+   ═══════════════════════════════════════════════════════════════════ */
+
+
+/* ─────────────────────────────────────────────────────────────────
+   ▼ EDIT 1 — FONTY
+   Source Serif 4 = display/body (čtení, nadpisy stránek)
+   IBM Plex Sans  = UI (sidebar, labels, tlačítka, karty)
+   IBM Plex Mono  = čísla, kódy, hodnoty
+   ───────────────────────────────────────────────────────────────── */
 @layer base {
   :root {
     --mn-font-serif: 'Source Serif 4', Georgia, serif;
     --mn-font-sans:  'IBM Plex Sans', -apple-system, sans-serif;
     --mn-font-mono:  'IBM Plex Mono', monospace;
   }
+
   body {
     font-family: var(--mn-font-sans);
     -webkit-font-smoothing: antialiased;
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
   }
+
+  /* h1/h2/h3 NEJSOU globálně serif — jen explicitně přes .mn-page-title atd.
+     Důvod: sidebar linky, card tituly, badge texty = sans musí zůstat sans. */
   * { border-color: hsl(var(--border)); outline-color: hsl(var(--ring) / 0.5); }
 }
 
-/* ════════════════════════════════════════════════════════════════
-   ▼ EDIT 2: SVĚTLÉ TÉMA (hex hodnoty z BRAND.light v design systému)
-   ════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────
+   ▼ EDIT 2 — SVĚTLÉ TÉMA
+   ───────────────────────────────────────────────────────────────── */
 @layer base {
   :root {
-    /* Povrchy — BRAND.light */
-    --mn-bg:        220 18% 97%;   /* #f5f7fa */
-    --mn-surface:   0 0% 100%;     /* #ffffff */
-    --mn-surface-2: 220 16% 94%;   /* #f0f2f6 */
-    --mn-elevated:  0 0% 100%;     /* #ffffff */
-    --mn-border:    220 15% 88%;   /* #e2e5ee */
-    --mn-border-subtle: 220 15% 93%; /* #ebeef4 */
+    /* Povrchy */
+    --mn-bg:            220 18% 97%;   /* #f5f7fa */
+    --mn-surface:       0   0%  100%;  /* #ffffff */
+    --mn-surface-2:     220 16% 94%;   /* #f0f2f6 */
+    --mn-elevated:      0   0%  100%;  /* #ffffff */
+    --mn-border:        220 15% 88%;   /* #e2e5ee */
+    --mn-border-subtle: 220 15% 93%;   /* #ebeef4 */
 
     /* Text */
-    --mn-text:      221 39% 11%;   /* #111827 */
-    --mn-muted:     220 9% 46%;    /* #6b7280 */
-    --mn-muted-2:   220 9% 60%;    /* #9ca3af */
+    --mn-text:          221 39% 11%;   /* #111827 */
+    --mn-muted:         220  9% 46%;   /* #6b7280 */
+    --mn-muted-2:       220  9% 62%;   /* #9ca3af */
 
-    /* Akcent — BRAND.light.accent */
-    --mn-accent:    174 82% 31%;   /* #0d9488 */
-    --mn-accent-hover: 174 76% 25%; /* #0f766e */
-    --mn-accent-light: 173 58% 39%; /* #14b8a6 */
+    /* Akcent teal */
+    --mn-accent:        174 82% 31%;   /* #0d9488 */
+    --mn-accent-hover:  174 76% 25%;   /* #0f766e */
+    --mn-accent-light:  173 58% 39%;   /* #14b8a6 */
     --mn-accent-subtle: 173 58% 39% / 0.08;
-    --mn-secondary: 192 82% 36%;   /* #0891b2 */
+
+    /* Sekundární akcent cyan — pro gradienty, accent-2 alias */
+    --mn-accent-2:      192 82% 36%;   /* #0891b2 */
 
     /* Sémantické */
     --mn-success:   160 60% 38%;   /* #059669 */
-    --mn-warn:      38 92% 46%;    /* #d97706 */
-    --mn-danger:    0 72% 51%;     /* #dc2626 */
-    --mn-info:      217 80% 54%;   /* #2563eb */
-    --mn-pearl:     38 78% 47%;    /* #d97706 */
+    --mn-warn:       38 92% 46%;   /* #d97706 */
+    --mn-danger:      0 72% 51%;   /* #dc2626 */
+    --mn-info:       217 80% 54%;  /* #2563eb */
+    --mn-pearl:      38 78% 47%;   /* #d97706 */
 
     /* Stíny */
-    --mn-shadow-1: 0 1px 8px rgba(15,23,42,0.06);
-    --mn-shadow-2: 0 4px 16px rgba(15,23,42,0.08);
+    --mn-shadow-1: 0 1px  8px rgba(15, 23, 42, 0.06);
+    --mn-shadow-2: 0 4px 16px rgba(15, 23, 42, 0.08);
+    --mn-shadow-3: 0 8px 32px rgba(15, 23, 42, 0.10);
 
-    /* Radius */
-    --mn-radius-sm:   4px;
-    --mn-radius-md:   8px;
-    --mn-radius:      10px;
-    --mn-radius-lg:   14px;
-    --mn-radius-full: 999px;
+    /* Border radius — 1 standard pro celý portál */
+    --mn-radius-xs:   4px;
+    --mn-radius-sm:   8px;
+    --mn-radius-md:   10px;
+    --mn-radius-lg:   14px;   /* karty */
+    --mn-radius-xl:   20px;   /* hero sekce */
+    --mn-radius-full: 9999px;
 
     /* Spacing */
-    --mn-space-1: 4px; --mn-space-2: 8px; --mn-space-3: 12px;
-    --mn-space-4: 16px; --mn-space-5: 20px; --mn-space-6: 24px;
-    --mn-space-8: 32px; --mn-space-10: 40px; --mn-space-12: 48px;
+    --mn-sp-1: 4px;  --mn-sp-2: 8px;   --mn-sp-3: 12px;
+    --mn-sp-4: 16px; --mn-sp-5: 20px;  --mn-sp-6: 24px;
+    --mn-sp-8: 32px; --mn-sp-10: 40px; --mn-sp-12: 48px;
+
+    /* Layout */
+    --mn-max-content: 1200px;
+    --mn-sidebar-w:   288px;
+    --mn-topbar-h:    64px;
 
     /* shadcn mapping */
-    --background: var(--mn-bg);
-    --foreground: var(--mn-text);
-    --card: var(--mn-surface-2);
-    --card-foreground: var(--mn-text);
-    --popover: var(--mn-elevated);
-    --popover-foreground: var(--mn-text);
-    --primary: var(--mn-accent);
-    --primary-foreground: 210 40% 98%;
-    --secondary: var(--mn-surface-2);
-    --secondary-foreground: var(--mn-text);
-    --muted: var(--mn-surface-2);
-    --muted-foreground: var(--mn-muted);
-    --accent: var(--mn-surface-2);
-    --accent-foreground: var(--mn-text);
-    --destructive: var(--mn-danger);
-    --destructive-foreground: 210 40% 98%;
-    --border: var(--mn-border);
-    --input: var(--mn-border);
-    --ring: var(--mn-accent);
-    --radius: 0.625rem;
-    --chart-1: 12 76% 61%; --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%; --chart-4: 43 74% 66%; --chart-5: 27 87% 67%;
-    --sidebar-background: var(--mn-surface);
-    --sidebar-foreground: var(--mn-text);
-    --sidebar-primary: var(--mn-accent);
+    --background:              var(--mn-bg);
+    --foreground:              var(--mn-text);
+    --card:                    var(--mn-surface);
+    --card-foreground:         var(--mn-text);
+    --popover:                 var(--mn-elevated);
+    --popover-foreground:      var(--mn-text);
+    --primary:                 var(--mn-accent);
+    --primary-foreground:      210 40% 98%;
+    --secondary:               var(--mn-surface-2);
+    --secondary-foreground:    var(--mn-text);
+    --muted:                   var(--mn-surface-2);
+    --muted-foreground:        var(--mn-muted);
+    --accent:                  var(--mn-surface-2);
+    --accent-foreground:       var(--mn-text);
+    --destructive:             var(--mn-danger);
+    --destructive-foreground:  210 40% 98%;
+    --border:                  var(--mn-border);
+    --input:                   var(--mn-border);
+    --ring:                    var(--mn-accent);
+    --radius:                  0.625rem;
+    --chart-1: 12 76% 61%;  --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%; --chart-4: 43  74% 66%; --chart-5: 27 87% 67%;
+    --sidebar-background:        var(--mn-surface);
+    --sidebar-foreground:        var(--mn-text);
+    --sidebar-primary:           var(--mn-accent);
     --sidebar-primary-foreground: 210 40% 98%;
-    --sidebar-accent: var(--mn-surface-2);
+    --sidebar-accent:            var(--mn-surface-2);
     --sidebar-accent-foreground: var(--mn-text);
-    --sidebar-border: var(--mn-border);
-    --sidebar-ring: var(--mn-accent);
+    --sidebar-border:            var(--mn-border);
+    --sidebar-ring:              var(--mn-accent);
   }
 }
 
-/* ════════════════════════════════════════════════════════════════
-   ▼ EDIT 3: TMAVÉ TÉMA (hex hodnoty z BRAND.dark v design systému)
-   ════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────
+   ▼ EDIT 3 — TMAVÉ TÉMA
+   Přesné hex hodnoty z BRAND.dark design systému.
+   ───────────────────────────────────────────────────────────────── */
 @layer base {
   .dark {
-    /* Povrchy — neutrální tmavá, odpovídá landing page / referenčnímu UI */
-    --mn-bg:        230 12% 7%;    /* #0f1117 */
-    --mn-surface:   228 12% 10%;   /* #161820 */
-    --mn-surface-2: 228 12% 13%;   /* #1c1e2a */
-    --mn-elevated:  228 11% 17%;   /* #232536 */
-    --mn-border:    228 13% 21%;   /* #2a2d3e */
-    --mn-border-subtle: 228 13% 17%; /* #222438 */
+    /* Povrchy — BRAND.dark */
+    --mn-bg:            222 26%  7%;   /* #0c0f16 */
+    --mn-surface:       224 22% 10%;   /* #131620 */
+    --mn-surface-2:     225 20% 13%;   /* #191d29 */
+    --mn-elevated:      226 18% 17%;   /* #1f2333 */
+    --mn-border:        226 17% 22%;   /* #2a2f42 */
+    --mn-border-subtle: 226 17% 17%;   /* #222638 */
 
     /* Text */
-    --mn-text:      228 15% 92%;   /* #e8e9ed */
-    --mn-muted:     228 11% 65%;   /* #9b9db2 */
-    --mn-muted-2:   228 9%  45%;   /* #6b6d82 */
+    --mn-text:          220 20% 93%;   /* #e8eaef */
+    --mn-muted:         224 12% 65%;   /* #9498b0 */
+    --mn-muted-2:       224 10% 43%;   /* #5f637a */
 
-    /* Akcent — BRAND.dark.accent */
-    --mn-accent:    173 72% 40%;   /* #14b8a6 */
-    --mn-accent-hover: 174 76% 32%; /* #0d9488 */
-    --mn-accent-light: 166 64% 52%; /* #2dd4bf */
+    /* Akcent teal */
+    --mn-accent:        173 72% 40%;   /* #14b8a6 */
+    --mn-accent-hover:  174 76% 32%;   /* #0d9488 */
+    --mn-accent-light:  166 64% 52%;   /* #2dd4bf */
     --mn-accent-subtle: 173 72% 40% / 0.10;
-    --mn-secondary: 188 96% 43%;   /* #06b6d4 */
+
+    /* Sekundární akcent cyan */
+    --mn-accent-2:      188 96% 43%;   /* #06b6d4 */
 
     /* Sémantické */
     --mn-success:   160 60% 45%;   /* #10b981 */
-    --mn-warn:      38 92% 55%;    /* #f59e0b */
-    --mn-danger:    0 72% 60%;     /* #ef4444 */
-    --mn-info:      217 80% 60%;   /* #3b82f6 */
-    --mn-pearl:     38 92% 55%;    /* #f59e0b */
+    --mn-warn:       38 92% 55%;   /* #f59e0b */
+    --mn-danger:      0 72% 60%;   /* #ef4444 */
+    --mn-info:       217 80% 60%;  /* #3b82f6 */
+    --mn-pearl:      38 92% 55%;   /* #f59e0b */
 
     /* Stíny */
-    --mn-shadow-1: 0 2px 12px rgba(0,0,0,0.25);
-    --mn-shadow-2: 0 8px 24px rgba(0,0,0,0.4);
+    --mn-shadow-1: 0 2px 12px rgba(0, 0, 0, 0.30);
+    --mn-shadow-2: 0 6px 24px rgba(0, 0, 0, 0.45);
+    --mn-shadow-3: 0 12px 40px rgba(0, 0, 0, 0.55);
   }
 }
 
 
-/* ════════════════════════════════════════════════════════════════
-   UTILITY TŘÍDY — jednotný systém pro celý portál
-   Použití v JSX: className="mn-card", "mn-card-sm", atd.
-   ════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════════
+   UTILITY TŘÍDY
+   ═══════════════════════════════════════════════════════════════════ */
 
-/* ── KARTY ── jeden standard napříč celým portálem */
 @layer utilities {
-  .mn-card {
-    background: hsl(var(--mn-surface));
-    border: 1px solid hsl(var(--mn-border));
-    border-radius: 14px;
-    box-shadow: var(--mn-shadow-1);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  }
-  .mn-card:hover {
-    border-color: hsl(var(--mn-accent) / 0.3);
-  }
-  .mn-card-secondary {
-    background: hsl(var(--mn-surface-2));
-    border: 1px solid hsl(var(--mn-border));
-    border-radius: 14px;
-    box-shadow: var(--mn-shadow-1);
-  }
-  .mn-card-elevated {
-    background: hsl(var(--mn-elevated));
-    border: 1px solid hsl(var(--mn-border));
-    border-radius: 14px;
-    box-shadow: var(--mn-shadow-2);
-  }
 
-  /* ── HEADINGY ── */
-  .mn-h1 { font-family: var(--mn-font-serif); font-size: clamp(28px,5vw,42px); font-weight: 700; letter-spacing: -0.02em; color: hsl(var(--mn-text)); line-height: 1.1; }
-  .mn-h2 { font-family: var(--mn-font-serif); font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; color: hsl(var(--mn-text)); }
-  .mn-h3 { font-family: var(--mn-font-sans); font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; color: hsl(var(--mn-text)); }
-  .mn-label { font-family: var(--mn-font-sans); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: hsl(var(--mn-muted)); }
-  .mn-value-display { font-family: var(--mn-font-mono); font-weight: 700; letter-spacing: -0.02em; color: hsl(var(--mn-text)); }
+  /* ── Fonty ── */
+  .mn-serif       { font-family: var(--mn-font-serif); }
+  .mn-sans        { font-family: var(--mn-font-sans); }
+  .mn-mono        { font-family: var(--mn-font-mono); }
+  .mn-serif-font  { font-family: var(--mn-font-serif); }
+  .mn-ui-font     { font-family: var(--mn-font-sans); }
+  .mn-mono-font   { font-family: var(--mn-font-mono); }
+  .mn-caption     { font-family: var(--mn-font-sans); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .mn-label       { font-family: var(--mn-font-sans); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: hsl(var(--mn-muted)); }
 
-  /* ── ACCENT TEXT GRADIENT ── */
-  .mn-accent-text {
-    background: linear-gradient(135deg, hsl(var(--mn-accent)), hsl(var(--mn-secondary)));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  /* ── Typografie ── */
+  .mn-page-title {
+    font-family: var(--mn-font-serif);
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 700; letter-spacing: -0.02em; line-height: 1.1;
+    color: hsl(var(--mn-text));
   }
-
-  /* ── SEKCE HEADER ── */
-  .mn-section-title {
+  .mn-section-heading {
+    font-family: var(--mn-font-serif);
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 700; letter-spacing: -0.02em;
+    color: hsl(var(--mn-text));
+  }
+  .mn-card-title {
+    font-family: var(--mn-font-sans);
+    font-size: 15px; font-weight: 600; letter-spacing: -0.01em;
+    color: hsl(var(--mn-text));
+  }
+  .mn-eyebrow {
+    font-family: var(--mn-font-sans);
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: hsl(var(--mn-muted));
+  }
+  .mn-eyebrow-accent {
     font-family: var(--mn-font-sans);
     font-size: 11px; font-weight: 600;
     text-transform: uppercase; letter-spacing: 0.08em;
     color: hsl(var(--mn-accent));
-    margin-bottom: 20px;
   }
 
-  /* ── STAT BLOKY (jako na landing page) ── */
+  /* Hodnoty / kódy */
+  .mn-value {
+    font-family: var(--mn-font-mono); font-size: 0.9em; font-weight: 500;
+    color: hsl(var(--mn-accent-light));
+    background: hsl(var(--mn-accent) / 0.10);
+    padding: 1px 6px; border-radius: var(--mn-radius-xs);
+  }
+  .mn-value-display {
+    font-family: var(--mn-font-mono); font-weight: 700;
+    letter-spacing: -0.02em; color: hsl(var(--mn-text));
+  }
+
+  /* Gradient text — "Kristián", "chytřeji s AI" */
+  .mn-accent-text {
+    background: linear-gradient(135deg, hsl(var(--mn-accent)), hsl(var(--mn-accent-2)));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .mn-gradient-text {
+    background: linear-gradient(135deg, hsl(var(--mn-accent-light)), hsl(var(--mn-accent-2)));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+
+  /* ── Karty ── */
+  .mn-card {
+    background: hsl(var(--mn-surface));
+    border: 1px solid hsl(var(--mn-border));
+    border-radius: var(--mn-radius-lg);
+    box-shadow: var(--mn-shadow-1);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .mn-card:hover { border-color: hsl(var(--mn-accent) / 0.3); box-shadow: var(--mn-shadow-2); }
+
+  .mn-card-secondary {
+    background: hsl(var(--mn-surface-2));
+    border: 1px solid hsl(var(--mn-border));
+    border-radius: var(--mn-radius-lg);
+    box-shadow: var(--mn-shadow-1);
+    transition: border-color 0.2s ease;
+  }
+  .mn-card-secondary:hover { border-color: hsl(var(--mn-accent) / 0.25); }
+
+  .mn-card-elevated {
+    background: hsl(var(--mn-elevated));
+    border: 1px solid hsl(var(--mn-border));
+    border-radius: var(--mn-radius-lg);
+    box-shadow: var(--mn-shadow-2);
+  }
+
+  /* Hero karta — větší radius, pro hero sekce stránek */
+  .mn-card-hero {
+    background: hsl(var(--mn-surface));
+    border: 1px solid hsl(var(--mn-border));
+    border-radius: var(--mn-radius-xl);
+    box-shadow: var(--mn-shadow-2);
+    position: relative; overflow: hidden;
+  }
+
+  /* ── Stat bloky ── */
   .mn-stat {
     background: hsl(var(--mn-surface));
     border: 1px solid hsl(var(--mn-border));
-    border-radius: 14px; padding: 20px; text-align: center;
+    border-radius: var(--mn-radius-lg);
+    padding: var(--mn-sp-5); text-align: center;
   }
-  .mn-stat-num { font-family: var(--mn-font-sans); font-size: 2rem; font-weight: 700; letter-spacing: -0.03em; color: hsl(var(--mn-text)); line-height: 1; }
+  .mn-stat-num  { font-family: var(--mn-font-mono); font-size: 2rem; font-weight: 700; letter-spacing: -0.03em; color: hsl(var(--mn-text)); line-height: 1; }
   .mn-stat-desc { font-family: var(--mn-font-sans); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: hsl(var(--mn-muted)); margin-top: 6px; }
+  /* Aliasy zpětné kompatibility */
+  .mn-stat-card  { background: hsl(var(--mn-surface)); border: 1px solid hsl(var(--mn-border)); border-radius: var(--mn-radius-lg); padding: 24px; text-align: center; }
+  .mn-stat-value { font-family: var(--mn-font-sans); font-size: 2.25rem; font-weight: 700; color: hsl(var(--mn-text)); letter-spacing: -0.03em; line-height: 1; }
+  .mn-stat-label { font-family: var(--mn-font-sans); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: hsl(var(--mn-muted)); margin-top: 6px; }
 
-  /* ── INTERAKTIVNÍ ŘÁDKY ── */
-  .mn-row {
-    display: flex; align-items: center;
-    padding: 12px 16px; border-radius: 10px;
-    transition: background 0.15s;
-    cursor: pointer;
-  }
-  .mn-row:hover { background: hsl(var(--mn-surface-2)); }
-
-  /* ── TAGY / PILLS ── */
+  /* ── Tagy / Pills ── */
   .mn-tag {
     display: inline-flex; align-items: center; gap: 4px;
-    padding: 2px 10px; border-radius: 999px;
-    font-family: var(--mn-font-sans); font-size: 11px; font-weight: 600;
+    padding: 2px 10px; border-radius: var(--mn-radius-full);
+    font-family: var(--mn-font-sans); font-size: 11px; font-weight: 600; line-height: 1.6;
     background: hsl(var(--mn-surface-2));
     border: 1px solid hsl(var(--mn-border));
     color: hsl(var(--mn-muted));
   }
-  .mn-tag-accent {
-    background: hsl(var(--mn-accent) / 0.10);
-    border-color: hsl(var(--mn-accent) / 0.25);
-    color: hsl(var(--mn-accent));
-  }
-  .mn-tag-warn {
-    background: hsl(var(--mn-warn) / 0.10);
-    border-color: hsl(var(--mn-warn) / 0.25);
-    color: hsl(var(--mn-warn));
-  }
-  .mn-tag-danger {
-    background: hsl(var(--mn-danger) / 0.10);
-    border-color: hsl(var(--mn-danger) / 0.25);
-    color: hsl(var(--mn-danger));
-  }
-  .mn-tag-success {
-    background: hsl(var(--mn-success) / 0.10);
-    border-color: hsl(var(--mn-success) / 0.25);
-    color: hsl(var(--mn-success));
-  }
-  .mn-tag-info {
-    background: hsl(var(--mn-info) / 0.10);
-    border-color: hsl(var(--mn-info) / 0.25);
-    color: hsl(var(--mn-info));
-  }
-  /* info → použij pro "High-yield" tagy kde design systém používal purple */
-  .mn-tag-purple {
-    background: hsl(271 76% 53% / 0.10);
-    border-color: hsl(271 76% 53% / 0.25);
-    color: hsl(271 76% 60%);
-  }
+  .mn-tag-accent  { background: hsl(var(--mn-accent)  / 0.10); border-color: hsl(var(--mn-accent)  / 0.25); color: hsl(var(--mn-accent));  }
+  .mn-tag-warn    { background: hsl(var(--mn-warn)    / 0.10); border-color: hsl(var(--mn-warn)    / 0.25); color: hsl(var(--mn-warn));    }
+  .mn-tag-danger  { background: hsl(var(--mn-danger)  / 0.10); border-color: hsl(var(--mn-danger)  / 0.25); color: hsl(var(--mn-danger));  }
+  .mn-tag-success { background: hsl(var(--mn-success) / 0.10); border-color: hsl(var(--mn-success) / 0.25); color: hsl(var(--mn-success)); }
+  .mn-tag-info    { background: hsl(var(--mn-info)    / 0.10); border-color: hsl(var(--mn-info)    / 0.25); color: hsl(var(--mn-info));    }
+  .mn-tag-purple  { background: hsl(271 76% 53% / 0.10); border-color: hsl(271 76% 53% / 0.25); color: hsl(271 76% 60%); }
 
-  /* ── PROGRESS BAR ── */
-  .mn-progress-track { background: hsl(var(--mn-border)); border-radius: 999px; overflow: hidden; }
-  .mn-progress-fill  { background: linear-gradient(90deg, hsl(var(--mn-accent)), hsl(var(--mn-secondary))); border-radius: 999px; height: 100%; transition: width 0.5s ease; }
+  .mn-pill-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: hsl(var(--mn-surface-2)); border: 1px solid hsl(var(--mn-border));
+    border-radius: var(--mn-radius-full); padding: 4px 14px;
+    font-size: 13px; font-family: var(--mn-font-sans); color: hsl(var(--mn-text));
+  }
+  .mn-pill-badge::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: hsl(var(--mn-accent)); flex-shrink: 0; }
 
-  /* ── DIVIDER ── */
-  .mn-divider { border: none; border-top: 1px solid hsl(var(--mn-border)); margin: 0; }
+  /* ── Interaktivní řádky ── */
+  .mn-row { display: flex; align-items: center; padding: 12px 16px; border-radius: var(--mn-radius-sm); transition: background 0.15s; cursor: pointer; }
+  .mn-row:hover { background: hsl(var(--mn-surface-2)); }
 
-  /* ── SPINNER ── */
+  /* ── Progress ── */
+  .mn-progress-track { background: hsl(var(--mn-border)); border-radius: var(--mn-radius-full); overflow: hidden; }
+  .mn-progress-fill  { background: linear-gradient(90deg, hsl(var(--mn-accent)), hsl(var(--mn-accent-2))); border-radius: var(--mn-radius-full); height: 100%; transition: width 0.5s ease; }
+
+  /* ── Spinner ── */
   .mn-spinner { width: 32px; height: 32px; border: 3px solid hsl(var(--mn-border)); border-top-color: hsl(var(--mn-accent)); border-radius: 50%; animation: mn-spin 0.7s linear infinite; }
   @keyframes mn-spin { to { transform: rotate(360deg); } }
 
-  /* ── EMPTY STATE ── */
-  .mn-empty { text-align: center; padding: 48px 24px; color: hsl(var(--mn-muted)); font-family: var(--mn-font-sans); }
-
-  /* ── SHADOW UTILITIES ── (nahrazuje shadow-lg/shadow-2xl) */
-  .mn-shadow   { box-shadow: var(--mn-shadow-1); }
+  /* ── Helpers ── */
+  .mn-divider   { border: none; border-top: 1px solid hsl(var(--mn-border)); margin: 0; }
+  .mn-empty     { text-align: center; padding: 48px 24px; color: hsl(var(--mn-muted)); font-family: var(--mn-font-sans); }
+  .mn-shadow    { box-shadow: var(--mn-shadow-1); }
   .mn-shadow-lg { box-shadow: var(--mn-shadow-2); }
+  .mn-shadow-xl { box-shadow: var(--mn-shadow-3); }
+
+  /* Atmospheric efekty (Landing + Dashboard hero) */
+  .mn-dot-grid {
+    background-image: radial-gradient(circle at 1px 1px, hsl(var(--mn-text) / 0.04) 0.5px, transparent 0);
+    background-size: 24px 24px;
+  }
+  .mn-glow-accent {
+    background: radial-gradient(circle, hsl(var(--mn-accent) / 0.10) 0%, transparent 70%);
+    filter: blur(60px);
+  }
 }
 
-/* ════════════════════════════════════════════════════════════════
-   GLOBÁLNÍ PŘEPISY — sjednocení shadcn komponent s design systémem
-   ════════════════════════════════════════════════════════════════ */
 
-/* shadcn Card → vždy mn-card styl */
+/* ═══════════════════════════════════════════════════════════════════
+   LAYOUT
+   ═══════════════════════════════════════════════════════════════════ */
+
+.mn-shell { background: hsl(var(--mn-bg)); color: hsl(var(--mn-text)); min-height: 100vh; }
+.mn-main  { background: hsl(var(--mn-bg)); }
+
+.mn-sidebar { background: hsl(var(--mn-surface)); border-right: 1px solid hsl(var(--mn-border)); }
+html:not(.dark) .mn-sidebar { box-shadow: 2px 0 12px rgba(15, 23, 42, 0.04); }
+
+.mn-topbar {
+  background: hsl(var(--mn-surface) / 0.92);
+  border-bottom: 1px solid hsl(var(--mn-border));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+html:not(.dark) .mn-topbar { background: hsla(0, 0%, 100%, 0.90); }
+
+.mn-sidebar .is-active,
+.mn-sidebar-link.is-active {
+  background: hsl(var(--mn-accent) / 0.12);
+  color: hsl(var(--mn-accent));
+  box-shadow: inset 0 0 0 1px hsl(var(--mn-accent) / 0.2);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   INTERAKTIVNÍ KOMPONENTY
+   ═══════════════════════════════════════════════════════════════════ */
+
+.atesto-card { background: hsl(var(--mn-surface)); border: 1px solid hsl(var(--mn-border)); border-radius: var(--mn-radius-lg); box-shadow: var(--mn-shadow-1); transition: border-color 0.2s, box-shadow 0.2s; }
+.atesto-card:hover { border-color: hsl(var(--mn-accent) / 0.3); box-shadow: var(--mn-shadow-2); }
+.atesto-card-inner { padding: 1.5rem; }
+.atesto-card-title { color: hsl(var(--mn-text)); font-family: var(--mn-font-sans); font-weight: 600; letter-spacing: -0.01em; }
+
+.atesto-btn { border-radius: var(--mn-radius-md); font-family: var(--mn-font-sans); font-weight: 500; }
+.atesto-btn-primary { background: linear-gradient(135deg, hsl(var(--mn-accent)), hsl(var(--mn-accent-2))); color: #fff; border: none; }
+.atesto-btn-primary:hover { opacity: 0.9; }
+.atesto-btn-ghost { border: 1px solid hsl(var(--mn-border)); color: hsl(var(--mn-text)); background: transparent; transition: border-color 0.2s, background 0.2s; }
+.atesto-btn-ghost:hover { background: hsl(var(--mn-surface-2)); border-color: hsl(var(--mn-accent) / 0.4); }
+html:not(.dark) .atesto-btn.border,
+html:not(.dark) .atesto-btn.bg-background { background: hsl(var(--mn-surface)); color: hsl(var(--mn-text)); border-color: hsl(var(--mn-border)); box-shadow: 0 1px 2px rgba(15,23,42,0.06); }
+html:not(.dark) .atesto-btn.border:hover,
+html:not(.dark) .atesto-btn.bg-background:hover { background: hsl(var(--mn-surface-2)); }
+
+.atesto-input, .atesto-select { background: hsl(var(--mn-elevated)); border-color: hsl(var(--mn-border)); color: hsl(var(--mn-text)); font-family: var(--mn-font-sans); transition: border-color 0.15s, box-shadow 0.15s; }
+.atesto-input:focus, .atesto-select:focus { outline: none; border-color: hsl(var(--mn-accent) / 0.6); box-shadow: 0 0 0 3px hsl(var(--mn-accent) / 0.15); }
+
+.atesto-badge { border-radius: var(--mn-radius-full); font-family: var(--mn-font-sans); }
+html:not(.dark) .badge-outline,
+html:not(.dark) .badge-secondary { background: hsl(var(--mn-surface-2)); color: hsl(var(--mn-text)); border-color: hsl(var(--mn-border)); }
+html:not(.dark) .badge-secondary:hover { background: hsl(var(--mn-surface)); }
+.logbook-badges .atesto-badge { background: hsl(var(--mn-surface-2)); color: hsl(var(--mn-text)); border: 1px solid hsl(var(--mn-border)); }
+
+.atesto-progressbar { background: hsl(var(--mn-accent) / 0.12); border-radius: var(--mn-radius-full); }
+
+.atesto-tabs-list, .mn-segmented { background: hsl(var(--mn-surface-2)); border: 1px solid hsl(var(--mn-border)); border-radius: var(--mn-radius-full); padding: 4px; gap: 6px; }
+.atesto-tab { color: hsl(var(--mn-muted)); font-family: var(--mn-font-sans); font-size: 13.5px; font-weight: 500; transition: color 0.15s; }
+.atesto-tab[data-state="active"], .mn-segmented [data-state="active"] { background: hsl(var(--mn-elevated)); color: hsl(var(--mn-text)); box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+.atesto-tab[data-state="inactive"]:hover, .mn-segmented [data-state="inactive"]:hover { background: hsl(var(--mn-elevated) / 0.6); color: hsl(var(--mn-text)); }
+
+[data-radix-popper-content-wrapper] { z-index: 60 !important; }
+[role="listbox"], [data-radix-select-content],
+[data-radix-dropdown-menu-content], [data-radix-popover-content] { background: hsl(var(--mn-elevated)) !important; border-color: hsl(var(--mn-border)) !important; box-shadow: var(--mn-shadow-2) !important; }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   CONTENT KOMPONENTY
+   ═══════════════════════════════════════════════════════════════════ */
+
+.callout         { border-left: 4px solid hsl(var(--mn-accent));   background: hsl(var(--mn-accent)   / 0.06); padding: 0.75rem 1rem; border-radius: var(--mn-radius-sm); }
+.callout--info   { border-left-color: hsl(var(--mn-info));         background: hsl(var(--mn-info)      / 0.06); }
+.callout--warn   { border-left-color: hsl(var(--mn-warn));         background: hsl(var(--mn-warn)      / 0.08); }
+.callout--danger { border-left-color: hsl(var(--mn-danger));       background: hsl(var(--mn-danger)    / 0.08); }
+.callout--pearl  { border-left-color: hsl(var(--mn-pearl));        background: hsl(var(--mn-pearl)     / 0.08); }
+
+.mn-pearl-block { padding: 12px 16px; border-radius: var(--mn-radius-sm); border-left: 3px solid hsl(var(--mn-pearl)); background: hsl(var(--mn-pearl) / 0.08); font-family: var(--mn-font-serif); font-size: 13px; line-height: 1.6; color: hsl(var(--mn-text)); }
+
+blockquote { border-left-color: hsl(var(--mn-accent)); }
+
+.tiptap-rendered-content { font-family: var(--mn-font-serif); font-size: 1.05rem; line-height: 1.75; color: hsl(var(--mn-text)); }
+.tiptap-rendered-content p { margin: 0.9rem 0; }
+.tiptap-rendered-content p:first-child { margin-top: 0; }
+.tiptap-rendered-content p:last-child  { margin-bottom: 0; }
+.tiptap-rendered-content h1 { font-family: var(--mn-font-serif); font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; color: hsl(var(--mn-text)); margin-top: 2.2em; margin-bottom: 0.9em; border-bottom: 1px solid hsl(var(--mn-border)); padding-bottom: 0.45em; }
+.tiptap-rendered-content h2 { font-family: var(--mn-font-serif); font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; color: hsl(var(--mn-text)); margin-top: 2.2em; margin-bottom: 0.9em; border-left: 4px solid hsl(var(--mn-accent)); border-bottom: 1px solid hsl(var(--mn-border)); padding-left: 1rem; padding-bottom: 0.45em; }
+.tiptap-rendered-content h3 { font-family: var(--mn-font-serif); font-size: 1.25rem; font-weight: 700; letter-spacing: -0.015em; color: hsl(var(--mn-text)); margin-top: 2em; margin-bottom: 0.7em; }
+.tiptap-rendered-content strong { font-weight: 700; color: hsl(var(--mn-text)); }
+.tiptap-rendered-content em { font-style: italic; }
+.tiptap-rendered-content a { color: hsl(var(--mn-accent-light)); text-decoration: underline; text-decoration-color: hsl(var(--mn-accent) / 0.35); text-underline-offset: 3px; font-weight: 500; }
+.tiptap-rendered-content code { background: hsl(var(--mn-elevated)); color: hsl(var(--mn-accent-light)); border: 1px solid hsl(var(--mn-border)); border-radius: var(--mn-radius-xs); padding: 1px 6px; font-size: 0.875em; font-family: var(--mn-font-mono); }
+.tiptap-rendered-content pre { background: hsl(var(--mn-elevated)); color: hsl(var(--mn-text)); padding: 1em; border-radius: var(--mn-radius-sm); overflow-x: auto; margin: 1.4em 0; border: 1px solid hsl(var(--mn-border)); }
+.tiptap-rendered-content pre code { background: transparent; color: inherit; padding: 0; border: none; }
+.tiptap-rendered-content ul,
+.tiptap-rendered-content ol { margin: 1.2rem 0; background: hsl(var(--mn-surface-2)); border-left: 3px solid hsl(var(--mn-accent)); padding: 0.9rem 1rem 0.9rem 2rem; border-radius: 0.6rem; display: block; }
+.tiptap-rendered-content ul { list-style-type: disc; }
+.tiptap-rendered-content ol { list-style-type: decimal; }
+.tiptap-rendered-content li { margin: 0.8em 0; line-height: 1.9; }
+.tiptap-rendered-content table { width: 100%; border-collapse: collapse; margin: 2em 0; }
+.tiptap-rendered-content thead { background: hsl(var(--mn-surface-2)); }
+.tiptap-rendered-content tbody tr:nth-child(even) { background: hsl(var(--mn-surface)); }
+.tiptap-rendered-content th { font-weight: 600; text-align: left; padding: 0.75rem; border: 1px solid hsl(var(--mn-border)); }
+.tiptap-rendered-content td { padding: 0.75rem; border: 1px solid hsl(var(--mn-border)); }
+.tiptap-rendered-content blockquote { border-left: 4px solid hsl(var(--mn-accent)); padding: 0.5em 1em; margin: 1.4em 0; font-style: italic; background: hsl(var(--mn-surface-2)); }
+.tiptap-rendered-content hr { border: none; border-top: 1px solid hsl(var(--mn-border)); margin: 2.2em 0; }
+.tiptap-rendered-content mark { background: hsl(var(--mn-warn) / 0.22); padding: 0.125em 0.25em; border-radius: 0.25rem; }
+
+.mn-reading { max-width: 1120px; margin: 0 auto; }
+.mn-reading .atesto-card { background: hsl(var(--mn-surface)); }
+.mn-reading .tiptap-rendered-content { max-width: 1040px; margin: 0 auto; }
+.high-yield-content .tiptap-rendered-content li { margin: 1.2em 0; }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   GLOBÁLNÍ PŘEPISY
+   ═══════════════════════════════════════════════════════════════════ */
+
 [class*="rounded-xl"].border,
 [class*="rounded-2xl"].border,
-[class*="rounded-lg"].border {
-  border-color: hsl(var(--mn-border));
-}
+[class*="rounded-lg"].border { border-color: hsl(var(--mn-border)); }
 
-/* Všechny shadow-lg a shadow-2xl → mn-shadow */
-.shadow-lg   { box-shadow: var(--mn-shadow-2) !important; }
-.shadow-xl   { box-shadow: var(--mn-shadow-2) !important; }
-.shadow-2xl  { box-shadow: 0 12px 40px rgba(0,0,0,0.35) !important; }
+.shadow-lg  { box-shadow: var(--mn-shadow-2) !important; }
+.shadow-xl  { box-shadow: var(--mn-shadow-2) !important; }
+.shadow-2xl { box-shadow: var(--mn-shadow-3) !important; }
 
-/* Fialová (#a855f7) nahrazena mn-info (blue) — fialová není v design systému */
-/* Tyto třídy přepíší hardcoded purple v Logbook/Admin/Community */
-.text-\[\#a855f7\]  { color: hsl(var(--mn-info)) !important; }
-.bg-\[\#a855f7\]    { background: hsl(var(--mn-info) / 0.10) !important; }
+/* Fialová → info */
+.text-\[\#a855f7\]   { color: hsl(var(--mn-info)) !important; }
+.bg-\[\#a855f7\]     { background: hsl(var(--mn-info) / 0.10) !important; }
 .border-\[\#a855f7\] { border-color: hsl(var(--mn-info) / 0.30) !important; }
 
-/* Pink (#ec4899) → warn */
-.text-\[\#ec4899\]  { color: hsl(var(--mn-warn)) !important; }
-.bg-\[\#ec4899\]    { background: hsl(var(--mn-warn) / 0.10) !important; }
+/* Pink → warn */
+.text-\[\#ec4899\] { color: hsl(var(--mn-warn)) !important; }
+.bg-\[\#ec4899\]   { background: hsl(var(--mn-warn) / 0.10) !important; }
 
-/* Starý slate (StudiumV3) → mn tokeny */
-.bg-slate-700\/30   { background: hsl(var(--mn-surface-2)) !important; }
-.text-slate-600     { color: hsl(var(--mn-muted)) !important; }
+/* Slate → tokeny */
+.bg-slate-700\/30 { background: hsl(var(--mn-surface-2)) !important; }
+.text-slate-600   { color: hsl(var(--mn-muted)) !important; }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   SPECIÁLNÍ KOMPONENTY
+   ═══════════════════════════════════════════════════════════════════ */
+
+.planner-calendar .rdp { width: 100%; max-width: 100%; overflow: hidden; }
+.planner-calendar { max-width: 100%; overflow-x: auto; }
+.planner-calendar .rdp table { width: 100%; }
+.planner-calendar .rdp .rdp-day,
+.planner-calendar .rdp .rdp-day_button,
+.planner-calendar .rdp .day { width: clamp(28px, 3vw, 36px); height: clamp(28px, 3vw, 36px); }
+.planner-calendar .rdp .head_cell  { width: clamp(28px, 3vw, 36px); }
+.planner-calendar .rdp .nav_button { flex: 0 0 auto; }
+.planner-calendar .rdp .caption    { padding-inline: 32px; }
+html:not(.dark) .rdp .day,
+html:not(.dark) .rdp .rdp-day,
+html:not(.dark) .rdp .rdp-day_button,
+html:not(.dark) .rdp .rdp-button,
+html:not(.dark) .rdp button         { color: hsl(var(--mn-text)) !important; }
+html:not(.dark) .rdp .head_cell     { color: hsl(var(--mn-muted)); font-weight: 600; }
+html:not(.dark) .rdp .caption_label { color: hsl(var(--mn-text)) !important; }
+html:not(.dark) .rdp .rdp-day_outside,
+html:not(.dark) .rdp .rdp-day_disabled,
+html:not(.dark) .rdp [aria-disabled="true"] { color: hsl(var(--mn-muted)) !important; opacity: 0.5; }
+html:not(.dark) .rdp { color: hsl(var(--mn-text)) !important; }
