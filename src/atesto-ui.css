@@ -1,138 +1,14 @@
 /* ════════════════════════════════════════════════════════════════
-   MEDVERSE — CENTRÁLNÍ DESIGN SOUBOR
-   Vizuál vychází z landing page medverse.cz
-   Chceš změnit vizuál? Uprav jen sekce označené ▼ EDIT.
+   MEDVERSE — KOMPONENTY
+   Tokeny (barvy, fonty) jsou v index.css uvnitř @layer base
+   Tady jsou jen component styly které tokeny využívají.
    ════════════════════════════════════════════════════════════════ */
 
-
-/* ──────────────────────────────────────────────────────────────
-   ▼ EDIT 1: FONTY
-   ────────────────────────────────────────────────────────────── */
-:root {
-  --mn-font-serif: 'Source Serif 4', Georgia, serif;
-  --mn-font-sans:  'IBM Plex Sans', -apple-system, sans-serif;
-  --mn-font-mono:  'IBM Plex Mono', monospace;
-}
-
-body {
-  font-family: var(--mn-font-sans);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
+/* Font utility třídy */
 .mn-serif-font { font-family: var(--mn-font-serif); }
 .mn-ui-font    { font-family: var(--mn-font-sans); }
 .mn-mono-font  { font-family: var(--mn-font-mono); }
 .mn-caption    { font-family: var(--mn-font-sans); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
-
-/* Headingy — serif jako na landing page */
-h1, h2, h3 {
-  font-family: var(--mn-font-serif);
-  letter-spacing: -0.02em;
-}
-
-
-/* ──────────────────────────────────────────────────────────────
-   ▼ EDIT 2: SVĚTLÉ TÉMA (výchozí = :root bez .dark)
-   ────────────────────────────────────────────────────────────── */
-:root {
-  --mn-bg:        210 20% 97%;
-  --mn-surface:   0 0% 100%;
-  --mn-surface-2: 210 16% 95%;
-  --mn-elevated:  0 0% 100%;
-  --mn-border:    215 16% 80%;
-
-  --mn-text:   222 32% 12%;
-  --mn-muted:  220 12% 42%;
-
-  --mn-accent:   173 72% 30%;
-  --mn-accent-2: 173 72% 38%;
-  --mn-focus:    176 56% 36%;
-
-  --mn-success: 160 60% 38%;
-  --mn-warn:    38 92% 46%;
-  --mn-danger:  0 72% 48%;
-
-  --mn-shadow-1: 0 1px 8px rgba(15, 23, 42, 0.07);
-  --mn-shadow-2: 0 4px 20px rgba(15, 23, 42, 0.10);
-
-  --mn-radius:      10px;
-  --mn-radius-sm:   4px;
-  --mn-radius-md:   8px;
-  --mn-radius-lg:   16px;
-  --mn-radius-full: 999px;
-
-  --mn-space:    16px;
-  --mn-space-1:  4px;
-  --mn-space-2:  8px;
-  --mn-space-3:  12px;
-  --mn-space-4:  16px;
-  --mn-space-5:  20px;
-  --mn-space-6:  24px;
-  --mn-space-8:  32px;
-  --mn-space-10: 40px;
-  --mn-space-12: 48px;
-
-  /* Tailwind/shadcn mapping */
-  --background:             var(--mn-bg);
-  --foreground:             var(--mn-text);
-  --card:                   var(--mn-surface);
-  --card-foreground:        var(--mn-text);
-  --popover:                var(--mn-elevated);
-  --popover-foreground:     var(--mn-text);
-  --primary:                var(--mn-accent);
-  --primary-foreground:     210 40% 98%;
-  --secondary:              var(--mn-surface-2);
-  --secondary-foreground:   var(--mn-text);
-  --muted:                  var(--mn-surface-2);
-  --muted-foreground:       var(--mn-muted);
-  --accent:                 var(--mn-surface-2);
-  --accent-foreground:      var(--mn-text);
-  --destructive:            var(--mn-danger);
-  --destructive-foreground: 210 40% 98%;
-  --border:                 var(--mn-border);
-  --input:                  var(--mn-border);
-  --ring:                   var(--mn-focus);
-}
-
-
-/* ──────────────────────────────────────────────────────────────
-   ▼ EDIT 3: TMAVÉ TÉMA — html.dark (dle landing page)
-   Near-black bez modrého nádechu, živý teal akcent
-   ────────────────────────────────────────────────────────────── */
-html.dark {
-  /* — Pozadí: near-black jako landing page — */
-  --mn-bg:        0 0% 4%;      /* #0a0a0a — skoro černá */
-  --mn-surface:   0 0% 7%;      /* #111111 — karty */
-  --mn-surface-2: 0 0% 10%;     /* #1a1a1a — zanořené */
-  --mn-elevated:  0 0% 13%;     /* #212121 — modály */
-
-  /* — Border: neutrální šedá, žádný modrý nádech — */
-  --mn-border:    0 0% 20%;     /* #333333 */
-
-  /* — Text: čistá bílá — */
-  --mn-text:      0 0% 92%;     /* #ebebeb */
-  --mn-muted:     0 0% 55%;     /* #8c8c8c */
-
-  /* — Teal akcent — živý jako CTA tlačítko na landing — */
-  --mn-accent:    173 58% 39%;  /* #2bbfaf */
-  --mn-accent-2:  173 65% 48%;  /* světlejší hover */
-  --mn-focus:     173 58% 39%;
-
-  /* — Sémantické — */
-  --mn-success:   160 60% 45%;
-  --mn-warn:      38 92% 55%;
-  --mn-danger:    0 72% 55%;
-
-  /* — Stíny hlubší na tmavém pozadí — */
-  --mn-shadow-1:  0 1px 6px rgba(0, 0, 0, 0.5);
-  --mn-shadow-2:  0 8px 32px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.4);
-}
-
-
-/* ════════════════════════════════════════════════════════════════
-   KOMPONENTY
-   ════════════════════════════════════════════════════════════════ */
 
 /* Shell */
 .mn-shell { background: hsl(var(--mn-bg)); color: hsl(var(--mn-text)); }
@@ -145,7 +21,7 @@ html.dark {
 }
 html:not(.dark) .mn-sidebar { box-shadow: 2px 0 16px rgba(15, 23, 42, 0.05); }
 
-/* Topbar — blur backdrop */
+/* Topbar */
 .mn-topbar {
   background: hsl(var(--mn-surface) / 0.85);
   border-bottom: 1px solid hsl(var(--mn-border));
@@ -171,156 +47,73 @@ html:not(.dark) .mn-topbar { background: hsla(0, 0%, 100%, 0.88); }
 }
 .atesto-card:hover {
   border-color: hsl(var(--mn-accent) / 0.35);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
 }
 .atesto-card-inner { padding: 1.5rem; }
-.atesto-card-title {
-  color: hsl(var(--mn-text));
-  font-family: var(--mn-font-serif);
-  letter-spacing: -0.01em;
-}
+.atesto-card-title { color: hsl(var(--mn-text)); font-family: var(--mn-font-serif); letter-spacing: -0.01em; }
 
 /* Tlačítka */
 .atesto-btn { border-radius: var(--mn-radius-md); }
-.atesto-btn-ghost {
-  border: 1px solid hsl(var(--mn-border));
-  color: hsl(var(--mn-text));
-  transition: border-color 0.2s, background 0.2s;
-}
-.atesto-btn-ghost:hover {
-  background: hsl(var(--mn-surface-2));
-  border-color: hsl(var(--mn-accent) / 0.4);
-}
+.atesto-btn-ghost { border: 1px solid hsl(var(--mn-border)); color: hsl(var(--mn-text)); transition: border-color 0.2s, background 0.2s; }
+.atesto-btn-ghost:hover { background: hsl(var(--mn-surface-2)); border-color: hsl(var(--mn-accent) / 0.4); }
 html:not(.dark) .atesto-btn.border,
-html:not(.dark) .atesto-btn.bg-background {
-  background: hsl(var(--mn-surface));
-  color: hsl(var(--mn-text));
-  border-color: hsl(var(--mn-border));
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.07);
-}
+html:not(.dark) .atesto-btn.bg-background { background: hsl(var(--mn-surface)); color: hsl(var(--mn-text)); border-color: hsl(var(--mn-border)); }
 html:not(.dark) .atesto-btn.border:hover,
 html:not(.dark) .atesto-btn.bg-background:hover { background: hsl(var(--mn-surface-2)); }
 
 /* Badges */
 .atesto-badge { border-radius: 999px; }
 html:not(.dark) .badge-outline,
-html:not(.dark) .badge-secondary {
-  background: hsl(var(--mn-surface-2));
-  color: hsl(var(--mn-text));
-  border-color: hsl(var(--mn-border));
-}
+html:not(.dark) .badge-secondary { background: hsl(var(--mn-surface-2)); color: hsl(var(--mn-text)); border-color: hsl(var(--mn-border)); }
 html:not(.dark) .badge-secondary:hover { background: hsl(var(--mn-surface)); }
+.logbook-badges .atesto-badge { background: hsl(var(--mn-surface-2)); color: hsl(var(--mn-text)); border: 1px solid hsl(var(--mn-border)); }
 
-.logbook-badges .atesto-badge {
-  background: hsl(var(--mn-surface-2));
-  color: hsl(var(--mn-text));
-  border: 1px solid hsl(var(--mn-border));
-}
-
-/* Pill badge — jako "Nová generace" na landing */
-.mn-pill-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: hsl(var(--mn-surface-2));
-  border: 1px solid hsl(var(--mn-border));
-  border-radius: 999px;
-  padding: 4px 14px;
-  font-size: 13px;
-  color: hsl(var(--mn-text));
-}
-.mn-pill-badge::before {
-  content: '';
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: hsl(var(--mn-accent));
-  flex-shrink: 0;
-}
+/* Pill badge */
+.mn-pill-badge { display: inline-flex; align-items: center; gap: 6px; background: hsl(var(--mn-surface-2)); border: 1px solid hsl(var(--mn-border)); border-radius: 999px; padding: 4px 14px; font-size: 13px; color: hsl(var(--mn-text)); }
+.mn-pill-badge::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: hsl(var(--mn-accent)); flex-shrink: 0; }
 
 /* Inputs */
 .atesto-input,
-.atesto-select {
-  background: hsl(var(--mn-surface));
-  border-color: hsl(var(--mn-border));
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
+.atesto-select { background: hsl(var(--mn-surface)); border-color: hsl(var(--mn-border)); transition: border-color 0.15s, box-shadow 0.15s; }
 .atesto-input:focus,
-.atesto-select:focus {
-  outline: none;
-  border-color: hsl(var(--mn-accent) / 0.6);
-  box-shadow: 0 0 0 3px hsl(var(--mn-accent) / 0.15);
-}
+.atesto-select:focus { outline: none; border-color: hsl(var(--mn-accent) / 0.6); box-shadow: 0 0 0 3px hsl(var(--mn-accent) / 0.15); }
 
-/* Progress bar */
+/* Progress */
 .atesto-progressbar { background: hsl(var(--mn-accent) / 0.14); }
 
-/* Tabs */
-.atesto-tabs-list, .mn-segmented {
-  background: hsl(var(--mn-surface-2));
-  border: 1px solid hsl(var(--mn-border));
-  border-radius: 999px;
-  padding: 4px;
-  gap: 6px;
-}
+/* Tabs / Segmented */
+.atesto-tabs-list, .mn-segmented { background: hsl(var(--mn-surface-2)); border: 1px solid hsl(var(--mn-border)); border-radius: 999px; padding: 4px; gap: 6px; }
 .atesto-tab { color: hsl(var(--mn-muted)); transition: color 0.15s; }
 .atesto-tab[data-state="active"],
-.mn-segmented [data-state="active"] {
-  background: hsl(var(--mn-elevated));
-  color: hsl(var(--mn-text));
-  box-shadow: inset 0 0 0 1px hsl(var(--mn-border));
-}
+.mn-segmented [data-state="active"] { background: hsl(var(--mn-elevated)); color: hsl(var(--mn-text)); box-shadow: inset 0 0 0 1px hsl(var(--mn-border)); }
 .atesto-tab[data-state="inactive"]:hover,
-.mn-segmented [data-state="inactive"]:hover {
-  background: hsl(var(--mn-elevated) / 0.6);
-  color: hsl(var(--mn-text));
-}
+.mn-segmented [data-state="inactive"]:hover { background: hsl(var(--mn-elevated) / 0.6); color: hsl(var(--mn-text)); }
 
 /* Dropdowns */
 [data-radix-popper-content-wrapper] { z-index: 60 !important; }
 [role="listbox"],
 [data-radix-select-content],
 [data-radix-dropdown-menu-content],
-[data-radix-popover-content] {
-  background: hsl(var(--mn-elevated)) !important;
-  border-color: hsl(var(--mn-border)) !important;
-  box-shadow: var(--mn-shadow-2) !important;
-}
+[data-radix-popover-content] { background: hsl(var(--mn-elevated)) !important; border-color: hsl(var(--mn-border)) !important; box-shadow: var(--mn-shadow-2) !important; }
+
+/* Gradient text */
+.mn-gradient-text { background: linear-gradient(135deg, hsl(var(--mn-accent)), hsl(var(--mn-accent-2))); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+/* Stat karty */
+.mn-stat-card { background: hsl(var(--mn-surface)); border: 1px solid hsl(var(--mn-border)); border-radius: var(--mn-radius-lg); padding: var(--mn-space-6); text-align: center; }
+.mn-stat-value { font-size: 2.25rem; font-weight: 700; color: hsl(var(--mn-text)); letter-spacing: -0.03em; line-height: 1; }
+.mn-stat-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: hsl(var(--mn-muted)); margin-top: 6px; }
 
 /* Reading layout */
 .mn-reading { max-width: 1120px; margin: 0 auto; }
 .mn-reading .atesto-card { background: hsl(var(--mn-surface)); }
 .mn-reading .tiptap-rendered-content { max-width: 1040px; margin: 0 auto; line-height: 1.75; padding: 0.25rem 0; }
 
-/* Typografie v obsahu */
-.tiptap-rendered-content h1,
-.tiptap-rendered-content h2,
-.tiptap-rendered-content h3 { color: hsl(var(--mn-text)); font-family: var(--mn-font-serif); letter-spacing: -0.02em; font-weight: 700; }
-.tiptap-rendered-content p      { color: hsl(var(--mn-text)); margin: 0.9rem 0; }
-.tiptap-rendered-content table  { border: 1px solid hsl(var(--mn-border)); background: hsl(var(--mn-surface-2)); }
-.tiptap-rendered-content th,
-.tiptap-rendered-content td     { border-color: hsl(var(--mn-border)); }
-.tiptap-rendered-content a      { color: hsl(var(--mn-accent)); text-decoration: underline; text-decoration-color: hsl(var(--mn-accent) / 0.35); text-underline-offset: 3px; }
-.tiptap-rendered-content strong { color: hsl(var(--mn-text)); font-weight: 700; }
-.tiptap-rendered-content code   { background: hsl(var(--mn-elevated)); color: hsl(var(--mn-text)); border: 1px solid hsl(var(--mn-border)); border-radius: 4px; padding: 1px 5px; }
-
 /* Callouts */
 .callout       { border-left: 4px solid hsl(var(--mn-accent)); background: hsl(var(--mn-surface-2)); padding: 0.75rem 1rem; border-radius: 10px; }
 .callout--info { border-left-color: hsl(var(--mn-accent-2)); }
 .callout--warn { border-left-color: hsl(var(--mn-warn)); }
 blockquote     { border-left-color: hsl(var(--mn-accent)); }
-
-/* Gradient text — jako "chytřeji s AI" */
-.mn-gradient-text {
-  background: linear-gradient(135deg, hsl(var(--mn-accent)), hsl(var(--mn-accent-2)));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Stat karty */
-.mn-stat-card { background: hsl(var(--mn-surface)); border: 1px solid hsl(var(--mn-border)); border-radius: var(--mn-radius-lg); padding: var(--mn-space-6); text-align: center; }
-.mn-stat-value { font-family: var(--mn-font-sans); font-size: 2.25rem; font-weight: 700; color: hsl(var(--mn-text)); letter-spacing: -0.03em; line-height: 1; }
-.mn-stat-label { font-family: var(--mn-font-sans); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: hsl(var(--mn-muted)); margin-top: 6px; }
 
 /* Kalendář */
 .planner-calendar .rdp { width: 100%; max-width: 100%; overflow: hidden; }
@@ -332,15 +125,10 @@ blockquote     { border-left-color: hsl(var(--mn-accent)); }
 .planner-calendar .rdp .head_cell { width: clamp(28px, 3vw, 36px); }
 .planner-calendar .rdp .nav_button { flex: 0 0 auto; }
 .planner-calendar .rdp .caption { padding-inline: 32px; }
-
-html:not(.dark) .rdp .day,
-html:not(.dark) .rdp .rdp-day,
-html:not(.dark) .rdp .rdp-day_button,
-html:not(.dark) .rdp .rdp-button,
-html:not(.dark) .rdp button { color: hsl(var(--mn-text)) !important; }
+html:not(.dark) .rdp .day, html:not(.dark) .rdp .rdp-day, html:not(.dark) .rdp .rdp-day_button,
+html:not(.dark) .rdp .rdp-button, html:not(.dark) .rdp button { color: hsl(var(--mn-text)) !important; }
 html:not(.dark) .rdp .head_cell { color: hsl(var(--mn-muted)); font-weight: 600; }
 html:not(.dark) .rdp .caption_label { color: hsl(var(--mn-text)) !important; }
-html:not(.dark) .rdp .rdp-day_outside,
-html:not(.dark) .rdp .rdp-day_disabled,
+html:not(.dark) .rdp .rdp-day_outside, html:not(.dark) .rdp .rdp-day_disabled,
 html:not(.dark) .rdp [aria-disabled="true"] { color: hsl(var(--mn-muted)) !important; opacity: 0.5; }
 html:not(.dark) .rdp { color: hsl(var(--mn-text)) !important; }
