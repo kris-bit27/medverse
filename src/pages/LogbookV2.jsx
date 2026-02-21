@@ -88,7 +88,7 @@ function Onboarding({ obor, onComplete, onCancel }) {
           <p className="text-xs text-[hsl(var(--mn-muted))]">Celkem: <strong className="text-[hsl(var(--mn-warn))]">{intM} měs.</strong></p>
         </div>}
         {d.adding ? (
-          <div className="rounded-2xl p-4 space-y-3" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+          <div className="mn-card p-4 space-y-3">
             <div className="flex gap-2 flex-wrap">{INT_TYPES.map(it => { const Ic = it.icon; return (
               <button key={it.id} onClick={() => setD(x => ({ ...x, tmp: { ...x.tmp, type: it.id } }))}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium ${d.tmp.type === it.id ? 'border-[hsl(var(--mn-accent)/0.5)] bg-[hsl(var(--mn-accent)/0.1)] text-[hsl(var(--mn-accent))]' : 'border-[hsl(var(--mn-border))]'}`}><Ic className="w-3 h-3" />{it.label}</button>); })}</div>
@@ -259,7 +259,7 @@ export default function LogbookV2() {
       <Onboarding obor={obor} onComplete={data => { setProfiles(p => ({ ...p, [sel]: data })); setShowOB(false); }} onCancel={() => { setSel(null); setShowOB(false); }} />
     </div>
   );
-  if (sel && !profile && obor) { if (!showOB) setTimeout(() => setShowOB(true), 0); return <div className="flex items-center justify-center min-h-[50vh]"><div className="w-8 h-8 border-4 border-[hsl(var(--mn-border))] border-t-[hsl(var(--mn-accent))] rounded-full animate-spin" /></div>; }
+  if (sel && !profile && obor) { if (!showOB) setTimeout(() => setShowOB(true), 0); return <div className="flex items-center justify-center min-h-[50vh]"><div className="mn-spinner" /></div>; }
 
   // Overview
   if (!sel) return (
@@ -268,7 +268,7 @@ export default function LogbookV2() {
         <p className="text-sm text-[hsl(var(--mn-muted))] mt-1">Sleduj plnění vzdělávacího programu dle MZČR 2019.</p></div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {obory.map(o => { const has = !!profiles[o.id]; return (
-          <button key={o.id} onClick={() => setSel(o.id)} className={`flex items-center gap-3 p-3.5 rounded-xl border text-left transition-all hover:border-[hsl(var(--mn-accent)/0.3)] hover:-translate-y-0.5 ${has ? 'border-[hsl(var(--mn-accent)/0.2)] bg-[hsl(var(--mn-accent)/0.08)]' : 'border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))]'}`} style={{ boxShadow: 'var(--mn-shadow-1)' }}>
+          <button key={o.id} onClick={() => setSel(o.id)} className={`flex items-center gap-3 p-3.5 rounded-xl border text-left transition-all hover:border-[hsl(var(--mn-accent)/0.3)] hover:-translate-y-0.5 ${has ? 'border-[hsl(var(--mn-accent)/0.2)] bg-[hsl(var(--mn-accent)/0.08)]' : 'border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))]'}`} >
             <div className="w-9 h-9 rounded-lg bg-[hsl(var(--mn-accent)/0.1)] flex items-center justify-center flex-shrink-0"><Award className="w-4 h-4 text-[hsl(var(--mn-accent))]" /></div>
             <div className="flex-1 min-w-0"><div className="text-sm font-semibold truncate">{o.name}</div><div className="text-xs text-[hsl(var(--mn-muted))]">{o.min_years} let · {o.kmen_type || '—'} kmen{has && ' · ✅'}</div></div>
             <ChevronRight className="w-4 h-4 text-[hsl(var(--mn-muted))] flex-shrink-0" />
@@ -291,8 +291,8 @@ export default function LogbookV2() {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-2xl p-3" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}><div className="text-[10px] font-bold text-[hsl(var(--mn-accent-2))] mb-1.5">KMEN {profile?.kmen_done && '✅'}</div><Progress value={kR.length > 0 ? (kD / kR.length) * 100 : 0} className="h-1.5" /><div className="text-[10px] text-[hsl(var(--mn-muted))] mt-1">{kD}/{kR.length}</div></div>
-        <div className="rounded-2xl p-3" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}><div className="text-[10px] font-bold text-[#a855f7] mb-1.5">SPECIALIZACE</div><Progress value={sR.length > 0 ? (sD / sR.length) * 100 : 0} className="h-1.5" /><div className="text-[10px] text-[hsl(var(--mn-muted))] mt-1">{sD}/{sR.length}</div></div>
+        <div className="mn-card p-3"><div className="text-[10px] font-bold text-[hsl(var(--mn-accent))] mb-1.5">KMEN {profile?.kmen_done && '✅'}</div><Progress value={kR.length > 0 ? (kD / kR.length) * 100 : 0} className="h-1.5" /><div className="text-[10px] text-[hsl(var(--mn-muted))] mt-1">{kD}/{kR.length}</div></div>
+        <div className="mn-card p-3"><div className="text-[10px] font-bold text-[hsl(var(--mn-info))] mb-1.5">SPECIALIZACE</div><Progress value={sR.length > 0 ? (sD / sR.length) * 100 : 0} className="h-1.5" /><div className="text-[10px] text-[hsl(var(--mn-muted))] mt-1">{sD}/{sR.length}</div></div>
       </div>
 
       <Countdown profile={profile} obor={obor} />
@@ -321,7 +321,7 @@ export default function LogbookV2() {
               <Check className="w-5 h-5 text-[hsl(var(--mn-accent-2))]" /><div><div className="text-sm font-semibold text-[hsl(var(--mn-accent-2))]">Kmen absolvován</div><div className="text-xs text-[hsl(var(--mn-muted))]">{kR.length} požadavků auto-splněno{profile.kmen_date && ` · ${fD(profile.kmen_date)}`}</div></div>
             </div>
           )}
-          <h3 className="text-xs font-bold text-[#a855f7] tracking-wider mt-4">SPECIALIZOVANÝ VÝCVIK</h3>
+          <h3 className="mn-label text-[hsl(var(--mn-info))] mt-4">SPECIALIZOVANÝ VÝCVIK</h3>
           {sR.map(r => <ReqCard key={r.id} req={r} done={eProg[r.id]?.status === 'completed'} auto={false} onToggle={() => toggle(r.id)} />)}
           {custEntries.length > 0 && <>
             <h3 className="text-xs font-bold text-[hsl(var(--mn-success))] tracking-wider mt-4">VLASTNÍ ZÁZNAMY ({custEntries.length})</h3>

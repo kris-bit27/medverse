@@ -222,11 +222,11 @@ export default function TestSession() {
           </p>
 
           <div className="grid grid-cols-2 gap-4 mb-8">
-            <div className="rounded-2xl p-5 hover:-translate-y-0.5 transition-all" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+            <div className="mn-card p-5 hover:-translate-y-0.5 transition-all">
               <div className="mn-mono-font text-2xl font-bold text-[hsl(var(--mn-success))]">{correct}</div>
               <p className="text-sm text-[hsl(var(--mn-muted))]">Správně</p>
             </div>
-            <div className="rounded-2xl p-5 hover:-translate-y-0.5 transition-all" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+            <div className="mn-card p-5 hover:-translate-y-0.5 transition-all">
               <div className="mn-mono-font text-2xl font-bold text-[hsl(var(--mn-danger))]">{wrong}</div>
               <p className="text-sm text-[hsl(var(--mn-muted))]">Špatně</p>
             </div>
@@ -295,7 +295,7 @@ export default function TestSession() {
           transition={{ duration: 0.15 }}
         >
           {/* Question card */}
-          <div className="rounded-2xl p-5 mb-6" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+          <div className="mn-card p-5 mb-6">
               <div className="flex items-start justify-between gap-3 mb-1">
                 <Badge variant="outline" className="text-xs shrink-0">
                   {currentQuestion.topics?.title?.substring(0, 40)}

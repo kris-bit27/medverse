@@ -221,7 +221,7 @@ export default function TestGeneratorV2() {
         {/* Left Column - Configuration */}
         <div className="md:col-span-2 space-y-6">
           {/* Step 1: Select Obor */}
-          <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+          <div className="mn-card p-5">
               <div className="flex items-center gap-2 mb-4">
                 <span className="w-8 h-8 rounded-full bg-[hsl(var(--mn-accent)/0.12)] text-[hsl(var(--mn-accent))] flex items-center justify-center font-bold">
                   1
@@ -254,7 +254,7 @@ export default function TestGeneratorV2() {
 
           {/* Step 2: Select Okruhy */}
           {selectedObor && (
-            <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+            <div className="mn-card p-5">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <span className="w-8 h-8 rounded-full bg-[hsl(var(--mn-accent)/0.12)] text-[hsl(var(--mn-accent))] flex items-center justify-center font-bold">
@@ -298,7 +298,7 @@ export default function TestGeneratorV2() {
 
           {/* Step 3: Select Topics */}
           {selectedOkruhy.length > 0 && (
-            <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+            <div className="mn-card p-5">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <span className="w-8 h-8 rounded-full bg-[hsl(var(--mn-accent)/0.12)] text-[hsl(var(--mn-accent))] flex items-center justify-center font-bold">
@@ -342,7 +342,7 @@ export default function TestGeneratorV2() {
 
           {/* Step 4: Test Settings */}
           {selectedTopics.length > 0 && (
-            <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+            <div className="mn-card p-5">
                 <div className="flex items-center gap-2 mb-4">
                   <span className="w-8 h-8 rounded-full bg-[hsl(var(--mn-accent)/0.12)] text-[hsl(var(--mn-accent))] flex items-center justify-center font-bold">
                     4
@@ -431,7 +431,7 @@ export default function TestGeneratorV2() {
 
         {/* Right Column - Summary */}
         <div className="space-y-6">
-          <div className="rounded-2xl p-5 md:sticky md:top-6" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+          <div className="mn-card p-5 md:sticky md:top-6">
               <div className="flex items-center gap-2 mb-4">
                 <Settings className="w-5 h-5" />
                 <h3 className="mn-ui-font font-semibold">Souhrn</h3>

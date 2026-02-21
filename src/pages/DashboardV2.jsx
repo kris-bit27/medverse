@@ -140,7 +140,7 @@ export default function DashboardV2() {
               </div>
               <h1 className="mn-serif-font text-[clamp(28px,5vw,42px)] font-bold tracking-tight leading-[1.1]">
                 Vítej zpět,{' '}
-                <span className="bg-gradient-to-r from-[hsl(var(--mn-accent))] to-[hsl(var(--mn-accent-2))] bg-clip-text text-transparent">
+                <span className="mn-accent-text">
                   {firstName}
                 </span>
               </h1>
@@ -163,8 +163,7 @@ export default function DashboardV2() {
               <motion.div key={i}
                 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.12 + i * 0.06, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="group relative p-5 rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-0.5"
-                style={{ background: 'hsl(var(--mn-surface-2))', border: '1px solid hsl(var(--mn-border))', boxShadow: 'var(--mn-shadow-1)' }}
+                className="group mn-card-secondary relative p-5 overflow-hidden transition-all duration-300 hover:-translate-y-0.5"
               >
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                      style={{ background: `radial-gradient(circle at 50% 0%, ${s.glow}, transparent 70%)` }} />
@@ -193,8 +192,7 @@ export default function DashboardV2() {
               { to: 'AcademyDashboard', icon: GraduationCap, label: 'AI Academy', desc: academyProfile?.academy_level ? `Level ${academyProfile.academy_level}` : 'Zdarma kurzy', gradient: 'linear-gradient(135deg, #0ea5e9, #06b6d4)', shadow: 'rgba(14,165,233,0.25)' },
             ].map((a, i) => (
               <Link key={i} to={createPageUrl(a.to)}
-                className="group relative p-5 sm:p-6 rounded-xl transition-all duration-300 hover:-translate-y-0.5 hover:border-[hsl(var(--mn-accent)/0.3)]"
-                style={{ background: 'hsl(var(--mn-surface-2))', border: '1px solid hsl(var(--mn-border))', boxShadow: 'var(--mn-shadow-1)' }}
+                className="group mn-card-secondary relative p-5 sm:p-6 transition-all duration-300 hover:-translate-y-0.5"
               >
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform duration-300"
                      style={{ background: a.gradient, boxShadow: `0 4px 16px ${a.shadow}` }}>
@@ -247,7 +245,7 @@ export default function DashboardV2() {
                 </Button>
               </Link>
             </div>
-            <div className="rounded-xl overflow-hidden" style={{ background: 'hsl(var(--mn-surface-2))', border: '1px solid hsl(var(--mn-border))', boxShadow: 'var(--mn-shadow-1)' }}>
+            <div className="mn-card overflow-hidden">
               {recentTests.map((test, i) => {
                 const done = test.status === 'completed';
                 const inProg = test.status === 'in_progress';
@@ -286,8 +284,7 @@ export default function DashboardV2() {
             <Caption>Nedávné úspěchy</Caption>
             <div className="flex flex-wrap gap-2">
               {recentAchievements.map(a => (
-                <div key={a.id} className="flex items-center gap-2 px-4 py-2 rounded-full transition-all hover:border-[hsl(var(--mn-accent)/0.3)]"
-                     style={{ border: '1px solid hsl(var(--mn-border))', background: 'hsl(var(--mn-surface-2))', boxShadow: 'var(--mn-shadow-1)' }}>
+                <div key={a.id} className="mn-tag flex items-center gap-2 px-4 py-2 rounded-full transition-all hover:border-[hsl(var(--mn-accent)/0.3)]">
                   <Award style={{ width: 14, height: 14, color: '#f59e0b' }} />
                   <span className="mn-ui-font text-[13px] font-medium">{a.achievement_name}</span>
                   <span className="mn-mono-font text-[10px] text-[hsl(var(--mn-muted))]">+{a.tokens_earned}</span>

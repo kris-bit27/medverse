@@ -34,7 +34,7 @@ export default function WeeklyActivityChart() {
   const maxMinutes = Math.max(...days.map(d => d.minutes), 1);
 
   return (
-    <div className="p-6 rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))]" style={{ boxShadow: "var(--mn-shadow-1)" }}>
+    <div className="mn-card p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--mn-accent))]" />

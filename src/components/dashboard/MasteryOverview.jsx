@@ -31,7 +31,7 @@ export default function MasteryOverview() {
   const studiedPct = data.total > 0 ? Math.round((data.studied / data.total) * 100) : 0;
 
   return (
-    <div className="p-6 rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))]" style={{ boxShadow: "var(--mn-shadow-1)" }}>
+    <div className="mn-card p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--mn-accent))]" />

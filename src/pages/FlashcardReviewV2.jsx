@@ -173,7 +173,7 @@ export default function FlashcardReviewV2() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-[hsl(var(--mn-accent))] border-t-transparent rounded-full animate-spin"></div>
+        <div className="mn-spinner" />
       </div>
     );
   }
@@ -181,14 +181,12 @@ export default function FlashcardReviewV2() {
   if (!dueCards.length) {
     return (
       <div className="max-w-2xl mx-auto p-6">
-        <Card>
-          <CardContent className="p-12 text-center">
-            <Zap className="w-16 h-16 mx-auto mb-4" />
-            <h2 className="mn-serif-font text-2xl font-bold mb-2">All done!</h2>
-            <p className="mb-6">No cards due today</p>
-            <Button onClick={() => navigate('/Dashboard')}>Dashboard</Button>
-          </CardContent>
-        </Card>
+        <div className="mn-card p-12 text-center">
+          <Zap className="w-16 h-16 mx-auto mb-4 text-[hsl(var(--mn-accent))]" />
+          <h2 className="mn-serif-font text-2xl font-bold mb-2">Vše hotovo!</h2>
+          <p className="text-[hsl(var(--mn-muted))] mb-6">Žádné kartičky ke studiu dnes</p>
+          <Button onClick={() => navigate('/Dashboard')}>Dashboard</Button>
+        </div>
       </div>
     );
   }
@@ -199,33 +197,31 @@ export default function FlashcardReviewV2() {
     <div className="max-w-3xl mx-auto p-6 space-y-6">
       <Progress value={((currentIndex + 1) / dueCards.length) * 100} />
 
-      <div 
+      <div
         onClick={() => setIsFlipped(!isFlipped)}
         className="cursor-pointer"
       >
-        <Card className="min-h-[400px] hover:shadow-lg transition-shadow">
-          <CardContent className="p-12 flex items-center justify-center">
-            <div className="text-center">
-              {!isFlipped ? (
-                <>
-                  <h3 className="mn-serif-font text-2xl font-bold">{card.question}</h3>
+        <div className="mn-card min-h-[400px] flex items-center justify-center p-12 hover:-translate-y-0.5 transition-transform">
+          <div className="text-center">
+            {!isFlipped ? (
+              <>
+                <h3 className="mn-serif-font text-2xl font-bold">{card.question}</h3>
+                <p className="text-sm text-[hsl(var(--mn-muted))] mt-4">
+                  Klikni pro zobrazení odpovědi
+                </p>
+              </>
+            ) : (
+              <>
+                <h3 className="mn-ui-font text-xl font-bold mb-4">{card.answer}</h3>
+                {card.explanation && (
                   <p className="text-sm text-[hsl(var(--mn-muted))] mt-4">
-                    Click to reveal
+                    {card.explanation}
                   </p>
-                </>
-              ) : (
-                <>
-                  <h3 className="mn-ui-font text-xl font-bold mb-4">{card.answer}</h3>
-                  {card.explanation && (
-                    <p className="text-sm text-[hsl(var(--mn-muted))] mt-4">
-                      {card.explanation}
-                    </p>
-                  )}
-                </>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+                )}
+              </>
+            )}
+          </div>
+        </div>
       </div>
 
       {isFlipped && (

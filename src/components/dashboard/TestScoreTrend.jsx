@@ -27,7 +27,7 @@ export default function TestScoreTrend() {
   const trendColor = data?.trend > 2 ? 'text-[hsl(var(--mn-success))]' : data?.trend < -2 ? 'text-[hsl(var(--mn-danger))]' : 'text-[hsl(var(--mn-muted))]';
 
   return (
-    <div className="p-6 rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))]" style={{ boxShadow: "var(--mn-shadow-1)" }}>
+    <div className="mn-card p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--mn-accent))]" />

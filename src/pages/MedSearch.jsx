@@ -249,7 +249,7 @@ export default function MedSearch() {
               { icon: Brain, title: 'AI syntéza', desc: 'Claude analyzuje abstrakta a vytvoří odpověď s citacemi' },
               { icon: FileText, title: 'Citace', desc: 'Každé tvrzení odkazuje na konkrétní PubMed článek' },
             ].map(({ icon: Icon, title, desc }, i) => (
-              <div key={i} className="rounded-2xl p-4 text-center" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+              <div key={i} className="mn-card p-4 text-center">
                   <Icon className="w-6 h-6 text-[hsl(var(--mn-accent))] mx-auto mb-2" />
                   <p className="text-sm font-medium text-[hsl(var(--mn-text))]">{title}</p>
                   <p className="text-xs text-[hsl(var(--mn-muted))] mt-1">{desc}</p>
@@ -327,7 +327,7 @@ export default function MedSearch() {
 
           {/* AI Answer */}
           {(activeTab === 'answer' && answer) && (
-            <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+            <div className="mn-card p-5">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-7 h-7 rounded-xl bg-[hsl(var(--mn-accent)/0.1)] flex items-center justify-center">
                     <Sparkles className="w-4 h-4 text-[hsl(var(--mn-accent))]" />

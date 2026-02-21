@@ -327,7 +327,7 @@ export default function MyProfile() {
 
       {/* Auto-detected Subject Levels */}
       {subjectLevels && subjectLevels.length > 0 && (
-        <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="mn-card p-5">
           <div className="flex items-center gap-2 mb-4">
             <Sparkles className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
             <h3 className="mn-ui-font font-semibold">Automaticky detekovaná úroveň</h3>
@@ -430,7 +430,7 @@ function ProfileForm({ profile, user, isEditing, onSave, isSaving }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Basic Info */}
-      <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+      <div className="mn-card p-5">
         <div className="flex items-center gap-2 mb-4">
           <User className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
           <h3 className="mn-ui-font font-semibold">Základní informace</h3>
@@ -476,7 +476,7 @@ function ProfileForm({ profile, user, isEditing, onSave, isSaving }) {
       </div>
 
       {/* Education & Career */}
-      <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+      <div className="mn-card p-5">
         <div className="flex items-center gap-2 mb-4">
           <GraduationCap className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
           <h3 className="mn-ui-font font-semibold">Vzdělávání & Kariéra</h3>
@@ -588,7 +588,7 @@ function ProfileForm({ profile, user, isEditing, onSave, isSaving }) {
       </div>
 
       {/* Interests */}
-      <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+      <div className="mn-card p-5">
         <div className="flex items-center gap-2 mb-4">
           <Target className="w-5 h-5 text-[hsl(var(--mn-accent))]" />
           <h3 className="mn-ui-font font-semibold">Oblasti zájmu</h3>
@@ -624,7 +624,7 @@ function ProfileForm({ profile, user, isEditing, onSave, isSaving }) {
       </div>
 
       {/* Learning Preferences */}
-      <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+      <div className="mn-card p-5">
         <div className="flex items-center gap-2 mb-4">
           <h3 className="mn-ui-font font-semibold">Styl učení</h3>
         </div>

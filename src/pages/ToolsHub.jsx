@@ -21,7 +21,7 @@ const SECTIONS = [
     title: 'Lékový průvodce',
     description: 'Study-oriented karty léků s klinickými perlami',
     icon: Pill,
-    color: '#a855f7',
+    color: 'hsl(var(--mn-info))',
     link: 'DrugDatabase',
     countKey: 'drugs',
   },
@@ -109,7 +109,7 @@ export default function ToolsHub() {
               key={s.key}
               to={createPageUrl(s.link)}
               className="group relative flex flex-col p-5 rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))] transition-all hover:border-[hsl(var(--mn-accent)/0.3)] hover:-translate-y-0.5"
-              style={{ boxShadow: 'var(--mn-shadow-1)' }}
+              
             >
               <div className="flex items-start justify-between mb-3">
                 <div

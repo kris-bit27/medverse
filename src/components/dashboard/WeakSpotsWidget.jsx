@@ -22,7 +22,7 @@ export default function WeakSpotsWidget() {
 
   if (isLoading) {
     return (
-      <div className="p-6 rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))]" style={{ boxShadow: "var(--mn-shadow-1)" }}>
+      <div className="mn-card p-6">
         <div className="flex items-center gap-2 text-[hsl(var(--mn-muted))] text-sm mn-ui-font">
           <Loader2 className="w-4 h-4 animate-spin" /> Načítám…
         </div>
@@ -32,7 +32,7 @@ export default function WeakSpotsWidget() {
 
   if (!weakSpots?.length) {
     return (
-      <div className="p-6 rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))]" style={{ boxShadow: "var(--mn-shadow-1)" }}>
+      <div className="mn-card p-6">
         <div className="flex items-center gap-2 mb-2">
           <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--mn-warn))]" />
           <span className="mn-ui-font text-[13px] font-semibold">Slabá místa</span>
@@ -45,7 +45,7 @@ export default function WeakSpotsWidget() {
   }
 
   return (
-    <div className="p-6 rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))]" style={{ boxShadow: "var(--mn-shadow-1)" }}>
+    <div className="mn-card p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--mn-accent))]" />

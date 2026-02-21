@@ -107,7 +107,7 @@ export default function StudyPlansV2() {
       </div>
 
       {showCreateForm && (
-        <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="mn-card p-5">
           <h3 className="mn-ui-font font-semibold mb-4">Vytvořit plán</h3>
             <form onSubmit={(e) => { e.preventDefault(); createPlan.mutate(formData); }} className="space-y-4">
               <div>
@@ -152,7 +152,7 @@ export default function StudyPlansV2() {
       )}
 
       {plans.length === 0 ? (
-        <div className="rounded-2xl p-12 text-center" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="mn-card p-12 text-center">
             <Calendar className="w-16 h-16 mx-auto mb-4 text-[hsl(var(--mn-muted))]" />
             <h3 className="text-xl font-bold mb-2">Žádné plány</h3>
             <Button onClick={() => setShowCreateForm(true)}>
@@ -163,7 +163,7 @@ export default function StudyPlansV2() {
       ) : (
         <div className="grid md:grid-cols-2 gap-6">
           {plans.map((plan) => (
-            <div key={plan.id} className="rounded-2xl p-5 hover:-translate-y-0.5 transition-all" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+            <div key={plan.id} className="mn-card p-5 hover:-translate-y-0.5 transition-all">
               <div className="flex items-start justify-between mb-4">
                 <h3 className="mn-ui-font font-semibold">{plan.title}</h3>
                 <Button variant="ghost" size="sm" onClick={() => deletePlan.mutate(plan.id)}>

@@ -242,7 +242,7 @@ export default function ReviewToday() {
     return (
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
         {/* Filters */}
-        <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="mn-card p-5">
             <div className="flex items-center gap-2 mb-4">
               <Filter className="w-4 h-4" />
               <h3 className="font-semibold">Filtry</h3>
@@ -314,7 +314,7 @@ export default function ReviewToday() {
             </div>
         </div>
 
-        <div className="rounded-2xl p-12 text-center" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="mn-card p-12 text-center">
             <Zap className="w-16 h-16 mx-auto mb-4 text-[hsl(var(--mn-accent))]" />
             <h2 className="mn-serif-font text-2xl font-bold mb-2">Žádné kartičky!</h2>
             <p className="text-[hsl(var(--mn-muted))] mb-6">
@@ -357,7 +357,7 @@ export default function ReviewToday() {
       </div>
 
       {/* Filters */}
-      <div className="rounded-2xl p-4" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+      <div className="mn-card p-4">
           <div className="flex items-center gap-2 mb-3">
             <Filter className="w-4 h-4" />
             <h3 className="font-semibold text-sm">Filtry</h3>
@@ -443,7 +443,7 @@ export default function ReviewToday() {
         onClick={() => setIsFlipped(!isFlipped)}
         className="cursor-pointer"
       >
-        <div className="rounded-2xl p-12 min-h-[400px] flex items-center justify-center hover:shadow-lg transition-shadow" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="mn-card p-12 min-h-[400px] flex items-center justify-center hover:shadow-lg transition-shadow">
             <div className="text-center w-full">
               {!isFlipped ? (
                 <>
@@ -509,7 +509,7 @@ export default function ReviewToday() {
       )}
 
       {/* Stats */}
-      <div className="rounded-2xl p-4" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+      <div className="mn-card p-4">
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center gap-2">
               <Trophy className="w-4 h-4 text-[hsl(var(--mn-warn))]" />

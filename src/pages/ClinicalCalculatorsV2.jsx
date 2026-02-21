@@ -33,7 +33,7 @@ const SUBCATEGORIES = {
   'kardiologie': { label: 'Kardiologie', color: '#ec4899' },
   'pneumologie': { label: 'Pneumologie', color: '#3b82f6' },
   'nefrologie': { label: 'Nefrologie', color: '#06b6d4' },
-  'neurologie': { label: 'Neurologie', color: '#a855f7' },
+  'neurologie': { label: 'Neurologie', color: 'hsl(var(--mn-info))' },
   'hepatologie': { label: 'Hepatologie', color: '#f59e0b' },
   'interní': { label: 'Interní', color: '#10b981' },
   'ICU': { label: 'ICU', color: '#ef4444' },

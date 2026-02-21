@@ -28,7 +28,7 @@ import { cs } from 'date-fns/locale';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 const GROUP_TYPES = [
-  { value: 'atestace', label: 'Příprava na atestaci', icon: GraduationCap, color: 'bg-[#a855f7/0.1] text-[#a855f7] border-[#a855f7/0.2]' },
+  { value: 'atestace', label: 'Příprava na atestaci', icon: GraduationCap, color: 'bg-[hsl(var(--mn-info)/0.1)] text-[hsl(var(--mn-info))] border-[hsl(var(--mn-info)/0.2)]' },
   { value: 'kmen', label: 'Základní kmen', icon: BookOpen, color: 'bg-[hsl(var(--mn-accent-2))]/10 text-[hsl(var(--mn-accent-2))] border-[hsl(var(--mn-accent-2)/0.2)]' },
   { value: 'vyzkum', label: 'Výzkumná skupina', icon: Microscope, color: 'bg-[hsl(var(--mn-success))]/10 text-[hsl(var(--mn-success))] border-[hsl(var(--mn-success)/0.2)]' },
   { value: 'kazuistiky', label: 'Kazuistiky', icon: Stethoscope, color: 'bg-[hsl(var(--mn-warn))]/10 text-[hsl(var(--mn-warn))] border-[hsl(var(--mn-warn)/0.2)]' },
@@ -39,7 +39,7 @@ const THREAD_CATEGORIES = [
   { value: 'otazka', label: 'Otázka', color: 'bg-[hsl(var(--mn-accent-2))]/10 text-[hsl(var(--mn-accent-2))]' },
   { value: 'diskuze', label: 'Diskuze', color: 'bg-[hsl(var(--mn-success))]/10 text-[hsl(var(--mn-success))]' },
   { value: 'kazuistika', label: 'Kazuistika', color: 'bg-[hsl(var(--mn-warn))]/10 text-[hsl(var(--mn-warn))]' },
-  { value: 'tip', label: 'Tip & trik', color: 'bg-[#a855f7/0.1] text-[#a855f7]' },
+  { value: 'tip', label: 'Tip & trik', color: 'bg-[hsl(var(--mn-info)/0.1)] text-[hsl(var(--mn-info))]' },
   { value: 'zdroj', label: 'Sdílení zdroje', color: 'bg-[#ec4899/0.1] text-[#ec4899]' },
 ];
 
@@ -231,7 +231,7 @@ function StudyGroupsTab() {
 
       {/* Groups Grid */}
       {filtered.length === 0 ? (
-        <div className="rounded-2xl p-5 py-12 text-center" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="mn-card p-5 py-12 text-center">
             <Users className="w-12 h-12 text-[hsl(var(--mn-muted))] mx-auto mb-3" />
             <p className="text-[hsl(var(--mn-muted))]">
               {filterType === 'my' ? 'Zatím nejsi členem žádné skupiny' : 'Žádné skupiny nenalezeny'}
@@ -249,7 +249,7 @@ function StudyGroupsTab() {
             const isOwner = group.owner_id === user?.id;
             return (
               <Card key={group.id} className="group hover:shadow-md transition-all relative overflow-hidden">
-                <div className={`absolute top-0 left-0 right-0 h-1 ${typeInfo.color.includes('purple') ? 'bg-[#a855f7]' : typeInfo.color.includes('blue') ? 'bg-[hsl(var(--mn-accent-2))]' : typeInfo.color.includes('emerald') ? 'bg-[hsl(var(--mn-success))]' : typeInfo.color.includes('amber') ? 'bg-[hsl(var(--mn-warn))]' : 'bg-[hsl(var(--mn-border))]'}`} />
+                <div className={`absolute top-0 left-0 right-0 h-1 ${typeInfo.color.includes('purple') ? 'bg-[hsl(var(--mn-info))]' : typeInfo.color.includes('blue') ? 'bg-[hsl(var(--mn-accent-2))]' : typeInfo.color.includes('emerald') ? 'bg-[hsl(var(--mn-success))]' : typeInfo.color.includes('amber') ? 'bg-[hsl(var(--mn-warn))]' : 'bg-[hsl(var(--mn-border))]'}`} />
                 <CardContent className="p-5 pt-6">
                   <div className="flex items-start gap-3 mb-3">
                     <div className={`p-2.5 rounded-xl border ${typeInfo.color}`}>
@@ -484,7 +484,7 @@ function DiscussionsTab() {
 
       {/* Threads List */}
       {filtered.length === 0 ? (
-        <div className="rounded-2xl p-5 py-12 text-center" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="mn-card p-5 py-12 text-center">
             <MessageSquare className="w-12 h-12 text-[hsl(var(--mn-muted))] mx-auto mb-3" />
             <p className="text-[hsl(var(--mn-muted))]">Zatím žádné diskuze</p>
             <Button className="mt-4" onClick={() => setCreateOpen(true)}>

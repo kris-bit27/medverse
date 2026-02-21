@@ -20,7 +20,7 @@ const CAT_CONFIG = {
   'urgentní': { label: 'Urgentní medicína', color: '#ef4444' },
   'kardiologie': { label: 'Kardiologie', color: '#ec4899' },
   'interní': { label: 'Interní medicína', color: '#10b981' },
-  'neurologie': { label: 'Neurologie', color: '#a855f7' },
+  'neurologie': { label: 'Neurologie', color: 'hsl(var(--mn-info))' },
   'pneumologie': { label: 'Pneumologie', color: '#3b82f6' },
 };
 

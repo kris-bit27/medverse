@@ -11,7 +11,7 @@ export default function StatsCard({
   className 
 }) {
   return (
-    <div className={cn("rounded-2xl p-6 relative overflow-hidden", className)} style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+    <div className={cn("mn-card p-6 relative overflow-hidden", className)}>
       <div className="flex items-start justify-between">
         <div className="space-y-1">
           <p className="text-sm font-medium text-[hsl(var(--mn-muted))]">

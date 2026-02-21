@@ -57,7 +57,7 @@ const TABS = [
 function WarningsBanner({ warnings }) {
   if (!warnings?.length) return null;
   return (
-    <div className="rounded-xl border border-[hsl(var(--mn-warn)/0.3)] bg-[hsl(var(--mn-warn)/0.06)] p-4 mt-4">
+    <div className="callout callout--warn p-4 mt-4">
       <div className="flex items-start gap-3">
         <AlertTriangle className="w-5 h-5 text-[hsl(var(--mn-warn))] shrink-0 mt-0.5" />
         <div>
@@ -76,7 +76,7 @@ function WarningsBanner({ warnings }) {
 function SourcesList({ sources }) {
   if (!sources?.length) return null;
   return (
-    <div className="rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface-2))] p-4">
+    <div className="mn-card-secondary p-4">
       <h4 className="text-sm font-medium text-[hsl(var(--mn-muted))] mb-3 flex items-center gap-2 mn-ui-font">
         <FileText className="w-4 h-4" /> Zdroje ({sources.length})
       </h4>
@@ -179,7 +179,7 @@ export default function TopicDetailV5() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[hsl(var(--mn-bg))] flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-[hsl(var(--mn-accent))] border-t-transparent rounded-full animate-spin" />
+        <div className="mn-spinner" />
       </div>
     );
   }
@@ -330,7 +330,7 @@ export default function TopicDetailV5() {
           {/* Content — flexible center */}
           <div className="flex-1 min-w-0">
             {currentContent ? (
-              <div className="group relative rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface))]" style={{ boxShadow: "var(--mn-shadow-1)" }}>
+              <div className="mn-card group relative">
                 <div className="absolute top-4 right-4 z-10">
                   <CopyBtn content={currentContent} />
                 </div>
@@ -339,7 +339,7 @@ export default function TopicDetailV5() {
                 </div>
               </div>
             ) : (
-              <div className="rounded-xl border border-[hsl(var(--mn-border))] bg-[hsl(var(--mn-surface))] p-12 text-center">
+              <div className="mn-card p-12 text-center">
                 <BookOpen className="w-12 h-12 text-[hsl(var(--mn-muted))] mx-auto mb-3" />
                 <p className="text-[hsl(var(--mn-muted))] font-medium mb-1">Obsah se připravuje</p>
                 <p className="text-sm text-[hsl(var(--mn-muted))] mb-4">Toto téma bude brzy dostupné s plným textem, kartičkami a testovými otázkami.</p>
@@ -364,7 +364,7 @@ export default function TopicDetailV5() {
 
             {/* Learning Objectives */}
             {topic.learning_objectives?.length > 0 && (
-              <div className="mt-4 rounded-xl border border-[hsl(var(--mn-accent)/0.15)] bg-[hsl(var(--mn-accent)/0.06)]/50 p-5">
+              <div className="mn-card p-5 mt-4 border-[hsl(var(--mn-accent)/0.15)] bg-[hsl(var(--mn-accent)/0.06)]">
                 <h3 className="text-sm font-semibold text-[hsl(var(--mn-accent))] mb-3 flex items-center gap-2 mn-ui-font">
                   <CheckCircle2 className="w-4 h-4" /> Cíle studia
                 </h3>
@@ -384,7 +384,7 @@ export default function TopicDetailV5() {
           {sidebarOpen && (
             <div className="hidden lg:block w-80 xl:w-96 shrink-0 sticky top-[120px] max-h-[calc(100vh-140px)] overflow-y-auto">
               {showNotes && (
-                <div className="rounded-xl border border-[hsl(var(--mn-warn)/0.2)] bg-[hsl(var(--mn-surface))] p-5">
+                <div className="mn-card p-5 border-[hsl(var(--mn-warn)/0.2)]">
                   <h3 className="text-sm font-semibold text-[hsl(var(--mn-warn))] mb-3 flex items-center gap-2 mn-ui-font">
                     <StickyNote className="w-4 h-4" /> Moje poznámky
                   </h3>
@@ -392,7 +392,7 @@ export default function TopicDetailV5() {
                 </div>
               )}
               {showFlashcards && (
-                <div className="rounded-xl border border-[hsl(var(--mn-accent)/0.2)] bg-[hsl(var(--mn-surface))] p-5">
+                <div className="mn-card p-5">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-sm font-semibold text-[hsl(var(--mn-accent))] flex items-center gap-2 mn-ui-font">
                       <Brain className="w-4 h-4" /> AI Kartičky
@@ -415,7 +415,7 @@ export default function TopicDetailV5() {
         {sidebarOpen && (
           <div className="lg:hidden mt-6">
             {showNotes && (
-              <div className="rounded-xl border border-[hsl(var(--mn-warn)/0.2)] bg-[hsl(var(--mn-surface))] p-5">
+              <div className="mn-card p-5 border-[hsl(var(--mn-warn)/0.2)]">
                 <h3 className="text-sm font-semibold text-[hsl(var(--mn-warn))] mb-3 flex items-center gap-2 mn-ui-font">
                   <StickyNote className="w-4 h-4" /> Moje poznámky
                 </h3>
@@ -423,7 +423,7 @@ export default function TopicDetailV5() {
               </div>
             )}
             {showFlashcards && (
-              <div className="rounded-xl border border-[hsl(var(--mn-accent)/0.2)] bg-[hsl(var(--mn-surface))] p-5">
+              <div className="mn-card p-5">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-sm font-semibold text-[hsl(var(--mn-accent))] flex items-center gap-2 mn-ui-font">
                     <Brain className="w-4 h-4" /> AI Kartičky

@@ -66,7 +66,7 @@ function DashboardTab() {
           { label: 'Topics', value: s.topics.total, icon: BookOpen, color: 'text-[hsl(var(--mn-accent-2))]' },
           { label: 'S obsahem', value: s.topics.withFt, icon: FileText, color: 'text-[hsl(var(--mn-success))]' },
           { label: 'Published', value: s.topics.published, icon: CheckCircle2, color: 'text-[hsl(var(--mn-success))]' },
-          { label: 'Uživatelé', value: s.users, icon: Users, color: 'text-[#a855f7]' },
+          { label: 'Uživatelé', value: s.users, icon: Users, color: 'text-[hsl(var(--mn-info))]' },
         ].map((m, i) => (
           <Card key={i}><CardContent className="p-4 flex items-center justify-between">
             <div><p className="text-sm text-[hsl(var(--mn-muted))]">{m.label}</p><p className={`text-2xl font-bold ${m.color}`}>{m.value}</p></div>
@@ -85,7 +85,7 @@ function DashboardTab() {
         </div>
         <div className="grid grid-cols-3 gap-4 text-center text-sm">
           <div><p className="font-bold text-[hsl(var(--mn-accent-2))]">{s.topics.withFt}</p><p className="text-[hsl(var(--mn-muted))]">fulltext</p></div>
-          <div><p className="font-bold text-[#a855f7]">{s.topics.withHy}</p><p className="text-[hsl(var(--mn-muted))]">high-yield</p></div>
+          <div><p className="font-bold text-[hsl(var(--mn-info))]">{s.topics.withHy}</p><p className="text-[hsl(var(--mn-muted))]">high-yield</p></div>
           <div><p className="font-bold text-[hsl(var(--mn-muted))]">{s.topics.total - s.topics.withFt}</p><p className="text-[hsl(var(--mn-muted))]">bez obsahu</p></div>
         </div>
       </CardContent></Card>
@@ -411,7 +411,7 @@ function ContentOverviewTab() {
           { v: totals.total, l: 'Celkem', c: '' },
           { v: totals.published, l: 'Published', c: 'text-[hsl(var(--mn-success))]' },
           { v: totals.withFt, l: 'Fulltext', c: 'text-[hsl(var(--mn-accent-2))]' },
-          { v: totals.withHy, l: 'High-yield', c: 'text-[#a855f7]' },
+          { v: totals.withHy, l: 'High-yield', c: 'text-[hsl(var(--mn-info))]' },
           { v: totals.empty, l: 'Bez obsahu', c: 'text-[hsl(var(--mn-muted))]' },
         ].map((m, i) => (
           <Card key={i}><CardContent className="p-3 text-center">
@@ -444,7 +444,7 @@ function ContentOverviewTab() {
                   <div className="hidden md:flex gap-3 text-[11px] text-[hsl(var(--mn-muted))] shrink-0">
                     <span className="text-[hsl(var(--mn-success))]">{obor.published} pub</span>
                     <span className="text-[hsl(var(--mn-accent-2))]">{obor.withFt} ft</span>
-                    <span className="text-[#a855f7]">{obor.withHy} hy</span>
+                    <span className="text-[hsl(var(--mn-info))]">{obor.withHy} hy</span>
                   </div>
                 </button>
                 {isExp && (

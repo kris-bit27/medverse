@@ -70,7 +70,7 @@ export default function TestResultsV2() {
   if (!session) {
     return (
       <div className="max-w-2xl mx-auto p-6">
-        <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="mn-card p-5">
           <div className="p-12 text-center">
             <AlertCircle className="w-16 h-16 mx-auto mb-4 text-[hsl(var(--mn-danger))]" />
             <h2 className="text-2xl font-bold mb-2">Výsledky nenalezeny</h2>
@@ -148,7 +148,7 @@ export default function TestResultsV2() {
       </div>
 
       {/* Score Card */}
-      <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+      <div className="mn-card p-5">
         <div className="p-8 text-center">
           <div className={`mn-mono-font text-6xl font-bold mb-2 ${getGradeColor(score)}`}>
             {score.toFixed(1)}%
@@ -162,7 +162,7 @@ export default function TestResultsV2() {
 
       {/* Stats Grid */}
       <div className="grid md:grid-cols-3 gap-4">
-        <div className="rounded-2xl p-5 hover:-translate-y-0.5 transition-all" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="mn-card p-5 hover:-translate-y-0.5 transition-all">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-[hsl(var(--mn-muted))]">Správně</p>
@@ -172,7 +172,7 @@ export default function TestResultsV2() {
             </div>
         </div>
 
-        <div className="rounded-2xl p-5 hover:-translate-y-0.5 transition-all" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="mn-card p-5 hover:-translate-y-0.5 transition-all">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-[hsl(var(--mn-muted))]">Špatně</p>
@@ -182,7 +182,7 @@ export default function TestResultsV2() {
             </div>
         </div>
 
-        <div className="rounded-2xl p-5 hover:-translate-y-0.5 transition-all" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="mn-card p-5 hover:-translate-y-0.5 transition-all">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-[hsl(var(--mn-muted))]">Čas</p>
@@ -195,7 +195,7 @@ export default function TestResultsV2() {
 
       {/* Weak Topics */}
       {weakTopics.length > 0 && (
-        <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="mn-card p-5">
           <div className="flex items-center gap-2 font-semibold text-lg mb-4">
             <TrendingUp className="w-5 h-5" />
             Témata k zlepšení
@@ -217,7 +217,7 @@ export default function TestResultsV2() {
       )}
 
       {/* Question Review */}
-      <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+      <div className="mn-card p-5">
         <div className="font-semibold text-lg mb-4">Přehled odpovědí</div>
           <div className="space-y-4">
             {answers.map((answer, idx) => (

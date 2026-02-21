@@ -15,7 +15,7 @@ export default function ProgressWidget({
     : 0;
 
   return (
-    <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+    <div className="mn-card">
       <div className="p-5 pb-4">
         <h3 className="mn-ui-font font-semibold text-lg">{title}</h3>
       </div>

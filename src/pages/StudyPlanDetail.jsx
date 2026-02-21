@@ -135,7 +135,7 @@ export default function StudyPlanDetail() {
 
       <div className="space-y-6">
         {/* Header */}
-        <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="mn-card p-5">
             <div className="flex items-start justify-between mb-4">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
@@ -280,7 +280,7 @@ export default function StudyPlanDetail() {
               </TabsContent>
 
               <TabsContent value="progress" className="mt-4">
-                <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+                <div className="mn-card p-5">
                   <h3 className="mn-ui-font font-semibold mb-4">Statistiky pokroku</h3>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between p-4 rounded-lg bg-[hsl(var(--mn-surface-2))]">
@@ -309,7 +309,7 @@ export default function StudyPlanDetail() {
                 {collaboratorUsers.map(u => {
                   const collab = collaborators.find(c => c.user_id === u.id);
                   return (
-                    <div key={u.id} className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+                    <div key={u.id} className="mn-card p-5">
                         <div className="flex items-start justify-between">
                           <div className="flex items-center gap-3">
                             <Avatar>
@@ -344,7 +344,7 @@ export default function StudyPlanDetail() {
 
           <div className="space-y-4">
             {disciplines.length > 0 && (
-              <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+              <div className="mn-card p-5">
                 <h3 className="mn-ui-font font-semibold text-sm mb-4">Klinické obory</h3>
                   <div className="flex flex-wrap gap-2">
                     {disciplines.map(d => (
@@ -355,7 +355,7 @@ export default function StudyPlanDetail() {
             )}
 
             {packages.length > 0 && (
-              <div className="rounded-2xl p-5" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+              <div className="mn-card p-5">
                 <h3 className="mn-ui-font font-semibold text-sm flex items-center gap-2 mb-4">
                   <Package className="w-4 h-4" />
                   Studijní balíčky

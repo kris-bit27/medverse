@@ -25,7 +25,7 @@ const CATEGORIES = {
   'diuretic': { label: 'Diuretika', color: '#06b6d4', icon: Droplet },
   'antidiabetic': { label: 'Antidiabetika', color: '#10b981', icon: Activity },
   'cardiac': { label: 'Kardiaka', color: '#ec4899', icon: Heart },
-  'corticosteroid': { label: 'Kortikoidy', color: '#a855f7', icon: Shield },
+  'corticosteroid': { label: 'Kortikoidy', color: 'hsl(var(--mn-info))', icon: Shield },
   'gastrointestinal': { label: 'GIT', color: '#84cc16', icon: Beaker },
   'psychotropic': { label: 'Psychofarmaka', color: '#8b5cf6', icon: Brain },
   'emergency': { label: 'Urgentní', color: '#ef4444', icon: Syringe },
@@ -177,7 +177,7 @@ export default function DrugDatabaseV2() {
           {/* TAB: Overview */}
           <TabsContent value="overview" className="space-y-4">
             {d.mechanism && (
-              <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+              <div className="mn-card">
                 <div className="p-4">
                   <h3 className="mn-ui-font text-sm font-semibold mb-2 text-[hsl(var(--mn-accent))]">Mechanismus účinku</h3>
                   <p className="text-sm text-[hsl(var(--mn-muted))]">{d.mechanism}</p>
@@ -185,7 +185,7 @@ export default function DrugDatabaseV2() {
               </div>
             )}
             {d.indication && (
-              <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+              <div className="mn-card">
                 <div className="p-4">
                   <h3 className="mn-ui-font text-sm font-semibold mb-2 text-[hsl(var(--mn-success))]">Indikace</h3>
                   <p className="text-sm text-[hsl(var(--mn-muted))]">{d.indication}</p>
@@ -193,7 +193,7 @@ export default function DrugDatabaseV2() {
               </div>
             )}
             {d.contraindications && (
-              <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+              <div className="mn-card">
                 <div className="p-4">
                   <h3 className="mn-ui-font text-sm font-semibold mb-2 text-[hsl(var(--mn-danger))] flex items-center gap-1.5">
                     <AlertTriangle className="w-3.5 h-3.5" /> Kontraindikace
@@ -203,7 +203,7 @@ export default function DrugDatabaseV2() {
               </div>
             )}
             {d.warnings && (
-              <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+              <div className="mn-card">
                 <div className="p-4">
                   <h3 className="mn-ui-font text-sm font-semibold mb-2 text-[hsl(var(--mn-warn))] flex items-center gap-1.5">
                     <AlertTriangle className="w-3.5 h-3.5" /> Upozornění
@@ -213,7 +213,7 @@ export default function DrugDatabaseV2() {
               </div>
             )}
             {(d.side_effects?.length > 0) && (
-              <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+              <div className="mn-card">
                 <div className="p-4">
                   <h3 className="mn-ui-font text-sm font-semibold mb-2">Nežádoucí účinky</h3>
                   <div className="flex flex-wrap gap-1.5">
@@ -225,7 +225,7 @@ export default function DrugDatabaseV2() {
               </div>
             )}
             {Object.keys(specPop).length > 0 && (
-              <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+              <div className="mn-card">
                 <div className="p-4">
                   <h3 className="mn-ui-font text-sm font-semibold mb-2">Speciální populace</h3>
                   <div className="space-y-2">
@@ -246,7 +246,7 @@ export default function DrugDatabaseV2() {
 
           {/* TAB: Dosing */}
           <TabsContent value="dosing" className="space-y-4">
-            <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+            <div className="mn-card">
               <div className="p-4">
                 <h3 className="mn-ui-font text-sm font-semibold mb-3">Dávkování</h3>
                 <div className="space-y-3">
@@ -287,7 +287,7 @@ export default function DrugDatabaseV2() {
             </div>
 
             {Object.keys(monitoring).length > 0 && (
-              <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+              <div className="mn-card">
                 <div className="p-4">
                   <h3 className="mn-ui-font text-sm font-semibold mb-2">Monitoring</h3>
                   {monitoring.parameters && (

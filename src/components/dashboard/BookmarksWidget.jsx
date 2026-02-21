@@ -39,7 +39,7 @@ export default function BookmarksWidget({
 
   if (recentBookmarks.length === 0) {
     return (
-      <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+      <div className="mn-card">
         <div className="p-5 pb-0">
           <h3 className="mn-ui-font font-semibold text-lg flex items-center gap-2">
             <Bookmark className="w-5 h-5" />
@@ -57,7 +57,7 @@ export default function BookmarksWidget({
   }
 
   return (
-    <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+    <div className="mn-card">
       <div className="flex items-center justify-between p-5 pb-4">
         <h3 className="mn-ui-font font-semibold text-lg flex items-center gap-2">
           <Bookmark className="w-5 h-5" />

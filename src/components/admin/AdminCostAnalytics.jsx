@@ -115,7 +115,7 @@ export default function AdminCostAnalytics() {
         {[
           { label: 'Celkové náklady', value: `$${s.totalCost.toFixed(2)}`, icon: DollarSign, color: 'text-[hsl(var(--mn-success))]' },
           { label: 'Topics generováno', value: s.totalTopics, icon: Zap, color: 'text-[hsl(var(--mn-accent-2))]' },
-          { label: 'Průměr/topic', value: `$${s.avgCost.toFixed(4)}`, icon: TrendingUp, color: 'text-[#a855f7]' },
+          { label: 'Průměr/topic', value: `$${s.avgCost.toFixed(4)}`, icon: TrendingUp, color: 'text-[hsl(var(--mn-info))]' },
           { label: 'Odhad zbývajících', value: `$${estRemaining.toFixed(2)}`, icon: BarChart3, color: 'text-[hsl(var(--mn-warn))]' },
         ].map((m, i) => (
           <Card key={i}><CardContent className="p-4">
@@ -158,7 +158,7 @@ export default function AdminCostAnalytics() {
                       <span className="font-medium">${data.cost.toFixed(4)}</span>
                     </div>
                     <div className="w-full bg-[hsl(var(--mn-border))] dark:bg-[hsl(var(--mn-elevated))] rounded-full h-2">
-                      <div className={`h-2 rounded-full ${model.includes('opus') ? 'bg-[#a855f7]' : 'bg-[hsl(var(--mn-accent-2))]'}`}
+                      <div className={`h-2 rounded-full ${model.includes('opus') ? 'bg-[hsl(var(--mn-info))]' : 'bg-[hsl(var(--mn-accent-2))]'}`}
                         style={{ width: `${pct}%` }} />
                     </div>
                   </div>

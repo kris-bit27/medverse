@@ -44,8 +44,8 @@ function ContentDots({ topic, compact = false }) {
       <div className="flex items-center gap-1">
         {types.map(t => (
           <div key={t.key} title={t.has ? t.label : `${t.label} – chybí`}
-            className={`w-[18px] h-[18px] rounded flex items-center justify-center ${t.has ? t.bg : 'bg-slate-700/30'}`}>
-            <t.icon className={`w-3 h-3 ${t.has ? t.color : 'text-slate-600'}`} />
+            className={`w-[18px] h-[18px] rounded flex items-center justify-center ${t.has ? t.bg : 'bg-[hsl(var(--mn-surface-2))]'}`}>
+            <t.icon className={`w-3 h-3 ${t.has ? t.color : 'text-[hsl(var(--mn-muted))]'}`} />
           </div>
         ))}
       </div>
@@ -59,7 +59,7 @@ function ContentDots({ topic, compact = false }) {
           <t.icon className="w-3 h-3" /> {t.label}
         </span>
       ) : (
-        <span key={t.key} className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium text-slate-600 bg-slate-800/30 line-through decoration-slate-700">
+        <span key={t.key} className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium text-[hsl(var(--mn-muted))] bg-[hsl(var(--mn-surface-2))] line-through opacity-50">
           <t.icon className="w-3 h-3" /> {t.label}
         </span>
       ))}
@@ -74,7 +74,7 @@ function MasteryBadge({ score }) {
   const cfg = s >= 80 ? { label: 'Zvládnuto', cls: 'text-emerald-400 bg-emerald-500/10' }
     : s >= 50 ? { label: 'Učím se', cls: 'text-blue-400 bg-blue-500/10' }
     : s >= 20 ? { label: 'Zahájeno', cls: 'text-amber-400 bg-amber-500/10' }
-    : { label: 'Nové', cls: 'text-slate-400 bg-slate-500/10' };
+    : { label: 'Nové', cls: 'text-[hsl(var(--mn-muted))] bg-[hsl(var(--mn-surface-2))]' };
   return <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold ${cfg.cls}`}>{cfg.label}</span>;
 }
 

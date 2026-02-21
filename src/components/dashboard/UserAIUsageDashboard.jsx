@@ -111,7 +111,7 @@ export default function UserAIUsageDashboard({ user }) {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Total Cost */}
-        <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="mn-card">
           <div className="flex items-center justify-between p-5 pb-2">
             <h3 className="mn-ui-font text-sm font-medium">Total Cost</h3>
             <DollarSign className="h-4 w-4 text-[hsl(var(--mn-muted))]" />
@@ -131,7 +131,7 @@ export default function UserAIUsageDashboard({ user }) {
         </div>
 
         {/* Requests */}
-        <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="mn-card">
           <div className="flex items-center justify-between p-5 pb-2">
             <h3 className="mn-ui-font text-sm font-medium">AI Requests</h3>
             <Zap className="h-4 w-4 text-[hsl(var(--mn-muted))]" />
@@ -151,7 +151,7 @@ export default function UserAIUsageDashboard({ user }) {
         </div>
 
         {/* Tokens */}
-        <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="mn-card">
           <div className="flex items-center justify-between p-5 pb-2">
             <h3 className="mn-ui-font text-sm font-medium">Tokens Used</h3>
             <Calendar className="h-4 w-4 text-[hsl(var(--mn-muted))]" />
@@ -172,7 +172,7 @@ export default function UserAIUsageDashboard({ user }) {
 
       {/* Recent Usage History */}
       {history && history.length > 0 && (
-        <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="mn-card">
           <div className="p-5 pb-0">
             <h3 className="mn-ui-font font-semibold text-lg">Recent Activity</h3>
           </div>
@@ -218,7 +218,7 @@ export default function UserAIUsageDashboard({ user }) {
 
       {/* Empty State */}
       {(!history || history.length === 0) && (
-        <div className="rounded-2xl" style={{ background: 'hsl(var(--mn-surface))', border: '1px solid hsl(var(--mn-border))' }}>
+        <div className="mn-card">
           <div className="p-8 text-center">
             <Zap className="w-12 h-12 text-[hsl(var(--mn-muted))] mx-auto mb-3" />
             <p className="text-[hsl(var(--mn-muted))] mb-2">No AI usage yet</p>
