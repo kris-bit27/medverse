@@ -107,18 +107,18 @@
    ════════════════════════════════════════════════════════════════ */
 @layer base {
   .dark {
-    /* Povrchy — BRAND.dark (přesné hex hodnoty) */
-    --mn-bg:        222 26% 7%;    /* #0c0f16 */
-    --mn-surface:   222 22% 10%;   /* #131620 */
-    --mn-surface-2: 222 20% 13%;   /* #191d29 */
-    --mn-elevated:  222 18% 16%;   /* #1f2333 */
-    --mn-border:    225 18% 22%;   /* #2a2f42 */
-    --mn-border-subtle: 225 17% 18%; /* #222638 */
+    /* Povrchy — neutrální tmavá, odpovídá landing page / referenčnímu UI */
+    --mn-bg:        230 12% 7%;    /* #0f1117 */
+    --mn-surface:   228 12% 10%;   /* #161820 */
+    --mn-surface-2: 228 12% 13%;   /* #1c1e2a */
+    --mn-elevated:  228 11% 17%;   /* #232536 */
+    --mn-border:    228 13% 21%;   /* #2a2d3e */
+    --mn-border-subtle: 228 13% 17%; /* #222438 */
 
     /* Text */
-    --mn-text:      220 20% 93%;   /* #e8eaef */
-    --mn-muted:     225 12% 65%;   /* #9498b0 */
-    --mn-muted-2:   225 10% 43%;   /* #5f637a */
+    --mn-text:      228 15% 92%;   /* #e8e9ed */
+    --mn-muted:     228 11% 65%;   /* #9b9db2 */
+    --mn-muted-2:   228 9%  45%;   /* #6b6d82 */
 
     /* Akcent — BRAND.dark.accent */
     --mn-accent:    173 72% 40%;   /* #14b8a6 */
