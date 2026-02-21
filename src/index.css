@@ -139,3 +139,166 @@
     --mn-shadow-2: 0 8px 24px rgba(0,0,0,0.4);
   }
 }
+
+
+/* ════════════════════════════════════════════════════════════════
+   UTILITY TŘÍDY — jednotný systém pro celý portál
+   Použití v JSX: className="mn-card", "mn-card-sm", atd.
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── KARTY ── jeden standard napříč celým portálem */
+@layer utilities {
+  .mn-card {
+    background: hsl(var(--mn-surface));
+    border: 1px solid hsl(var(--mn-border));
+    border-radius: 14px;
+    box-shadow: var(--mn-shadow-1);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .mn-card:hover {
+    border-color: hsl(var(--mn-accent) / 0.3);
+  }
+  .mn-card-secondary {
+    background: hsl(var(--mn-surface-2));
+    border: 1px solid hsl(var(--mn-border));
+    border-radius: 14px;
+    box-shadow: var(--mn-shadow-1);
+  }
+  .mn-card-elevated {
+    background: hsl(var(--mn-elevated));
+    border: 1px solid hsl(var(--mn-border));
+    border-radius: 14px;
+    box-shadow: var(--mn-shadow-2);
+  }
+
+  /* ── HEADINGY ── */
+  .mn-h1 { font-family: var(--mn-font-serif); font-size: clamp(28px,5vw,42px); font-weight: 700; letter-spacing: -0.02em; color: hsl(var(--mn-text)); line-height: 1.1; }
+  .mn-h2 { font-family: var(--mn-font-serif); font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; color: hsl(var(--mn-text)); }
+  .mn-h3 { font-family: var(--mn-font-sans); font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; color: hsl(var(--mn-text)); }
+  .mn-label { font-family: var(--mn-font-sans); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: hsl(var(--mn-muted)); }
+  .mn-value-display { font-family: var(--mn-font-mono); font-weight: 700; letter-spacing: -0.02em; color: hsl(var(--mn-text)); }
+
+  /* ── ACCENT TEXT GRADIENT ── */
+  .mn-accent-text {
+    background: linear-gradient(135deg, hsl(var(--mn-accent)), hsl(var(--mn-secondary)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── SEKCE HEADER ── */
+  .mn-section-title {
+    font-family: var(--mn-font-sans);
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: hsl(var(--mn-accent));
+    margin-bottom: 20px;
+  }
+
+  /* ── STAT BLOKY (jako na landing page) ── */
+  .mn-stat {
+    background: hsl(var(--mn-surface));
+    border: 1px solid hsl(var(--mn-border));
+    border-radius: 14px; padding: 20px; text-align: center;
+  }
+  .mn-stat-num { font-family: var(--mn-font-sans); font-size: 2rem; font-weight: 700; letter-spacing: -0.03em; color: hsl(var(--mn-text)); line-height: 1; }
+  .mn-stat-desc { font-family: var(--mn-font-sans); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: hsl(var(--mn-muted)); margin-top: 6px; }
+
+  /* ── INTERAKTIVNÍ ŘÁDKY ── */
+  .mn-row {
+    display: flex; align-items: center;
+    padding: 12px 16px; border-radius: 10px;
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+  .mn-row:hover { background: hsl(var(--mn-surface-2)); }
+
+  /* ── TAGY / PILLS ── */
+  .mn-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 10px; border-radius: 999px;
+    font-family: var(--mn-font-sans); font-size: 11px; font-weight: 600;
+    background: hsl(var(--mn-surface-2));
+    border: 1px solid hsl(var(--mn-border));
+    color: hsl(var(--mn-muted));
+  }
+  .mn-tag-accent {
+    background: hsl(var(--mn-accent) / 0.10);
+    border-color: hsl(var(--mn-accent) / 0.25);
+    color: hsl(var(--mn-accent));
+  }
+  .mn-tag-warn {
+    background: hsl(var(--mn-warn) / 0.10);
+    border-color: hsl(var(--mn-warn) / 0.25);
+    color: hsl(var(--mn-warn));
+  }
+  .mn-tag-danger {
+    background: hsl(var(--mn-danger) / 0.10);
+    border-color: hsl(var(--mn-danger) / 0.25);
+    color: hsl(var(--mn-danger));
+  }
+  .mn-tag-success {
+    background: hsl(var(--mn-success) / 0.10);
+    border-color: hsl(var(--mn-success) / 0.25);
+    color: hsl(var(--mn-success));
+  }
+  .mn-tag-info {
+    background: hsl(var(--mn-info) / 0.10);
+    border-color: hsl(var(--mn-info) / 0.25);
+    color: hsl(var(--mn-info));
+  }
+  /* info → použij pro "High-yield" tagy kde design systém používal purple */
+  .mn-tag-purple {
+    background: hsl(271 76% 53% / 0.10);
+    border-color: hsl(271 76% 53% / 0.25);
+    color: hsl(271 76% 60%);
+  }
+
+  /* ── PROGRESS BAR ── */
+  .mn-progress-track { background: hsl(var(--mn-border)); border-radius: 999px; overflow: hidden; }
+  .mn-progress-fill  { background: linear-gradient(90deg, hsl(var(--mn-accent)), hsl(var(--mn-secondary))); border-radius: 999px; height: 100%; transition: width 0.5s ease; }
+
+  /* ── DIVIDER ── */
+  .mn-divider { border: none; border-top: 1px solid hsl(var(--mn-border)); margin: 0; }
+
+  /* ── SPINNER ── */
+  .mn-spinner { width: 32px; height: 32px; border: 3px solid hsl(var(--mn-border)); border-top-color: hsl(var(--mn-accent)); border-radius: 50%; animation: mn-spin 0.7s linear infinite; }
+  @keyframes mn-spin { to { transform: rotate(360deg); } }
+
+  /* ── EMPTY STATE ── */
+  .mn-empty { text-align: center; padding: 48px 24px; color: hsl(var(--mn-muted)); font-family: var(--mn-font-sans); }
+
+  /* ── SHADOW UTILITIES ── (nahrazuje shadow-lg/shadow-2xl) */
+  .mn-shadow   { box-shadow: var(--mn-shadow-1); }
+  .mn-shadow-lg { box-shadow: var(--mn-shadow-2); }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   GLOBÁLNÍ PŘEPISY — sjednocení shadcn komponent s design systémem
+   ════════════════════════════════════════════════════════════════ */
+
+/* shadcn Card → vždy mn-card styl */
+[class*="rounded-xl"].border,
+[class*="rounded-2xl"].border,
+[class*="rounded-lg"].border {
+  border-color: hsl(var(--mn-border));
+}
+
+/* Všechny shadow-lg a shadow-2xl → mn-shadow */
+.shadow-lg   { box-shadow: var(--mn-shadow-2) !important; }
+.shadow-xl   { box-shadow: var(--mn-shadow-2) !important; }
+.shadow-2xl  { box-shadow: 0 12px 40px rgba(0,0,0,0.35) !important; }
+
+/* Fialová (#a855f7) nahrazena mn-info (blue) — fialová není v design systému */
+/* Tyto třídy přepíší hardcoded purple v Logbook/Admin/Community */
+.text-\[\#a855f7\]  { color: hsl(var(--mn-info)) !important; }
+.bg-\[\#a855f7\]    { background: hsl(var(--mn-info) / 0.10) !important; }
+.border-\[\#a855f7\] { border-color: hsl(var(--mn-info) / 0.30) !important; }
+
+/* Pink (#ec4899) → warn */
+.text-\[\#ec4899\]  { color: hsl(var(--mn-warn)) !important; }
+.bg-\[\#ec4899\]    { background: hsl(var(--mn-warn) / 0.10) !important; }
+
+/* Starý slate (StudiumV3) → mn tokeny */
+.bg-slate-700\/30   { background: hsl(var(--mn-surface-2)) !important; }
+.text-slate-600     { color: hsl(var(--mn-muted)) !important; }
